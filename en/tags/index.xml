@@ -1,8 +1,8 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>Tags - Tag - whitefirer&#39;s blog</title>
-        <link>http://whitefirer.org/en/tags/</link>
+        <link>https://www.whitefirer.org/en/tags/</link>
         <description>Tags - Tag - whitefirer&#39;s blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><atom:link href="http://whitefirer.org/en/tags/" rel="self" type="application/rss+xml" /></channel>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><atom:link href="https://www.whitefirer.org/en/tags/" rel="self" type="application/rss+xml" /></channel>
 </rss>

@@ -61,4 +61,4 @@ Disallow: /
 User-agent: ZoominfoBot
 Disallow: /
 
-Sitemap: http://whitefirer.org/sitemap.xml
+Sitemap: https://www.whitefirer.org/sitemap.xml
