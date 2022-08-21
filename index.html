@@ -81,476 +81,476 @@
     <script src="https://unpkg.com/xterm-addon-webgl@0.12.0-beta.15/lib/xterm-addon-webgl.js"></script>
     <script>
         $(function () {
-    
-    var baseTheme = {
-        foreground: '#F8F8F8',
-        background: '#2D2E2C',
-        selection: '#5DA5D533',
-        black: '#1E1E1D',
-        brightBlack: '#262625',
-        red: '#CE5C5C',
-        brightRed: '#FF7272',
-        green: '#5BCC5B',
-        brightGreen: '#72FF72',
-        yellow: '#CCCC5B',
-        brightYellow: '#FFFF72',
-        blue: '#5D5DD3',
-        brightBlue: '#7279FF',
-        magenta: '#BC5ED1',
-        brightMagenta: '#E572FF',
-        cyan: '#5DA5D5',
-        brightCyan: '#72F0FF',
-        white: '#F8F8F8',
-        brightWhite: '#FFFFFF'
-    };
-    
-    var otherTheme = {
-        foreground: '#eff0eb',
-        background: '#282a36',
-        selection: '#97979b33',
-        black: '#282a36',
-        brightBlack: '#686868',
-        red: '#ff5c57',
-        brightRed: '#ff5c57',
-        green: '#5af78e',
-        brightGreen: '#5af78e',
-        yellow: '#f3f99d',
-        brightYellow: '#f3f99d',
-        blue: '#57c7ff',
-        brightBlue: '#57c7ff',
-        magenta: '#ff6ac1',
-        brightMagenta: '#ff6ac1',
-        cyan: '#9aedfe',
-        brightCyan: '#9aedfe',
-        white: '#f1f1f0',
-        brightWhite: '#eff0eb'
-    };
+            
+            var baseTheme = {
+                foreground: '#F8F8F8',
+                background: '#2D2E2C',
+                selection: '#5DA5D533',
+                black: '#1E1E1D',
+                brightBlack: '#262625',
+                red: '#CE5C5C',
+                brightRed: '#FF7272',
+                green: '#5BCC5B',
+                brightGreen: '#72FF72',
+                yellow: '#CCCC5B',
+                brightYellow: '#FFFF72',
+                blue: '#5D5DD3',
+                brightBlue: '#7279FF',
+                magenta: '#BC5ED1',
+                brightMagenta: '#E572FF',
+                cyan: '#5DA5D5',
+                brightCyan: '#72F0FF',
+                white: '#F8F8F8',
+                brightWhite: '#FFFFFF'
+            };
+            
+            var otherTheme = {
+                foreground: '#eff0eb',
+                background: '#282a36',
+                selection: '#97979b33',
+                black: '#282a36',
+                brightBlack: '#686868',
+                red: '#ff5c57',
+                brightRed: '#ff5c57',
+                green: '#5af78e',
+                brightGreen: '#5af78e',
+                yellow: '#f3f99d',
+                brightYellow: '#f3f99d',
+                blue: '#57c7ff',
+                brightBlue: '#57c7ff',
+                magenta: '#ff6ac1',
+                brightMagenta: '#ff6ac1',
+                cyan: '#9aedfe',
+                brightCyan: '#9aedfe',
+                white: '#f1f1f0',
+                brightWhite: '#eff0eb'
+            };
 
-    const ESC = '\u001b';
-    const CTRL_C = '\u0003';
-    const ENTER = '\r';
-    const DEL = '\u007F';
-    const VK_UP = '\x1b[A';
-    const VK_DOWN = '\x1b[B';
-    const VK_RIGHT = '\x1b[C';
-    const VK_LEFT = '\x1b[D';
+            const ESC = '\u001b';
+            const CTRL_C = '\u0003';
+            const ENTER = '\r';
+            const DEL = '\u007F';
+            const VK_UP = '\x1b[A';
+            const VK_DOWN = '\x1b[B';
+            const VK_RIGHT = '\x1b[C';
+            const VK_LEFT = '\x1b[D';
 
 
-    var isBaseTheme = true;
-    var isGameStart = false;
-    var autoFlag = false;
-    var changed = false;
-    var gameKey = null;
-    var consoleKey = null;
+            var isBaseTheme = true;
+            var isGameStart = false;
+            var autoFlag = false;
+            var changed = false;
+            var gameKey = null;
+            var consoleKey = null;
 
-    var term = new window.Terminal({
-        fontFamily: '"Cascadia Code", Menlo, monospace',
-        theme: baseTheme,
-        cursorBlink: true
-    });
-    term.open(document.querySelector('.demo .inner'));
+            var term = new window.Terminal({
+                fontFamily: '"Cascadia Code", Menlo, monospace',
+                theme: baseTheme,
+                cursorBlink: true
+            });
+            term.open(document.querySelector('.demo .inner'));
 
-    var isWebglEnabled = false;
-    try {
-        const webgl = new window.WebglAddon.WebglAddon();
-        term.loadAddon(webgl);
-        isWebglEnabled = true;
-    } catch (e) {
-        console.warn('WebGL addon threw an exception during load', e);
-    }
-
-    
-    document.querySelector('.xterm').addEventListener('wheel', e => {
-        if (term.buffer.active.baseY > 0) {
-            e.preventDefault();
-        }
-    });
-
-    function runFakeTerminal() {
-        if (term._initialized) {
-            return;
-        }
-
-        term._initialized = true;
-
-        term.prompt = () => {
-            term.write('\r\n$ ');
-        };
-
-        
-        initConsole();
-        
-
-        setTimeout(() => {
-            if (consoleKey === null) {
-                setTimeout(function () {
-                    term.write('c');
-                }, 100)
-                setTimeout(function () {
-                    term.write('h');
-                }, 200)
-                setTimeout(function () {
-                    term.write('a');
-                }, 300)
-                setTimeout(function () {
-                    term.write('r');
-                }, 400)
-                setTimeout(function () {
-                    term.write('a');
-                }, 500)
-                setTimeout(function () {
-                    term.write('i');
-                }, 600)
-                setTimeout(function () {
-                    term.write('n');
-                }, 700)
-                setTimeout(function () {
-                    startGame("charain");
-                    autoFlag = true;
-                }, 800)
+            var isWebglEnabled = false;
+            try {
+                const webgl = new window.WebglAddon.WebglAddon();
+                term.loadAddon(webgl);
+                isWebglEnabled = true;
+            } catch (e) {
+                console.warn('WebGL addon threw an exception during load', e);
             }
-        }, 600000)
 
-        term.onData(e => {
-            consoleKey = e;
-            if (isGameStart) {
-                onGameData(e);
-                return
+            
+            document.querySelector('.xterm').addEventListener('wheel', e => {
+                if (term.buffer.active.baseY > 0) {
+                    e.preventDefault();
+                }
+            });
+
+            function runFakeTerminal() {
+                if (term._initialized) {
+                    return;
+                }
+
+                term._initialized = true;
+
+                term.prompt = () => {
+                    term.write('\r\n$ ');
+                };
+
+                
+                initConsole();
+                
+
+                setTimeout(() => {
+                    if (consoleKey === null) {
+                        setTimeout(function () {
+                            term.write('c');
+                        }, 100)
+                        setTimeout(function () {
+                            term.write('h');
+                        }, 200)
+                        setTimeout(function () {
+                            term.write('a');
+                        }, 300)
+                        setTimeout(function () {
+                            term.write('r');
+                        }, 400)
+                        setTimeout(function () {
+                            term.write('a');
+                        }, 500)
+                        setTimeout(function () {
+                            term.write('i');
+                        }, 600)
+                        setTimeout(function () {
+                            term.write('n');
+                        }, 700)
+                        setTimeout(function () {
+                            startGame("charain");
+                            autoFlag = true;
+                        }, 800)
+                    }
+                }, 600000)
+
+                term.onData(e => {
+                    consoleKey = e;
+                    if (isGameStart) {
+                        onGameData(e);
+                        return
+                    }
+                    switch (e) {
+                        case ESC: 
+                            prompt(term);
+                            break;
+                        case CTRL_C: 
+                            term.write('^C');
+                            prompt(term);
+                            break;
+                        case ENTER: 
+                            runCommand(term, command);
+                            command = '';
+                            break;
+                        case DEL: 
+                            
+                            if (term._core.buffer.x > 2) {
+                                term.write('\b \b');
+                                if (command.length > 0) {
+                                    command = command.substr(0, command.length - 1);
+                                }
+                            }
+                            break;
+                        default: 
+                            if (e >= String.fromCharCode(0x20) && e <= String.fromCharCode(0x7E) || e >= '\u00a0') {
+                                command += e;
+                                term.write(e);
+                            }
+                    }
+                });
+
+                
+                term.registerLinkProvider({
+                    provideLinks(bufferLineNumber, callback) {
+                        switch (bufferLineNumber) {
+                            case 2:
+                                callback([
+                                    {
+                                        text: 'Blog',
+                                        range: { start: { x: 28, y: 2 }, end: { x: 31, y: 2 } },
+                                        activate() {
+                                            window.open('https://whitefirer.org', '_blank');
+                                        }
+                                    },
+                                    {
+                                        text: 'GitHub',
+                                        range: { start: { x: 34, y: 2 }, end: { x: 39, y: 2 } },
+                                        activate() {
+                                            window.open('https://github.com/whitefirer', '_blank');
+                                        }
+                                    },
+                                ]);
+                                return;
+                        }
+                        callback(undefined);
+                    }
+                });
             }
-            switch (e) {
-                case ESC: 
-                    prompt(term);
-                    break;
-                case CTRL_C: 
-                    term.write('^C');
-                    prompt(term);
-                    break;
-                case ENTER: 
-                    runCommand(term, command);
-                    command = '';
-                    break;
-                case DEL: 
-                    
-                    if (term._core.buffer.x > 2) {
-                        term.write('\b \b');
-                        if (command.length > 0) {
-                            command = command.substr(0, command.length - 1);
+
+            function prompt(term) {
+                command = '';
+                term.write('\r\n$ ');
+            }
+
+            var command = '';
+            var commands = {
+                help: {
+                    f: () => {
+                        term.writeln([
+                            'Welcome to xterm.js! Try some of the commands below.',
+                            '',
+                            ...Object.keys(commands).map(e => `  ${e.padEnd(10)} ${commands[e].description}`)
+                        ].join('\n\r'));
+                        prompt(term);
+                    },
+                    description: 'Prints this help message',
+                },
+                ls: {
+                    f: () => {
+                        term.writeln(['a', 'bunch', 'of', 'fake', 'files'].join('\r\n'));
+                        term.prompt(term);
+                    },
+                    description: 'Prints a fake directory structure'
+                },
+                clear: {
+                    f: () => {
+                        term.reset();
+                        term.prompt(term);
+                    },
+                    description: 'Clear the screen'
+                },
+                charain: {
+                    f: () => { startGame('charain'); },
+                    description: 'Start charain game'
+                },
+                loadtest: {
+                    f: () => {
+                        let testData = [];
+                        let byteCount = 0;
+                        for (let i = 0; i < 50; i++) {
+                            let count = 1 + Math.floor(Math.random() * 79);
+                            byteCount += count + 2;
+                            let data = new Uint8Array(count + 2);
+                            data[0] = 0x0A; 
+                            for (let i = 1; i < count + 1; i++) {
+                                data[i] = 0x61 + Math.floor(Math.random() * (0x7A - 0x61));
+                            }
+                            
+                            
+                            data[data.length - 1] = 0x0D; 
+                            testData.push(data);
+                        }
+                        let start = performance.now();
+                        for (let i = 0; i < 1024; i++) {
+                            for (const d of testData) {
+                                term.write(d);
+                            }
+                        }
+                        
+                        term.write('', () => {
+                            let time = Math.round(performance.now() - start);
+                            let mbs = ((byteCount / 1024) * (1 / (time / 1000))).toFixed(2);
+                            term.write(`\n\r\nWrote ${byteCount}kB in ${time}ms (${mbs}MB/s) using the ${isWebglEnabled ? 'webgl' : 'canvas'} renderer`);
+                            term.prompt();
+                        });
+                    },
+                    description: 'Simulate a lot of data coming from a process'
+                }
+            };
+
+            function runCommand(term, text) {
+                const command = text.trim().split(' ')[0];
+                if (command.length > 0) {
+                    term.writeln('');
+                    if (command in commands) {
+                        commands[command].f();
+                        return;
+                    }
+                    term.writeln(`${command}: command not found`);
+                }
+                prompt(term);
+            }
+
+            function initConsole() {
+                term.reset();
+                term.writeln([
+                    '         Welcome! whitefirer.org is a blog for technical exchange',
+                    '                           \x1b[4m\x1b[3m\x1b[1mBlog\x1b[0m, \x1b[4m\x1b[3m\x1b[1mGithub\x1b[0m and \x1b[3mGame\x1b[0m!',
+                    '',
+                    ' ┌ \x1b[1mAbout\x1b[0m ─────────────────────────────────────────────────────────────────────┐',
+                    ' │                                                                            │',
+                    ' │  \x1b[31;1mProfile                                \x1b[32mTechnology\x1b[0m                         │',
+                    ' │   Name: 王诚强 (mortywang)               Cloud Native                      │',
+                    ' │   Github: whitefirer                     \x1b[3mDistributed System\x1b[0m                │',
+                    ' │                                                                            │',
+                    ' │  \x1b[33;1mContact                                \x1b[34mLanguages\x1b[0m                          │',
+                    ' │   whitefirer@gmail.com                   Go Python C C++ TypeScript HCL    │',
+                    ' │                                                                            │',
+                    ' │  \x1b[35;1mIntroduction                           \x1b[36mAnd much more...\x1b[0m                   │',
+                    ' │   Hi, I\'m a developer that                                                 │',
+                    ' │   working for tencent music                                                │',
+                    ' │   If you also like technology                                              │',
+                    ' │   please conact with me.                                                   │',
+                    ' └────────────────────────────────────────────────────────────────────────────┘',
+                    ''
+                ].join('\n\r'));
+
+                term.writeln('Below is a simple emulated backend, try running `help` or `charain`.');
+                prompt(term);
+            }
+
+            function initGameConsole() {
+                initConsole();
+            }
+
+            function startGame(name) {
+                switch (name) {
+                    case 'charain':
+                        
+                        isGameStart = true;
+                        gameKey = VK_DOWN;
+                        break;
+                }
+            }
+
+            function onGameData(e) {
+                switch (e) {
+                    case ESC: 
+                    case 'q':
+                        isGameStart = false;
+                        gameKey = null;
+                        initConsole();
+                        break;
+                    default: 
+                        gameKey = e;
+                        break;
+                }
+            }
+
+            function getChar(col, row) {
+                return [
+                    term._buffer._core.buffer.lines._array[row]._data[3 * col],
+                    term._buffer._core.buffer.lines._array[row]._data[3 * col + 1],
+                    term._buffer._core.buffer.lines._array[row]._data[3 * col + 2]
+                ]
+            }
+
+            function getCombinedChar(col, row) {
+                let lines = term._buffer._core.buffer.lines._array[row];
+                if (lines === undefined) {
+                    return undefined;
+                }
+                return lines._combined[col];
+            }
+
+
+            function setChar(col, row, value, combinedChar) {
+                if (combinedChar != undefined) {
+                    term._buffer._core.buffer.lines._array[row]._combined[col] = combinedChar;
+                } else if (term._buffer._core.buffer.lines._array[row]._combined[col]) {
+                    delete (term._buffer._core.buffer.lines._array[row]._combined[col]);
+                }
+
+                term._buffer._core.buffer.lines._array[row]._data[3 * col] = value[0];
+                term._buffer._core.buffer.lines._array[row]._data[3 * col + 1] = value[1];
+                term._buffer._core.buffer.lines._array[row]._data[3 * col + 2] = value[2];
+            }
+
+            function isEmptyChar(col, row) {
+                let line = term.buffer.active.getLine(row);
+                if (line == undefined) {
+                    return false;
+                }
+                let cell = line.getCell(col)
+                if (cell == undefined) {
+                    return false;
+                }
+                return cell.getChars() == ' ' || cell.getChars() == ''
+            }
+
+            setInterval(() => {
+                if (!isGameStart) {
+                    return;
+                }
+                
+                const keys = [VK_LEFT, VK_RIGHT, VK_DOWN, VK_UP];
+                if (keys.includes(consoleKey)) {
+                    autoFlag = false;
+                }
+
+                if (autoFlag && !changed) {
+                    let index = Math.floor((Math.random() * keys.length));
+                    gameKey = keys[index];
+                }
+                changed = false;
+
+                
+                for (let k = 0; k < term.rows; k++) {
+                    let j = term.rows - 1 - k;
+                    for (let i = 0; i < term.cols; i++) {
+                        let cur_char = getChar(i, j);
+                        let cur_combined_char = getCombinedChar(i, j);
+
+                        if (isEmptyChar(i, j)) {
+                            continue;
+                        }
+
+                        let ax = i;
+                        let ay = j;
+                        if (gameKey == null) {
+                            continue
+                        }
+
+                        switch (gameKey) {
+                            case ' ':
+                                initGameConsole();
+                                gameKey = null;
+                                autoFlag = false;
+                                break;
+                            case ENTER:
+                                gameKey = null;
+                                autoFlag = !autoFlag;
+                                break;
+                            case VK_UP:
+                                ay = j - Math.round(Math.random() * 1);
+                                break;
+                            case VK_LEFT:
+                                ax = i - Math.round(Math.random() * 1);
+                                break;
+                            case VK_RIGHT:
+                                ax = i + Math.round(Math.random() * 1);
+                                break;
+                            default:
+                                ay = j + Math.round(Math.random() * 1);
+                                break;
+                        }
+
+                        let next_char = null;
+                        let next_combined_char = undefined;
+                        if (ax >= 0 && ax < term.cols && ay < term.rows && ay >= 0) {
+                            next_char = getChar(ax, ay)
+                            next_combined_char = getCombinedChar(ax, ay);
+                        }
+
+                        if (next_char != null && isEmptyChar(ax, ay)
+                            && (j < term.rows)
+                            && (i < term.cols)
+                            && (i >= 0)) {
+                            setChar(ax, ay, cur_char, cur_combined_char);
+                            setChar(i, j, next_char, next_combined_char);
+
+                            changed = true;
+
                         }
                     }
-                    break;
-                default: 
-                    if (e >= String.fromCharCode(0x20) && e <= String.fromCharCode(0x7E) || e >= '\u00a0') {
-                        command += e;
-                        term.write(e);
-                    }
-            }
+                }
+                if (changed) {
+                    term.refresh(0, term.rows - 1);
+                }
+
+            }, 2);
+
+            runFakeTerminal();
         });
 
-        
-        term.registerLinkProvider({
-            provideLinks(bufferLineNumber, callback) {
-                switch (bufferLineNumber) {
-                    case 2:
-                        callback([
-                            {
-                                text: 'Blog',
-                                range: { start: { x: 28, y: 2 }, end: { x: 31, y: 2 } },
-                                activate() {
-                                    window.open('https://whitefirer.org', '_blank');
-                                }
-                            },
-                            {
-                                text: 'GitHub',
-                                range: { start: { x: 34, y: 2 }, end: { x: 39, y: 2 } },
-                                activate() {
-                                    window.open('https://github.com/whitefirer', '_blank');
-                                }
-                            },
-                        ]);
-                        return;
-                }
-                callback(undefined);
-            }
-        });
-    }
-
-    function prompt(term) {
-        command = '';
-        term.write('\r\n$ ');
-    }
-
-    var command = '';
-    var commands = {
-        help: {
-            f: () => {
-                term.writeln([
-                    'Welcome to xterm.js! Try some of the commands below.',
-                    '',
-                    ...Object.keys(commands).map(e => `  ${e.padEnd(10)} ${commands[e].description}`)
-                ].join('\n\r'));
-                prompt(term);
-            },
-            description: 'Prints this help message',
-        },
-        ls: {
-            f: () => {
-                term.writeln(['a', 'bunch', 'of', 'fake', 'files'].join('\r\n'));
-                term.prompt(term);
-            },
-            description: 'Prints a fake directory structure'
-        },
-        clear: {
-            f: () => {
-                term.reset();
-                term.prompt(term);
-            },
-            description: 'Clear the screen'
-        },
-        charain: {
-            f: () => { startGame('charain'); },
-            description: 'Start charain game'
-        },
-        loadtest: {
-            f: () => {
-                let testData = [];
-                let byteCount = 0;
-                for (let i = 0; i < 50; i++) {
-                    let count = 1 + Math.floor(Math.random() * 79);
-                    byteCount += count + 2;
-                    let data = new Uint8Array(count + 2);
-                    data[0] = 0x0A; 
-                    for (let i = 1; i < count + 1; i++) {
-                        data[i] = 0x61 + Math.floor(Math.random() * (0x7A - 0x61));
-                    }
-                    
-                    
-                    data[data.length - 1] = 0x0D; 
-                    testData.push(data);
-                }
-                let start = performance.now();
-                for (let i = 0; i < 1024; i++) {
-                    for (const d of testData) {
-                        term.write(d);
-                    }
-                }
+        function addDecoration(term) {
+            const marker = term.addMarker(15);
+            const decoration = term.registerDecoration({ marker, x: 44 });
+            decoration.onRender(element => {
+                element.classList.add('link-hint-decoration');
+                element.innerText = 'Try clicking italic text';
                 
-                term.write('', () => {
-                    let time = Math.round(performance.now() - start);
-                    let mbs = ((byteCount / 1024) * (1 / (time / 1000))).toFixed(2);
-                    term.write(`\n\r\nWrote ${byteCount}kB in ${time}ms (${mbs}MB/s) using the ${isWebglEnabled ? 'webgl' : 'canvas'} renderer`);
-                    term.prompt();
-                });
-            },
-            description: 'Simulate a lot of data coming from a process'
+                element.style.height = '';
+                element.style.width = '';
+            });
         }
-    };
-
-    function runCommand(term, text) {
-        const command = text.trim().split(' ')[0];
-        if (command.length > 0) {
-            term.writeln('');
-            if (command in commands) {
-                commands[command].f();
-                return;
-            }
-            term.writeln(`${command}: command not found`);
-        }
-        prompt(term);
-    }
-
-    function initConsole() {
-        term.reset();
-        term.writeln([
-            '         Welcome! whitefirer.org is a blog for technical exchange',
-            '                           \x1b[4m\x1b[3m\x1b[1mBlog\x1b[0m, \x1b[4m\x1b[3m\x1b[1mGithub\x1b[0m and \x1b[3mGame\x1b[0m!',
-            '',
-            ' ┌ \x1b[1mAbout\x1b[0m ─────────────────────────────────────────────────────────────────────┐',
-            ' │                                                                            │',
-            ' │  \x1b[31;1mProfile                                \x1b[32mTechnology\x1b[0m                         │',
-            ' │   Name: 王诚强 (mortywang)               Cloud Native                      │',
-            ' │   Github: whitefirer                     \x1b[3mDistributed System\x1b[0m                │',
-            ' │                                                                            │',
-            ' │  \x1b[33;1mContact                                \x1b[34mLanguages\x1b[0m                          │',
-            ' │   whitefirer@gmail.com                   Go Python C C++ TypeScript HCL    │',
-            ' │                                                                            │',
-            ' │  \x1b[35;1mIntroduction                           \x1b[36mAnd much more...\x1b[0m                   │',
-            ' │   Hi, I\'m a developer that                                                 │',
-            ' │   working for tencent music                                                │',
-            ' │   If you also like technology                                              │',
-            ' │   please conact with me.                                                   │',
-            ' └────────────────────────────────────────────────────────────────────────────┘',
-            ''
-        ].join('\n\r'));
-
-        term.writeln('Below is a simple emulated backend, try running `help` or `charain`.');
-        prompt(term);
-    }
-
-    function initGameConsole() {
-        initConsole();
-    }
-
-    function startGame(name) {
-        switch (name) {
-            case 'charain':
-                
-                isGameStart = true;
-                gameKey = VK_DOWN;
-                break;
-        }
-    }
-
-    function onGameData(e) {
-        switch (e) {
-            case ESC: 
-            case 'q':
-                isGameStart = false;
-                gameKey = null;
-                initConsole();
-                break;
-            default: 
-                gameKey = e;
-                break;
-        }
-    }
-
-    function getChar(col, row) {
-        return [
-            term._buffer._core.buffer.lines._array[row]._data[3 * col],
-            term._buffer._core.buffer.lines._array[row]._data[3 * col + 1],
-            term._buffer._core.buffer.lines._array[row]._data[3 * col + 2]
-        ]
-    }
-
-    function getCombinedChar(col, row) {
-        let lines = term._buffer._core.buffer.lines._array[row];
-        if (lines === undefined) {
-            return undefined;
-        }
-        return lines._combined[col];
-    }
-
-
-    function setChar(col, row, value, combinedChar) {
-        if (combinedChar != undefined) {
-            term._buffer._core.buffer.lines._array[row]._combined[col] = combinedChar;
-        } else if (term._buffer._core.buffer.lines._array[row]._combined[col]) {
-            delete (term._buffer._core.buffer.lines._array[row]._combined[col]);
-        }
-
-        term._buffer._core.buffer.lines._array[row]._data[3 * col] = value[0];
-        term._buffer._core.buffer.lines._array[row]._data[3 * col + 1] = value[1];
-        term._buffer._core.buffer.lines._array[row]._data[3 * col + 2] = value[2];
-    }
-
-    function isEmptyChar(col, row) {
-        let line = term.buffer.active.getLine(row);
-        if (line == undefined) {
-            return false;
-        }
-        let cell = line.getCell(col)
-        if (cell == undefined) {
-            return false;
-        }
-        return cell.getChars() == ' ' || cell.getChars() == ''
-    }
-
-    setInterval(() => {
-        if (!isGameStart) {
-            return;
-        }
-        
-        const keys = [VK_LEFT, VK_RIGHT, VK_DOWN, VK_UP];
-        if (keys.includes(consoleKey)) {
-            autoFlag = false;
-        }
-
-        if (autoFlag && !changed) {
-            let index = Math.floor((Math.random() * keys.length));
-            gameKey = keys[index];
-        }
-        changed = false;
-
-        
-        for (let k = 0; k < term.rows; k++) {
-            let j = term.rows - 1 - k;
-            for (let i = 0; i < term.cols; i++) {
-                let cur_char = getChar(i, j);
-                let cur_combined_char = getCombinedChar(i, j);
-
-                if (isEmptyChar(i, j)) {
-                    continue;
-                }
-
-                let ax = i;
-                let ay = j;
-                if (gameKey == null) {
-                    continue
-                }
-
-                switch (gameKey) {
-                    case ' ':
-                        initGameConsole();
-                        gameKey = null;
-                        autoFlag = false;
-                        break;
-                    case ENTER:
-                        gameKey = null;
-                        autoFlag = !autoFlag;
-                        break;
-                    case VK_UP:
-                        ay = j - Math.round(Math.random() * 1);
-                        break;
-                    case VK_LEFT:
-                        ax = i - Math.round(Math.random() * 1);
-                        break;
-                    case VK_RIGHT:
-                        ax = i + Math.round(Math.random() * 1);
-                        break;
-                    default:
-                        ay = j + Math.round(Math.random() * 1);
-                        break;
-                }
-
-                let next_char = null;
-                let next_combined_char = undefined;
-                if (ax >= 0 && ax < term.cols && ay < term.rows && ay >= 0) {
-                    next_char = getChar(ax, ay)
-                    next_combined_char = getCombinedChar(ax, ay);
-                }
-
-                if (next_char != null && isEmptyChar(ax, ay)
-                    && (j < term.rows)
-                    && (i < term.cols)
-                    && (i >= 0)) {
-                    setChar(ax, ay, cur_char, cur_combined_char);
-                    setChar(i, j, next_char, next_combined_char);
-
-                    changed = true;
-
-                }
-            }
-        }
-        if (changed) {
-            term.refresh(0, term.rows - 1);
-        }
-
-    }, 2);
-
-    runFakeTerminal();
-});
-
-function addDecoration(term) {
-    const marker = term.addMarker(15);
-    const decoration = term.registerDecoration({ marker, x: 44 });
-    decoration.onRender(element => {
-        element.classList.add('link-hint-decoration');
-        element.innerText = 'Try clicking italic text';
-        
-        element.style.height = '';
-        element.style.width = '';
-    });
-}
 
     </script>
     <style>
@@ -589,10 +589,10 @@ function addDecoration(term) {
              
         }
 
-        .demo { 
-            display: flex; 
-            justify-content: center; 
-            margin: 10px 0 20px; 
+        .demo {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0 20px;
         }
 
         .demo .inner {
@@ -614,6 +614,20 @@ function addDecoration(term) {
             margin-right: auto;
             margin-left: auto;
         }
+
+        kbd {
+            display: inline-block !important;
+            padding: 3px 5px !important;
+            font: 11px ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace !important;
+            line-height: 10px !important;
+            color: #24292f !important;
+            vertical-align: middle !important;
+            background-color: #f6f8fa !important;
+            border: solid 1px rgba(175, 184, 193, 0.2) !important;
+            border-bottom-color: rgba(175, 184, 193, 0.2) !important;
+            border-radius: 6px !important;
+            box-shadow: inset 0 -1px 0 rgba(175, 184, 193, 0.2) !important;
+        }
     </style>
 </head>
 
@@ -622,7 +636,8 @@ function addDecoration(term) {
         <div class="demo">
             <div class="inner"></div>
         </div>
-        <p><kbd>charain</kbd>：Start，<kbd>Q</kbd>：Quit，<kbd>SPACE</kbd>：Reinit，<kbd>Enter</kbd>：Auto Play，<kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>：Control the Direction</p>
+        <p><kbd>charain</kbd>：Start，<kbd>Q</kbd>：Quit，<kbd>SPACE</kbd>：Reinit，<kbd>Enter</kbd>：Auto
+            Play，<kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>：Control the Direction</p>
     </div>
 </body>
 
