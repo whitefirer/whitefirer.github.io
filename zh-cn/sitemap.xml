@@ -2,30 +2,30 @@
     xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     ><url>
-            <loc>https://www.whitefirer.org/categories/</loc><xhtml:link
+            <loc>https://whitefirer.org/categories/</loc><xhtml:link
                         rel="alternate"
                         hreflang="en"
-                        href="https://www.whitefirer.org/en/categories/"
+                        href="https://whitefirer.org/en/categories/"
                         /><xhtml:link
                     rel="alternate"
                     hreflang="zh-cn"
-                    href="https://www.whitefirer.org/categories/"
+                    href="https://whitefirer.org/categories/"
                     /></url><url>
-            <loc>https://www.whitefirer.org/tags/</loc><xhtml:link
+            <loc>https://whitefirer.org/tags/</loc><xhtml:link
                         rel="alternate"
                         hreflang="en"
-                        href="https://www.whitefirer.org/en/tags/"
+                        href="https://whitefirer.org/en/tags/"
                         /><xhtml:link
                     rel="alternate"
                     hreflang="zh-cn"
-                    href="https://www.whitefirer.org/tags/"
+                    href="https://whitefirer.org/tags/"
                     /></url><url>
-            <loc>https://www.whitefirer.org/</loc><xhtml:link
+            <loc>https://whitefirer.org/</loc><xhtml:link
                         rel="alternate"
                         hreflang="en"
-                        href="https://www.whitefirer.org/en/"
+                        href="https://whitefirer.org/en/"
                         /><xhtml:link
                     rel="alternate"
                     hreflang="zh-cn"
-                    href="https://www.whitefirer.org/"
+                    href="https://whitefirer.org/"
                     /></url></urlset>
