@@ -9,7 +9,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://whitefirer.org/posts/2022/08/28/hugo-asciinema-player/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-08-28T04:48:27+08:00" />
-<meta property="article:modified_time" content="2022-08-29T02:33:21+08:00" /><meta property="og:site_name" content="whitefirer&#39;s blog" />
+<meta property="article:modified_time" content="2022-08-29T02:49:20+08:00" /><meta property="og:site_name" content="whitefirer&#39;s blog" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="如何在Hugo中使用终端播放器Asciinema-Player"/>
@@ -29,8 +29,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/whitefirer.org\/posts\/2022\/08\/28\/hugo-asciinema-player\/"
-        },"genre": "posts","keywords": "hugo, tech, asciinema","wordcount":  2168 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2022\/08\/28\/hugo-asciinema-player\/","datePublished": "2022-08-28T04:48:27+08:00","dateModified": "2022-08-29T02:33:21+08:00","publisher": {
+        },"genre": "posts","keywords": "hugo, tech, asciinema","wordcount":  2120 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2022\/08\/28\/hugo-asciinema-player\/","datePublished": "2022-08-28T04:48:27+08:00","dateModified": "2022-08-29T02:49:20+08:00","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -109,7 +109,7 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">如何在Hugo中使用终端播放器Asciinema-Player</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/hugo/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>hugo</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-08-28">2022-08-28</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 2168 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-08-28">2022-08-28</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 2120 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 5 分钟&nbsp;<span id="/posts/2022/08/28/hugo-asciinema-player/" class="leancloud_visitors" data-flag-title="如何在Hugo中使用终端播放器Asciinema-Player">
                         <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
                     </span>&nbsp;</div>
@@ -380,7 +380,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
 </span></span></span></code></pre></td></tr></table>
 </div>
-</div><p>这里我想了下完全可以参考<code>mermaid</code>接入的方式，直接判断有没有渲染指定元素来达到动态加载<code>js</code>、<code>css</code>等资源的目的：</p>
+</div><p>加js资源的方式如下：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">122
@@ -393,7 +393,7 @@
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># themes/iLoveIt/layouts/partials/assets.html</span>
 </span></span><span class="line"><span class="cl"><span class="p">{{</span><span class="o">-</span> <span class="o">/*</span> <span class="n">asciinema</span> <span class="o">*/</span> <span class="o">-</span><span class="p">}}</span>
-</span></span><span class="line hl"><span class="cl"><span class="p">{{</span><span class="o">-</span> <span class="k">if</span> <span class="p">(</span><span class="o">.</span><span class="n">Scratch</span><span class="o">.</span><span class="n">Get</span> <span class="s2">&#34;this&#34;</span><span class="p">)</span><span class="o">.</span><span class="n">asciinema</span> <span class="o">|</span> <span class="ow">or</span> <span class="err">$</span><span class="n">params</span><span class="o">.</span><span class="n">draft</span> <span class="o">-</span><span class="p">}}</span>
+</span></span><span class="line hl"><span class="cl"><span class="p">{{</span><span class="o">-</span> <span class="k">if</span> <span class="err">$</span><span class="n">params</span><span class="o">.</span><span class="n">asciinema</span> <span class="o">|</span> <span class="ow">or</span> <span class="err">$</span><span class="n">params</span><span class="o">.</span><span class="n">draft</span> <span class="o">-</span><span class="p">}}</span>
 </span></span><span class="line"><span class="cl">    <span class="p">{{</span><span class="o">-</span> <span class="err">$</span><span class="n">source</span> <span class="o">:=</span> <span class="err">$</span><span class="n">cdn</span><span class="o">.</span><span class="n">asciinemaJS</span> <span class="o">|</span> <span class="n">default</span> <span class="s2">&#34;lib/asciinema/asciinema-player.min.js&#34;</span> <span class="o">-</span><span class="p">}}</span>
 </span></span><span class="line"><span class="cl">    <span class="p">{{</span><span class="o">-</span> <span class="nb">dict</span> <span class="s2">&#34;Source&#34;</span> <span class="err">$</span><span class="n">source</span> <span class="s2">&#34;Fingerprint&#34;</span> <span class="err">$</span><span class="n">fingerprint</span> <span class="o">|</span> <span class="nb">dict</span> <span class="s2">&#34;Scratch&#34;</span> <span class="o">.</span><span class="n">Scratch</span> <span class="s2">&#34;Data&#34;</span> <span class="o">|</span> <span class="n">partial</span> <span class="s2">&#34;scratch/script.html&#34;</span> <span class="o">-</span><span class="p">}}</span>
 </span></span><span class="line"><span class="cl"><span class="p">{{</span><span class="o">-</span> <span class="n">end</span> <span class="o">-</span><span class="p">}}</span>
@@ -626,8 +626,8 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2022-08-29&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/d188538aafa03cf15d5ffe4b16bc7e14f65b84a0" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) d188538aafa03cf15d5ffe4b16bc7e14f65b84a0: post: hugo-asciinema-player">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>d188538</a></span>
+                <span>更新于 2022-08-29&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/eeced39be69caf3d8f85dd1f80364107ea9de3cc" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) eeced39be69caf3d8f85dd1f80364107ea9de3cc: post: hugo-asciinema-player">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>eeced39</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>

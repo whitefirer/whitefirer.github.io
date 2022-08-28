@@ -110,11 +110,11 @@ tags:
   - backup
 ---
 ```
-这里我想了下完全可以参考`mermaid`接入的方式，直接判断有没有渲染指定元素来达到动态加载`js`、`css`等资源的目的：
+加js资源的方式如下：
 ```python {linenos=table,hl_lines=[3],linenostart=122}
 # themes/iLoveIt/layouts/partials/assets.html
 {{- /* asciinema */ -}}
-{{- if (.Scratch.Get "this").asciinema | or $params.draft -}}
+{{- if $params.asciinema | or $params.draft -}}
     {{- $source := $cdn.asciinemaJS | default "lib/asciinema/asciinema-player.min.js" -}}
     {{- dict "Source" $source "Fingerprint" $fingerprint | dict "Scratch" .Scratch "Data" | partial "scratch/script.html" -}}
 {{- end -}}
