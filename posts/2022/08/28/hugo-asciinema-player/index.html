@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>如何在Hugo中使用终端播放器Asciinema-Player - whitefirer&#39;s blog</title><meta name="Description" content="Welcome to the blog of whitefirer."><meta property="og:title" content="如何在Hugo中使用终端播放器Asciinema-Player" />
+<meta property="og:description" content="Asciinema-Player是一款著名的的终端录制播放器，可用于播放asciinema录制的播放文件，经常被用来进行终端操作演示。这里也" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whitefirer.org/posts/2022/08/28/hugo-asciinema-player/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-08-28T04:48:27+08:00" />
+<meta property="article:modified_time" content="2022-08-29T02:33:21+08:00" /><meta property="og:site_name" content="whitefirer&#39;s blog" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="如何在Hugo中使用终端播放器Asciinema-Player"/>
+<meta name="twitter:description" content="Asciinema-Player是一款著名的的终端录制播放器，可用于播放asciinema录制的播放文件，经常被用来进行终端操作演示。这里也"/>
+<meta name="application-name" content="whitefirer&#39;s blog">
+<meta name="apple-mobile-web-app-title" content="whitefirer&#39;s blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2022/08/28/hugo-asciinema-player/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><link rel="preload" href="/lib/asciinema/asciinema-player.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/asciinema/asciinema-player.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "如何在Hugo中使用终端播放器Asciinema-Player",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/whitefirer.org\/posts\/2022\/08\/28\/hugo-asciinema-player\/"
+        },"genre": "posts","keywords": "hugo, tech, asciinema","wordcount":  2168 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2022\/08\/28\/hugo-asciinema-player\/","datePublished": "2022-08-28T04:48:27+08:00","dateModified": "2022-08-29T02:33:21+08:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "whitefirer"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="whitefirer&#39;s blog">whitefirer&#39;s blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/2022/08/28/hugo-asciinema-player/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="whitefirer&#39;s blog">whitefirer&#39;s blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/posts/2022/08/28/hugo-asciinema-player/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">如何在Hugo中使用终端播放器Asciinema-Player</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/hugo/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>hugo</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-08-28">2022-08-28</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 2168 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 5 分钟&nbsp;<span id="/posts/2022/08/28/hugo-asciinema-player/" class="leancloud_visitors" data-flag-title="如何在Hugo中使用终端播放器Asciinema-Player">
+                        <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
+                    </span>&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1效果展示">1.效果展示</a></li>
+        <li><a href="#2需求分析">2.需求分析</a></li>
+        <li><a href="#3解决方案">3.解决方案</a>
+          <ul>
+            <li><a href="#shortcode">shortcode</a></li>
+            <li><a href="#jscss">js、css</a></li>
+            <li><a href="#font">font</a></li>
+          </ul>
+        </li>
+        <li><a href="#4使用方法">4.使用方法</a>
+          <ul>
+            <li><a href="#asciinema-player">asciinema-player</a></li>
+            <li><a href="#asciinema">asciinema</a>
+              <ul>
+                <li><a href="#安装">安装</a></li>
+                <li><a href="#使用">使用</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li><a href="#5总结">5.总结</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p><a href="https://github.com/asciinema/asciinema-player" target="_blank" rel="noopener noreffer ">Asciinema-Player</a>是一款著名的的终端录制播放器，可用于播放<a href="https://asciinema.org" target="_blank" rel="noopener noreffer ">asciinema</a>录制的播放文件，经常被用来进行终端操作演示。这里也将其引入到了当前Hugo博客中使用，下面我将讲讲引入的过程。</p>
+<h3 id="1效果展示">1.效果展示</h3>
+<div class="details admonition tip open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-lightbulb fa-fw" aria-hidden="true"></i>Talk is cheap, show the result ~<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><p>这里直接借用官方demo进行展示。</p>
+<p>
+    <asciinema-player src="https://asciinema.org/a/335480.cast" cols="120"
+        rows="35"preload="1"start-at="0"
+        speed="1" poster="npt:1:58"title="Hello asciinema!"fit="width"
+    ></asciinema-player>
+</p>
+</div>
+        </div>
+    </div>
+<h3 id="2需求分析">2.需求分析</h3>
+<div class="details admonition question open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-question-circle fa-fw" aria-hidden="true"></i>为什么需要在Hugo里面使用终端播放器Asciinema-Player呢？<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><p>作为技术人员，在写博客时总是需要进行一些终端操作演示，而演示方式无非以下几种：</p>
+<table>
+<thead>
+<tr>
+<th>方式</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>视频</td>
+<td>能配音配特效</td>
+<td>网站流量消耗大，不能复制</td>
+</tr>
+<tr>
+<td>动图</td>
+<td>文件相对小些</td>
+<td>不能控制进度，不能复制</td>
+</tr>
+<tr>
+<td>代码</td>
+<td>占用流量小，能复制</td>
+<td>不能控制进度，也不太好展示效果</td>
+</tr>
+</tbody>
+</table>
+<p>而终端录制播放器Asciinema-Player则兼容体积小、能控制、能复制于一体并能完美复现终端操作场景，非常适合用于在博客中进行一些终端操作演示。</p>
+</div>
+        </div>
+    </div>
+<!-- <p>
+    <asciinema-player src="/casts/zsh-kubectl-prompt.cast"cols="115"
+        rows="35"preload="1"start-at="0"
+        speed="1" poster="npt:47"title="zsh-kubectl-prompt"fit="width"
+    ></asciinema-player>
+</p> -->
+<!-- <p>
+    <asciinema-player src="https://d33wubrfki0l68.cloudfront.net/b336354cd000e05055825ec4ade7866f95032a7f/9ed74/casts/asciinema-missing-glyphs.cast" cols="400"
+        rows="10"preload="1"start-at="0"
+        speed="1" poster="npt:3"fit="width"
+    ></asciinema-player>
+</p> -->
+<!-- <p>
+    <asciinema-player src="https://helix-editor.com/430253.cast" cols="120"
+        rows="35"preload="1"start-at="0"
+        speed="1" poster="npt:55"fit="width"
+    ></asciinema-player>
+</p> -->
+<h3 id="3解决方案">3.解决方案</h3>
+<p>首先，在网上找下前人在Hugo博客里扩展嵌入asciinema-player的方法，比如 <a href="https://jenciso.github.io/blog/embedding-asciinema-cast-in-your-hugo-site/" target="_blank" rel="noopener noreffer ">Embedding asciinema cast in your Hugo site</a>。</p>
+<h4 id="shortcode">shortcode</h4>
+<p>可以找到里面asciinema-player的shortcode代码如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">&lt;</span><span class="n">asciinema</span><span class="o">-</span><span class="n">player</span>
+</span></span><span class="line"><span class="cl">        <span class="n">src</span><span class="o">=</span><span class="s2">&#34;/casts/{{ with .Get &#34;</span><span class="n">key</span><span class="s2">&#34; }}{{ . }}{{ end }}.cast&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">cols</span><span class="o">=</span><span class="s2">&#34;{{ if .Get &#34;</span><span class="n">cols</span><span class="s2">&#34; }}{{ .Get &#34;</span><span class="n">cols</span><span class="s2">&#34; }}{{ else }}640{{ end }}&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">rows</span><span class="o">=</span><span class="s2">&#34;{{ if .Get &#34;</span><span class="n">rows</span><span class="s2">&#34; }}{{ .Get &#34;</span><span class="n">rows</span><span class="s2">&#34; }}{{ else }}10{{ end }}&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{{</span> <span class="k">if</span> <span class="o">.</span><span class="n">Get</span> <span class="s2">&#34;autoplay&#34;</span> <span class="p">}}</span><span class="n">autoplay</span><span class="o">=</span><span class="s2">&#34;{{ .Get &#34;</span><span class="n">autoplay</span><span class="s2">&#34; }}&#34;</span><span class="p">{{</span> <span class="n">end</span> <span class="p">}}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{{</span> <span class="k">if</span> <span class="o">.</span><span class="n">Get</span> <span class="s2">&#34;preload&#34;</span> <span class="p">}}</span><span class="n">preload</span><span class="o">=</span><span class="s2">&#34;{{ .Get &#34;</span><span class="n">preload</span><span class="s2">&#34; }}&#34;</span><span class="p">{{</span> <span class="n">end</span> <span class="p">}}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{{</span> <span class="k">if</span> <span class="o">.</span><span class="n">Get</span> <span class="s2">&#34;loop&#34;</span> <span class="p">}}</span><span class="n">loop</span><span class="o">=</span><span class="s2">&#34;{{ .Get &#34;</span><span class="n">loop</span><span class="s2">&#34; }}&#34;</span><span class="p">{{</span> <span class="n">end</span> <span class="p">}}</span>
+</span></span><span class="line"><span class="cl">        <span class="n">start</span><span class="o">-</span><span class="n">at</span><span class="o">=</span><span class="s2">&#34;{{ if .Get &#34;</span><span class="n">start</span><span class="o">-</span><span class="n">at</span><span class="s2">&#34; }}{{ .Get &#34;</span><span class="n">start</span><span class="o">-</span><span class="n">at</span><span class="s2">&#34; }}{{ else }}0{{ end }}&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">speed</span><span class="o">=</span><span class="s2">&#34;{{ if .Get &#34;</span><span class="n">speed</span><span class="s2">&#34; }}{{ .Get &#34;</span><span class="n">speed</span><span class="s2">&#34; }}{{ else }}1{{ end }}&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{{</span> <span class="k">if</span> <span class="o">.</span><span class="n">Get</span> <span class="s2">&#34;idle-time-limit&#34;</span> <span class="p">}}</span><span class="n">idle</span><span class="o">-</span><span class="n">time</span><span class="o">-</span><span class="n">limit</span><span class="o">=</span><span class="s2">&#34;{{ .Get &#34;</span><span class="n">idle</span><span class="o">-</span><span class="n">time</span><span class="o">-</span><span class="n">limit</span><span class="s2">&#34; }}&#34;</span><span class="p">{{</span> <span class="n">end</span> <span class="p">}}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{{</span> <span class="k">if</span> <span class="o">.</span><span class="n">Get</span> <span class="s2">&#34;poster&#34;</span> <span class="p">}}</span><span class="n">poster</span><span class="o">=</span><span class="s2">&#34;{{ .Get &#34;</span><span class="n">poster</span><span class="s2">&#34; }}&#34;</span><span class="p">{{</span> <span class="n">end</span> <span class="p">}}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{{</span> <span class="k">if</span> <span class="o">.</span><span class="n">Get</span> <span class="s2">&#34;font-size&#34;</span> <span class="p">}}</span><span class="n">font</span><span class="o">-</span><span class="n">size</span><span class="o">=</span><span class="s2">&#34;{{ .Get &#34;</span><span class="n">font</span><span class="o">-</span><span class="n">size</span><span class="s2">&#34; }}&#34;</span><span class="p">{{</span> <span class="n">end</span> <span class="p">}}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{{</span> <span class="k">if</span> <span class="o">.</span><span class="n">Get</span> <span class="s2">&#34;theme&#34;</span> <span class="p">}}</span><span class="n">theme</span><span class="o">=</span><span class="s2">&#34;{{ .Get &#34;</span><span class="n">theme</span><span class="s2">&#34; }}&#34;</span><span class="p">{{</span> <span class="n">end</span> <span class="p">}}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{{</span> <span class="k">if</span> <span class="o">.</span><span class="n">Get</span> <span class="s2">&#34;title&#34;</span> <span class="p">}}</span><span class="n">title</span><span class="o">=</span><span class="s2">&#34;{{ .Get &#34;</span><span class="n">title</span><span class="s2">&#34; }}&#34;</span><span class="p">{{</span> <span class="n">end</span> <span class="p">}}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{{</span> <span class="k">if</span> <span class="o">.</span><span class="n">Get</span> <span class="s2">&#34;author&#34;</span> <span class="p">}}</span><span class="n">author</span><span class="o">=</span><span class="s2">&#34;{{ .Get &#34;</span><span class="n">author</span><span class="s2">&#34; }}&#34;</span><span class="p">{{</span> <span class="n">end</span> <span class="p">}}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{{</span> <span class="k">if</span> <span class="o">.</span><span class="n">Get</span> <span class="s2">&#34;author-url&#34;</span> <span class="p">}}</span><span class="n">author</span><span class="o">-</span><span class="n">url</span><span class="o">=</span><span class="s2">&#34;{{ .Get &#34;</span><span class="n">author</span><span class="o">-</span><span class="n">url</span><span class="s2">&#34; }}&#34;</span><span class="p">{{</span> <span class="n">end</span> <span class="p">}}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{{</span> <span class="k">if</span> <span class="o">.</span><span class="n">Get</span> <span class="s2">&#34;author-img-url&#34;</span> <span class="p">}}</span><span class="n">author</span><span class="o">-</span><span class="n">img</span><span class="o">-</span><span class="n">url</span><span class="o">=</span><span class="s2">&#34;{{ .Get &#34;</span><span class="n">author</span><span class="o">-</span><span class="n">img</span><span class="o">-</span><span class="n">url</span><span class="s2">&#34; }}&#34;</span><span class="p">{{</span> <span class="n">end</span> <span class="p">}}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">&gt;&lt;/</span><span class="n">asciinema</span><span class="o">-</span><span class="n">player</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>细细口味了下这段代码，结合自己需求进行了修改：
+<div class="details admonition note open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-pencil-alt fa-fw" aria-hidden="true"></i>Talk is cheap, show me the code ~<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="hl"><span class="lnt"> 4
+</span></span><span class="hl"><span class="lnt"> 5
+</span></span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="hl"><span class="lnt">14
+</span></span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># themes/iLoveIt/layouts/shortcodes/asciinema.html</span>
+</span></span><span class="line"><span class="cl"><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">&lt;</span><span class="n">asciinema</span><span class="o">-</span><span class="n">player</span>
+</span></span><span class="line hl"><span class="cl">        <span class="p">{{</span><span class="o">-</span> <span class="k">with</span> <span class="o">.</span><span class="n">Get</span> <span class="s2">&#34;src&#34;</span> <span class="p">}}</span> <span class="n">src</span><span class="o">=</span><span class="s2">&#34;{{ . }}&#34;</span> <span class="p">{{</span> <span class="n">end</span> <span class="o">-</span><span class="p">}}</span>
+</span></span><span class="line hl"><span class="cl">        <span class="p">{{</span><span class="o">-</span> <span class="k">with</span> <span class="o">.</span><span class="n">Get</span> <span class="s2">&#34;key&#34;</span> <span class="p">}}</span> <span class="n">src</span><span class="o">=</span><span class="s2">&#34;/casts/{{ . }}.cast&#34;</span><span class="p">{{</span> <span class="n">end</span> <span class="o">-</span><span class="p">}}</span>
+</span></span><span class="line"><span class="cl">        <span class="n">cols</span><span class="o">=</span><span class="s2">&#34;{{ if .Get &#34;</span><span class="n">cols</span><span class="s2">&#34; }}{{ .Get &#34;</span><span class="n">cols</span><span class="s2">&#34; }}{{ else }}640{{ end }}&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">rows</span><span class="o">=</span><span class="s2">&#34;{{ if .Get &#34;</span><span class="n">rows</span><span class="s2">&#34; }}{{ .Get &#34;</span><span class="n">rows</span><span class="s2">&#34; }}{{ else }}10{{ end }}&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{{</span><span class="o">-</span> <span class="k">with</span> <span class="o">.</span><span class="n">Get</span> <span class="s2">&#34;autoplay&#34;</span> <span class="p">}}</span><span class="n">autoplay</span><span class="o">=</span><span class="s2">&#34;{{ . }}&#34;</span><span class="p">{{</span> <span class="n">end</span> <span class="o">-</span><span class="p">}}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{{</span><span class="o">-</span> <span class="k">with</span> <span class="o">.</span><span class="n">Get</span> <span class="s2">&#34;preload&#34;</span> <span class="p">}}</span><span class="n">preload</span><span class="o">=</span><span class="s2">&#34;{{ . }}&#34;</span><span class="p">{{</span> <span class="n">end</span> <span class="o">-</span><span class="p">}}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{{</span><span class="o">-</span> <span class="k">with</span> <span class="o">.</span><span class="n">Get</span> <span class="s2">&#34;loop&#34;</span> <span class="p">}}</span><span class="n">loop</span><span class="o">=</span><span class="s2">&#34;{{ . }}&#34;</span><span class="p">{{</span> <span class="n">end</span> <span class="o">-</span><span class="p">}}</span>
+</span></span><span class="line"><span class="cl">        <span class="n">start</span><span class="o">-</span><span class="n">at</span><span class="o">=</span><span class="s2">&#34;{{ if .Get &#34;</span><span class="n">start</span><span class="o">-</span><span class="n">at</span><span class="s2">&#34; }}{{ .Get &#34;</span><span class="n">start</span><span class="o">-</span><span class="n">at</span><span class="s2">&#34; }}{{ else }}0{{ end }}&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">speed</span><span class="o">=</span><span class="s2">&#34;{{ if .Get &#34;</span><span class="n">speed</span><span class="s2">&#34; }}{{ .Get &#34;</span><span class="n">speed</span><span class="s2">&#34; }}{{ else }}1{{ end }}&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{{</span><span class="o">-</span> <span class="k">with</span> <span class="o">.</span><span class="n">Get</span> <span class="s2">&#34;idle-time-limit&#34;</span> <span class="p">}}</span><span class="n">idle</span><span class="o">-</span><span class="n">time</span><span class="o">-</span><span class="n">limit</span><span class="o">=</span><span class="s2">&#34;{{ . }}&#34;</span><span class="p">{{</span> <span class="n">end</span> <span class="o">-</span><span class="p">}}</span>
+</span></span><span class="line hl"><span class="cl">        <span class="p">{{</span><span class="o">-</span> <span class="k">with</span> <span class="o">.</span><span class="n">Get</span> <span class="s2">&#34;poster&#34;</span> <span class="p">}}</span> <span class="n">poster</span><span class="o">=</span><span class="s2">&#34;{{ . | safeURL }}&#34;</span><span class="p">{{</span> <span class="n">end</span> <span class="o">-</span><span class="p">}}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{{</span><span class="o">-</span> <span class="k">with</span> <span class="o">.</span><span class="n">Get</span> <span class="s2">&#34;font-size&#34;</span> <span class="p">}}</span><span class="n">font</span><span class="o">-</span><span class="n">size</span><span class="o">=</span><span class="s2">&#34;{{ . }}&#34;</span><span class="p">{{</span> <span class="n">end</span> <span class="o">-</span><span class="p">}}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{{</span><span class="o">-</span> <span class="k">with</span> <span class="o">.</span><span class="n">Get</span> <span class="s2">&#34;theme&#34;</span> <span class="p">}}</span><span class="n">theme</span><span class="o">=</span><span class="s2">&#34;{{ . }}&#34;</span><span class="p">{{</span> <span class="n">end</span> <span class="o">-</span><span class="p">}}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{{</span><span class="o">-</span> <span class="k">with</span> <span class="o">.</span><span class="n">Get</span> <span class="s2">&#34;title&#34;</span> <span class="p">}}</span><span class="n">title</span><span class="o">=</span><span class="s2">&#34;{{ . }}&#34;</span><span class="p">{{</span> <span class="n">end</span> <span class="o">-</span><span class="p">}}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{{</span><span class="o">-</span> <span class="k">with</span> <span class="o">.</span><span class="n">Get</span> <span class="s2">&#34;author&#34;</span> <span class="p">}}</span><span class="n">author</span><span class="o">=</span><span class="s2">&#34;{{ . }}&#34;</span><span class="p">{{</span> <span class="n">end</span> <span class="o">-</span><span class="p">}}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{{</span><span class="o">-</span> <span class="k">with</span> <span class="o">.</span><span class="n">Get</span> <span class="s2">&#34;author-url&#34;</span> <span class="p">}}</span><span class="n">author</span><span class="o">-</span><span class="n">url</span><span class="o">=</span><span class="s2">&#34;{{ . }}&#34;</span><span class="p">{{</span> <span class="n">end</span> <span class="p">}}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{{</span><span class="o">-</span> <span class="k">with</span> <span class="o">.</span><span class="n">Get</span> <span class="s2">&#34;author-img-url&#34;</span> <span class="p">}}</span><span class="n">author</span><span class="o">-</span><span class="n">img</span><span class="o">-</span><span class="n">url</span><span class="o">=</span><span class="s2">&#34;{{ . }}&#34;</span><span class="p">{{</span> <span class="n">end</span> <span class="o">-</span><span class="p">}}</span>
+</span></span><span class="line"><span class="cl">        <span class="n">fit</span><span class="o">=</span><span class="s2">&#34;{{ if .Get &#34;</span><span class="n">fit</span><span class="s2">&#34; }}{{ .Get &#34;</span><span class="n">fit</span><span class="s2">&#34; }}{{ else }}width{{ end }}&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">&gt;&lt;/</span><span class="n">asciinema</span><span class="o">-</span><span class="n">player</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></div>
+        </div>
+    </div></p>
+<p>注意看高亮部分，主要修改了以下几点：<br>
+<div class="details admonition tip open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-lightbulb fa-fw" aria-hidden="true"></i>修改点<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><ol>
+<li><code>if .Get</code> 形式代码过于累赘，这里把不需要取默认值的语句统统改成了<code>with .Get</code>形式；</li>
+<li>只有固定的<code>key</code>方法从本站获取<code>.cast</code>录制文件，这里扩展了<code>src</code>以便从站外获取录制文件地址；</li>
+<li><code>poster</code>这里会得到一个奇怪的数据<code>#ZgotmplZ</code>，它是一个安全防护的默认数据，见<a href="https://github.com/golang/go/blob/19309779ac5e2f5a2fd3cbb34421dafb2855ac21/src/html/template/error.go#L41" target="_blank" rel="noopener noreffer ">官方说明</a>，会导致设置指定时间封面无效，解决起来也简单，加上<code>| safeURL</code>管道方法就可解决；</li>
+</ol>
+</div>
+        </div>
+    </div></p>
+<h4 id="jscss">js、css</h4>
+<p>参考方案里动态引入<code>js</code>和<code>css</code>是靠在要用到的文章里设置<code>asciinema</code>为<code>true</code>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="hl"><span class="lnt">1
+</span></span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line hl"><span class="cl"><span class="p">{{</span> <span class="k">if</span> <span class="o">.</span><span class="n">Params</span><span class="o">.</span><span class="n">asciinema</span> <span class="p">}}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">&lt;</span><span class="n">script</span> <span class="n">src</span><span class="o">=</span><span class="s2">&#34;{{ .Site.BaseURL }}js/asciinema-player.js&#34;</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">{{</span> <span class="n">end</span> <span class="p">}}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="hl"><span class="lnt">4
+</span></span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l">Kubernetes Backup - ARK</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l">Kubernetes backup process using ark</span><span class="w">
+</span></span></span><span class="line hl"><span class="cl"><span class="w"></span><span class="nt">asciinema</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">tags</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="l">kubernetes</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="l">backup</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>这里我想了下完全可以参考<code>mermaid</code>接入的方式，直接判断有没有渲染指定元素来达到动态加载<code>js</code>、<code>css</code>等资源的目的：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="hl"><span class="lnt">124
+</span></span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># themes/iLoveIt/layouts/partials/assets.html</span>
+</span></span><span class="line"><span class="cl"><span class="p">{{</span><span class="o">-</span> <span class="o">/*</span> <span class="n">asciinema</span> <span class="o">*/</span> <span class="o">-</span><span class="p">}}</span>
+</span></span><span class="line hl"><span class="cl"><span class="p">{{</span><span class="o">-</span> <span class="k">if</span> <span class="p">(</span><span class="o">.</span><span class="n">Scratch</span><span class="o">.</span><span class="n">Get</span> <span class="s2">&#34;this&#34;</span><span class="p">)</span><span class="o">.</span><span class="n">asciinema</span> <span class="o">|</span> <span class="ow">or</span> <span class="err">$</span><span class="n">params</span><span class="o">.</span><span class="n">draft</span> <span class="o">-</span><span class="p">}}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{{</span><span class="o">-</span> <span class="err">$</span><span class="n">source</span> <span class="o">:=</span> <span class="err">$</span><span class="n">cdn</span><span class="o">.</span><span class="n">asciinemaJS</span> <span class="o">|</span> <span class="n">default</span> <span class="s2">&#34;lib/asciinema/asciinema-player.min.js&#34;</span> <span class="o">-</span><span class="p">}}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{{</span><span class="o">-</span> <span class="nb">dict</span> <span class="s2">&#34;Source&#34;</span> <span class="err">$</span><span class="n">source</span> <span class="s2">&#34;Fingerprint&#34;</span> <span class="err">$</span><span class="n">fingerprint</span> <span class="o">|</span> <span class="nb">dict</span> <span class="s2">&#34;Scratch&#34;</span> <span class="o">.</span><span class="n">Scratch</span> <span class="s2">&#34;Data&#34;</span> <span class="o">|</span> <span class="n">partial</span> <span class="s2">&#34;scratch/script.html&#34;</span> <span class="o">-</span><span class="p">}}</span>
+</span></span><span class="line"><span class="cl"><span class="p">{{</span><span class="o">-</span> <span class="n">end</span> <span class="o">-</span><span class="p">}}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>其中<code>$params.draft</code>是为了开发模式下也能设置草稿参数进行预览，同时设置下<code>cdn</code>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="hl"><span class="lnt">57
+</span></span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="c"># themes/iLoveIt/assets/data/cdn/jsdelivr.yml</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">gitalkJS</span><span class="p">:</span><span class="w"> </span><span class="l">gitalk@1.7.2/dist/gitalk.min.js</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c"># valine@1.5.0 https://valine.js.org/</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">valineJS</span><span class="p">:</span><span class="w"> </span><span class="l">valine@1.5.0/dist/Valine.min.js</span><span class="w">
+</span></span></span><span class="line hl"><span class="cl"><span class="w">  </span><span class="nt">asciinemaJS</span><span class="p">:</span><span class="w"> </span><span class="l">asciinema-player@3.0.1/dist/index.min.js</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c"># cookieconsent@3.1.1 https://github.com/osano/cookieconsent</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">cookieconsentCSS</span><span class="p">:</span><span class="w"> </span><span class="l">cookieconsent@3.1.1/build/cookieconsent.min.css</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">cookieconsentJS</span><span class="p">:</span><span class="w"> </span><span class="l">cookieconsent@3.1.1/build/cookieconsent.min.js</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>调整下<code>css</code>样式，让播放器能够在超出显示区域时滚动过去：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span><span class="lnt">149
+</span><span class="lnt">150
+</span><span class="lnt">151
+</span><span class="hl"><span class="lnt">152
+</span></span><span class="lnt">153
+</span><span class="hl"><span class="lnt">154
+</span></span><span class="hl"><span class="lnt">155
+</span></span><span class="hl"><span class="lnt">156
+</span></span><span class="hl"><span class="lnt">157
+</span></span><span class="lnt">158
+</span><span class="lnt">159
+</span><span class="lnt">160
+</span><span class="lnt">161
+</span><span class="lnt">162
+</span><span class="lnt">163
+</span><span class="lnt">164
+</span><span class="lnt">165
+</span><span class="lnt">166
+</span><span class="lnt">167
+</span><span class="lnt">168
+</span><span class="lnt">169
+</span><span class="lnt">170
+</span><span class="hl"><span class="lnt">171
+</span></span><span class="lnt">172
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-css" data-lang="css"><span class="line"><span class="cl"><span class="c">/* themes/iLoveIt/assets/lib/asciinema/asciinema-player.min.css */</span>
+</span></span><span class="line"><span class="cl"><span class="p">.</span><span class="nc">asciinema-terminal</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">box-sizing</span><span class="p">:</span> <span class="kc">content-box</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kp">-moz-</span><span class="k">box-sizing</span><span class="p">:</span> <span class="kc">content-box</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kp">-webkit-</span><span class="k">box-sizing</span><span class="p">:</span> <span class="kc">content-box</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">padding</span><span class="p">:</span> <span class="mi">0</span><span class="kt">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">margin</span><span class="p">:</span> <span class="mi">0</span><span class="kt">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">display</span><span class="p">:</span> <span class="kc">block</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">white-space</span><span class="p">:</span> <span class="kc">pre</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">word-wrap</span><span class="p">:</span> <span class="kc">normal</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">word-break</span><span class="p">:</span> <span class="kc">normal</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">border-radius</span><span class="p">:</span> <span class="mi">5</span><span class="kt">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">border-style</span><span class="p">:</span> <span class="kc">solid</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">cursor</span><span class="p">:</span> <span class="kc">pointer</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">border-width</span><span class="p">:</span> <span class="mf">0.3</span><span class="kt">em</span><span class="p">;</span>
+</span></span><span class="line hl"><span class="cl">  <span class="k">font-family</span><span class="p">:</span> <span class="n">Consolas</span><span class="p">,</span> <span class="n">Menlo</span><span class="p">,</span> <span class="s1">&#39;Bitstream Vera Sans Mono&#39;</span><span class="p">,</span> <span class="kc">monospace</span><span class="p">,</span> <span class="s1">&#39;Powerline Symbols&#39;</span><span class="p">,</span> <span class="s1">&#39;Terminal Glyphs&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">line-height</span><span class="p">:</span> <span class="mf">1.3333333333</span><span class="kt">em</span><span class="p">;</span>
+</span></span><span class="line hl"><span class="cl">  <span class="k">width</span><span class="p">:</span> <span class="kc">auto</span><span class="p">;</span>
+</span></span><span class="line hl"><span class="cl">  <span class="k">max-width</span><span class="p">:</span> <span class="mi">100</span><span class="kt">%</span><span class="p">;</span>
+</span></span><span class="line hl"><span class="cl">  <span class="k">overflow-x</span><span class="p">:</span> <span class="kc">auto</span><span class="p">;</span>
+</span></span><span class="line hl"><span class="cl">  <span class="k">overflow-y</span><span class="p">:</span> <span class="kc">hidden</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">.</span><span class="nc">asciinema-terminal</span> <span class="p">.</span><span class="nc">line</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">letter-spacing</span><span class="p">:</span> <span class="kc">normal</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">overflow</span><span class="p">:</span> <span class="kc">hidden</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">height</span><span class="p">:</span> <span class="mf">1.3333333333</span><span class="kt">em</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">.</span><span class="nc">asciinema-terminal</span> <span class="p">.</span><span class="nc">line</span> <span class="nt">span</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">padding</span><span class="p">:</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">display</span><span class="p">:</span> <span class="kc">inline-block</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">height</span><span class="p">:</span> <span class="mf">1.3333333333</span><span class="kt">em</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">.</span><span class="nc">asciinema-terminal</span> <span class="p">.</span><span class="nc">line</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">display</span><span class="p">:</span> <span class="kc">block</span><span class="p">;</span>
+</span></span><span class="line hl"><span class="cl">  <span class="k">width</span><span class="p">:</span> <span class="mi">4000</span><span class="kt">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="font">font</h4>
+<p>可以注意到<code>font-family</code>额外加了<code>Terminal Glyphs</code>，这也可参考了 <a href="https://www.tonylykke.com/posts/2018/06/18/custom-fonts-in-asciinema/" target="_blank" rel="noopener noreffer ">Custom Fonts in Asciinema</a>。
+主要是为了不至于出现下文中乱码的问题。正常如下：
+<p>
+    <asciinema-player src="https://d33wubrfki0l68.cloudfront.net/b336354cd000e05055825ec4ade7866f95032a7f/9ed74/casts/asciinema-missing-glyphs.cast" cols="400"
+        rows="10"preload="1"start-at="0"
+        speed="1" poster="npt:3"fit="width"
+    ></asciinema-player>
+</p></p>
+<h3 id="4使用方法">4.使用方法</h3>
+<h4 id="asciinema-player">asciinema-player</h4>
+<p>只需简单在文章中加入以下代码即可：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n"></span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>其中，<code>cols</code>、<code>rows</code>分别为行列，<code>preload</code>则是要不要预加载，<code>poster</code>则是封面，有<code>data</code>模式也有<code>npt</code>模式，<code>npt</code>即按时间截取封面，上面的就是截取<code>55</code>秒时的终端作为封面。
+另外还有<code>speed</code>：播放速度，<code>autoplay</code>：自动播放等参数，具体可参考<a href="https://github.com/asciinema/asciinema-player" target="_blank" rel="noopener noreffer ">asciinema-player</a>设置</p>
+<p>呈现效果如下（借用了<a href="https://helix-editor.com/" target="_blank" rel="noopener noreffer ">helix-editor</a>的演示，文件大些可能加载慢些）：
+<p>
+    <asciinema-player src="https://helix-editor.com/430253.cast" cols="120"
+        rows="35"preload="1"start-at="0"
+        speed="1" poster="npt:55"fit="width"
+    ></asciinema-player>
+</p></p>
+<p>点击播放按钮播放，可拖动进度条或者使用方向键控制播放进度。</p>
+<h4 id="asciinema">asciinema</h4>
+<p>上述终端播放所使用的<code>cast</code>文件，都是使用asciinema在终端录制的。</p>
+<h5 id="安装">安装</h5>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">brew install asciinema
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h5 id="使用">使用</h5>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">➜  ~ asciinema --help</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">usage</span><span class="p">:</span><span class="w"> </span><span class="l">asciinema [-h] [--version] {rec,play,cat,upload,auth} ...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">Record and share your terminal sessions, the right way.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">positional arguments</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>{<span class="l">rec,play,cat,upload,auth}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="l">rec                 Record terminal session</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="l">play                Replay terminal session</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="l">cat                 Print full output of terminal session</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="l">upload              Upload locally saved terminal session to asciinema.org</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="l">auth                Manage recordings on asciinema.org account</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">options</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>-<span class="l">h, --help            show this help message and exit</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>--<span class="l">version             show program&#39;s version number and exit</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">example usage</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">Record terminal and upload it to asciinema.org</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="l">asciinema rec</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">Record terminal to local file</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="l">asciinema rec demo.cast</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">Record terminal and upload it to asciinema.org, specifying title</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="l">asciinema rec -t &#34;My git tutorial&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">Record terminal to local file, limiting idle time to max 2.5 sec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="l">asciinema rec -i 2.5 demo.cast</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">Replay terminal recording from local file</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="l">asciinema play demo.cast</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">Replay terminal recording hosted on asciinema.org</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="l">asciinema play https://asciinema.org/a/difqlgx86ym6emrmd8u62yqu8</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">Print full output of recorded session</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="l">asciinema cat demo.cast</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">For help on a specific command run</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="l">asciinema &lt;command&gt; -h</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>另外如果想将其转化为gif动图，也可以使用<a href="https://github.com/asciinema/asciicast2gif" target="_blank" rel="noopener noreffer ">asciicast2gif</a>。</p>
+<h3 id="5总结">5.总结</h3>
+<p>通过以上实践，虽然过程有些曲折，但最终还是顺利地将asciinema-player终端播放器引入到了hugo中使用，后续发布的博客也将经常见到其身影。</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2022-08-29&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/d188538aafa03cf15d5ffe4b16bc7e14f65b84a0" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) d188538aafa03cf15d5ffe4b16bc7e14f65b84a0: post: hugo-asciinema-player">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>d188538</a></span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/2022/08/28/hugo-asciinema-player/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2022/08/28/hugo-asciinema-player/" data-title="如何在Hugo中使用终端播放器Asciinema-Player" data-hashtags="hugo,tech,asciinema"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2022/08/28/hugo-asciinema-player/" data-hashtag="hugo"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2022/08/28/hugo-asciinema-player/" data-title="如何在Hugo中使用终端播放器Asciinema-Player"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2022/08/28/hugo-asciinema-player/" data-title="如何在Hugo中使用终端播放器Asciinema-Player"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2022/08/28/hugo-asciinema-player/" data-title="如何在Hugo中使用终端播放器Asciinema-Player"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/hugo/">hugo</a>,&nbsp;<a href="/tags/tech/">tech</a>,&nbsp;<a href="/tags/asciinema/">asciinema</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"></div>
+</div>
+<div id="comments"><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.101.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/valine@1.5.0/dist/Valine.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Comments","categoryId":"DIC_kwDOH2gmzc4CQ_fM","darkTheme":"dark","emitMetadata":"0","inputPosition":"bottom","lang":"zh-CN","lazyLoading":true,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"whitefirer/whitefirer.github.io","repoId":"R_kgDOH2gmzQ"},"valine":{"appId":"n6h55x0vTgCaFtA95qPPqpN0-9Nh9j0Va","appKey":"cxNbhYeWTE358UtBG90uf0Sn","avatar":"mp","el":"#valine","emojiCDN":"https://cdn.jsdelivr.net/npm/emoji-datasource-google@14.0.0/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":false,"highlight":true,"lang":"zh-CN","pageSize":10,"placeholder":"你的评论 ...","recordIP":true,"visitor":true}},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>
