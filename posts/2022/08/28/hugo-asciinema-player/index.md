@@ -81,6 +81,7 @@
         {{- with .Get "author-img-url" }}author-img-url="{{ . }}"{{ end -}}
         fit="{{ if .Get "fit" }}{{ .Get "fit" }}{{ else }}width{{ end }}"
     ></asciinema-player>
+    {{- .Page.Scratch.SetInMap "this" "asciinema" true -}}
 </p>
 ```
 {{< /admonition >}}
@@ -114,7 +115,7 @@ tags:
 ```python {linenos=table,hl_lines=[3],linenostart=122}
 # themes/iLoveIt/layouts/partials/assets.html
 {{- /* asciinema */ -}}
-{{- if $params.asciinema | or $params.draft -}}
+{{- if (.Scratch.Get "this").asciinema| or $params.draft -}}
     {{- $source := $cdn.asciinemaJS | default "lib/asciinema/asciinema-player.min.js" -}}
     {{- dict "Source" $source "Fingerprint" $fingerprint | dict "Scratch" .Scratch "Data" | partial "scratch/script.html" -}}
 {{- end -}}
