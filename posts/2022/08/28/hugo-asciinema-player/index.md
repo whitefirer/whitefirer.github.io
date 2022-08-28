@@ -93,7 +93,7 @@
 {{< /admonition >}}
 
 #### js、css  
-参考方案里动态引入`js`和`css`是靠在要用到的文章里设置`asciinema`为`true`：
+参考方案里动态引入`js`和`css`，用到的该播放器的文章里需设置`asciinema`为`true`：
 ```python {linenos=table,hl_lines=[1],linenostart=1}
 {{ if .Params.asciinema }}
     <script src="{{ .Site.BaseURL }}js/asciinema-player.js"></script>
@@ -110,7 +110,7 @@ tags:
   - backup
 ---
 ```
-加js资源的方式如下：
+稍作修改：
 ```python {linenos=table,hl_lines=[3],linenostart=122}
 # themes/iLoveIt/layouts/partials/assets.html
 {{- /* asciinema */ -}}
