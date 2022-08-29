@@ -2,6 +2,13 @@
 
 
 [Asciinema-Player](https://github.com/asciinema/asciinema-player)是一款著名的的终端录制播放器，可用于播放[asciinema](https://asciinema.org)录制的播放文件，经常被用来进行终端操作演示。这里也将其引入到了当前Hugo博客中使用，下面我将讲讲引入的过程。
+{{< mermaid >}}
+graph LR;
+    A[Hard edge] -->|Link text| B(Round edge)
+    B --> C{Decision}
+    C -->|One| D[Result one]
+    C -->|Two| E[Result two]
+{{< /mermaid >}}
 
 ### 1.效果展示  
 {{< admonition tip "Talk is cheap, show the result ~" >}}
