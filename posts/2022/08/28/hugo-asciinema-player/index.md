@@ -2,13 +2,6 @@
 
 
 [Asciinema-Player](https://github.com/asciinema/asciinema-player)是一款著名的的终端录制播放器，可用于播放[asciinema](https://asciinema.org)录制的播放文件，经常被用来进行终端操作演示。这里也将其引入到了当前Hugo博客中使用，下面我将讲讲引入的过程。
-{{< mermaid >}}
-graph LR;
-    A[Hard edge] -->|Link text| B(Round edge)
-    B --> C{Decision}
-    C -->|One| D[Result one]
-    C -->|Two| E[Result two]
-{{< /mermaid >}}
 
 ### 1.效果展示  
 {{< admonition tip "Talk is cheap, show the result ~" >}}
@@ -118,16 +111,18 @@ tags:
   - backup
 ---
 ```
-稍作修改：
+可以看到上面是通过在文章里加`asciinema`参数实现的`js`、`css`资源动态加载，其实可以参考其它如`mermaid`的接入方式，直接在渲染时置标记就好：
 ```python {linenos=table,hl_lines=[3],linenostart=122}
 # themes/iLoveIt/layouts/partials/assets.html
 {{- /* asciinema */ -}}
-{{- if (.Scratch.Get "this").asciinema| or $params.draft -}}
-    {{- $source := $cdn.asciinemaJS | default "lib/asciinema/asciinema-player.min.js" -}}
+{{- if (.Scratch.Get "this").asciinema | or $params.draft -}}
+    {{- $source := "lib/asciinema/asciinema-player.min.css" -}}
+    {{- dict "Source" $source "Fingerprint" $fingerprint | dict "Scratch" .Scratch "Data" | partial "scratch/style.html" -}}
+    {{- $source := "lib/asciinema/asciinema-player.min.js" -}}
     {{- dict "Source" $source "Fingerprint" $fingerprint | dict "Scratch" .Scratch "Data" | partial "scratch/script.html" -}}
 {{- end -}}
 ```
-其中`$params.draft`是为了开发模式下也能设置草稿参数进行预览，同时设置下`cdn`:
+其中`$params.draft`是为了开发模式下也能设置草稿参数进行预览:
 ```yaml {linenos=table,hl_lines=[5],linenostart=53}
 # themes/iLoveIt/assets/data/cdn/jsdelivr.yml
   gitalkJS: gitalk@1.7.2/dist/gitalk.min.js
