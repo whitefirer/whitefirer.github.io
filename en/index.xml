@@ -4,7 +4,7 @@
         <link>https://whitefirer.org/en/</link>
         <description>Welcome to the blog of whitefirer.</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>123</copyright>
             <atom:link href="https://whitefirer.org/en/index.xml" rel="self" type="application/rss+xml" />
         </channel>
 </rss>

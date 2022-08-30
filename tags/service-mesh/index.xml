@@ -4,7 +4,7 @@
         <link>https://whitefirer.org/tags/service-mesh/</link>
         <description>service mesh - 标签 - whitefirer&#39;s blog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><lastBuildDate>Tue, 30 Aug 2022 10:33:20 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/service-mesh/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>123</copyright><lastBuildDate>Tue, 30 Aug 2022 10:33:20 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/service-mesh/" rel="self" type="application/rss+xml" /><item>
     <title>Polaris2Istio的实现和说明</title>
     <link>https://whitefirer.org/posts/2022/08/30/polaris2istio/</link>
     <pubDate>Tue, 30 Aug 2022 10:33:20 &#43;0800</pubDate>
