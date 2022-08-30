@@ -2,7 +2,7 @@
     xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     ><url>
-            <loc>https://whitefirer.org/categories/</loc><lastmod>2022-08-30T16:55:52&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://whitefirer.org/categories/</loc><lastmod>2022-08-30T16:58:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://whitefirer.org/en/categories/"
@@ -12,10 +12,10 @@
                     href="https://whitefirer.org/categories/"
                     /></url><url>
             <loc>https://whitefirer.org/tags/cloud-native/</loc><lastmod>2022-08-30T16:55:52&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/posts/</loc><lastmod>2022-08-30T16:55:52&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/posts/</loc><lastmod>2022-08-30T16:58:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/tags/service-mesh/</loc><lastmod>2022-08-30T16:55:52&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/tags/tech/</loc><lastmod>2022-08-30T16:55:52&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/</loc><lastmod>2022-08-30T16:55:52&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://whitefirer.org/tags/tech/</loc><lastmod>2022-08-30T16:58:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/</loc><lastmod>2022-08-30T16:58:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://whitefirer.org/en/"
@@ -25,6 +25,9 @@
                     href="https://whitefirer.org/"
                     /></url><url>
             <loc>https://whitefirer.org/posts/2022/08/29/extension-and-expansion-of-service-mesh/</loc><lastmod>2022-08-30T16:55:52&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/tags/command-line-tools/</loc><lastmod>2022-08-30T16:58:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/categories/workspace/</loc><lastmod>2022-08-30T16:58:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/posts/2022/08/29/efficient-command-line-tools/</loc><lastmod>2022-08-30T16:58:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/tags/asciinema/</loc><lastmod>2022-08-30T16:54:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/tags/hugo/</loc><lastmod>2022-08-30T16:54:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/categories/hugo/</loc><lastmod>2022-08-30T16:54:28&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>

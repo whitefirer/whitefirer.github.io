@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>command-line-tools - 标签 - whitefirer&#39;s blog</title>
+        <link>https://whitefirer.org/tags/command-line-tools/</link>
+        <description>command-line-tools - 标签 - whitefirer&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><lastBuildDate>Mon, 29 Aug 2022 15:41:16 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/command-line-tools/" rel="self" type="application/rss+xml" /><item>
+    <title>高效终端命令行工具</title>
+    <link>https://whitefirer.org/posts/2022/08/29/efficient-command-line-tools/</link>
+    <pubDate>Mon, 29 Aug 2022 15:41:16 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2022/08/29/efficient-command-line-tools/</guid>
+    <description><![CDATA[导语 工欲善其事，必先利其器。 作为一个技术人员，一个高效果的工作环境尤为重要。下面分享下我的终端命令行下的环境和工具配置。 zsh&amp;oh-my-zsh 安装 参考：http]]></description>
+</item>
+</channel>
+</rss>

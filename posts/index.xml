@@ -13,6 +13,14 @@
     <description><![CDATA[导语 没有最完美的架构，只有最合适的架构。 背景 很多时候服务网格在业务难以落地，往往是因为有历史包袱或者特殊需求，反而没有新设计的项目接入服务网]]></description>
 </item>
 <item>
+    <title>高效终端命令行工具</title>
+    <link>https://whitefirer.org/posts/2022/08/29/efficient-command-line-tools/</link>
+    <pubDate>Mon, 29 Aug 2022 15:41:16 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2022/08/29/efficient-command-line-tools/</guid>
+    <description><![CDATA[导语 工欲善其事，必先利其器。 作为一个技术人员，一个高效果的工作环境尤为重要。下面分享下我的终端命令行下的环境和工具配置。 zsh&amp;oh-my-zsh 安装 参考：http]]></description>
+</item>
+<item>
     <title>如何在Hugo博客中使用终端播放器Asciinema-Player</title>
     <link>https://whitefirer.org/posts/2022/08/28/hugo-asciinema-player/</link>
     <pubDate>Sun, 28 Aug 2022 04:48:27 &#43;0800</pubDate>
