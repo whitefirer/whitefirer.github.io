@@ -4,10 +4,18 @@
         <link>https://whitefirer.org/</link>
         <description>Welcome to the blog of whitefirer.</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><lastBuildDate>Sun, 28 Aug 2022 04:48:27 &#43;0800</lastBuildDate>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><lastBuildDate>Mon, 29 Aug 2022 17:10:46 &#43;0800</lastBuildDate>
             <atom:link href="https://whitefirer.org/index.xml" rel="self" type="application/rss+xml" />
         <item>
-    <title>如何在Hugo中使用终端播放器Asciinema-Player</title>
+    <title>融合、扩展Service Mesh</title>
+    <link>https://whitefirer.org/posts/2022/08/29/extension-and-expansion-of-service-mesh/</link>
+    <pubDate>Mon, 29 Aug 2022 17:10:46 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2022/08/29/extension-and-expansion-of-service-mesh/</guid>
+    <description><![CDATA[导语 没有最完美的架构，只有最合适的架构。 背景 很多时候服务网格在业务难以落地，往往是因为有历史包袱或者特殊需求，反而没有新设计的项目接入服务网]]></description>
+</item>
+<item>
+    <title>如何在Hugo博客中使用终端播放器Asciinema-Player</title>
     <link>https://whitefirer.org/posts/2022/08/28/hugo-asciinema-player/</link>
     <pubDate>Sun, 28 Aug 2022 04:48:27 &#43;0800</pubDate>
     <author>whitefirer</author>

@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>service mesh - 标签 - whitefirer&#39;s blog</title>
+        <link>https://whitefirer.org/tags/service-mesh/</link>
+        <description>service mesh - 标签 - whitefirer&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><lastBuildDate>Mon, 29 Aug 2022 17:10:46 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/service-mesh/" rel="self" type="application/rss+xml" /><item>
+    <title>融合、扩展Service Mesh</title>
+    <link>https://whitefirer.org/posts/2022/08/29/extension-and-expansion-of-service-mesh/</link>
+    <pubDate>Mon, 29 Aug 2022 17:10:46 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2022/08/29/extension-and-expansion-of-service-mesh/</guid>
+    <description><![CDATA[导语 没有最完美的架构，只有最合适的架构。 背景 很多时候服务网格在业务难以落地，往往是因为有历史包袱或者特殊需求，反而没有新设计的项目接入服务网]]></description>
+</item>
+</channel>
+</rss>
