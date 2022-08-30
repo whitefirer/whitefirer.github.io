@@ -2,7 +2,7 @@
     xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     ><url>
-            <loc>https://whitefirer.org/categories/</loc><lastmod>2022-08-30T16:58:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://whitefirer.org/categories/</loc><lastmod>2022-08-30T18:30:57&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://whitefirer.org/en/categories/"
@@ -11,10 +11,12 @@
                     hreflang="zh-cn"
                     href="https://whitefirer.org/categories/"
                     /></url><url>
-            <loc>https://whitefirer.org/tags/cloud-native/</loc><lastmod>2022-08-30T16:55:52&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/posts/</loc><lastmod>2022-08-30T16:58:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/tags/service-mesh/</loc><lastmod>2022-08-30T16:55:52&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/tags/</loc><lastmod>2022-08-30T16:58:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://whitefirer.org/tags/cloud-native/</loc><lastmod>2022-08-30T18:30:57&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/tags/istio/</loc><lastmod>2022-08-30T18:30:57&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/posts/2022/08/30/polaris2istio/</loc><lastmod>2022-08-30T18:30:57&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/posts/</loc><lastmod>2022-08-30T18:30:57&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/tags/service-mesh/</loc><lastmod>2022-08-30T18:30:57&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/tags/</loc><lastmod>2022-08-30T18:30:57&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://whitefirer.org/en/tags/"
@@ -23,8 +25,8 @@
                     hreflang="zh-cn"
                     href="https://whitefirer.org/tags/"
                     /></url><url>
-            <loc>https://whitefirer.org/tags/tech/</loc><lastmod>2022-08-30T16:58:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/</loc><lastmod>2022-08-30T16:58:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://whitefirer.org/tags/tech/</loc><lastmod>2022-08-30T18:30:57&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/</loc><lastmod>2022-08-30T18:30:57&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://whitefirer.org/en/"
@@ -33,7 +35,7 @@
                     hreflang="zh-cn"
                     href="https://whitefirer.org/"
                     /></url><url>
-            <loc>https://whitefirer.org/posts/2022/08/29/extension-and-expansion-of-service-mesh/</loc><lastmod>2022-08-30T16:55:52&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/posts/2022/08/29/extension-and-expansion-of-service-mesh/</loc><lastmod>2022-08-30T18:30:57&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/tags/command-line-tools/</loc><lastmod>2022-08-30T16:58:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/categories/workspace/</loc><lastmod>2022-08-30T16:58:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/posts/2022/08/29/efficient-command-line-tools/</loc><lastmod>2022-08-30T16:58:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>

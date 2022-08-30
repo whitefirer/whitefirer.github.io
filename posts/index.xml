@@ -4,7 +4,15 @@
         <link>https://whitefirer.org/posts/</link>
         <description>所有文章 | whitefirer&#39;s blog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><lastBuildDate>Mon, 29 Aug 2022 17:10:46 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/posts/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><lastBuildDate>Tue, 30 Aug 2022 10:33:20 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>Polaris2Istio的实现和说明</title>
+    <link>https://whitefirer.org/posts/2022/08/30/polaris2istio/</link>
+    <pubDate>Tue, 30 Aug 2022 10:33:20 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2022/08/30/polaris2istio/</guid>
+    <description><![CDATA[背景 如融合、扩展Service Mesh文中所述，为了让第三方服务发现的服务能够接入到Istio服务网格当中，我设计开放一个名为Polaris]]></description>
+</item>
+<item>
     <title>融合、扩展Service Mesh</title>
     <link>https://whitefirer.org/posts/2022/08/29/extension-and-expansion-of-service-mesh/</link>
     <pubDate>Mon, 29 Aug 2022 17:10:46 &#43;0800</pubDate>

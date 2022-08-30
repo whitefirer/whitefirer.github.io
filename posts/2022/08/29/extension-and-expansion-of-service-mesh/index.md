@@ -86,7 +86,7 @@ DNS+边车 | 原理较为简单，易维护<br>能处理自定义协议 | 需要
 服务发现改成非k8s service | 可以照顾原有VM上的服务 | 需要自研控制面，数据面也要进行一些修改
 
 我个人比较喜欢的是代理、DNS和用Consul替代的这三种方案，其中最符合istio原有流程是DNS这种，方案过多，就不一一详细说明了，这里主要提DNS模式下，通过X2Istio注册ServiceEntry的方式。
-<img src="https://raw.githubusercontent.com/aeraki-mesh/polaris2istio/main/doc/polaris2istio.png"> </img>
+<img src="https://www.aeraki.net/blog/2021/istio-aeraki/aeraki-architecture.png"> </img>
 
 ##### X2Istio (Polaris2Istio)
 {{< admonition tip "Istio可用特性" >}}
