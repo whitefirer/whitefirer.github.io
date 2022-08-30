@@ -14,6 +14,15 @@
             <loc>https://whitefirer.org/tags/cloud-native/</loc><lastmod>2022-08-30T16:55:52&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/posts/</loc><lastmod>2022-08-30T16:58:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/tags/service-mesh/</loc><lastmod>2022-08-30T16:55:52&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/tags/</loc><lastmod>2022-08-30T16:58:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+                        rel="alternate"
+                        hreflang="en"
+                        href="https://whitefirer.org/en/tags/"
+                        /><xhtml:link
+                    rel="alternate"
+                    hreflang="zh-cn"
+                    href="https://whitefirer.org/tags/"
+                    /></url><url>
             <loc>https://whitefirer.org/tags/tech/</loc><lastmod>2022-08-30T16:58:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/</loc><lastmod>2022-08-30T16:58:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
@@ -43,13 +52,4 @@
                     /></url><url>
             <loc>https://whitefirer.org/archives/</loc><lastmod>2022-08-25T17:48:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/categories/story/</loc><lastmod>2022-08-30T16:53:40&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/categories/tech/</loc><lastmod>2022-08-30T16:53:40&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/tags/</loc><lastmod>2022-08-29T02:33:21&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
-                        rel="alternate"
-                        hreflang="en"
-                        href="https://whitefirer.org/en/tags/"
-                        /><xhtml:link
-                    rel="alternate"
-                    hreflang="zh-cn"
-                    href="https://whitefirer.org/tags/"
-                    /></url></urlset>
+            <loc>https://whitefirer.org/categories/tech/</loc><lastmod>2022-08-30T16:53:40&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url></urlset>
