@@ -1,10 +1,10 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>hugo - 标签 - whitefirer&#39;s blog</title>
+        <title>hugo - 标签 - whitefirer[PG]</title>
         <link>https://whitefirer.org/tags/hugo/</link>
-        <description>hugo - 标签 - whitefirer&#39;s blog</description>
+        <description>hugo - 标签 - whitefirer[PG]</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>123</copyright><lastBuildDate>Sun, 28 Aug 2022 04:48:27 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/hugo/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sun, 28 Aug 2022 04:48:27 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/hugo/" rel="self" type="application/rss+xml" /><item>
     <title>如何在Hugo博客中使用终端播放器Asciinema-Player</title>
     <link>https://whitefirer.org/posts/2022/08/28/hugo-asciinema-player/</link>
     <pubDate>Sun, 28 Aug 2022 04:48:27 &#43;0800</pubDate>

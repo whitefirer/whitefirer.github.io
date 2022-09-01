@@ -1,10 +1,10 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>Workspace - 分类 - whitefirer&#39;s blog</title>
+        <title>Workspace - 分类 - whitefirer[PG]</title>
         <link>https://whitefirer.org/categories/workspace/</link>
-        <description>Workspace - 分类 - whitefirer&#39;s blog</description>
+        <description>Workspace - 分类 - whitefirer[PG]</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>123</copyright><lastBuildDate>Mon, 29 Aug 2022 15:41:16 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/categories/workspace/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Mon, 29 Aug 2022 15:41:16 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/categories/workspace/" rel="self" type="application/rss+xml" /><item>
     <title>高效终端命令行工具</title>
     <link>https://whitefirer.org/posts/2022/08/29/efficient-command-line-tools/</link>
     <pubDate>Mon, 29 Aug 2022 15:41:16 &#43;0800</pubDate>
