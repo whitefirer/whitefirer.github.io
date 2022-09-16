@@ -40,7 +40,7 @@
 
 ### 自我评价
 
-十年从业经验，阅历丰富，有着创业经历，从0到1实现了云原生和基础架构改造，也从0到1搭建过团队，并富有创造力，能够从全局出发考虑问题，抓住稳定和高效的重点，并实际推进落地，具有Geek精神，对新技术保持学习热情，关注CNCF社区的发展，热衷于开源事业，学习并参与开源项目的开发，不断在与他人的交流中获得灵感共同进步。
+十年从业经验，阅历丰富，有着创业经历，现在腾讯音乐国际业务部这边负责基础架构，包括云原生和服务网格，更早是在荔枝微课担任基础架构负责人(直接汇报CTO)，落地了k8s集群和istio服务网格在内的云原生架构，并负责开发了配置中心、DevOps平台和分布式压测系统等一系列基础平台。从0到1实现了云原生和基础架构改造，也从0到1搭建过团队，并富有创造力，能够从全局出发考虑问题，抓住稳定和高效的重点，并实际推进落地，具有Geek精神，对新技术保持学习热情，关注[CNCF](https://www.cncf.io/)社区的发展，热衷于开源事业，学习并参与开源项目的开发，不断在与他人的交流中获得灵感共同进步。
 
 <img align="right" src="https://skillicons.dev/icons?i=go,python,c,cpp,cs,rust,webassembly,nodejs,javascript,typescript,bash,markdown,fastapi,flask,django,postgres,mysql,mongo,redis,react,vue,bootstrap,jquery,git,kubernetes,docker,vim,vscode&perline=4&theme=light" />
 

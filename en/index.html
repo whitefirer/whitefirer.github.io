@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-	<meta name="generator" content="Hugo 0.102.2" />
+	<meta name="generator" content="Hugo 0.103.0" />
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
@@ -170,10 +170,13 @@
 
             var isBaseTheme = true;
             var isGameStart = false;
+            var gameName = "";
             var autoFlag = false;
             var changed = false;
             var gameKey = null;
             var consoleKey = null;
+            var ypos = null;
+            var dropInfoList = [];
 
             var term = new window.Terminal({
                 fontFamily: '"Cascadia Code", Menlo, monospace',
@@ -342,6 +345,10 @@
                     f: () => { startGame('charain'); },
                     description: 'Start charain game'
                 },
+                matrix: {
+                    f: () => { startGame('matrix'); },
+                    description: 'Start matrix game'
+                },
                 loadtest: {
                     f: () => {
                         let testData = [];
@@ -416,6 +423,7 @@
 
                 term.writeln('Below is a simple emulated backend, try running `help` or `charain`.');
                 prompt(term);
+                console.log(term);
             }
 
             function initGameConsole() {
@@ -423,14 +431,88 @@
             }
 
             function startGame(name) {
+                gameName = name;
+
+                isGameStart = true;
+                term.write('\x1b[?25l')
                 switch (name) {
                     case 'charain':
                         initGameConsole();
-                        isGameStart = true;
                         gameKey = VK_DOWN;
+                        break;
+                    case 'matrix':
                         break;
                 }
             }
+
+            class DropInfo {
+                constructor(ypos, style){
+                    this.ypos = ypos;
+                    this.style = style;
+                }
+            }
+
+            function matrix () {
+                if (!isGameStart || gameName != "matrix") {
+                    return;
+                }
+
+                if (dropInfoList.length == 0) {
+                    
+                    for (let i = 0; i < term.cols; i++) {
+                        dropInfoList.push(new DropInfo(0, 0));
+                    }
+                }
+                
+                
+                
+                
+                styleList = [0x8000000, 0x9000002, 0x300ff00, 0x300cc00, 0x300aa00, 0x3008800, 0x3006600, 0x3004400, 0x3002200, 0x200ff00, 0x9000000, 0] 
+                
+                
+                
+                
+                
+                
+                dropInfoList.forEach((dropInfo, x) => {
+                    
+                    var y = dropInfo.ypos;
+                    
+                    if (y > (term.rows + Math.random() * 10000)) {
+                        dropInfo.ypos = 0;
+                    }
+                    else {
+                        dropInfo.ypos = y + 1;
+                    }
+
+                    if (x < term.cols && y < term.rows) {
+                        var char = [Math.random() * 94 + 33, styleList[dropInfo.style], 0]
+                        setChar(x, y, char, undefined);
+                        
+                    }
+
+                    if (x < term.cols && y < term.rows + styleList.length) {
+                        styleList.forEach((style, ind) => {
+                            var tmp_y = y - ind;
+                            if (tmp_y < 0 || tmp_y >= term.rows) {
+                                
+                                return;
+                            }
+
+                            if (style == 0 || tmp_y == term.rows) {
+                                setChar(x, tmp_y, [32, 0, 0], undefined);
+                            } else {
+                                setStyle(x, tmp_y, style);
+                            }
+                        });
+                    }
+
+                    
+                });
+
+                term.refresh(0, term.rows - 1);
+            }
+
 
             function onGameData(e) {
                 switch (e) {
@@ -438,6 +520,8 @@
                     case 'q':
                         isGameStart = false;
                         gameKey = null;
+                        term.write('\x1b[!p')
+                        gameName = "";
                         initConsole();
                         break;
                     default: 
@@ -475,6 +559,10 @@
                 term._buffer._core.buffer.lines._array[row]._data[3 * col + 2] = value[2];
             }
 
+            function setStyle(col, row, style) {
+                term._buffer._core.buffer.lines._array[row]._data[3 * col + 1] = style;
+            }
+
             function isEmptyChar(col, row) {
                 let line = term.buffer.active.getLine(row);
                 if (line == undefined) {
@@ -487,8 +575,10 @@
                 return cell.getChars() == ' ' || cell.getChars() == ''
             }
 
+            setInterval(matrix, 100);
+
             setInterval(() => {
-                if (!isGameStart) {
+                if (!isGameStart || gameName != "charain") {
                     return;
                 }
                 
@@ -677,7 +767,7 @@
 </html></div>
 </div></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.102.2">Hugo</a> | Theme - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.103.0">Hugo</a> | Theme - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
                 </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span></div>
         </div>
     </footer></div>

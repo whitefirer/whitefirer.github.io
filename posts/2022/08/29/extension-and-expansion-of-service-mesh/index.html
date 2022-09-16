@@ -9,7 +9,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://whitefirer.org/posts/2022/08/29/extension-and-expansion-of-service-mesh/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-08-29T17:10:46+08:00" />
-<meta property="article:modified_time" content="2022-08-30T18:30:57+08:00" /><meta property="og:site_name" content="whitefirer[PG]" />
+<meta property="article:modified_time" content="2022-09-16T16:26:59+08:00" /><meta property="og:site_name" content="whitefirer[PG]" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="融合、扩展Service Mesh"/>
@@ -28,8 +28,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/whitefirer.org\/posts\/2022\/08\/29\/extension-and-expansion-of-service-mesh\/"
-        },"genre": "posts","keywords": "tech, cloud native, service mesh","wordcount":  2553 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2022\/08\/29\/extension-and-expansion-of-service-mesh\/","datePublished": "2022-08-29T17:10:46+08:00","dateModified": "2022-08-30T18:30:57+08:00","license": "2022©️whitefirer","publisher": {
+        },"genre": "posts","keywords": "tech, cloud native, service mesh","wordcount":  2575 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2022\/08\/29\/extension-and-expansion-of-service-mesh\/","datePublished": "2022-08-29T17:10:46+08:00","dateModified": "2022-09-16T16:26:59+08:00","license": "2022©️whitefirer","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -108,7 +108,7 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">融合、扩展Service Mesh</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-08-29">2022-08-29</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 2553 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-08-29">2022-08-29</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 2575 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 6 分钟&nbsp;<span id="/posts/2022/08/29/extension-and-expansion-of-service-mesh/" class="leancloud_visitors" data-flag-title="融合、扩展Service Mesh">
                         <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
                     </span>&nbsp;</div>
@@ -170,7 +170,7 @@
         </div>
         <div class="details-content">
             <div class="admonition-content"><ol>
-<li><strong>私有协议</strong>：不能识别私有协议，无法对私有协议进行流量管理（如路由等）；
+<li><strong>私有协议</strong>：这里泛指Istio官方未支持的协议，如果不能识别私有协议，也就无法对私有协议进行流量管理（如路由等）；
 不能很好地平滑过渡掉原有的北极星或者Consul服务发现；</li>
 <li><strong>第三方服务发现</strong>：比如北极星服务发现得到的IP是实例IP，我们这边要想办法让流量走到ServiceIP上去，通过Virtual Service IP加端口来确定服务和协议，才能利用到边车来管理流量和解析自定义协议；</li>
 </ol>
@@ -409,8 +409,8 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2022-08-30&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/a1951cd8f68446473d37a9c2d1e2e626966653bc" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) a1951cd8f68446473d37a9c2d1e2e626966653bc: add post polaris2istio">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>a1951cd</a></span>
+                <span>更新于 2022-09-16&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/ac4e2743f439d632bc66fb31a5cb43ca303c29b0" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) ac4e2743f439d632bc66fb31a5cb43ca303c29b0: add matrix game &amp;&amp; translate the tags">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>ac4e274</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
@@ -438,7 +438,7 @@
                 Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.102.2">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.103.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
                 </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span></div>
         </div>
     </footer></div>

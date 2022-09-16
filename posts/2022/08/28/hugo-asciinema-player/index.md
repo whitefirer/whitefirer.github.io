@@ -87,7 +87,7 @@
 {{< /admonition >}}
 
 注意看高亮部分，主要修改了以下几点：  
-{{< admonition tip "修改点" >}}
+{{< admonition abstract "修改点" >}}
 1. `if .Get` 形式代码过于累赘，这里把不需要取默认值的语句统统改成了`with .Get`形式；
 2. 只有固定的`key`方法从本站获取`.cast`录制文件，这里扩展了`src`以便从站外获取录制文件地址；
 3. `poster`这里会得到一个奇怪的数据`#ZgotmplZ`，它是一个安全防护的默认数据，见[官方说明](https://github.com/golang/go/blob/19309779ac5e2f5a2fd3cbb34421dafb2855ac21/src/html/template/error.go#L41)，会导致设置指定时间封面无效，解决起来也简单，加上`| safeURL`管道方法就可解决；

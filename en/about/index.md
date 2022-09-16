@@ -41,7 +41,7 @@
 
 ### Self-assessment
 
-Ten years of experience, rich experience, entrepreneurial experience, cloud native and infrastructure transformation from 0 to 1, and team building from 0 to 1. I'm creative, able to consider issues from the overall perspective, grasp the key points of stability and efficiency, and actually promote the implementation. He has the geek spirit, keeps learning enthusiasm for new technologies, pays attention to the development of CNCF community, is keen on open source business, and learns and participates in the development of open source projects, Constantly get inspiration and make progress through communication with others.
+Ten years of experience, rich experience, entrepreneurial experience, cloud native and infrastructure transformation from 0 to 1, and team building from 0 to 1. I'm creative, able to consider issues from the overall perspective, grasp the key points of stability and efficiency, and actually promote the implementation. He has the geek spirit, keeps learning enthusiasm for new technologies, pays attention to the development of [CNCF](https://www.cncf.io/) community, is keen on open source business, and learns and participates in the development of open source projects, Constantly get inspiration and make progress through communication with others.
 
 <img align="right" src="https://skillicons.dev/icons?i=go,python,c,cpp,cs,rust,webassembly,nodejs,javascript,typescript,bash,markdown,fastapi,flask,django,postgres,mysql,mongo,redis,react,vue,bootstrap,jquery,git,kubernetes,docker,vim,vscode&perline=4&theme=light" />
 
