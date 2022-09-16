@@ -175,7 +175,6 @@
             var changed = false;
             var gameKey = null;
             var consoleKey = null;
-            var ypos = null;
             var dropInfoList = [];
 
             var term = new window.Terminal({
@@ -421,7 +420,7 @@
                     ''
                 ].join('\n\r'));
 
-                term.writeln('Below is a simple emulated backend, try running `help` or `charain`.');
+                term.writeln('Below is a simple emulated backend, try running `charain`, `matrix` or `help`.');
                 prompt(term);
                 console.log(term);
             }
@@ -475,7 +474,7 @@
                     
                     var y = dropInfo.ypos;
                     
-                    if (y > (term.rows + Math.random() * 10000)) {
+                    if (y > (term.rows + styleList.length + Math.random() * 500)) {
                         dropInfo.ypos = 0;
                     }
                     else {
@@ -492,7 +491,6 @@
                         styleList.forEach((style, ind) => {
                             var tmp_y = y - ind;
                             if (tmp_y < 0 || tmp_y >= term.rows) {
-                                
                                 return;
                             }
 
