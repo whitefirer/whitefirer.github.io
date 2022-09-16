@@ -441,6 +441,7 @@
                         gameKey = VK_DOWN;
                         break;
                     case 'matrix':
+                        dropInfoList = [];
                         break;
                 }
             }
@@ -458,14 +459,10 @@
                 }
 
                 if (dropInfoList.length == 0) {
-                    
                     for (let i = 0; i < term.cols; i++) {
                         dropInfoList.push(new DropInfo(0, 0));
                     }
                 }
-                
-                
-                
                 
                 styleList = [0x8000000, 0x9000002, 0x300ff00, 0x300cc00, 0x300aa00, 0x3008800, 0x3006600, 0x3004400, 0x3002200, 0x200ff00, 0x9000000, 0] 
                 
