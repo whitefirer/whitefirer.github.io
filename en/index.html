@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-	<meta name="generator" content="Hugo 0.103.0" />
+	<meta name="generator" content="Hugo 0.103.1" />
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
@@ -171,11 +171,16 @@
             var isBaseTheme = true;
             var isGameStart = false;
             var gameName = "";
+            var gameArgs = [];
             var autoFlag = false;
             var changed = false;
             var gameKey = null;
             var consoleKey = null;
-            var dropInfoList = [];
+            var matrixDropInfoList = [];
+            var matrixTheme = "green";
+            var streamString = "";
+            var cmdX = 0;
+            var cmdY = 0;
 
             var term = new window.Terminal({
                 fontFamily: '"Cascadia Code", Menlo, monospace',
@@ -184,7 +189,7 @@
             });
             term.open(document.querySelector('.demo .inner'));
 
-            var isWebglEnabled = false;
+            var isWebglEnabled = true;
             try {
                 const webgl = new window.WebglAddon.WebglAddon();
                 term.loadAddon(webgl);
@@ -262,6 +267,7 @@
                         case ENTER: 
                             runCommand(term, command);
                             command = '';
+                            streamString = '';
                             break;
                         case DEL: 
                             
@@ -316,40 +322,126 @@
             var command = '';
             var commands = {
                 help: {
-                    f: () => {
-                        term.writeln([
-                            'Welcome to xterm.js! Try some of the commands below.',
-                            '',
-                            ...Object.keys(commands).map(e => `  ${e.padEnd(10)} ${commands[e].description}`)
-                        ].join('\n\r'));
-                        prompt(term);
+                    f: (args, final) => {
+                        if (args.length == 1) {
+                            let cmd = commands[args[0]];
+                            streamString += [
+                                cmd ? cmd.description : "No thie command",
+                                '',
+                                cmd ? cmd.help : "",
+                            ].join('\n\r')
+                        } else {
+                            streamString += [
+                                'Welcome to console-box! Try some of the commands below.',
+                                '',
+                                ...Object.keys(commands).map(e => `  ${e.padEnd(10)} ${commands[e].description}`)
+                            ].join('\n\r')
+                        }
+                        if (final) {
+                            term.writeln(streamString);
+                            prompt(term);
+                        }
                     },
                     description: 'Prints this help message',
                 },
                 ls: {
-                    f: () => {
-                        term.writeln(['a', 'bunch', 'of', 'fake', 'files'].join('\r\n'));
-                        term.prompt(term);
+                    f: (args, final) => {
+                        streamString += ['a', 'bunch', 'of', 'fake', 'files'].join('\n\r');
+                        if (final) {
+                            term.writeln(streamString);
+                            term.prompt(term);
+                        }
+                    },
+                    description: 'Prints a fake directory structure'
+                },
+                echo: {
+                    f: (args, final) => {
+                        streamString += args.join(' ').replaceAll('\"', '')
+                        if (final) {
+                            term.writeln(streamString);
+                            term.prompt(term);
+                        }
+                    },
+                    description: 'Prints a fake directory structure'
+                },
+                lolcat: {
+                    f: (args, final) => {
+                        console.log(args, final, streamString)
+                        if (args.length > 0 && streamString.length == 0) {
+                            streamString = args.join(' ').replaceAll('\"', '');
+                            if (final) {
+                                term.writeln(streamString);
+                                term.prompt(term);
+                            }
+                        } else if (final){
+                            lines = streamString.split('\n\r')
+                            lines.forEach(function(line) {
+                                term.writeln(line);
+                                term.refresh(0, term._buffer._normal.cursorY + term._buffer._normal.baseY+lines.length);
+                                console.log(term);
+                                for (let i = 0; i < line.length-1; i++) { 
+                                    setNormalStyle(i, term._buffer._normal.cursorY + term._buffer._normal._buffer.ybase, 0x300ff00)
+                                    term.refresh(0, term._buffer._normal.cursorY + term._buffer._normal.baseY+lines.length);
+                                }
+                                
+                            });
+                            term.refresh(0, term.rows - 1);
+                            term.prompt(term);
+                        }
+                        
                     },
                     description: 'Prints a fake directory structure'
                 },
                 clear: {
-                    f: () => {
-                        term.reset();
-                        term.prompt(term);
+                    f: (args, final) => {
+                        streamString = "";
+                        if (final) {
+                            term.reset();
+                            term.prompt(term);
+                        }
                     },
                     description: 'Clear the screen'
                 },
                 charain: {
-                    f: () => { startGame('charain'); },
-                    description: 'Start charain game'
+                    f: (args, final) => { startGame('charain', args); },
+                    description: 'Start charain game',
+                    help: [
+                        'Usage: charain [OPTION]...',
+                        '',
+                        'Matrix is a game that just for fun. You can start it with theme option, and also you can play it with keys.',
+                        '',
+                        'Examples:',
+                        '  charain\t Show charain game',
+                        '',
+                        'Keys:',
+                        '  Q\tQuit the game',
+                        '  SPACE\tRestart the game',
+                        '  ENTER\tRandom the game\'s theme',
+                        '  ↑↓←→\tControl the Direction',
+                    ].join('\n\r')
+
                 },
                 matrix: {
-                    f: () => { startGame('matrix'); },
-                    description: 'Start matrix game'
+                    f: (args, final) => { startGame('matrix', args); },
+                    description: 'Start matrix game',
+                    help: [
+                        'Usage: matrix [OPTION]...',
+                        '',
+                        'Matrix is a game that just for fun. You can start it with theme option, and also you can play it with keys.',
+                        '  --theme=<s>\tThemes: green, blue, red, white, black, rainbow, color, random',
+                        '',
+                        'Examples:',
+                        '  matrix --theme=rainbow\t Show rainbow color matrix game',
+                        '',
+                        'Keys:',
+                        '  Q\tQuit the game',
+                        '  SPACE\tRestart the game',
+                        '  ENTER\tRandom the game\'s theme',
+                        '  ↑↓←→\tControl the Direction',
+                    ].join('\n\r')
                 },
                 loadtest: {
-                    f: () => {
+                    f: (args, final) => {
                         let testData = [];
                         let byteCount = 0;
                         for (let i = 0; i < 50; i++) {
@@ -384,15 +476,29 @@
             };
 
             function runCommand(term, text) {
-                const command = text.trim().split(' ')[0];
-                if (command.length > 0) {
+                cmds = text.trim().split('|')
+                if (cmds.length > 0) {
                     term.writeln('');
-                    if (command in commands) {
-                        commands[command].f();
-                        return;
-                    }
-                    term.writeln(`${command}: command not found`);
+                    cmdX = term._buffer._normal.cursorX;
+                    cmdY = term._buffer._normal.cursorY;
+                    console.log(cmdX, cmdY);
+                    console.log(term);
                 }
+                for (let i = 0; i < cmds.length; i++) {
+                    let cmd  = cmds[i]
+                    const fullArgs =  cmd.trim().split(' ')
+                    const command = fullArgs[0];
+                    const args = fullArgs.slice(1, fullArgs.length);
+                    console.log(command)
+                    if (command.length > 0) {
+                        if (command in commands) {
+                            commands[command].f(args, cmds.length==(i+1));
+                            continue;
+                        }
+                        term.writeln(`${command}: command not found`);
+                    }
+                }
+                streamString = "";
                 prompt(term);
             }
 
@@ -429,8 +535,20 @@
                 initConsole();
             }
 
-            function startGame(name) {
+            function startGame(name, args) {
                 gameName = name;
+                gameArgs = args;
+                var pramas = {};
+                console.log(gameArgs)
+                gameArgs.forEach(function(key) {
+                    var kv = key.split('=');
+                    if (kv.length == 2) {
+                        pramas[kv[0].replace("--", "")] = kv[1];
+                    }
+                    
+                });
+
+                console.log(pramas)
 
                 isGameStart = true;
                 term.write('\x1b[?25l')
@@ -440,40 +558,103 @@
                         gameKey = VK_DOWN;
                         break;
                     case 'matrix':
-                        dropInfoList = [];
+                        initGameConsole();
+                        matrixDropInfoList = [];
+                        matrixTheme = pramas.theme ? pramas.theme : "green";
                         break;
                 }
             }
 
             class DropInfo {
-                constructor(ypos, style){
+                constructor(ypos, style) {
                     this.ypos = ypos;
                     this.style = style;
                 }
             }
 
-            function matrix () {
+            function getRainbowColor(freq, i) {
+                const red = Math.round(Math.sin(freq * i + 0) * 127 + 128);
+                const green = Math.round(Math.sin(freq * i + 2 * Math.PI / 3) * 127 + 128);
+                const blue = Math.round(Math.sin(freq * i + 4 * Math.PI / 3) * 127 + 128);
+
+                return (red << 18) | (green << 8) | blue
+            }
+
+            function getMatrixStyleList(theme, fix) {
+                switch (theme) {
+                    case "green":
+                    case "":
+                        return [0xbffffff, 0xb00ff00, 0x300ff00, 0x300dd00, 0x300cc00, 0x300aa00, 0x3008800, 0x3006600, 0x3004400, 0x3224422, 0x3002200, 0x200ff00, 0x9000000, 0] 
+                    case "blue":
+                        return [0xbffffff, 0xb0000ff, 0x30000ff, 0x30000dd, 0x30000cc, 0x30000aa, 0x3000088, 0x3000066, 0x3000044, 0x3222244, 0x3004400, 0x2004400, 0x9000000, 0] 
+                    case "red":
+                        return [0xbffffff, 0xbff0000, 0x3ff0000, 0x3dd0000, 0x3cc0000, 0x3aa0000, 0x3880000, 0x3660000, 0x3440000, 0x3442222, 0x3220000, 0x2ff0000, 0x9000000, 0] 
+                    case "black":
+                        return [0xb000000, 0x3000000, 0x3020202, 0x3040404, 0x3060606, 0x3080808, 0x30a0a0a, 0x30f0f0f, 0x3222222, 0x2111100, 0x9000000, 0, 0, 0] 
+                    case "white":
+                        return [0xbffffff, 0x3ffffff, 0x3dddddd, 0x3cccccc, 0x3aaaaaa, 0x3888888, 0x3666666, 0x3444444, 0x3222222, 0x2111100, 0x9000000, 0, 0, 0] 
+                    case "yellow":
+                        return [0xbffffff, 0xbffff00, 0x3ffff00, 0x3cccc00, 0x3aaaa00, 0x3888800, 0x3666600, 0x3444400, 0x3444422, 0x3222200, 0x200ff00, 0x9000000, 0, 0] 
+                    case "rainbow":
+                    case "color":
+                    default:
+                        var styleList = [];
+                        for (let i = 0; i < 13; i++) {
+                            styleList.push(0x3000000 | getRainbowColor(0.3, i + fix))
+                        }
+
+                        styleList.push(0)
+                        return styleList;
+                }
+            }
+
+            function initMatrix() {
+                matrixDropInfoList = [];
+                for (let i = 0; i < term.cols; i++) {
+                    matrixDropInfoList.push(new DropInfo(0, 0));
+                }
+            }
+
+            function matrix() {
                 if (!isGameStart || gameName != "matrix") {
                     return;
                 }
 
-                if (dropInfoList.length == 0) {
-                    for (let i = 0; i < term.cols; i++) {
-                        dropInfoList.push(new DropInfo(0, 0));
-                    }
+                const matrixThemes = ["green", "black", "white", "yellow", "rainbow", "color", "red", "blue"]
+
+                switch (gameKey) {
+                    case ' ':
+                        initMatrix();
+                        initGameConsole();
+                        gameKey = null;
+                        break;
+                    case ENTER:
+                        matrixTheme = matrixThemes[Math.floor((Math.random()+1)*(matrixThemes.length))%matrixThemes.length]
+                        gameKey = null;   
+                        break;   
                 }
-                
-                styleList = [0x8000000, 0x9000002, 0x300ff00, 0x300cc00, 0x300aa00, 0x3008800, 0x3006600, 0x3004400, 0x3002200, 0x200ff00, 0x9000000, 0] 
-                
-                
-                
-                
-                
-                
-                dropInfoList.forEach((dropInfo, x) => {
-                    
+
+                var  delayFix = 0;
+                switch (matrixTheme) {
+                    case "color":
+                        delayFix = Math.floor(Date.now() / 3000) % 17;
+                        break;
+                }
+                var styleList = getMatrixStyleList(matrixTheme, delayFix)
+   
+                if (matrixDropInfoList.length == 0) {
+                    initMatrix();
+                }
+                matrixDropInfoList.forEach((dropInfo, x) => {
                     var y = dropInfo.ypos;
-                    
+
+                    switch (matrixTheme) {
+                        case "rainbow":
+                            delayFix = Math.floor(Date.now() / 3000) % 17;
+                            styleList = getMatrixStyleList(matrixTheme, delayFix+x);
+                            break;
+                    }
+
                     if (y > (term.rows + styleList.length + Math.random() * 500)) {
                         dropInfo.ypos = 0;
                     }
@@ -482,9 +663,9 @@
                     }
 
                     if (x < term.cols && y < term.rows) {
-                        var char = [Math.random() * 94 + 33, styleList[dropInfo.style], 0]
+                        var char = [Math.floor(Math.random() * 94) + 33, styleList[dropInfo.style], 0]
                         setChar(x, y, char, undefined);
-                        
+
                     }
 
                     if (x < term.cols && y < term.rows + styleList.length) {
@@ -501,8 +682,6 @@
                             }
                         });
                     }
-
-                    
                 });
 
                 term.refresh(0, term.rows - 1);
@@ -558,6 +737,22 @@
                 term._buffer._core.buffer.lines._array[row]._data[3 * col + 1] = style;
             }
 
+            function setNormalChar(col, row, value, combinedChar) {
+                if (combinedChar != undefined) {
+                    term._buffer._normal._buffer.lines._array[row]._combined[col] = combinedChar;
+                } else if (term._buffer._normal._buffer.lines._array[row]._combined[col]) {
+                    delete (term._buffer._normal._buffer.lines._array[row]._combined[col]);
+                }
+
+                term._buffer._normal._buffer.lines._array[row]._data[3 * col] = value[0];
+                term._buffer._normal._buffer.lines._array[row]._data[3 * col + 1] = value[1];
+                term._buffer._normal._buffer.lines._array[row]._data[3 * col + 2] = value[2];
+            }
+
+            function setNormalStyle(col, row, style) {
+                term._buffer._normal._buffer.lines._array[row]._data[3 * col + 1] = style;
+            }
+
             function isEmptyChar(col, row) {
                 let line = term.buffer.active.getLine(row);
                 if (line == undefined) {
@@ -570,9 +765,7 @@
                 return cell.getChars() == ' ' || cell.getChars() == ''
             }
 
-            setInterval(matrix, 100);
-
-            setInterval(() => {
+            function charain() {
                 if (!isGameStart || gameName != "charain") {
                     return;
                 }
@@ -652,8 +845,10 @@
                     term.refresh(0, term.rows - 1);
                 }
 
-            }, 2);
+            }
 
+            setInterval(matrix, 100);
+            setInterval(charain, 2);
             runFakeTerminal();
         });
 
@@ -730,7 +925,7 @@
             padding-left: 5px;
             margin-right: auto;
             margin-left: auto;
-            
+
         }
 
         kbd {
@@ -754,15 +949,14 @@
         <div class="demo">
             <div class="inner"></div>
         </div>
-        <p><kbd>charain</kbd>：Start，<kbd>Q</kbd>：Quit，<kbd>SPACE</kbd>：Reinit，<kbd>Enter</kbd>：Auto
-            Play，<kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>：Control the Direction</p>
+        <p><kbd>charain</kbd>：Start，<kbd>Q</kbd>：Quit，<kbd>SPACE</kbd>：Reinit，<kbd>ENTER</kbd>：Random，<kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>：Control the Direction</p>
     </div>
 </body>
 
 </html></div>
 </div></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.103.0">Hugo</a> | Theme - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.103.1">Hugo</a> | Theme - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
                 </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span></div>
         </div>
     </footer></div>

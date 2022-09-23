@@ -105,7 +105,7 @@ DNS+边车 | 原理较为简单，易维护<br>能处理自定义协议 | 需要
 
 Polaris2Istio: [https://github.com/aeraki-mesh/polaris2istio](https://github.com/aeraki-mesh/polaris2istio)
 
-###### SentryEntry自动分配IP并解析
+###### ServiceEntry自动分配IP并解析
 DNS 代理还支持为没有明确定义的 ServiceEntry 自动分配地址。这是通过 `ISTIO_META_DNS_AUTO_ALLOCATE` 选项配置的。  
 
 启用此特性后，DNS 响应将为每个 ServiceEntry 自动分配一个不同的独立地址。然后代理能匹配请求与 IP 地址，并将请求转发到相应的 ServiceEntry。
