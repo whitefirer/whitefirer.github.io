@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-	<meta name="generator" content="Hugo 0.103.1" />
+	<meta name="generator" content="Hugo 0.104.0" />
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
@@ -178,6 +178,10 @@
             var consoleKey = null;
             var matrixDropInfoList = [];
             var matrixTheme = "green";
+            var matrixDirection = "DOWN";
+            var matrixFlag = 1;
+            var matrixCols = 24;
+            var matrixRows = 80;
             var streamString = "";
             var cmdX = 0;
             var cmdY = 0;
@@ -189,7 +193,7 @@
             });
             term.open(document.querySelector('.demo .inner'));
 
-            var isWebglEnabled = true;
+            var isWebglEnabled = false;
             try {
                 const webgl = new window.WebglAddon.WebglAddon();
                 term.loadAddon(webgl);
@@ -213,7 +217,7 @@
                 term._initialized = true;
 
                 term.prompt = () => {
-                    term.write('\r\n$ ');
+                    term.write('\x1b[01;32m➜ \x1b[0m');
                 };
 
                 
@@ -258,11 +262,11 @@
                     }
                     switch (e) {
                         case ESC: 
-                            prompt(term);
+                            term.prompt()
                             break;
                         case CTRL_C: 
-                            term.write('^C');
-                            prompt(term);
+                            term.write('^C\n\r');
+                            term.prompt()
                             break;
                         case ENTER: 
                             runCommand(term, command);
@@ -314,11 +318,6 @@
                 });
             }
 
-            function prompt(term) {
-                command = '';
-                term.write('\r\n$ ');
-            }
-
             var command = '';
             var commands = {
                 help: {
@@ -339,7 +338,6 @@
                         }
                         if (final) {
                             term.writeln(streamString);
-                            prompt(term);
                         }
                     },
                     description: 'Prints this help message',
@@ -349,7 +347,6 @@
                         streamString += ['a', 'bunch', 'of', 'fake', 'files'].join('\n\r');
                         if (final) {
                             term.writeln(streamString);
-                            term.prompt(term);
                         }
                     },
                     description: 'Prints a fake directory structure'
@@ -359,51 +356,68 @@
                         streamString += args.join(' ').replaceAll('\"', '')
                         if (final) {
                             term.writeln(streamString);
-                            term.prompt(term);
                         }
                     },
                     description: 'Prints a fake directory structure'
                 },
                 lolcat: {
                     f: (args, final) => {
-                        console.log(args, final, streamString)
-                        if (args.length > 0 && streamString.length == 0) {
+                        if (args.includes('--help') == false && args.includes('-h') == false && args.length > 0 && streamString.length == 0) {
                             streamString = args.join(' ').replaceAll('\"', '');
                             if (final) {
                                 term.writeln(streamString);
                                 term.prompt(term);
                             }
-                        } else if (final){
-                            lines = streamString.split('\n\r')
-                            lines.forEach(function(line) {
+                        } else if (final) {
+                            var curY = term._buffer._normal.cursorY + term._buffer._normal.baseY + 1;
+                            lines = streamString.split('\n');
+                            if (args.includes('--help') || args.includes('-h')) {
+                                lines.push(commands.lolcat.help);
+                            }
+                            for (let index = 0; index < lines.length; index++) {
+                                let line = lines[index];
                                 term.writeln(line);
-                                term.refresh(0, term._buffer._normal.cursorY + term._buffer._normal.baseY+lines.length);
-                                console.log(term);
-                                for (let i = 0; i < line.length-1; i++) { 
-                                    setNormalStyle(i, term._buffer._normal.cursorY + term._buffer._normal._buffer.ybase, 0x300ff00)
-                                    term.refresh(0, term._buffer._normal.cursorY + term._buffer._normal.baseY+lines.length);
+                            }
+                            var seed = Math.floor(Math.random() * 8196);
+                            setTimeout(function (args) {
+                                for (let y = curY; y < term._buffer._normal.cursorY + term._buffer._normal.baseY; y++) {
+                                    for (let i = 0; i < term.cols; i++) {
+                                        setStyle(i, y, 0x3000000 | getRainbowColor(0.3, seed + y - curY + i / 8));
+                                    }
                                 }
-                                
-                            });
+                            }, 0);
                             term.refresh(0, term.rows - 1);
-                            term.prompt(term);
                         }
-                        
+
                     },
-                    description: 'Prints a fake directory structure'
+                    description: 'Rainbow color text',
+                    help: [
+                        'Usage: lolcat [STRING]...',
+                        '',
+                        'lolcat is a cli tool to render text with rainbow color',
+                        '',
+                        'Examples:',
+                        '  lolcat "something"\t Show rainbow color text',
+                        '  help |lolcat "\t Show rainbow color text for help',
+                    ].join('\n\r')
                 },
                 clear: {
                     f: (args, final) => {
                         streamString = "";
                         if (final) {
                             term.reset();
-                            term.prompt(term);
                         }
                     },
                     description: 'Clear the screen'
                 },
                 charain: {
-                    f: (args, final) => { startGame('charain', args); },
+                    f: (args, final) => {
+                        if (args.includes('--help') || args.includes('-h')) {
+                            term.writeln(commands.charain.help);
+                            return;
+                        }
+                        startGame('charain', args);
+                    },
                     description: 'Start charain game',
                     help: [
                         'Usage: charain [OPTION]...',
@@ -417,12 +431,18 @@
                         '  Q\tQuit the game',
                         '  SPACE\tRestart the game',
                         '  ENTER\tRandom the game\'s theme',
-                        '  ↑↓←→\tControl the Direction',
+                        '  ↑↓←→\tControl the Direction, also use [W, S, A, D] keys',
                     ].join('\n\r')
 
                 },
                 matrix: {
-                    f: (args, final) => { startGame('matrix', args); },
+                    f: (args, final) => {
+                        if (args.includes('--help') || args.includes('-h')) {
+                            term.writeln(commands.matrix.help);
+                            return;
+                        }
+                        startGame('matrix', args);
+                    },
                     description: 'Start matrix game',
                     help: [
                         'Usage: matrix [OPTION]...',
@@ -437,7 +457,7 @@
                         '  Q\tQuit the game',
                         '  SPACE\tRestart the game',
                         '  ENTER\tRandom the game\'s theme',
-                        '  ↑↓←→\tControl the Direction',
+                        '  ↑↓←→\tControl the Direction, also use [W, S, A, D] keys',
                     ].join('\n\r')
                 },
                 loadtest: {
@@ -481,25 +501,24 @@
                     term.writeln('');
                     cmdX = term._buffer._normal.cursorX;
                     cmdY = term._buffer._normal.cursorY;
-                    console.log(cmdX, cmdY);
-                    console.log(term);
-                }
-                for (let i = 0; i < cmds.length; i++) {
-                    let cmd  = cmds[i]
-                    const fullArgs =  cmd.trim().split(' ')
-                    const command = fullArgs[0];
-                    const args = fullArgs.slice(1, fullArgs.length);
-                    console.log(command)
-                    if (command.length > 0) {
-                        if (command in commands) {
-                            commands[command].f(args, cmds.length==(i+1));
-                            continue;
+
+                    for (let i = 0; i < cmds.length; i++) {
+                        let cmd = cmds[i]
+                        const fullArgs = cmd.trim().split(' ')
+                        const command = fullArgs[0];
+                        const args = fullArgs.slice(1, fullArgs.length);
+
+                        if (command.length > 0) {
+                            if (command in commands) {
+                                commands[command].f(args, cmds.length == (i + 1));
+                                continue;
+                            }
+                            term.writeln(`${command}: command not found`);
                         }
-                        term.writeln(`${command}: command not found`);
                     }
                 }
                 streamString = "";
-                prompt(term);
+                term.prompt();
             }
 
             function initConsole() {
@@ -527,37 +546,41 @@
                 ].join('\n\r'));
 
                 term.writeln('Below is a simple emulated backend, try running `charain`, `matrix` or `help`.');
-                prompt(term);
-                console.log(term);
+                term.prompt();
             }
 
             function initGameConsole() {
                 initConsole();
             }
 
+            $(document).ready(function () {
+                $("#_selectgame").change(function (e) {
+                    startGame(e.target.value, ['--auto=true']); 
+                });
+            });
+
             function startGame(name, args) {
                 gameName = name;
                 gameArgs = args;
                 var pramas = {};
-                console.log(gameArgs)
-                gameArgs.forEach(function(key) {
+                gameArgs.forEach(function (key) {
                     var kv = key.split('=');
                     if (kv.length == 2) {
                         pramas[kv[0].replace("--", "")] = kv[1];
                     }
-                    
-                });
 
-                console.log(pramas)
+                });
 
                 isGameStart = true;
                 term.write('\x1b[?25l')
                 switch (name) {
                     case 'charain':
                         initGameConsole();
+                        autoFlag = pramas.auto ? Boolean(pramas.auto) : false;
                         gameKey = VK_DOWN;
                         break;
                     case 'matrix':
+                        matrixDirection = "DOWN";
                         initGameConsole();
                         matrixDropInfoList = [];
                         matrixTheme = pramas.theme ? pramas.theme : "green";
@@ -577,41 +600,83 @@
                 const green = Math.round(Math.sin(freq * i + 2 * Math.PI / 3) * 127 + 128);
                 const blue = Math.round(Math.sin(freq * i + 4 * Math.PI / 3) * 127 + 128);
 
-                return (red << 18) | (green << 8) | blue
+                return (red << 16) | (green << 8) | (blue << 0)
             }
 
             function getMatrixStyleList(theme, fix) {
+                var freq = 0.06;
+                var styleList = [];
                 switch (theme) {
                     case "green":
                     case "":
-                        return [0xbffffff, 0xb00ff00, 0x300ff00, 0x300dd00, 0x300cc00, 0x300aa00, 0x3008800, 0x3006600, 0x3004400, 0x3224422, 0x3002200, 0x200ff00, 0x9000000, 0] 
+                        styleList = [0xbffffff, 0xb00ff00, 0x300ff00, 0x300dd00, 0x300cc00, 0x300aa00, 0x3008800, 0x3006600, 0x3004400, 0x3224422, 0x3002200, 0x200ff00, 0x9000000, 0] 
+                        break;
                     case "blue":
-                        return [0xbffffff, 0xb0000ff, 0x30000ff, 0x30000dd, 0x30000cc, 0x30000aa, 0x3000088, 0x3000066, 0x3000044, 0x3222244, 0x3004400, 0x2004400, 0x9000000, 0] 
+                        styleList = [0xbffffff, 0xb0000ff, 0x30000ff, 0x30000dd, 0x30000cc, 0x30000aa, 0x3000088, 0x3000066, 0x3000044, 0x3222244, 0x3004400, 0x2004400, 0x9000000, 0] 
+                        break;
                     case "red":
-                        return [0xbffffff, 0xbff0000, 0x3ff0000, 0x3dd0000, 0x3cc0000, 0x3aa0000, 0x3880000, 0x3660000, 0x3440000, 0x3442222, 0x3220000, 0x2ff0000, 0x9000000, 0] 
+                        styleList = [0xbffaaaa, 0xbff2222, 0x3ff2222, 0x3dd2222, 0x3cc2222, 0x3aa2222, 0x3882222, 0x3662222, 0x3442222, 0x3442222, 0x3220000, 0x2ff0000, 0x9000000, 0] 
+                        break;
                     case "black":
-                        return [0xb000000, 0x3000000, 0x3020202, 0x3040404, 0x3060606, 0x3080808, 0x30a0a0a, 0x30f0f0f, 0x3222222, 0x2111100, 0x9000000, 0, 0, 0] 
+                        styleList = [0xb000000, 0x3000000, 0x3020202, 0x3040404, 0x3060606, 0x3080808, 0x30a0a0a, 0x30f0f0f, 0x3222222, 0x2111100, 0x9000000, 0, 0, 0] 
+                        break;
                     case "white":
-                        return [0xbffffff, 0x3ffffff, 0x3dddddd, 0x3cccccc, 0x3aaaaaa, 0x3888888, 0x3666666, 0x3444444, 0x3222222, 0x2111100, 0x9000000, 0, 0, 0] 
+                        styleList = [0xbffffff, 0x3ffffff, 0x3dddddd, 0x3cccccc, 0x3aaaaaa, 0x3888888, 0x3666666, 0x3444444, 0x3222222, 0x2111100, 0x9000000, 0, 0, 0] 
+                        break;
                     case "yellow":
-                        return [0xbffffff, 0xbffff00, 0x3ffff00, 0x3cccc00, 0x3aaaa00, 0x3888800, 0x3666600, 0x3444400, 0x3444422, 0x3222200, 0x200ff00, 0x9000000, 0, 0] 
-                    case "rainbow":
+                        styleList = [0xbffffff, 0xbffff00, 0x3ffff00, 0x3cccc00, 0x3aaaa00, 0x3888800, 0x3666600, 0x3444400, 0x3444422, 0x3222200, 0x200ff00, 0x9000000, 0, 0] 
+                        break;
                     case "color":
+                        freq = 0.3;
+                    case "rainbow":
                     default:
                         var styleList = [];
                         for (let i = 0; i < 13; i++) {
-                            styleList.push(0x3000000 | getRainbowColor(0.3, i + fix))
+                            styleList.push(0x3000000 | getRainbowColor(freq, i + fix));
                         }
 
-                        styleList.push(0)
-                        return styleList;
+                        styleList.push(0);
+                        break;
                 }
+
+                return styleList;
             }
 
             function initMatrix() {
                 matrixDropInfoList = [];
-                for (let i = 0; i < term.cols; i++) {
-                    matrixDropInfoList.push(new DropInfo(0, 0));
+                switch (matrixDirection) {
+                    case "DOWN":
+                        for (let i = 0; i < term.cols; i++) {
+                            matrixDropInfoList.push(new DropInfo(0, 0));
+                        }
+                        matrixCols = term.cols;
+                        matrixRows = term.rows;
+                        matrixFlag = 1;
+                        break;
+                    case "UP":
+                        for (let i = 0; i < term.cols; i++) {
+                            matrixDropInfoList.push(new DropInfo(term.rows, 0));
+                        }
+                        matrixCols = term.cols;
+                        matrixRows = term.rows;
+                        matrixFlag = -1;
+                        break;
+                    case "RIGHT":
+                        for (let i = 0; i < term.rows; i++) {
+                            matrixDropInfoList.push(new DropInfo(0, 0));
+                        }
+                        matrixCols = term.rows;
+                        matrixRows = term.cols;
+                        matrixFlag = 1;
+                        break;
+                    case "LEFT":
+                        for (let i = 0; i < term.rows; i++) {
+                            matrixDropInfoList.push(new DropInfo(term.cols, 0));
+                        }
+                        matrixCols = term.rows;
+                        matrixRows = term.cols;
+                        matrixFlag = -1;
+                        break;
                 }
             }
 
@@ -623,25 +688,56 @@
                 const matrixThemes = ["green", "black", "white", "yellow", "rainbow", "color", "red", "blue"]
 
                 switch (gameKey) {
+                    case "q":
+                        matrixDirection = "DOWN";
+                        break;
                     case ' ':
-                        initMatrix();
                         initGameConsole();
+                        initMatrix();
+                        gameKey = null;
+                        break;
+                    case VK_DOWN:
+                    case 's':
+                        matrixDirection = "DOWN";
+                        initGameConsole();
+                        initMatrix();
+                        gameKey = null;
+                        break;
+                    case VK_UP:
+                    case 'w':
+                        matrixDirection = "UP";
+                        initGameConsole();
+                        initMatrix();
+                        gameKey = null;
+                        break;
+                    case VK_RIGHT:
+                    case 'd':
+                        matrixDirection = "RIGHT";
+                        initGameConsole();
+                        initMatrix();
+                        gameKey = null;
+                        break;
+                    case 'a':
+                    case VK_LEFT:
+                        matrixDirection = "LEFT";
+                        initGameConsole();
+                        initMatrix();
                         gameKey = null;
                         break;
                     case ENTER:
-                        matrixTheme = matrixThemes[Math.floor((Math.random()+1)*(matrixThemes.length))%matrixThemes.length]
-                        gameKey = null;   
-                        break;   
+                        matrixTheme = matrixThemes[Math.round((Math.random() + 1) * (matrixThemes.length)) % matrixThemes.length]
+                        gameKey = null;
+                        break;
                 }
 
-                var  delayFix = 0;
+                var delayFix = 0;
                 switch (matrixTheme) {
-                    case "color":
-                        delayFix = Math.floor(Date.now() / 3000) % 17;
+                    case "random":
+                        matrixTheme = matrixThemes[Math.round((Math.random() + 1) * (matrixThemes.length)) % matrixThemes.length]
                         break;
                 }
                 var styleList = getMatrixStyleList(matrixTheme, delayFix)
-   
+
                 if (matrixDropInfoList.length == 0) {
                     initMatrix();
                 }
@@ -650,35 +746,49 @@
 
                     switch (matrixTheme) {
                         case "rainbow":
-                            delayFix = Math.floor(Date.now() / 3000) % 17;
-                            styleList = getMatrixStyleList(matrixTheme, delayFix+x);
+                        case "color":
+                            delayFix = Math.round(Date.now() / 200);
+                            styleList = getMatrixStyleList(matrixTheme, delayFix + x);
                             break;
                     }
 
-                    if (y > (term.rows + styleList.length + Math.random() * 500)) {
-                        dropInfo.ypos = 0;
+                    var randomSelect = Math.random() * 500;
+                    if (y > (matrixRows + styleList.length + randomSelect) || y < -styleList.length - randomSelect) {
+                        dropInfo.ypos = matrixFlag == -1 ? matrixRows - 1 : 0;
                     }
                     else {
-                        dropInfo.ypos = y + 1;
+                        dropInfo.ypos = y + 1 * matrixFlag;
                     }
 
-                    if (x < term.cols && y < term.rows) {
-                        var char = [Math.floor(Math.random() * 94) + 33, styleList[dropInfo.style], 0]
-                        setChar(x, y, char, undefined);
+                    if (x < matrixCols && y < matrixRows && x >= 0 && y >= 0) {
+                        var char = [Math.round(Math.random() * 94) + 33, styleList[dropInfo.style], 0]
 
+                        if (matrixDirection == "LEFT" || matrixDirection == "RIGHT") {
+                            setChar(y, x, char, undefined);
+                        } else {
+                            setChar(x, y, char, undefined);
+                        }
                     }
 
-                    if (x < term.cols && y < term.rows + styleList.length) {
+                    if (x < matrixCols && y < matrixRows + styleList.length && y > -styleList.length) {
                         styleList.forEach((style, ind) => {
-                            var tmp_y = y - ind;
-                            if (tmp_y < 0 || tmp_y >= term.rows) {
+                            var tmp_y = y - ind * matrixFlag;
+                            if (tmp_y < 0 || tmp_y >= matrixRows) {
                                 return;
                             }
 
-                            if (style == 0 || tmp_y == term.rows) {
-                                setChar(x, tmp_y, [32, 0, 0], undefined);
+                            if (style == 0) {
+                                if (matrixDirection == "LEFT" || matrixDirection == "RIGHT") {
+                                    setChar(tmp_y, x, [32, 0, 0], undefined);
+                                } else {
+                                    setChar(x, tmp_y, [32, 0, 0], undefined);
+                                }
                             } else {
-                                setStyle(x, tmp_y, style);
+                                if (matrixDirection == "LEFT" || matrixDirection == "RIGHT") {
+                                    setStyle(tmp_y, x, style);
+                                } else {
+                                    setStyle(x, tmp_y, style);
+                                }
                             }
                         });
                     }
@@ -686,7 +796,6 @@
 
                 term.refresh(0, term.rows - 1);
             }
-
 
             function onGameData(e) {
                 switch (e) {
@@ -769,19 +878,17 @@
                 if (!isGameStart || gameName != "charain") {
                     return;
                 }
-                
                 const keys = [VK_LEFT, VK_RIGHT, VK_DOWN, VK_UP];
                 if (keys.includes(consoleKey)) {
                     autoFlag = false;
                 }
 
                 if (autoFlag && !changed) {
-                    let index = Math.floor((Math.random() * keys.length));
+                    let index = Math.round((Math.random() * keys.length));
                     gameKey = keys[index];
                 }
                 changed = false;
 
-                
                 for (let k = 0; k < term.rows; k++) {
                     let j = term.rows - 1 - k;
                     for (let i = 0; i < term.cols; i++) {
@@ -809,15 +916,19 @@
                                 autoFlag = !autoFlag;
                                 break;
                             case VK_UP:
+                            case 'w':
                                 ay = j - Math.round(Math.random() * 1);
                                 break;
                             case VK_LEFT:
+                            case 'a':
                                 ax = i - Math.round(Math.random() * 1);
                                 break;
                             case VK_RIGHT:
+                            case 'd':
                                 ax = i + Math.round(Math.random() * 1);
                                 break;
                             default:
+                            case 's':
                                 ay = j + Math.round(Math.random() * 1);
                                 break;
                         }
@@ -949,14 +1060,18 @@
         <div class="demo">
             <div class="inner"></div>
         </div>
-        <p><kbd>charain</kbd>：Start，<kbd>Q</kbd>：Quit，<kbd>SPACE</kbd>：Reinit，<kbd>ENTER</kbd>：Random，<kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>：Control the Direction</p>
+        <p><kbd><select id="_selectgame">
+                    <option value="charain" selected>charain</option>
+                    <option value="matrix">matrix</option>
+                </select></kbd>：Start，<kbd>Q</kbd>：Quit，<kbd>SPACE</kbd>：Reinit，<kbd>ENTER</kbd>：Random，<kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>：Control
+            the Direction</p>
     </div>
 </body>
 
 </html></div>
 </div></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.103.1">Hugo</a> | Theme - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.104.0">Hugo</a> | Theme - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
                 </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span></div>
         </div>
     </footer></div>
