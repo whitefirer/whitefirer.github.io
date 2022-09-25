@@ -167,7 +167,6 @@
             const VK_RIGHT = '\x1b[C';
             const VK_LEFT = '\x1b[D';
 
-
             var isBaseTheme = true;
             var isGameStart = false;
             var gameName = "";
@@ -185,6 +184,13 @@
             var streamString = "";
             var cmdX = 0;
             var cmdY = 0;
+            var welcomeTips = [
+                [..."Welcome to my blog"],
+                [..."Go big or go home"],
+                [..."Cloud Native and Architecture Design"],
+                [..."人 生 苦 短 ， 何 不 用 python， 星 汉 灿 烂 ， 道 阻 且 长 go"],
+                [..."难 度 即 价 值 所 在"],
+            ]
 
             var term = new window.Terminal({
                 fontFamily: '"Cascadia Code", Menlo, monospace',
@@ -271,7 +277,6 @@
                         case ENTER: 
                             runCommand(term, command);
                             command = '';
-                            streamString = '';
                             break;
                         case DEL: 
                             
@@ -398,6 +403,7 @@
                         '',
                         'Examples:',
                         '  lolcat "something"\t Show rainbow color text',
+                        '  lolcat --help\t Show rainbow color text of self help',
                         '  help |lolcat "\t Show rainbow color text for help',
                     ].join('\n\r')
                 },
@@ -425,7 +431,8 @@
                         'Matrix is a game that just for fun. You can start it with theme option, and also you can play it with keys.',
                         '',
                         'Examples:',
-                        '  charain\t Show charain game',
+                        '  charain\t Start charain game',
+                        '  charain --auto=true\t Start charain game with auto play',
                         '',
                         'Keys:',
                         '  Q\tQuit the game',
@@ -451,7 +458,8 @@
                         '  --theme=<s>\tThemes: green, blue, red, white, black, rainbow, color, random',
                         '',
                         'Examples:',
-                        '  matrix --theme=rainbow\t Show rainbow color matrix game',
+                        '  matrix --theme=rainbow\tStart matrix game with rainbow color theme',
+                        '  matrix --direction=DOWN...\tStart matrix game with direction of [DOWN, UP, LEFT, RIGHT]',
                         '',
                         'Keys:',
                         '  Q\tQuit the game',
@@ -518,6 +526,9 @@
                     }
                 }
                 streamString = "";
+                if (isGameStart) {
+                    return;
+                }
                 term.prompt();
             }
 
@@ -555,7 +566,39 @@
 
             $(document).ready(function () {
                 $("#_selectgame").change(function (e) {
-                    startGame(e.target.value, ['--auto=true']); 
+                    runCommand(term, e.target.value); 
+                });
+
+                $('#_start').click(function (e) {
+                    runCommand(term, $("#_selectgame")[0].selectedOptions[0].value); 
+                });
+
+                $('#_quite').click(function (e) {
+                    onGameData('q');
+                });
+
+                $('#_reinit').click(function (e) {
+                    onGameData(' ');
+                });
+
+                $('#_random').click(function (e) {
+                    onGameData(ENTER);
+                });
+
+                $('#_UP').click(function (e) {
+                    onGameData(VK_UP);
+                });
+
+                $('#_DOWN').click(function (e) {
+                    onGameData(VK_DOWN);
+                });
+
+                $('#_LEFT').click(function (e) {
+                    onGameData(VK_LEFT);
+                });
+
+                $('#_RIGHT').click(function (e) {
+                    onGameData(VK_RIGHT);
                 });
             });
 
@@ -568,9 +611,9 @@
                     if (kv.length == 2) {
                         pramas[kv[0].replace("--", "")] = kv[1];
                     }
-
                 });
 
+                console.log(pramas);
                 isGameStart = true;
                 term.write('\x1b[?25l')
                 switch (name) {
@@ -580,7 +623,7 @@
                         gameKey = VK_DOWN;
                         break;
                     case 'matrix':
-                        matrixDirection = "DOWN";
+                        matrixDirection = pramas.direction ? pramas.direction : "DOWN";
                         initGameConsole();
                         matrixDropInfoList = [];
                         matrixTheme = pramas.theme ? pramas.theme : "green";
@@ -589,8 +632,8 @@
             }
 
             class DropInfo {
-                constructor(ypos, style) {
-                    this.ypos = ypos;
+                constructor(pos, style) {
+                    this.pos = pos;
                     this.style = style;
                 }
             }
@@ -612,7 +655,7 @@
                         styleList = [0xbffffff, 0xb00ff00, 0x300ff00, 0x300dd00, 0x300cc00, 0x300aa00, 0x3008800, 0x3006600, 0x3004400, 0x3224422, 0x3002200, 0x200ff00, 0x9000000, 0] 
                         break;
                     case "blue":
-                        styleList = [0xbffffff, 0xb0000ff, 0x30000ff, 0x30000dd, 0x30000cc, 0x30000aa, 0x3000088, 0x3000066, 0x3000044, 0x3222244, 0x3004400, 0x2004400, 0x9000000, 0] 
+                        styleList = [0xbffffff, 0xb0000ff, 0x30000ff, 0x30000dd, 0x30000cc, 0x30000aa, 0x3000088, 0x3000066, 0x3000044, 0x3222244, 0x3000022, 0x2000000, 0x9000000, 0] 
                         break;
                     case "red":
                         styleList = [0xbffaaaa, 0xbff2222, 0x3ff2222, 0x3dd2222, 0x3cc2222, 0x3aa2222, 0x3882222, 0x3662222, 0x3442222, 0x3442222, 0x3220000, 0x2ff0000, 0x9000000, 0] 
@@ -627,11 +670,19 @@
                         styleList = [0xbffffff, 0xbffff00, 0x3ffff00, 0x3cccc00, 0x3aaaa00, 0x3888800, 0x3666600, 0x3444400, 0x3444422, 0x3222200, 0x200ff00, 0x9000000, 0, 0] 
                         break;
                     case "color":
+                    case "welcome":
                         freq = 0.3;
                     case "rainbow":
                     default:
                         var styleList = [];
-                        for (let i = 0; i < 13; i++) {
+                        var lens = 13;
+                        if (theme == "welcome" && (matrixDirection == "RIGHT" || matrixDirection == "LEFT")) {
+                            lens = 60;
+                            if (matrixDirection == "RIGHT" || matrixDirection == "DOWN") {
+                                freq = 0.06;
+                            }
+                        }
+                        for (let i = 0; i < lens; i++) {
                             styleList.push(0x3000000 | getRainbowColor(freq, i + fix));
                         }
 
@@ -662,16 +713,28 @@
                         matrixFlag = -1;
                         break;
                     case "RIGHT":
-                        for (let i = 0; i < term.rows; i++) {
-                            matrixDropInfoList.push(new DropInfo(0, 0));
+                        if (matrixTheme == "welcome") {
+                            for (let i = 0; i < term.rows; i++) {
+                                matrixDropInfoList.push(new DropInfo(Math.round(Math.random() * 30), 0));
+                            }
+                        } else {
+                            for (let i = 0; i < term.rows; i++) {
+                                matrixDropInfoList.push(new DropInfo(0, 0));
+                            }
                         }
                         matrixCols = term.rows;
                         matrixRows = term.cols;
                         matrixFlag = 1;
                         break;
                     case "LEFT":
-                        for (let i = 0; i < term.rows; i++) {
-                            matrixDropInfoList.push(new DropInfo(term.cols, 0));
+                        if (matrixTheme == "welcome") {
+                            for (let i = 0; i < term.rows; i++) {
+                                matrixDropInfoList.push(new DropInfo(term.cols - Math.round(Math.random() * 30), 0));
+                            }
+                        } else {
+                            for (let i = 0; i < term.rows; i++) {
+                                matrixDropInfoList.push(new DropInfo(term.cols, 0));
+                            }
                         }
                         matrixCols = term.rows;
                         matrixRows = term.cols;
@@ -725,7 +788,13 @@
                         gameKey = null;
                         break;
                     case ENTER:
-                        matrixTheme = matrixThemes[Math.round((Math.random() + 1) * (matrixThemes.length)) % matrixThemes.length]
+                        if (matrixTheme == 'welcome') {
+                            matrixDirection = ['UP', 'DOWN', 'LEFT', 'RIGHT'][Math.floor(Math.random()*4)%4];
+                            initGameConsole();
+                            initMatrix();
+                        } else {
+                            matrixTheme = matrixThemes[Math.round((Math.random() + 1) * (matrixThemes.length)) % matrixThemes.length]
+                        }
                         gameKey = null;
                         break;
                 }
@@ -741,36 +810,36 @@
                 if (matrixDropInfoList.length == 0) {
                     initMatrix();
                 }
+
                 matrixDropInfoList.forEach((dropInfo, x) => {
-                    var y = dropInfo.ypos;
+                    var y = dropInfo.pos;
 
                     switch (matrixTheme) {
                         case "rainbow":
                         case "color":
+                        case "welcome":
                             delayFix = Math.round(Date.now() / 200);
                             styleList = getMatrixStyleList(matrixTheme, delayFix + x);
                             break;
                     }
 
                     var randomSelect = Math.random() * 500;
+                    if ((matrixDirection == "UP" || matrixDirection == "DOWN") && matrixTheme == "welcome") {
+                        randomSelect = 0;
+                    }
                     if (y > (matrixRows + styleList.length + randomSelect) || y < -styleList.length - randomSelect) {
-                        dropInfo.ypos = matrixFlag == -1 ? matrixRows - 1 : 0;
+                        dropInfo.pos = matrixFlag == -1 ? matrixRows - 1 : 0;
                     }
                     else {
-                        dropInfo.ypos = y + 1 * matrixFlag;
-                    }
-
-                    if (x < matrixCols && y < matrixRows && x >= 0 && y >= 0) {
-                        var char = [Math.round(Math.random() * 94) + 33, styleList[dropInfo.style], 0]
-
-                        if (matrixDirection == "LEFT" || matrixDirection == "RIGHT") {
-                            setChar(y, x, char, undefined);
-                        } else {
-                            setChar(x, y, char, undefined);
-                        }
+                        dropInfo.pos = y + 1 * matrixFlag;
                     }
 
                     if (x < matrixCols && y < matrixRows + styleList.length && y > -styleList.length) {
+                        let tip = welcomeTips[x % welcomeTips.length];
+                        if (matrixDirection == "RIGHT") {
+                            tip = [...tip].reverse();
+                        }
+
                         styleList.forEach((style, ind) => {
                             var tmp_y = y - ind * matrixFlag;
                             if (tmp_y < 0 || tmp_y >= matrixRows) {
@@ -780,11 +849,24 @@
                             if (style == 0) {
                                 if (matrixDirection == "LEFT" || matrixDirection == "RIGHT") {
                                     setChar(tmp_y, x, [32, 0, 0], undefined);
-                                } else {
+                                } else if (matrixTheme != "welcome") {
                                     setChar(x, tmp_y, [32, 0, 0], undefined);
                                 }
                             } else {
-                                if (matrixDirection == "LEFT" || matrixDirection == "RIGHT") {
+                                if (x < matrixCols && y < matrixRows && x >= 0 && y >= 0) {
+                                    var char = [Math.round(Math.random() * 94) + 33, styleList[dropInfo.style], 0]
+                                    if (matrixTheme != "welcome") {
+                                        if (matrixDirection == "RIGHT" || matrixDirection == "LEFT") {
+                                            setChar(y, x, char, undefined);
+                                        } else {
+                                            setChar(x, y, char, undefined);
+                                        }
+                                    }
+                                }
+
+                                if ((matrixDirection == "RIGHT" || matrixDirection == "LEFT") && matrixTheme == "welcome") {
+                                    setChar(tmp_y, x, [tip[ind] ? tip[ind].charCodeAt() : 32, style, 0], undefined);
+                                } else if (matrixDirection == "RIGHT" || matrixDirection == "LEFT") {
                                     setStyle(tmp_y, x, style);
                                 } else {
                                     setStyle(x, tmp_y, style);
@@ -1061,10 +1143,22 @@
             <div class="inner"></div>
         </div>
         <p><kbd><select id="_selectgame">
-                    <option value="charain" selected>charain</option>
+                    <option value="charain --auto=true" selected>charain</option>
                     <option value="matrix">matrix</option>
-                </select></kbd>：Start，<kbd>Q</kbd>：Quit，<kbd>SPACE</kbd>：Reinit，<kbd>ENTER</kbd>：Random，<kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>：Control
-            the Direction</p>
+                    <option value="matrix --theme=rainbow --direction=DOWN">rainbow</option>
+                    <option value="matrix --theme=welcome --direction=LEFT">welcome</option>
+                    <option value="lolcat --help">lolcat</option>
+                </select>
+            </kbd>：<a id="_start">Start</a>，
+            <kbd id="_quite">Q</kbd>：Quit，
+            <kbd id="_reinit">SPACE</kbd>：Reinit，
+            <kbd id="_random">ENTER</kbd>：Random，
+            <kbd id="_LEFT">←</kbd>
+            <kbd id="_UP">↑</kbd>
+            <kbd id="_DOWN">↓</kbd>
+            <kbd id="_RIGHT">→</kbd>：Control
+            the Direction
+        </p>
     </div>
 </body>
 
