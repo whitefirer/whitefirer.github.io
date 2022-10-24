@@ -38,5 +38,13 @@
     <guid>https://whitefirer.org/posts/2022/08/28/hugo-asciinema-player/</guid>
     <description><![CDATA[Asciinema-Player是一款著名的的终端录制播放器，可用于播放asciinema录制的播放文件，经常被用来进行终端操作演示。这里也]]></description>
 </item>
+<item>
+    <title>如何使用Hugo&#43;Github&#43;Netlify搭建博客</title>
+    <link>https://whitefirer.org/posts/2022/08/13/how-to-settingup-blog-with-hugo-github-netlify/</link>
+    <pubDate>Sat, 13 Aug 2022 14:51:05 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2022/08/13/how-to-settingup-blog-with-hugo-github-netlify/</guid>
+    <description><![CDATA[背景 方案 通过配置 Github Action 来编译构建我们的网站文件并发布到 Github Pages 。 与此同时，通过 Netlify 监听 Github 仓库的变化，同步更新部署到 Netlify App 网站。 当然其中每个步骤都可以替]]></description>
+</item>
 </channel>
 </rss>

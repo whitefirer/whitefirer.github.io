@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
     <head>
-	<meta name="generator" content="Hugo 0.104.0" />
+	<meta name="generator" content="Hugo 0.104.3" />
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
@@ -557,6 +557,7 @@
                 ].join('\n\r'));
 
                 term.writeln('Below is a simple emulated backend, try running `charain`, `matrix` or `help`.');
+                term.writeln('');
                 term.prompt();
             }
 
@@ -566,11 +567,13 @@
 
             $(document).ready(function () {
                 $("#_selectgame").change(function (e) {
-                    runCommand(term, e.target.value); 
+                    term.writeln(e.target.value);
+                    runCommand(term, e.target.value);
                 });
 
                 $('#_start').click(function (e) {
-                    runCommand(term, $("#_selectgame")[0].selectedOptions[0].value); 
+                    term.writeln($("#_selectgame")[0].selectedOptions[0].value);
+                    runCommand(term, $("#_selectgame")[0].selectedOptions[0].value);
                 });
 
                 $('#_quite').click(function (e) {
@@ -1183,9 +1186,14 @@
     </h1><div class="post-meta"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2022-08-28">2022-08-28</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/hugo/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Hugo</a></span></div><div class="content">Asciinema-Player是一款著名的的终端录制播放器，可用于播放asciinema录制的播放文件，经常被用来进行终端操作演示。这里也</div><div class="post-footer">
         <a href="/posts/2022/08/28/hugo-asciinema-player/">阅读全文</a><div class="post-tags">
                 <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/hugo/">hugo</a>,&nbsp;<a href="/tags/tech/">技术</a>,&nbsp;<a href="/tags/asciinema/">asciinema</a></div></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
+        <a href="/posts/2022/08/13/how-to-settingup-blog-with-hugo-github-netlify/">如何使用Hugo+Github+Netlify搭建博客</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2022-08-13">2022-08-13</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a>&nbsp;<a href="/categories/hugo/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Hugo</a></span></div><div class="content">背景 方案 通过配置 Github Action 来编译构建我们的网站文件并发布到 Github Pages 。 与此同时，通过 Netlify 监听 Github 仓库的变化，同步更新部署到 Netlify App 网站。 当然其中每个步骤都可以替</div><div class="post-footer">
+        <a href="/posts/2022/08/13/how-to-settingup-blog-with-hugo-github-netlify/">阅读全文</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/tech/">技术</a>,&nbsp;<a href="/tags/hugo/">hugo</a>,&nbsp;<a href="/tags/github/">github</a>,&nbsp;<a href="/tags/netlify/">netlify</a></div></div>
 </article></div></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.104.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.104.3">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
                 </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span></div>
         </div>
     </footer></div>

@@ -28,5 +28,13 @@
     <guid>https://whitefirer.org/posts/2022/08/29/efficient-command-line-tools/</guid>
     <description><![CDATA[导语 工欲善其事，必先利其器。 作为技术人员，一个高效的工作环境尤为重要。下面分享下我的终端命令行下的环境和工具配置。 zsh&amp;oh-my-zsh 安装 参考：https:/]]></description>
 </item>
+<item>
+    <title>如何使用Hugo&#43;Github&#43;Netlify搭建博客</title>
+    <link>https://whitefirer.org/posts/2022/08/13/how-to-settingup-blog-with-hugo-github-netlify/</link>
+    <pubDate>Sat, 13 Aug 2022 14:51:05 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2022/08/13/how-to-settingup-blog-with-hugo-github-netlify/</guid>
+    <description><![CDATA[背景 方案 通过配置 Github Action 来编译构建我们的网站文件并发布到 Github Pages 。 与此同时，通过 Netlify 监听 Github 仓库的变化，同步更新部署到 Netlify App 网站。 当然其中每个步骤都可以替]]></description>
+</item>
 </channel>
 </rss>

@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>github - 标签 - whitefirer[PG]</title>
+        <link>https://whitefirer.org/tags/github/</link>
+        <description>github - 标签 - whitefirer[PG]</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sat, 13 Aug 2022 14:51:05 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/github/" rel="self" type="application/rss+xml" /><item>
+    <title>如何使用Hugo&#43;Github&#43;Netlify搭建博客</title>
+    <link>https://whitefirer.org/posts/2022/08/13/how-to-settingup-blog-with-hugo-github-netlify/</link>
+    <pubDate>Sat, 13 Aug 2022 14:51:05 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2022/08/13/how-to-settingup-blog-with-hugo-github-netlify/</guid>
+    <description><![CDATA[背景 方案 通过配置 Github Action 来编译构建我们的网站文件并发布到 Github Pages 。 与此同时，通过 Netlify 监听 Github 仓库的变化，同步更新部署到 Netlify App 网站。 当然其中每个步骤都可以替]]></description>
+</item>
+</channel>
+</rss>
