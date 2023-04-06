@@ -46,11 +46,11 @@
 
 #### 编程语言  
 [![Go](https://camo.githubusercontent.com/022f6a3b4276bf05a52bdcdecfa94bdc4599a9778bc4a686c6275e5e19669148/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f2d476f2d3566356635663f7374796c653d666c6174266c6f676f3d676f266c6f676f436f6c6f723d383564326533266c6162656c436f6c6f723d666666666666)](https://go.dev/)
-[![Python](https://img.shields.io/badge/-Python-5f5f5f?style=flat&logo=python&labelColor=ffffff)](https://www.python.org/)
-[![C](https://img.shields.io/badge/-C-5f5f5f?style=flat&logo=c&logoColor=4a79a5&labelColor=ffffff)](https://en.cppreference.com/w/c)
-[![C++](https://img.shields.io/badge/-CPP-5f5f5f?style=flat&logo=cplusplus&logoColor=4a79a5&labelColor=ffffff)](https://en.cppreference.com/w/cpp)
-[![CS](https://img.shields.io/badge/-CSharp-5f5f5f?style=flat&logo=csharp&logoColor=4a79a5&labelColor=ffffff)](https://docs.microsoft.com/en-us/dotnet/csharp/)
-[![Rust](https://img.shields.io/badge/-Rust-5f5f5f?style=flat&logo=rust&logoColor=000000&labelColor=ffffff)](https://www.rust-lang.org/)
+[![Python](https://camo.githubusercontent.com/8fb06b9445186b5c5dd23f8b253ff7069700a9e6a544ae8ccd28ba26d14f7321/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f2d507974686f6e2d3566356635663f7374796c653d666c6174266c6f676f3d707974686f6e266c6162656c436f6c6f723d666666666666)](https://www.python.org/)
+[![C](https://camo.githubusercontent.com/7be9abae7759accc40ab837917b9c0b479b80a187806684dd04af7805a18c2e8/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f2d432d3566356635663f7374796c653d666c6174266c6f676f3d63266c6f676f436f6c6f723d346137396135266c6162656c436f6c6f723d666666666666)](https://en.cppreference.com/w/c)
+[![C++](https://camo.githubusercontent.com/cfc5cf9fe95d9ff7eb50561c38207d201f525bbe7f51630ab4658c8c96de3272/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f2d4350502d3566356635663f7374796c653d666c6174266c6f676f3d63706c7573706c7573266c6f676f436f6c6f723d346137396135266c6162656c436f6c6f723d666666666666)](https://en.cppreference.com/w/cpp)
+[![CS](https://camo.githubusercontent.com/5c5a90b6fae971d1fc3e7486f14d852f27606fb9f50d3041e5cce917d83f6eb8/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f2d4353686172702d3566356635663f7374796c653d666c6174266c6f676f3d637368617270266c6f676f436f6c6f723d346137396135266c6162656c436f6c6f723d666666666666)](https://docs.microsoft.com/en-us/dotnet/csharp/)
+[![Rust](https://camo.githubusercontent.com/67b6b9f15576600f4dd837b3021204527b8714449ba9aebc62a7789fa0cd21ca/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f2d527573742d3566356635663f7374796c653d666c6174266c6f676f3d72757374266c6f676f436f6c6f723d303030303030266c6162656c436f6c6f723d666666666666)](https://www.rust-lang.org/)
 [![wasm](https://img.shields.io/badge/-Wasm-5f5f5f?style=flat&logo=webassembly&logoColor=4a79a5&labelColor=ffffff)](https://webassembly.org/)
 [![Nodejs](https://img.shields.io/badge/-Nodejs-5f5f5f?style=flat&logo=Node.js&labelColor=ffffff)](https://nodejs.org/en/)
 [![Terraform](https://img.shields.io/badge/-Terraform-5f5f5f?style=flat&logo=terraform&logoColor=7249b6&labelColor=ffffff)](https://www.terraform.io/language)

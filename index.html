@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
     <head>
-	<meta name="generator" content="Hugo 0.104.3" />
+	<meta name="generator" content="Hugo 0.111.3">
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
@@ -9,7 +9,6 @@
 <meta property="og:description" content="Welcome to the blog of whitefirer." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://whitefirer.org/" /><meta property="og:site_name" content="whitefirer[PG]" />
-
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="whitefirer[PG]"/>
 <meta name="twitter:description" content="Welcome to the blog of whitefirer."/>
@@ -107,10 +106,10 @@
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://unpkg.com/xterm@4.18.0/css/xterm.css" />
-    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
-        integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
+    <script src="https://cdn.staticfile.org/jquery/3.1.1/jquery.slim.min.js"></script>
     <script src="https://unpkg.com/xterm@4.18.0/lib/xterm.js"></script>
     <script src="https://unpkg.com/xterm-addon-webgl@0.12.0-beta.15/lib/xterm-addon-webgl.js"></script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.23.0/full/pyodide.js"></script>
     <script>
         $(function () {
             
@@ -199,6 +198,87 @@
             });
             term.open(document.querySelector('.demo .inner'));
 
+            var pyodide = null;
+            var stdout_codes = [];
+            function rawstdout(code) {
+                stdout_codes.push(code);
+            }
+
+            function pythonTerm() {
+                term.write('\r>>> ');
+                term.write('\x1b[!p')
+            }
+
+            async function startPyodide() {
+                term.write('Starting Python...');
+                pyodide = await loadPyodide();
+
+                pyodide.runPythonAsync(`
+                        import sys
+                        sys.version
+                    `).then(output => {
+                    term.write('\rPython ' + output + '\r\n');
+                    pythonTerm();
+                });
+
+                pyodide.setStdout({ raw: rawstdout, isatty: true });
+            }
+
+            var pythonCode = '';
+
+            function OnPythonTermOnData(e) {
+                const printable = !e.altKey && !e.ctrlKey && !e.metaKey;
+                switch (e) {
+                    case ENTER:
+                        term.writeln('');
+                        if (pythonCode.length > 0) {
+                            if (pythonCode.startsWith('exit(')) {
+                                isGameStart = false;
+                                pythonCode = '';
+                                gameKey = null;
+                                gameName = "";
+                                pyodide = null;
+                                term.prompt();
+                                return;
+                            }
+                            stdout_codes = []
+                            pyodide.runPythonAsync(pythonCode).then(output => {
+                                let result = new TextDecoder().decode(new Uint8Array(stdout_codes));
+                                if (result.length > 0) {
+                                    term.write(result.replaceAll("\n", "\r\n"));
+                                } else if (output != undefined) {
+                                    term.write(output + '\n');
+                                }
+                                pythonTerm();
+                            }).catch(err => {
+                                term.write('\x1b[01;31m' + err.message.replaceAll('\n', '\r\n') + '\x1b[0m');
+                                pythonTerm();
+                            });
+
+                        } else {
+                            pythonTerm();
+                        }
+                        pythonCode = '';
+                        break;
+                    case DEL:
+                        
+                        if (term._core.buffer.x > 4) {
+                            term.write('\b \b');
+                            if (pythonCode.length > 0) {
+                                pythonCode = pythonCode.substr(0, pythonCode.length - 1);
+                            }
+                        }
+                        break;
+                    default:
+                        if (printable) {
+                            if (e >= String.fromCharCode(0x20) && e <= String.fromCharCode(0x7E) || e >= '\u00a0') {
+                                pythonCode += e;
+                                term.write(e);
+                            }
+                        }
+                }
+            }
+
             var isWebglEnabled = false;
             try {
                 const webgl = new window.WebglAddon.WebglAddon();
@@ -263,7 +343,11 @@
                 term.onData(e => {
                     consoleKey = e;
                     if (isGameStart) {
-                        onGameData(e);
+                        if (gameName == 'python') {
+                            OnPythonTermOnData(e);
+                        } else {
+                            onGameData(e);
+                        }
                         return
                     }
                     switch (e) {
@@ -468,6 +552,31 @@
                         '  ↑↓←→\tControl the Direction, also use [W, S, A, D] keys',
                     ].join('\n\r')
                 },
+                python: {
+                    f: (args, final) => {
+                        if (args.includes('--help') || args.includes('-h')) {
+                            async function help() {
+                                term.writeln(commands.python.help);
+                            }
+                            help();
+                            return;
+                        }
+
+                        startGame('python', args);
+                    },
+                    description: 'Python (Pyodide)',
+                    help: [
+                        'Usage: python [OPTION]...',
+                        '',
+                        'Python is a  programing tool',
+                        '',
+                        'Examples:',
+                        '  python\t Start python game',
+                        '',
+                        'Keys:',
+                        '  exit()\t exit python',
+                    ].join('\n\r')
+                },
                 loadtest: {
                     f: (args, final) => {
                         let testData = [];
@@ -631,6 +740,9 @@
                         matrixDropInfoList = [];
                         matrixTheme = pramas.theme ? pramas.theme : "green";
                         break;
+                    case 'python':
+                        startPyodide();
+                        break;
                 }
             }
 
@@ -792,7 +904,7 @@
                         break;
                     case ENTER:
                         if (matrixTheme == 'welcome') {
-                            matrixDirection = ['UP', 'DOWN', 'LEFT', 'RIGHT'][Math.floor(Math.random()*4)%4];
+                            matrixDirection = ['UP', 'DOWN', 'LEFT', 'RIGHT'][Math.floor(Math.random() * 4) % 4];
                             initGameConsole();
                             initMatrix();
                         } else {
@@ -1151,6 +1263,7 @@
                     <option value="matrix --theme=rainbow --direction=DOWN">rainbow</option>
                     <option value="matrix --theme=welcome --direction=LEFT">welcome</option>
                     <option value="lolcat --help">lolcat</option>
+                    <option value="python">python</option>
                 </select>
             </kbd>：<a id="_start" style="text-shadow: 2px 1px 4px #aaaacc;font-weight: bold;">Start</a>，
             <kbd id="_quite">Q</kbd>：Quit，
@@ -1193,8 +1306,8 @@
                 <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/tech/">技术</a>,&nbsp;<a href="/tags/hugo/">hugo</a>,&nbsp;<a href="/tags/github/">github</a>,&nbsp;<a href="/tags/netlify/">netlify</a></div></div>
 </article></div></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.104.3">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
-                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span></div>
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.111.3">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span></div>
         </div>
     </footer></div>
 
