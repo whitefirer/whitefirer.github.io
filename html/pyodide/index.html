@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Pyodide in xterm.js</title>
+    <link rel="stylesheet" href="https://unpkg.com/xterm/css/xterm.css" />
+    <script src="https://unpkg.com/xterm/lib/xterm.js"></script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.23.0/full/pyodide.js"></script>
+</head>
+
+<body>
+    <div id="terminal"></div>
+    <script>
+        const ENTER = '\r';
+        const DEL = '\u007F';
+        var term = new Terminal();
+        term.open(document.getElementById('terminal'));
+        var pyodide = null;
+
+        var stdout_codes = [];
+        function rawstdout(code) {
+            stdout_codes.push(code);
+        }
+
+        async function startPyodide() {
+            term.write('Starting Python...');
+            pyodide = await loadPyodide();
+
+            pyodide.runPythonAsync(`
+                    import sys
+                    sys.version
+                `).then(output => {
+                term.write('\rPython ' + output + '\r\n');
+                term.prompt();
+            });
+
+            pyodide.setStdout({ raw: rawstdout, isatty: true });
+        }
+
+        term.prompt = () => {
+            term.write('\r\x1b[01;32m>>> ');
+        };
+        var cmd = '';
+
+        term.onData(e => {
+            const printable = !e.altKey && !e.ctrlKey && !e.metaKey;
+            switch (e) {
+                case ENTER:
+                    term.writeln('\x1b[0m');
+                    if (cmd.length > 0) {
+                        stdout_codes = []
+                        pyodide.runPythonAsync(cmd).then(output => {
+                            let result = new TextDecoder().decode(new Uint8Array(stdout_codes));
+                            if (result.length > 0) {
+                                term.write(result.replaceAll("\n", "\r\n"));
+                            } else if (output != undefined) {
+                                term.write(output + '\n');
+                            }
+                            term.prompt();
+                        }).catch(err => {
+                            term.write('\x1b[01;31m' + err.message.replaceAll('\n', '\r\n') + '\x1b[0m');
+                            term.prompt();
+                        });
+
+                    } else {
+                        term.prompt();
+                    }
+                    cmd = '';
+                    break;
+                case DEL:
+                    if (term._core.buffer.x > 4) {
+                        term.write('\b \b');
+                        if (cmd.length > 0) {
+                            cmd = cmd.substr(0, cmd.length - 1);
+                        }
+                    }
+                    break;
+                default:
+                    if (printable) {
+                        if (e >= String.fromCharCode(0x20) && e <= String.fromCharCode(0x7E) || e >= '\u00a0') {
+                            cmd += e;
+                            term.write(e);
+                        }
+                    }
+            }
+        });
+
+        startPyodide();
+    </script>
+</body>
+
+</html>

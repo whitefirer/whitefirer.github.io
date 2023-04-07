@@ -205,7 +205,7 @@
             }
 
             function pythonTerm() {
-                term.write('\r>>> ');
+                term.write('\r\x1b[01;32m>>> ');
                 term.write('\x1b[!p')
             }
 
@@ -230,7 +230,7 @@
                 const printable = !e.altKey && !e.ctrlKey && !e.metaKey;
                 switch (e) {
                     case ENTER:
-                        term.writeln('');
+                        term.writeln('\x1b[0m');
                         if (pythonCode.length > 0) {
                             if (pythonCode.startsWith('exit(')) {
                                 isGameStart = false;
@@ -666,6 +666,7 @@
                 ].join('\n\r'));
 
                 term.writeln('Below is a simple emulated backend, try running `charain`, `matrix` or `help`.');
+                term.writeln('Now you can use the \x1b[3m\x1b[1mPython\x1b[0m directly in this console!');
                 term.writeln('');
                 term.prompt();
             }
