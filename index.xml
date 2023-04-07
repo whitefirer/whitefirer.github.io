@@ -4,9 +4,17 @@
         <link>https://whitefirer.org/</link>
         <description>Welcome to the blog of whitefirer.</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Tue, 30 Aug 2022 10:33:20 &#43;0800</lastBuildDate>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Fri, 07 Apr 2023 11:04:59 &#43;0800</lastBuildDate>
             <atom:link href="https://whitefirer.org/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>如何在页面上跑一个Python终端？</title>
+    <link>https://whitefirer.org/posts/2023/04/07/how-to-run-python-in-the-web-terminal/</link>
+    <pubDate>Fri, 07 Apr 2023 11:04:59 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2023/04/07/how-to-run-python-in-the-web-terminal/</guid>
+    <description><![CDATA[细心的朋友可能已经发现我在首页终端上加上了Now you can use the Python directly in this console!这句话，是的，现在python命令已经加入了首页终端中！目前]]></description>
+</item>
+<item>
     <title>Polaris2Istio的实现和说明</title>
     <link>https://whitefirer.org/posts/2022/08/30/polaris2istio/</link>
     <pubDate>Tue, 30 Aug 2022 10:33:20 &#43;0800</pubDate>
