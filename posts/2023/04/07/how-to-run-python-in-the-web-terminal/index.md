@@ -69,8 +69,6 @@
     <style>
         #terminal {
             display: flex;
-            justify-content: center;
-            margin: 10px 0 20px;
         }
     </style>
 </head>
@@ -163,7 +161,7 @@
                                 _PY_code = """
                                 ${err.message.replaceAll('\n', '\r')}
                                 """
-                                _PY_highlighted_code = highlight(_PY_code, PythonLexer(), TerminalTrueColorFormatter(style='native'));
+                                _PY_highlighted_code = highlight(_PY_code, PythonLexer(), TerminalTrueColorFormatter(style='one-dark'));
                                 _PY_highlighted_code[:-1]
                             `).then(output => {
                                 term.write(output.replaceAll('\n', '\r\n') + '\n')
