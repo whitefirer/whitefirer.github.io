@@ -24,8 +24,8 @@
         var term = new Terminal();
         term.open(document.getElementById('terminal'));
         var pyodide = null;
-        var pythonCodeX = 0;
-        var pythonCodeY = 0;
+        pythonCodeX = 0;
+        pythonCodeY = 0;
 
         var stdout_codes = [];
         function rawstdout(code) {
@@ -39,6 +39,9 @@
 
             pyodide.runPythonAsync(`
                     import sys
+                    from pygments import highlight
+                    from pygments.lexers import PythonLexer
+                    from pygments.formatters import TerminalTrueColorFormatter
                     sys.version
                 `).then(output => {
                 term.write('\rPython ' + output + '\r\n');
@@ -55,6 +58,7 @@
         var blockFlag = "";
         var blockMap = {
             ":": "\r",
+            "\\": "\r",
             "{": "}",
             "[": "]",
             "(": ")",
@@ -74,7 +78,7 @@
                         }
                         if (blockFlag != "") {
                             if (pythonCode[pythonCode.length - 1] == blockMap[blockFlag]) {
-                                blockFlag = "";
+                                blockFlag = false;
                             } else {
                                 pythonCode += e;
                                 term.writeln("\r");
@@ -94,8 +98,18 @@
                             }
                             term.prompt();
                         }).catch(err => {
-                            term.write('\x1b[01;31m' + err.message.replaceAll('\n', '\r\n') + '\x1b[0m');
-                            term.prompt();
+                            // term.write('\x1b[01;31m' + err.message.replaceAll('\n', '\r\n') + '\x1b[0m');
+                            pythonCode = ""
+                            pyodide.runPythonAsync(`
+                                _PY_code = """
+                                ${err.message.replaceAll('\n', '\r')}
+                                """
+                                _PY_highlighted_code = highlight(_PY_code, PythonLexer(), TerminalTrueColorFormatter(style='native'));
+                                _PY_highlighted_code[:-1]
+                            `).then(output => {
+                                term.write(output.replaceAll('\n', '\r\n') + '\n')
+                                term.prompt();
+                            })
                         });
 
                     } else {
@@ -120,18 +134,15 @@
                                 pythonCodeY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
                             }
                             pythonCode += e;
+                            
                             // term.write(e);
-                            term.write(`\x1b[?25l\x1b[${pythonCodeY - term.buffer._normal.baseY};${pythonCodeX}f`)
+                            term.write(`\x1b[?25l\x1b[${pythonCodeY - term.buffer._normal.baseY};${pythonCodeX}H`)
                             pyodide.runPythonAsync(`
-                                import sys
-                                from pygments import highlight
-                                from pygments.lexers import PythonLexer
-                                from pygments.formatters import TerminalFormatter
-                                code = """
-                                ${pythonCode}
+                                _PY_code = """
+                                ${pythonCode.replaceAll("\\", "\\\\")}
                                 """
-                                highlighted_code = highlight(code, PythonLexer(), TerminalFormatter());
-                                highlighted_code[:-1]
+                                _PY_highlighted_code = highlight(_PY_code, PythonLexer(), TerminalTrueColorFormatter(style='native'));
+                                _PY_highlighted_code[:-1]
                             `).then(output => {
                                 term.write(output.replaceAll('\n', '\r\n... '))
                             })

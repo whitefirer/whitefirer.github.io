@@ -216,6 +216,9 @@
 
                 pyodide.runPythonAsync(`
                         import sys
+                        from pygments import highlight
+                        from pygments.lexers import PythonLexer
+                        from pygments.formatters import TerminalTrueColorFormatter
                         sys.version
                     `).then(output => {
                     term.write('\rPython ' + output + '\r\n');
@@ -231,6 +234,7 @@
             var blockFlag = "";
             var blockMap = {
                 ":": "\r",
+                "\\": "\r",
                 "{": "}",
                 "[": "]",
                 "(": ")",
@@ -247,6 +251,7 @@
                                 gameKey = null;
                                 gameName = "";
                                 pyodide = null;
+                                term.writeln("\r");
                                 term.prompt();
                                 return;
                         }
@@ -279,8 +284,18 @@
                             }
                             pythonTerm();
                         }).catch(err => {
-                            term.write('\x1b[01;31m' + err.message.replaceAll('\n', '\r\n') + '\x1b[0m');
-                            pythonTerm();
+                            
+                            pythonCode = ""
+                            pyodide.runPythonAsync(`
+                                _PY_code = """
+                                ${err.message.replaceAll('\n', '\r')}
+                                """
+                                _PY_highlighted_code = highlight(_PY_code, PythonLexer(), TerminalTrueColorFormatter(style='native'));
+                                _PY_highlighted_code[:-1]
+                            `).then(output => {
+                                term.write(output.replaceAll('\n', '\r\n') + '\n')
+                                pythonTerm();
+                            })
                         });
 
                     } else {
@@ -306,17 +321,13 @@
                             }
                             pythonCode += e;
                             
-                            term.write(`\x1b[?25l\x1b[${pythonCodeY - term.buffer._normal.baseY};${pythonCodeX}f`)
+                            term.write(`\x1b[?25l\x1b[${pythonCodeY - term.buffer._normal.baseY};${pythonCodeX}H`)
                             pyodide.runPythonAsync(`
-                                import sys
-                                from pygments import highlight
-                                from pygments.lexers import PythonLexer
-                                from pygments.formatters import TerminalFormatter
-                                code = """
-                                ${pythonCode}
+                                _PY_code = """
+                                ${pythonCode.replaceAll("\\", "\\\\")}
                                 """
-                                highlighted_code = highlight(code, PythonLexer(), TerminalFormatter());
-                                highlighted_code[:-1]
+                                _PY_highlighted_code = highlight(_PY_code, PythonLexer(), TerminalTrueColorFormatter(style='native'));
+                                _PY_highlighted_code[:-1]
                             `).then(output => {
                                 term.write(output.replaceAll('\n', '\r\n... '))
                             })

@@ -26,7 +26,7 @@
 答案依然是：有！
 {{< /admonition >}}
 
-盘点最近几的技术潮流，我们可以注意到一项技术，那就是webassembly(简称wasm)，完全可以用wasm在页面上跑python代码嘛，还记得之前大火的在web页面执行python代码的项目[pyscript](https://pyscript.net/)吗？它就是基于wasm的接口项目[pyodide](https://pyodide.org/en/stable/index.html)实现的.
+盘点最近几的技术潮流，我们可以注意到一项技术，那就是webassembly(简称wasm)，完全可以用wasm在页面上跑python代码嘛，还记得之前大火的在web页面执行python代码的项目[pyscript](https://pyscript.net/)吗？它就是基于wasm的接口项目[pyodide](https://pyodide.org/en/stable/index.html)实现的。
 
 使用也很简单，调用`pyodide.runPython`就行：
 ```html
@@ -54,8 +54,8 @@
 ```
 可以点击前面的链接跳转到它的官方文档看看有什么其它用法，总之挺强大的，支持加载包括numpy的各种库。
 
-以下是我基于pyodide写的一个在页面上模拟python终端的demo代码：
-
+#### 演示代码  
+以下是我基于pyodide写的一个在页面上模拟python终端的demo代码：  
 ```html
 <!DOCTYPE html>
 <html>
@@ -83,8 +83,8 @@
         var term = new Terminal();
         term.open(document.getElementById('terminal'));
         var pyodide = null;
-        var pythonCodeX = 0;
-        var pythonCodeY = 0;
+        pythonCodeX = 0;
+        pythonCodeY = 0;
 
         var stdout_codes = [];
         function rawstdout(code) {
@@ -98,6 +98,9 @@
 
             pyodide.runPythonAsync(`
                     import sys
+                    from pygments import highlight
+                    from pygments.lexers import PythonLexer
+                    from pygments.formatters import TerminalTrueColorFormatter
                     sys.version
                 `).then(output => {
                 term.write('\rPython ' + output + '\r\n');
@@ -114,6 +117,7 @@
         var blockFlag = "";
         var blockMap = {
             ":": "\r",
+            "\\": "\r",
             "{": "}",
             "[": "]",
             "(": ")",
@@ -133,7 +137,7 @@
                         }
                         if (blockFlag != "") {
                             if (pythonCode[pythonCode.length - 1] == blockMap[blockFlag]) {
-                                blockFlag = "";
+                                blockFlag = false;
                             } else {
                                 pythonCode += e;
                                 term.writeln("\r");
@@ -153,8 +157,18 @@
                             }
                             term.prompt();
                         }).catch(err => {
-                            term.write('\x1b[01;31m' + err.message.replaceAll('\n', '\r\n') + '\x1b[0m');
-                            term.prompt();
+                            // term.write('\x1b[01;31m' + err.message.replaceAll('\n', '\r\n') + '\x1b[0m');
+                            pythonCode = ""
+                            pyodide.runPythonAsync(`
+                                _PY_code = """
+                                ${err.message.replaceAll('\n', '\r')}
+                                """
+                                _PY_highlighted_code = highlight(_PY_code, PythonLexer(), TerminalTrueColorFormatter(style='native'));
+                                _PY_highlighted_code[:-1]
+                            `).then(output => {
+                                term.write(output.replaceAll('\n', '\r\n') + '\n')
+                                term.prompt();
+                            })
                         });
 
                     } else {
@@ -179,18 +193,15 @@
                                 pythonCodeY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
                             }
                             pythonCode += e;
+                            
                             // term.write(e);
-                            term.write(`\x1b[?25l\x1b[${pythonCodeY - term.buffer._normal.baseY};${pythonCodeX}f`)
+                            term.write(`\x1b[?25l\x1b[${pythonCodeY - term.buffer._normal.baseY};${pythonCodeX}H`)
                             pyodide.runPythonAsync(`
-                                import sys
-                                from pygments import highlight
-                                from pygments.lexers import PythonLexer
-                                from pygments.formatters import TerminalFormatter
-                                code = """
-                                ${pythonCode}
+                                _PY_code = """
+                                ${pythonCode.replaceAll("\\", "\\\\")}
                                 """
-                                highlighted_code = highlight(code, PythonLexer(), TerminalFormatter());
-                                highlighted_code[:-1]
+                                _PY_highlighted_code = highlight(_PY_code, PythonLexer(), TerminalTrueColorFormatter(style='native'));
+                                _PY_highlighted_code[:-1]
                             `).then(output => {
                                 term.write(output.replaceAll('\n', '\r\n... '))
                             })
@@ -206,26 +217,86 @@
 
 </html>
 ```
+#### 输出获取  
+值得注意的是，Python终端的输出显示有两种，一种是打印输出，一种是变量结果显示。  
+获取标准输出的这一段官方文档是没有例子的，我是在他们的[测试用例](https://github.com/pyodide/pyodide/blob/a038ac17d53458097386fd9393ee5202ac4ce193/src/tests/test_pyodide.py#L1281)里找到的如何设置和处理`setStdOut`的。  
+初始化：  
+```javascript
+var stdout_codes = [];
+function rawstdout(code) {
+    stdout_codes.push(code);
+}
+pyodide.setStdout({ raw: rawstdout, isatty: true });
+```
+获取打印结果：
+```javascript
+let result = new TextDecoder().decode(new Uint8Array(stdout_codes));
+if (result.length > 0) {
+    term.write(result.replaceAll("\n", "\r\n")); // 打印时针对换行特殊处理下
+}
+```
 
-获取标准输出的这一段官方文档是没有例子的，我是在他们的[测试用例](https://github.com/pyodide/pyodide/blob/a038ac17d53458097386fd9393ee5202ac4ce193/src/tests/test_pyodide.py#L1281)里找到的如何设置和处理`setStdOut`的。
+执行结果可以直接通过返回的`output`获取，里面的其它变量也可以通过`globals`获取。
 
-另外相比官方的Python终端，我还借助`pygments`库给代码们加上了着色，代码如下：
+#### 多行代码  
+```javascript
+var blockFlag = "";
+var blockMap = {
+    ":": "\r",
+    "\\": "\r",
+    "{": "}",
+    "[": "]",
+    "(": ")",
+}
+
+term.onData(e => {
+    const printable = !e.altKey && !e.ctrlKey && !e.metaKey;
+    switch (e) {
+        case ENTER:
+            if (pythonCode.length > 0) {
+                if (((pythonCode[pythonCode.length - 1] in blockMap)) && (blockFlag == "")) {
+                    blockFlag = pythonCode[pythonCode.length - 1];
+                    pythonCode += e;
+                    term.writeln("\r");
+                    term.write('... ');
+                    break;
+                }
+                if (blockFlag != "") {
+                    if (pythonCode[pythonCode.length - 1] == blockMap[blockFlag]) {
+                        blockFlag = "";
+                    } else {
+                        pythonCode += e;
+                        term.writeln("\r");
+                        term.write('... ');
+                        break;
+                    }
+                }
+            ...
+            }
+        ...
+    }
+});
+```
+多行支持的关键点在于第一次换行时最后一个字符是否需要多行的支持，并且需要一个字符来标记结束，我们通过一个map来映射这样的关系。  
+
+#### 代码着色  
+另外相比官方的Python终端，我还借助`pygments`库给代码们加上了着色，代码如下：  
 ```javascript
 pyodide.runPythonAsync(`
     import sys
     from pygments import highlight
     from pygments.lexers import PythonLexer
-    from pygments.formatters import TerminalFormatter
-    code = """
-    ${cmd}
+    from pygments.formatters import TerminalTrueColorFormatter
+    _PY_code = """
+    ${pythonCode.replaceAll("\\", "\\\\")}
     """
-    highlighted_code = highlight(code, PythonLexer(), TerminalFormatter());
-    highlighted_code[:-1]
+    _PY_highlighted_code = highlight(_PY_code, PythonLexer(), TerminalTrueColorFormatter(style='native'));
+    _PY_highlighted_code[:-1]
 `).then(output => {
     term.write(output.replaceAll('\n', '\r\n... '))
 })
 ```
-
+`pygments`还支持多种语言着色（包括python的错误异常信息着色），除了终端着色以外还支持以`html`、`svg`、`img`等多种输出格式，具体可前往其[pygments.org](https://pygments.org)官网查看。
 
 ### 效果
 效果如下，试试在里面敲你熟悉的python代码吧~：
