@@ -24,8 +24,8 @@
         var term = new Terminal();
         term.open(document.getElementById('terminal'));
         var pyodide = null;
-        cmdX = 0;
-        cmdY = 0;
+        var pythonCodeX = 0;
+        var pythonCodeY = 0;
 
         var stdout_codes = [];
         function rawstdout(code) {
@@ -51,7 +51,7 @@
         term.prompt = () => {
             term.write('\r\x1b[01;32m>>> ');
         };
-        var cmd = '';
+        var pythonCode = '';
         var blockFlag = "";
         var blockMap = {
             ":": "\r",
@@ -64,19 +64,19 @@
             const printable = !e.altKey && !e.ctrlKey && !e.metaKey;
             switch (e) {
                 case ENTER:
-                    if (cmd.length > 0) {
-                        if (((cmd[cmd.length - 1] in blockMap)) && (blockFlag == "")) {
-                            blockFlag = cmd[cmd.length - 1];
-                            cmd += e;
+                    if (pythonCode.length > 0) {
+                        if (((pythonCode[pythonCode.length - 1] in blockMap)) && (blockFlag == "")) {
+                            blockFlag = pythonCode[pythonCode.length - 1];
+                            pythonCode += e;
                             term.writeln("\r");
                             term.write('... ');
                             break;
                         }
                         if (blockFlag != "") {
-                            if (cmd[cmd.length - 1] == blockMap[blockFlag]) {
-                                blockFlag = false;
+                            if (pythonCode[pythonCode.length - 1] == blockMap[blockFlag]) {
+                                blockFlag = "";
                             } else {
-                                cmd += e;
+                                pythonCode += e;
                                 term.writeln("\r");
                                 term.write('... ');
                                 break;
@@ -85,7 +85,7 @@
                         term.writeln('\x1b[0m');
 
                         stdout_codes = []
-                        pyodide.runPythonAsync(cmd).then(output => {
+                        pyodide.runPythonAsync(pythonCode).then(output => {
                             let result = new TextDecoder().decode(new Uint8Array(stdout_codes));
                             if (result.length > 0) {
                                 term.write(result.replaceAll("\n", "\r\n"));
@@ -102,33 +102,33 @@
                         term.writeln('\x1b[0m');
                         term.prompt();
                     }
-                    cmd = '';
+                    pythonCode = '';
                     break;
                 case DEL:
                     if (term._core.buffer.x > 4) {
                         term.write('\b \b');
-                        if (cmd.length > 0) {
-                            cmd = cmd.substr(0, cmd.length - 1);
+                        if (pythonCode.length > 0) {
+                            pythonCode = pythonCode.substr(0, pythonCode.length - 1);
                         }
                     }
                     break;
                 default:
                     if (printable) {
                         if (e >= String.fromCharCode(0x20) && e <= String.fromCharCode(0x7E) || e >= '\u00a0') {
-                            if (cmd.length == 0) {
-                                cmdX = term.buffer._normal.cursorX + 1;
-                                cmdY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
+                            if (pythonCode.length == 0) {
+                                pythonCodeX = term.buffer._normal.cursorX + 1;
+                                pythonCodeY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
                             }
-                            cmd += e;
+                            pythonCode += e;
                             // term.write(e);
-                            term.write(`\x1b[?25l\x1b[${cmdY - term.buffer._normal.baseY};${cmdX}f`)
+                            term.write(`\x1b[?25l\x1b[${pythonCodeY - term.buffer._normal.baseY};${pythonCodeX}f`)
                             pyodide.runPythonAsync(`
                                 import sys
                                 from pygments import highlight
                                 from pygments.lexers import PythonLexer
                                 from pygments.formatters import TerminalFormatter
                                 code = """
-                                ${cmd}
+                                ${pythonCode}
                                 """
                                 highlighted_code = highlight(code, PythonLexer(), TerminalFormatter());
                                 highlighted_code[:-1]

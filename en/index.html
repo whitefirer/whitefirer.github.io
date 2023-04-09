@@ -212,6 +212,7 @@
             async function startPyodide() {
                 term.write('Starting Python...');
                 pyodide = await loadPyodide();
+                await pyodide.loadPackage("pygments")
 
                 pyodide.runPythonAsync(`
                         import sys
@@ -225,13 +226,21 @@
             }
 
             var pythonCode = '';
+            var pythonCodeX = 0;
+            var pythonCodeY = 0;
+            var blockFlag = "";
+            var blockMap = {
+                ":": "\r",
+                "{": "}",
+                "[": "]",
+                "(": ")",
+            }
 
             function OnPythonTermOnData(e) {
                 const printable = !e.altKey && !e.ctrlKey && !e.metaKey;
-                switch (e) {
-                    case ENTER:
-                        term.writeln('\x1b[0m');
-                        if (pythonCode.length > 0) {
+            switch (e) {
+                case ENTER:
+                    if (pythonCode.length > 0) {
                             if (pythonCode.startsWith('exit(')) {
                                 isGameStart = false;
                                 pythonCode = '';
@@ -240,43 +249,81 @@
                                 pyodide = null;
                                 term.prompt();
                                 return;
-                            }
-                            stdout_codes = []
-                            pyodide.runPythonAsync(pythonCode).then(output => {
-                                let result = new TextDecoder().decode(new Uint8Array(stdout_codes));
-                                if (result.length > 0) {
-                                    term.write(result.replaceAll("\n", "\r\n"));
-                                } else if (output != undefined) {
-                                    term.write(output + '\n');
-                                }
-                                pythonTerm();
-                            }).catch(err => {
-                                term.write('\x1b[01;31m' + err.message.replaceAll('\n', '\r\n') + '\x1b[0m');
-                                pythonTerm();
-                            });
-
-                        } else {
-                            pythonTerm();
                         }
-                        pythonCode = '';
-                        break;
-                    case DEL:
-                        
-                        if (term._core.buffer.x > 4) {
-                            term.write('\b \b');
-                            if (pythonCode.length > 0) {
-                                pythonCode = pythonCode.substr(0, pythonCode.length - 1);
-                            }
+                        if (((pythonCode[pythonCode.length - 1] in blockMap)) && (blockFlag == "")) {
+                            blockFlag = pythonCode[pythonCode.length - 1];
+                            pythonCode += e;
+                            term.writeln("\r");
+                            term.write('... ');
+                            break;
                         }
-                        break;
-                    default:
-                        if (printable) {
-                            if (e >= String.fromCharCode(0x20) && e <= String.fromCharCode(0x7E) || e >= '\u00a0') {
+                        if (blockFlag != "") {
+                            if (pythonCode[pythonCode.length - 1] == blockMap[blockFlag]) {
+                                blockFlag = "";
+                            } else {
                                 pythonCode += e;
-                                term.write(e);
+                                term.writeln("\r");
+                                term.write('... ');
+                                break;
                             }
                         }
-                }
+                        term.writeln('\x1b[0m');
+
+                        stdout_codes = []
+                        pyodide.runPythonAsync(pythonCode).then(output => {
+                            let result = new TextDecoder().decode(new Uint8Array(stdout_codes));
+                            if (result.length > 0) {
+                                term.write(result.replaceAll("\n", "\r\n"));
+                            } else if (output != undefined) {
+                                term.write(output + '\n');
+                            }
+                            pythonTerm();
+                        }).catch(err => {
+                            term.write('\x1b[01;31m' + err.message.replaceAll('\n', '\r\n') + '\x1b[0m');
+                            pythonTerm();
+                        });
+
+                    } else {
+                        term.writeln('\x1b[0m');
+                        pythonTerm();
+                    }
+                    pythonCode = '';
+                    break;
+                case DEL:
+                    if (term._core.buffer.x > 4) {
+                        term.write('\b \b');
+                        if (pythonCode.length > 0) {
+                            pythonCode = pythonCode.substr(0, pythonCode.length - 1);
+                        }
+                    }
+                    break;
+                default:
+                    if (printable) {
+                        if (e >= String.fromCharCode(0x20) && e <= String.fromCharCode(0x7E) || e >= '\u00a0') {
+                            if (pythonCode.length == 0) {
+                                pythonCodeX = term.buffer._normal.cursorX + 1;
+                                pythonCodeY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
+                            }
+                            pythonCode += e;
+                            
+                            term.write(`\x1b[?25l\x1b[${pythonCodeY - term.buffer._normal.baseY};${pythonCodeX}f`)
+                            pyodide.runPythonAsync(`
+                                import sys
+                                from pygments import highlight
+                                from pygments.lexers import PythonLexer
+                                from pygments.formatters import TerminalFormatter
+                                code = """
+                                ${pythonCode}
+                                """
+                                highlighted_code = highlight(code, PythonLexer(), TerminalFormatter());
+                                highlighted_code[:-1]
+                            `).then(output => {
+                                term.write(output.replaceAll('\n', '\r\n... '))
+                            })
+                            term.write('\x1b[?25h'); 
+                        }
+                    }
+            }
             }
 
             var isWebglEnabled = false;
