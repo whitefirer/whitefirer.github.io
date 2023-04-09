@@ -7,6 +7,13 @@
     <link rel="stylesheet" href="https://unpkg.com/xterm/css/xterm.css" />
     <script src="https://unpkg.com/xterm/lib/xterm.js"></script>
     <script src="https://cdn.jsdelivr.net/pyodide/v0.23.0/full/pyodide.js"></script>
+    <style>
+        #terminal {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0 20px;
+        }
+    </style>
 </head>
 
 <body>
@@ -17,6 +24,8 @@
         var term = new Terminal();
         term.open(document.getElementById('terminal'));
         var pyodide = null;
+        cmdX = 0;
+        cmdY = 0;
 
         var stdout_codes = [];
         function rawstdout(code) {
@@ -26,6 +35,7 @@
         async function startPyodide() {
             term.write('Starting Python...');
             pyodide = await loadPyodide();
+            await pyodide.loadPackage("pygments")
 
             pyodide.runPythonAsync(`
                     import sys
@@ -42,13 +52,38 @@
             term.write('\r\x1b[01;32m>>> ');
         };
         var cmd = '';
+        var blockFlag = "";
+        var blockMap = {
+            ":": "\r",
+            "{": "}",
+            "[": "]",
+            "(": ")",
+        }
 
         term.onData(e => {
             const printable = !e.altKey && !e.ctrlKey && !e.metaKey;
             switch (e) {
                 case ENTER:
-                    term.writeln('\x1b[0m');
                     if (cmd.length > 0) {
+                        if (((cmd[cmd.length - 1] in blockMap)) && (blockFlag == "")) {
+                            blockFlag = cmd[cmd.length - 1];
+                            cmd += e;
+                            term.writeln("\r");
+                            term.write('... ');
+                            break;
+                        }
+                        if (blockFlag != "") {
+                            if (cmd[cmd.length - 1] == blockMap[blockFlag]) {
+                                blockFlag = false;
+                            } else {
+                                cmd += e;
+                                term.writeln("\r");
+                                term.write('... ');
+                                break;
+                            }
+                        }
+                        term.writeln('\x1b[0m');
+
                         stdout_codes = []
                         pyodide.runPythonAsync(cmd).then(output => {
                             let result = new TextDecoder().decode(new Uint8Array(stdout_codes));
@@ -64,6 +99,7 @@
                         });
 
                     } else {
+                        term.writeln('\x1b[0m');
                         term.prompt();
                     }
                     cmd = '';
@@ -79,8 +115,27 @@
                 default:
                     if (printable) {
                         if (e >= String.fromCharCode(0x20) && e <= String.fromCharCode(0x7E) || e >= '\u00a0') {
+                            if (cmd.length == 0) {
+                                cmdX = term.buffer._normal.cursorX + 1;
+                                cmdY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
+                            }
                             cmd += e;
-                            term.write(e);
+                            // term.write(e);
+                            term.write(`\x1b[?25l\x1b[${cmdY - term.buffer._normal.baseY};${cmdX}f`)
+                            pyodide.runPythonAsync(`
+                                import sys
+                                from pygments import highlight
+                                from pygments.lexers import PythonLexer
+                                from pygments.formatters import TerminalFormatter
+                                code = """
+                                ${cmd}
+                                """
+                                highlighted_code = highlight(code, PythonLexer(), TerminalFormatter());
+                                highlighted_code[:-1]
+                            `).then(output => {
+                                term.write(output.replaceAll('\n', '\r\n... '))
+                            })
+                            term.write('\x1b[?25h'); // Show cursor
                         }
                     }
             }
