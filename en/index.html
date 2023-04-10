@@ -116,6 +116,7 @@
             var baseTheme = {
                 foreground: '#F8F8F8',
                 background: '#2D2E2C',
+                cursorAccent: '#2D2E2C',
                 selection: '#5DA5D533',
                 black: '#1E1E1D',
                 brightBlack: '#262625',
@@ -138,6 +139,7 @@
             var otherTheme = {
                 foreground: '#eff0eb',
                 background: '#282a36',
+                cursorAccent: '#282a36',
                 selection: '#97979b33',
                 black: '#282a36',
                 brightBlack: '#686868',
@@ -194,9 +196,18 @@
             var term = new window.Terminal({
                 fontFamily: '"Cascadia Code", Menlo, monospace',
                 theme: baseTheme,
-                cursorBlink: true
+                cursorBlink: true,
             });
             term.open(document.querySelector('.demo .inner'));
+            var isWebglEnabled = false;
+            try {
+                const webgl = new window.WebglAddon.WebglAddon();
+                term.loadAddon(webgl);
+                isWebglEnabled = true;
+            } catch (e) {
+                console.warn('WebGL addon threw an exception during load', e);
+            }
+
 
             var pyodide = null;
             var stdout_codes = [];
@@ -219,7 +230,7 @@
                         from pygments import highlight
                         from pygments.lexers import PythonLexer
                         from pygments.formatters import TerminalTrueColorFormatter
-                        sys.version
+                        sys.version + " (https://whitefirer.org)"
                     `).then(output => {
                     term.write('\rPython ' + output + '\r\n');
                     pythonTerm();
@@ -231,6 +242,8 @@
             var pythonCode = '';
             var pythonCodeX = 0;
             var pythonCodeY = 0;
+            var historyCodeList = [];
+            var lastPythonCodeLine = "";
             var blockFlag = "";
             var blockMap = {
                 ":": "\r",
@@ -240,11 +253,100 @@
                 "(": ")",
             }
 
+            var historyIndex = 0;
+            var historyCode = "";
+            var lastCRIndex = 0;
+            var renderingCode = false;
+            function setCursorPosition(x, y) {
+                term.write(`\x1b[${y};${x}H`)
+            }
+
+            async function writeHightPythonCode(x, y, pythonCode) {
+                
+                setCursorPosition(x, y);
+                await pyodide.runPythonAsync(`
+                _PY_code = """
+                ${pythonCode.replaceAll("\\", "\\\\")}
+                """
+                _PY_highlighted_code = highlight(_PY_code, PythonLexer(), TerminalTrueColorFormatter(style='native'));
+                _PY_highlighted_code[:-1]
+            `).then(output => {
+                    term.write(output.replaceAll('\n', '\r\n... '))
+                })
+            }
+
+            function earseCureentLinePythonCode() {
+                if (pythonCodeY === (term.buffer._normal.cursorY + term.buffer._normal.baseY + 1)) {
+                    term.write('\r\x1b[2K\x1b[01;32m>>> ');
+                } else if (term.buffer._normal.cursorX > 4) {
+                    term.write('\r\x1b[2K... ');
+                } else {
+                    term.write('\r\x1b[2K');
+                }
+            }
+
             function OnPythonTermOnData(e) {
                 const printable = !e.altKey && !e.ctrlKey && !e.metaKey;
-            switch (e) {
-                case ENTER:
-                    if (pythonCode.length > 0) {
+                switch (e) {
+                    case VK_LEFT:
+                        if (term.buffer._normal.cursorX > 4) {
+                            setCursorPosition(term.buffer._normal.cursorX, term.buffer._normal.cursorY + 1);
+                        }
+                        break;
+                    case VK_RIGHT:
+                        if (term.buffer._normal.cursorX < (lastPythonCodeLine.length % term.cols + 4)) {
+                            setCursorPosition(term.buffer._normal.cursorX + 2, term.buffer._normal.cursorY + 1);
+                        }
+                        break;
+                    case VK_UP:
+                        if (historyCodeList.length === 0) {
+                            break;
+                        }
+                        if (pythonCode.length === 0) {
+                            pythonCodeX = term.buffer._normal.cursorX + 1;
+                            pythonCodeY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
+                        }
+                        historyCode = "";
+                        historyIndex += 1;
+                        if (historyIndex > (historyCodeList.length + 1)) {
+                            historyIndex = historyCodeList.length + 1;
+                        } else if (historyIndex != (historyCodeList.length + 1)) {
+                            historyCode = historyCodeList[historyCodeList.length - historyIndex]
+                        }
+                        earseCureentLinePythonCode();
+                        lastCRIndex = pythonCode.lastIndexOf('\r');
+                        pythonCode = pythonCode.substring(0, lastCRIndex + 1) + historyCode;
+                        if (historyCode.length > 0) {
+                            writeHightPythonCode(5, pythonCodeY - term.buffer._normal.baseY, pythonCode)
+                        }
+                        break;
+                    case VK_DOWN:
+                        if (historyCodeList.length === 0) {
+                            break;
+                        }
+                        if (pythonCode.length === 0) {
+                            pythonCodeX = term.buffer._normal.cursorX + 1;
+                            pythonCodeY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
+                        }
+                        historyCode = "";
+                        historyIndex -= 1;
+                        if (historyIndex < 0) {
+                            historyIndex = 0;
+                        } else if (historyIndex === 0) {
+                            historyCode = lastPythonCodeLine;
+                        }
+                        else {
+                            historyCode = historyCodeList[historyCodeList.length - historyIndex]
+                        }
+                        earseCureentLinePythonCode();
+                        lastCRIndex = pythonCode.lastIndexOf('\r');
+                        pythonCode = pythonCode.substring(0, lastCRIndex + 1) + historyCode;
+                        if (historyCode.length > 0) {
+                            writeHightPythonCode(5, pythonCodeY - term.buffer._normal.baseY, pythonCode)
+                        }
+                        break;
+                    case ENTER:
+                        if (pythonCode.length > 0) {
                             if (pythonCode.startsWith('exit(')) {
                                 isGameStart = false;
                                 pythonCode = '';
@@ -254,98 +356,123 @@
                                 term.writeln("\r");
                                 term.prompt();
                                 return;
-                        }
-                        if (((pythonCode[pythonCode.length - 1] in blockMap)) && (blockFlag == "")) {
-                            blockFlag = pythonCode[pythonCode.length - 1];
-                            pythonCode += e;
-                            term.writeln("\r");
-                            term.write('... ');
-                            break;
-                        }
-                        if (blockFlag != "") {
-                            if (pythonCode[pythonCode.length - 1] == blockMap[blockFlag]) {
-                                blockFlag = "";
-                            } else {
+                            }
+                            historyIndex = 0;
+                            let pythonCodeList = pythonCode.split('\r');
+                            let lastLine = pythonCodeList[pythonCodeList.length - 1];
+                            if (lastLine.length > 0) {
+                                historyCodeList = historyCodeList.concat(lastLine)
+                            }
+                            if (((pythonCode[pythonCode.length - 1] in blockMap)) && (blockFlag === "")) {
+                                blockFlag = pythonCode[pythonCode.length - 1];
                                 pythonCode += e;
                                 term.writeln("\r");
                                 term.write('... ');
                                 break;
                             }
-                        }
-                        term.writeln('\x1b[0m');
-
-                        stdout_codes = []
-                        pyodide.runPythonAsync(pythonCode).then(output => {
-                            let result = new TextDecoder().decode(new Uint8Array(stdout_codes));
-                            if (result.length > 0) {
-                                term.write(result.replaceAll("\n", "\r\n"));
-                            } else if (output != undefined) {
-                                term.write(output + '\n');
+                            if (blockFlag != "") {
+                                if (pythonCode[pythonCode.length - 1] === blockMap[blockFlag]) {
+                                    blockFlag = "";
+                                } else {
+                                    pythonCode += e;
+                                    term.writeln("\r");
+                                    term.write('... ');
+                                    break;
+                                }
                             }
-                            pythonTerm();
-                        }).catch(err => {
-                            
-                            pythonCode = ""
-                            pyodide.runPythonAsync(`
+                            term.writeln('\x1b[0m');
+
+                            stdout_codes = []
+                            pyodide.runPythonAsync(pythonCode).then(output => {
+                                let result = new TextDecoder().decode(new Uint8Array(stdout_codes));
+                                if (result.length > 0) {
+                                    term.write(result.replaceAll("\n", "\r\n"));
+                                } else if (output != undefined) {
+                                    term.write(output + '\n');
+                                }
+                                pythonTerm();
+                            }).catch(err => {
+                                
+                                pythonCode = ""
+                                pyodide.runPythonAsync(`
                                 _PY_code = """
                                 ${err.message.replaceAll('\n', '\r')}
                                 """
-                                _PY_highlighted_code = highlight(_PY_code, PythonLexer(), TerminalTrueColorFormatter(style='native'));
+                                _PY_highlighted_code = highlight(_PY_code, PythonLexer(), TerminalTrueColorFormatter(style='one-dark'));
                                 _PY_highlighted_code[:-1]
                             `).then(output => {
-                                term.write(output.replaceAll('\n', '\r\n') + '\n')
-                                pythonTerm();
-                            })
-                        });
+                                    term.write(output.replaceAll('\n', '\r\n') + '\n')
+                                    pythonTerm();
+                                })
+                            });
 
-                    } else {
-                        term.writeln('\x1b[0m');
-                        pythonTerm();
-                    }
-                    pythonCode = '';
-                    break;
-                case DEL:
-                    if (term._core.buffer.x > 4) {
-                        term.write('\b \b');
-                        if (pythonCode.length > 0) {
-                            pythonCode = pythonCode.substr(0, pythonCode.length - 1);
+                        } else {
+                            term.writeln('\x1b[0m');
+                            pythonTerm();
                         }
-                    }
-                    break;
-                default:
-                    if (printable) {
-                        if (e >= String.fromCharCode(0x20) && e <= String.fromCharCode(0x7E) || e >= '\u00a0') {
-                            if (pythonCode.length == 0) {
-                                pythonCodeX = term.buffer._normal.cursorX + 1;
-                                pythonCodeY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
+                        pythonCode = '';
+                        break;
+                    case DEL:
+                        {
+                            lastCRIndex = pythonCode.lastIndexOf('\r');
+                            let lastPythonCodeLine = pythonCode.substring(lastCRIndex + 1, pythonCode.length + 1);
+                            if (term._core.buffer.x > 4 || lastPythonCodeLine.length >= term.cols - 4) {
+                                let currentCursorY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
+                                let lasetEditIndex = term.buffer._normal.cursorX - 4;
+                                let editIndex = lasetEditIndex;
+                                if (lastPythonCodeLine.length >= term.cols - 4) {
+                                    editIndex = lasetEditIndex + (currentCursorY - pythonCodeY) * term.cols
+                                }
+                                pythonCode = pythonCode.substring(0, lastCRIndex + 1) + lastPythonCodeLine.slice(0, editIndex - 1) + lastPythonCodeLine.slice(editIndex);
+                                term.write('\x1b[?25l');
+                                earseCureentLinePythonCode();
+                                writeHightPythonCode(pythonCodeX, pythonCodeY - term.buffer._normal.baseY, pythonCode).then(() => {
+                                    if (lastPythonCodeLine.length === term.cols - 4) {
+                                        setCursorPosition(term.cols, currentCursorY - term.buffer._normal.baseY - 1);
+                                    } else {
+                                        setCursorPosition(lasetEditIndex + 4, currentCursorY - term.buffer._normal.baseY);
+                                    }
+                                    term.write('\x1b[?25h'); 
+                                });
                             }
-                            pythonCode += e;
-                            
-                            term.write(`\x1b[?25l\x1b[${pythonCodeY - term.buffer._normal.baseY};${pythonCodeX}H`)
-                            pyodide.runPythonAsync(`
-                                _PY_code = """
-                                ${pythonCode.replaceAll("\\", "\\\\")}
-                                """
-                                _PY_highlighted_code = highlight(_PY_code, PythonLexer(), TerminalTrueColorFormatter(style='native'));
-                                _PY_highlighted_code[:-1]
-                            `).then(output => {
-                                term.write(output.replaceAll('\n', '\r\n... '))
-                            })
-                            term.write('\x1b[?25h'); 
+
+                            break;
                         }
-                    }
+                    default:
+                        if (printable) {
+                            if (e >= String.fromCharCode(0x20) && e <= String.fromCharCode(0x7E) || e >= '\u00a0') {
+                                if (renderingCode === true) {
+                                    break;
+                                }
+                                renderingCode = true;
+                                if (pythonCode.length === 0) {
+                                    pythonCodeX = term.buffer._normal.cursorX + 1;
+                                    pythonCodeY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
+                                }
+                                let currentCursorY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
+                                lastCRIndex = pythonCode.lastIndexOf('\r');
+                                let lasetEditIndex = term.buffer._normal.cursorX - 4;
+                                let editIndex = lasetEditIndex;
+                                lastPythonCodeLine = pythonCode.substring(lastCRIndex + 1, pythonCode.length + 1);
+                                if (lastPythonCodeLine.length >= term.cols - 4) {
+                                    editIndex = lasetEditIndex + (currentCursorY - pythonCodeY) * term.cols;
+                                }
+                                lastPythonCodeLine = lastPythonCodeLine.slice(0, editIndex) + e + lastPythonCodeLine.slice(editIndex)
+                                pythonCode = pythonCode.substring(0, lastCRIndex + 1) + lastPythonCodeLine;
+                                term.write('\x1b[?25l');
+                                writeHightPythonCode(pythonCodeX, pythonCodeY - term.buffer._normal.baseY, pythonCode).then(() => {
+                                    if ((lasetEditIndex + 6) > term.cols) {
+                                        setCursorPosition(0, currentCursorY - term.buffer._normal.baseY + 1);
+                                    } else {
+                                        setCursorPosition(lasetEditIndex + 6, currentCursorY - term.buffer._normal.baseY);
+                                    }
+                                    term.write('\x1b[?25h'); 
+                                    renderingCode = false;
+                                });
+                            }
+                        }
+                }
             }
-            }
-
-            var isWebglEnabled = false;
-            try {
-                const webgl = new window.WebglAddon.WebglAddon();
-                term.loadAddon(webgl);
-                isWebglEnabled = true;
-            } catch (e) {
-                console.warn('WebGL addon threw an exception during load', e);
-            }
-
             
             document.querySelector('.xterm').addEventListener('wheel', e => {
                 if (term.buffer.active.baseY > 0) {
@@ -516,7 +643,7 @@
                                 term.prompt(term);
                             }
                         } else if (final) {
-                            var curY = term._buffer._normal.cursorY + term._buffer._normal.baseY + 1;
+                            var curY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
                             lines = streamString.split('\n');
                             if (args.includes('--help') || args.includes('-h')) {
                                 lines.push(commands.lolcat.help);
@@ -527,7 +654,7 @@
                             }
                             var seed = Math.floor(Math.random() * 8196);
                             setTimeout(function (args) {
-                                for (let y = curY; y < term._buffer._normal.cursorY + term._buffer._normal.baseY; y++) {
+                                for (let y = curY; y < term.buffer._normal.cursorY + term.buffer._normal.baseY; y++) {
                                     for (let i = 0; i < term.cols; i++) {
                                         setStyle(i, y, 0x3000000 | getRainbowColor(0.3, seed + y - curY + i / 8));
                                     }
@@ -674,8 +801,8 @@
                 cmds = text.trim().split('|')
                 if (cmds.length > 0) {
                     term.writeln('');
-                    cmdX = term._buffer._normal.cursorX;
-                    cmdY = term._buffer._normal.cursorY;
+                    cmdX = term.buffer._normal.cursorX;
+                    cmdY = term.buffer._normal.cursorY;
 
                     for (let i = 0; i < cmds.length; i++) {
                         let cmd = cmds[i]
@@ -784,7 +911,6 @@
                     }
                 });
 
-                console.log(pramas);
                 isGameStart = true;
                 term.write('\x1b[?25l')
                 switch (name) {
@@ -1022,24 +1148,24 @@
 
                             if (style == 0) {
                                 if (matrixDirection == "LEFT" || matrixDirection == "RIGHT") {
-                                    setChar(tmp_y, x, [32, 0, 0], undefined);
+                                    setChar(tmp_y, x, [32, 0, 0], undefined, undefined);
                                 } else if (matrixTheme != "welcome") {
-                                    setChar(x, tmp_y, [32, 0, 0], undefined);
+                                    setChar(x, tmp_y, [32, 0, 0], undefined, undefined);
                                 }
                             } else {
                                 if (x < matrixCols && y < matrixRows && x >= 0 && y >= 0) {
                                     var char = [Math.round(Math.random() * 94) + 33, styleList[dropInfo.style], 0]
                                     if (matrixTheme != "welcome") {
                                         if (matrixDirection == "RIGHT" || matrixDirection == "LEFT") {
-                                            setChar(y, x, char, undefined);
+                                            setChar(y, x, char, undefined, undefined);
                                         } else {
-                                            setChar(x, y, char, undefined);
+                                            setChar(x, y, char, undefined, undefined);
                                         }
                                     }
                                 }
 
                                 if ((matrixDirection == "RIGHT" || matrixDirection == "LEFT") && matrixTheme == "welcome") {
-                                    setChar(tmp_y, x, [tip[ind] ? tip[ind].charCodeAt() : 32, style, 0], undefined);
+                                    setChar(tmp_y, x, [tip[ind] ? tip[ind].charCodeAt() : 32, style, 0], undefined, undefined);
                                 } else if (matrixDirection == "RIGHT" || matrixDirection == "LEFT") {
                                     setStyle(tmp_y, x, style);
                                 } else {
@@ -1071,51 +1197,64 @@
 
             function getChar(col, row) {
                 return [
-                    term._buffer._core.buffer.lines._array[row]._data[3 * col],
-                    term._buffer._core.buffer.lines._array[row]._data[3 * col + 1],
-                    term._buffer._core.buffer.lines._array[row]._data[3 * col + 2]
+                    term._core.buffer.lines._array[row]._data[3 * col],
+                    term._core.buffer.lines._array[row]._data[3 * col + 1],
+                    term._core.buffer.lines._array[row]._data[3 * col + 2]
                 ]
             }
 
-            function getCombinedChar(col, row) {
-                let lines = term._buffer._core.buffer.lines._array[row];
+            function getCombined(col, row) {
+                let lines = term._core.buffer.lines._array[row];
                 if (lines === undefined) {
                     return undefined;
                 }
                 return lines._combined[col];
             }
 
+            function getExtendedAttrs(col, row) {
+                let lines = term._core.buffer.lines._array[row];
+                if (lines === undefined) {
+                    return undefined;
+                }
+                return lines._extendedAttrs[col];
+            }
 
-            function setChar(col, row, value, combinedChar) {
-                if (combinedChar != undefined) {
-                    term._buffer._core.buffer.lines._array[row]._combined[col] = combinedChar;
-                } else if (term._buffer._core.buffer.lines._array[row]._combined[col]) {
-                    delete (term._buffer._core.buffer.lines._array[row]._combined[col]);
+            function setChar(col, row, value, combined, extendedAttrs) {
+                if (combined != undefined) {
+                    term._core.buffer.lines._array[row]._combined[col] = combined;
+                } else if (term._core.buffer.lines._array[row]._combined[col]) {
+                    delete (term._core.buffer.lines._array[row]._combined[col]);
                 }
 
-                term._buffer._core.buffer.lines._array[row]._data[3 * col] = value[0];
-                term._buffer._core.buffer.lines._array[row]._data[3 * col + 1] = value[1];
-                term._buffer._core.buffer.lines._array[row]._data[3 * col + 2] = value[2];
+                if (extendedAttrs != undefined) {
+                    term._core.buffer.lines._array[row]._extendedAttrs[col] = extendedAttrs;
+                } else if (term._core.buffer.lines._array[row]._extendedAttrs[col]) {
+                    delete (term._core.buffer.lines._array[row]._extendedAttrs[col]);
+                }
+
+                term._core.buffer.lines._array[row]._data[3 * col] = value[0];
+                term._core.buffer.lines._array[row]._data[3 * col + 1] = value[1];
+                term._core.buffer.lines._array[row]._data[3 * col + 2] = value[2];
             }
 
             function setStyle(col, row, style) {
-                term._buffer._core.buffer.lines._array[row]._data[3 * col + 1] = style;
+                term._core.buffer.lines._array[row]._data[3 * col + 1] = style;
             }
 
             function setNormalChar(col, row, value, combinedChar) {
                 if (combinedChar != undefined) {
-                    term._buffer._normal._buffer.lines._array[row]._combined[col] = combinedChar;
-                } else if (term._buffer._normal._buffer.lines._array[row]._combined[col]) {
-                    delete (term._buffer._normal._buffer.lines._array[row]._combined[col]);
+                    term.buffer._normal._buffer.lines._array[row]._combined[col] = combinedChar;
+                } else if (term.buffer._normal._buffer.lines._array[row]._combined[col]) {
+                    delete (term.buffer._normal._buffer.lines._array[row]._combined[col]);
                 }
 
-                term._buffer._normal._buffer.lines._array[row]._data[3 * col] = value[0];
-                term._buffer._normal._buffer.lines._array[row]._data[3 * col + 1] = value[1];
-                term._buffer._normal._buffer.lines._array[row]._data[3 * col + 2] = value[2];
+                term.buffer._normal._buffer.lines._array[row]._data[3 * col] = value[0];
+                term.buffer._normal._buffer.lines._array[row]._data[3 * col + 1] = value[1];
+                term.buffer._normal._buffer.lines._array[row]._data[3 * col + 2] = value[2];
             }
 
             function setNormalStyle(col, row, style) {
-                term._buffer._normal._buffer.lines._array[row]._data[3 * col + 1] = style;
+                term.buffer._normal._buffer.lines._array[row]._data[3 * col + 1] = style;
             }
 
             function isEmptyChar(col, row) {
@@ -1149,7 +1288,8 @@
                     let j = term.rows - 1 - k;
                     for (let i = 0; i < term.cols; i++) {
                         let cur_char = getChar(i, j);
-                        let cur_combined_char = getCombinedChar(i, j);
+                        let cur_combined = getCombined(i, j);
+                        let cur_extendedAttrs = getExtendedAttrs(i, j);
 
                         if (isEmptyChar(i, j)) {
                             continue;
@@ -1190,18 +1330,20 @@
                         }
 
                         let next_char = null;
-                        let next_combined_char = undefined;
+                        let next_combined = undefined;
+                        let next_extendedAttrs = undefined;
                         if (ax >= 0 && ax < term.cols && ay < term.rows && ay >= 0) {
                             next_char = getChar(ax, ay)
-                            next_combined_char = getCombinedChar(ax, ay);
+                            next_combined = getCombined(ax, ay);
+                            next_extendedAttrs = getExtendedAttrs(ax, ay)
                         }
 
                         if (next_char != null && isEmptyChar(ax, ay)
                             && (j < term.rows)
                             && (i < term.cols)
                             && (i >= 0)) {
-                            setChar(ax, ay, cur_char, cur_combined_char);
-                            setChar(i, j, next_char, next_combined_char);
+                            setChar(ax, ay, cur_char, cur_combined, cur_extendedAttrs);
+                            setChar(i, j, next_char, next_combined), next_extendedAttrs;
 
                             changed = true;
 
@@ -1273,6 +1415,7 @@
             justify-content: center;
             margin: 10px 0 20px;
              
+            text-align: left !important;
         }
 
         .demo .inner {

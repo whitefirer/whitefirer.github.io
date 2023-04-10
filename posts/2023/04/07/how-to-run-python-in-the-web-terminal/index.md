@@ -30,33 +30,6 @@
 
 使用也很简单，调用`pyodide.runPython`就行：
 ```html
-<!doctype html>
-<html>
-  <head>
-      <script src="https://cdn.jsdelivr.net/pyodide/v0.23.0/full/pyodide.js"></script>
-  </head>
-  <body>
-    Pyodide test page <br>
-    Open your browser console to see Pyodide output
-    <script type="text/javascript">
-      async function main(){
-        let pyodide = await loadPyodide();
-        console.log(pyodide.runPython(`
-            import sys
-            sys.version
-        `));
-        pyodide.runPython("print(1 + 2)");
-      }
-      main();
-    </script>
-  </body>
-</html>
-```
-可以点击前面的链接跳转到它的官方文档看看有什么其它用法，总之挺强大的，支持加载包括numpy的各种库。
-
-#### 演示代码  
-以下是我基于pyodide写的一个在页面上模拟python终端的demo代码：  
-```html
 <!DOCTYPE html>
 <html>
 
@@ -64,7 +37,7 @@
     <meta charset="UTF-8">
     <title>Pyodide in xterm.js</title>
     <link rel="stylesheet" href="https://unpkg.com/xterm/css/xterm.css" />
-    <script src="https://unpkg.com/xterm/lib/xterm.js"></script>
+    <script src="https://unpkg.com/xterm@5.1.0/lib/xterm.js"></script>
     <script src="https://cdn.jsdelivr.net/pyodide/v0.23.0/full/pyodide.js"></script>
     <style>
         #terminal {
@@ -78,16 +51,23 @@
     <script>
         const ENTER = '\r';
         const DEL = '\u007F';
-        var term = new Terminal();
-        term.open(document.getElementById('terminal'));
+        const VK_UP = '\x1b[A';
+        const VK_DOWN = '\x1b[B';
+        const VK_RIGHT = '\x1b[C';
+        const VK_LEFT = '\x1b[D';
         var pyodide = null;
-        pythonCodeX = 0;
-        pythonCodeY = 0;
-
+        var pythonCodeX = 0;
+        var pythonCodeY = 0;
+        var historyCodeList = [];
+        var lastPythonCodeLine = "";
+        var renderingCode = false;
         var stdout_codes = [];
         function rawstdout(code) {
             stdout_codes.push(code);
         }
+
+        var term = new Terminal();
+        term.open(document.getElementById('terminal'));
 
         async function startPyodide() {
             term.write('Starting Python...');
@@ -99,7 +79,7 @@
                     from pygments import highlight
                     from pygments.lexers import PythonLexer
                     from pygments.formatters import TerminalTrueColorFormatter
-                    sys.version
+                    sys.version + ' (https://whitefirer.org)'
                 `).then(output => {
                 term.write('\rPython ' + output + '\r\n');
                 term.prompt();
@@ -120,13 +100,107 @@
             "[": "]",
             "(": ")",
         }
+        var historyIndex = 0;
+        var historyCode = "";
+        var lastCRIndex = 0;
+        function setCursorPosition(x, y) {
+            term.write(`\x1b[${y};${x}H`)
+        }
+
+        async function writeHightPythonCode(x, y, pythonCode) {
+            // term.write(e);
+            setCursorPosition(x, y);
+            await pyodide.runPythonAsync(`
+                _PY_code = """
+                ${pythonCode.replaceAll("\\", "\\\\")}
+                """
+                _PY_highlighted_code = highlight(_PY_code, PythonLexer(), TerminalTrueColorFormatter(style='native'));
+                _PY_highlighted_code[:-1]
+            `).then(output => {
+                term.write(output.replaceAll('\n', '\r\n... '));
+            });
+        }
+
+        function earseCureentLinePythonCode() {
+            if (pythonCodeY === (term.buffer._normal.cursorY + term.buffer._normal.baseY + 1)) {
+                term.write('\r\x1b[2K\x1b[01;32m>>> ');
+            } else if (term.buffer._normal.cursorX > 4) {
+                term.write('\r\x1b[2K... ');
+            } else {
+                term.write('\r\x1b[2K');
+            }
+        }
+
 
         term.onData(e => {
             const printable = !e.altKey && !e.ctrlKey && !e.metaKey;
             switch (e) {
+                case VK_LEFT:
+                    if (term.buffer._normal.cursorX > 4) {
+                        setCursorPosition(term.buffer._normal.cursorX, term.buffer._normal.cursorY + 1);
+                    }
+                    break;
+                case VK_RIGHT:
+                    if (term.buffer._normal.cursorX < (lastPythonCodeLine.length % term.cols + 4)) {
+                        setCursorPosition(term.buffer._normal.cursorX + 2, term.buffer._normal.cursorY + 1);
+                    }
+                    break;
+                case VK_UP:
+                    if (historyCodeList.length === 0) {
+                        break;
+                    }
+                    if (pythonCode.length === 0) {
+                        pythonCodeX = term.buffer._normal.cursorX + 1;
+                        pythonCodeY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
+                    }
+                    historyCode = "";
+                    historyIndex += 1;
+                    if (historyIndex > (historyCodeList.length + 1)) {
+                        historyIndex = historyCodeList.length + 1;
+                    } else if (historyIndex != (historyCodeList.length + 1)) {
+                        historyCode = historyCodeList[historyCodeList.length - historyIndex]
+                    }
+                    earseCureentLinePythonCode();
+                    lastCRIndex = pythonCode.lastIndexOf('\r');
+                    pythonCode = pythonCode.substring(0, lastCRIndex + 1) + historyCode;
+                    if (historyCode.length > 0) {
+                        writeHightPythonCode(5, pythonCodeY - term.buffer._normal.baseY, pythonCode)
+                    }
+                    break;
+                case VK_DOWN:
+                    if (historyCodeList.length === 0) {
+                        break;
+                    }
+                    if (pythonCode.length === 0) {
+                        pythonCodeX = term.buffer._normal.cursorX + 1;
+                        pythonCodeY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
+                    }
+                    historyCode = "";
+                    historyIndex -= 1;
+                    if (historyIndex < 0) {
+                        historyIndex = 0;
+                    } else if (historyIndex === 0) {
+                        historyCode = lastPythonCodeLine;
+                    }
+                    else {
+                        historyCode = historyCodeList[historyCodeList.length - historyIndex]
+                    }
+                    earseCureentLinePythonCode();
+                    lastCRIndex = pythonCode.lastIndexOf('\r');
+                    pythonCode = pythonCode.substring(0, lastCRIndex + 1) + historyCode;
+                    if (historyCode.length > 0) {
+                        writeHightPythonCode(5, pythonCodeY - term.buffer._normal.baseY, pythonCode)
+                    }
+                    break;
                 case ENTER:
                     if (pythonCode.length > 0) {
-                        if (((pythonCode[pythonCode.length - 1] in blockMap)) && (blockFlag == "")) {
+                        historyIndex = 0;
+                        let pythonCodeList = pythonCode.split('\r');
+                        let lastLine = pythonCodeList[pythonCodeList.length - 1];
+                        if (lastLine.length > 0) {
+                            historyCodeList = historyCodeList.concat(lastLine)
+                        }
+                        if (((pythonCode[pythonCode.length - 1] in blockMap)) && (blockFlag === "")) {
                             blockFlag = pythonCode[pythonCode.length - 1];
                             pythonCode += e;
                             term.writeln("\r");
@@ -134,8 +208,8 @@
                             break;
                         }
                         if (blockFlag != "") {
-                            if (pythonCode[pythonCode.length - 1] == blockMap[blockFlag]) {
-                                blockFlag = false;
+                            if (pythonCode[pythonCode.length - 1] === blockMap[blockFlag]) {
+                                blockFlag = "";
                             } else {
                                 pythonCode += e;
                                 term.writeln("\r");
@@ -176,34 +250,62 @@
                     pythonCode = '';
                     break;
                 case DEL:
-                    if (term._core.buffer.x > 4) {
-                        term.write('\b \b');
-                        if (pythonCode.length > 0) {
-                            pythonCode = pythonCode.substr(0, pythonCode.length - 1);
+                    {
+                        lastCRIndex = pythonCode.lastIndexOf('\r');
+                        let lastPythonCodeLine = pythonCode.substring(lastCRIndex + 1, pythonCode.length + 1);
+                        if (term._core.buffer.x > 4 || lastPythonCodeLine.length >= term.cols - 4) {
+                            let currentCursorY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
+                            let lasetEditIndex = term.buffer._normal.cursorX - 4;
+                            let editIndex = lasetEditIndex;
+                            if (lastPythonCodeLine.length >= term.cols - 4) {
+                                editIndex = lasetEditIndex + (currentCursorY - pythonCodeY) * term.cols
+                            }
+                            pythonCode = pythonCode.substring(0, lastCRIndex + 1) + lastPythonCodeLine.slice(0, editIndex - 1) + lastPythonCodeLine.slice(editIndex);
+                            term.write('\x1b[?25l');
+                            earseCureentLinePythonCode();
+                            writeHightPythonCode(pythonCodeX, pythonCodeY - term.buffer._normal.baseY, pythonCode).then(() => {
+                                if (lastPythonCodeLine.length === term.cols - 4) {
+                                    setCursorPosition(term.cols, currentCursorY - term.buffer._normal.baseY - 1);
+                                } else {
+                                    setCursorPosition(lasetEditIndex + 4, currentCursorY - term.buffer._normal.baseY);
+                                }
+                                term.write('\x1b[?25h'); // Show cursor
+                            });
                         }
+
+                        break;
                     }
-                    break;
                 default:
                     if (printable) {
                         if (e >= String.fromCharCode(0x20) && e <= String.fromCharCode(0x7E) || e >= '\u00a0') {
-                            if (pythonCode.length == 0) {
+                            if (renderingCode === true) {
+                                break;
+                            }
+                            renderingCode = true;
+                            if (pythonCode.length === 0) {
                                 pythonCodeX = term.buffer._normal.cursorX + 1;
                                 pythonCodeY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
                             }
-                            pythonCode += e;
-                            
-                            // term.write(e);
-                            term.write(`\x1b[?25l\x1b[${pythonCodeY - term.buffer._normal.baseY};${pythonCodeX}H`)
-                            pyodide.runPythonAsync(`
-                                _PY_code = """
-                                ${pythonCode.replaceAll("\\", "\\\\")}
-                                """
-                                _PY_highlighted_code = highlight(_PY_code, PythonLexer(), TerminalTrueColorFormatter(style='native'));
-                                _PY_highlighted_code[:-1]
-                            `).then(output => {
-                                term.write(output.replaceAll('\n', '\r\n... '))
-                            })
-                            term.write('\x1b[?25h'); // Show cursor
+                            let currentCursorY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
+                            lastCRIndex = pythonCode.lastIndexOf('\r');
+                            let lasetEditIndex = term.buffer._normal.cursorX - 4;
+                            let editIndex = lasetEditIndex;
+                            lastPythonCodeLine = pythonCode.substring(lastCRIndex + 1, pythonCode.length + 1);
+                            if (lastPythonCodeLine.length >= term.cols - 4) {
+                                editIndex = lasetEditIndex + (currentCursorY - pythonCodeY) * term.cols;
+                            }
+                            lastPythonCodeLine = lastPythonCodeLine.slice(0, editIndex) + e + lastPythonCodeLine.slice(editIndex)
+                            pythonCode = pythonCode.substring(0, lastCRIndex + 1) + lastPythonCodeLine;
+                            term.write('\x1b[?25l');
+                            writeHightPythonCode(pythonCodeX, pythonCodeY - term.buffer._normal.baseY, pythonCode).then(() => {
+                                if ((lasetEditIndex + 6) > term.cols) {
+                                    setCursorPosition(0, currentCursorY - term.buffer._normal.baseY + 1);
+                                } else {
+                                    setCursorPosition(lasetEditIndex + 6, currentCursorY - term.buffer._normal.baseY);
+                                }
+                                term.write('\x1b[?25h'); // Show cursor
+                                renderingCode = false;
+                            });
                         }
                     }
             }
@@ -252,7 +354,7 @@ term.onData(e => {
     switch (e) {
         case ENTER:
             if (pythonCode.length > 0) {
-                if (((pythonCode[pythonCode.length - 1] in blockMap)) && (blockFlag == "")) {
+                if (((pythonCode[pythonCode.length - 1] in blockMap)) && (blockFlag === "")) {
                     blockFlag = pythonCode[pythonCode.length - 1];
                     pythonCode += e;
                     term.writeln("\r");
@@ -260,7 +362,7 @@ term.onData(e => {
                     break;
                 }
                 if (blockFlag != "") {
-                    if (pythonCode[pythonCode.length - 1] == blockMap[blockFlag]) {
+                    if (pythonCode[pythonCode.length - 1] === blockMap[blockFlag]) {
                         blockFlag = "";
                     } else {
                         pythonCode += e;
@@ -277,6 +379,175 @@ term.onData(e => {
 ```
 多行支持的关键点在于第一次换行时最后一个字符是否需要多行的支持，并且需要一个字符来标记结束，我们通过一个map来映射这样的关系。  
 
+#### 插入编辑  
+```javascript
+ function setCursorPosition(x, y) {
+    term.write(`\x1b[${y};${x}H`)
+}
+
+function earseCureentLinePythonCode() {
+    if (pythonCodeY === (term.buffer._normal.cursorY + term.buffer._normal.baseY + 1)){
+        term.write('\r\x1b[2K\x1b[01;32m>>> ');
+    } else if (term.buffer._normal.cursorX > 4) {
+        term.write('\r\x1b[2K... ');
+    } else {
+        term.write('\r\x1b[2K');
+    }
+}
+
+term.onData(e => {
+    const printable = !e.altKey && !e.ctrlKey && !e.metaKey;
+    switch (e) {
+        case VK_LEFT:
+            if (term.buffer._normal.cursorX > 4) {
+                setCursorPosition(term.buffer._normal.cursorX, term.buffer._normal.cursorY + 1);
+            }
+            break;
+        case VK_RIGHT:
+            if (term.buffer._normal.cursorX < (lastPythonCodeLine.length%80 + 4)) {
+                setCursorPosition(term.buffer._normal.cursorX + 2, term.buffer._normal.cursorY + 1);
+            }
+            break;
+        ...
+        case DEL:
+            {
+            lastCRIndex = pythonCode.lastIndexOf('\r');
+            let lastPythonCodeLine = pythonCode.substring(lastCRIndex + 1, pythonCode.length + 1);
+            if (term._core.buffer.x > 4 || lastPythonCodeLine.length >= term.cols - 4) {
+                let currentCursorY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
+                let lasetEditIndex = term.buffer._normal.cursorX - 4;
+                let editIndex = lasetEditIndex;
+                if (lastPythonCodeLine.length >= term.cols - 4) {
+                    editIndex = lasetEditIndex + (currentCursorY - pythonCodeY) * term.cols
+                }
+                pythonCode = pythonCode.substring(0, lastCRIndex + 1) + lastPythonCodeLine.slice(0, editIndex-1) + lastPythonCodeLine.slice(editIndex);
+                term.write('\x1b[?25l');
+                earseCureentLinePythonCode();
+                writeHightPythonCode(pythonCodeX, pythonCodeY - term.buffer._normal.baseY, pythonCode).then(() => {
+                    if (lastPythonCodeLine.length === term.cols - 4) {
+                        setCursorPosition(term.cols, currentCursorY - term.buffer._normal.baseY - 1);
+                    } else {
+                        setCursorPosition(lasetEditIndex + 4, currentCursorY - term.buffer._normal.baseY);
+                    }
+                    term.write('\x1b[?25h'); // Show cursor
+                });
+            }
+        
+            break;
+        }
+        default:
+            if (printable) {
+                if (e >= String.fromCharCode(0x20) && e <= String.fromCharCode(0x7E) || e >= '\u00a0') {
+                    if (renderingCode === true) {
+                        break;
+                    }
+                    renderingCode = true;
+                    if (pythonCode.length === 0) {
+                        pythonCodeX = term.buffer._normal.cursorX + 1;
+                        pythonCodeY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
+                    }
+                    let currentCursorY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
+                    lastCRIndex = pythonCode.lastIndexOf('\r');
+                    let lasetEditIndex = term.buffer._normal.cursorX - 4;
+                    let editIndex = lasetEditIndex;
+                    lastPythonCodeLine = pythonCode.substring(lastCRIndex + 1, pythonCode.length + 1);
+                    if (lastPythonCodeLine.length >= term.cols - 4) {
+                        editIndex = lasetEditIndex + (currentCursorY - pythonCodeY) * term.cols;
+                    }
+                    lastPythonCodeLine = lastPythonCodeLine.slice(0, editIndex) + e + lastPythonCodeLine.slice(editIndex)
+                    pythonCode = pythonCode.substring(0, lastCRIndex + 1) + lastPythonCodeLine;
+                    term.write('\x1b[?25l');
+                    writeHightPythonCode(pythonCodeX, pythonCodeY - term.buffer._normal.baseY, pythonCode).then(() => {
+                        if ((lasetEditIndex + 6) > term.cols) {
+                            setCursorPosition(0, currentCursorY - term.buffer._normal.baseY + 1);
+                        } else {
+                            setCursorPosition(lasetEditIndex + 6, currentCursorY - term.buffer._normal.baseY);
+                        }
+                        term.write('\x1b[?25h'); // Show cursor
+                        renderingCode = false;
+                    });
+                }
+            }
+    }
+});
+```
+这里用到的的技巧有利用终端控制符来移动光标位置、光标显隐和清除当前行，其它的主要就是记往编辑位置进行字符串处理。  
+
+#### 历史翻页  
+```javascript
+term.onData(e => {
+        const printable = !e.altKey && !e.ctrlKey && !e.metaKey;
+        switch (e) {
+            case VK_UP:
+                if (historyCodeList.length === 0) {
+                    break;
+                }
+                if (pythonCode.length === 0) {
+                    pythonCodeX = term.buffer._normal.cursorX + 1;
+                    pythonCodeY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
+                }
+                historyCode = "";
+                historyIndex += 1;
+                if (historyIndex > (historyCodeList.length + 1)) {
+                    historyIndex = historyCodeList.length + 1;
+                } else if (historyIndex != (historyCodeList.length + 1)) {
+                    historyCode = historyCodeList[historyCodeList.length - historyIndex]
+                }
+                earseCureentLinePythonCode();
+                lastCRIndex = pythonCode.lastIndexOf('\r');
+                pythonCode = pythonCode.substring(0, lastCRIndex + 1) + historyCode;
+                if (historyCode.length > 0) {
+                    writeHightPythonCode(5, pythonCodeY - term.buffer._normal.baseY, pythonCode)
+                }
+                break;
+            case VK_DOWN:
+                if (historyCodeList.length === 0) {
+                    break;
+                }
+                if (pythonCode.length === 0) {
+                    pythonCodeX = term.buffer._normal.cursorX + 1;
+                    pythonCodeY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
+                }
+                historyCode = "";
+                historyIndex -= 1;
+                if (historyIndex < 0) {
+                    historyIndex = 0;
+                } else if (historyIndex === 0) {
+                    historyCode = lastPythonCodeLine;
+                } 
+                else {
+                    historyCode = historyCodeList[historyCodeList.length - historyIndex]
+                }
+                earseCureentLinePythonCode();
+                lastCRIndex = pythonCode.lastIndexOf('\r');
+                pythonCode = pythonCode.substring(0, lastCRIndex + 1) + historyCode;
+                if (historyCode.length > 0) {
+                    writeHightPythonCode(5, pythonCodeY - term.buffer._normal.baseY, pythonCode)
+                }
+                break;
+            case ENTER:
+                if (pythonCode.length > 0) {
+                    historyIndex = 0;
+                    let pythonCodeList = pythonCode.split('\r');
+                    let lastLine = pythonCodeList[pythonCodeList.length - 1];
+                    if (lastLine.length > 0) {
+                        historyCodeList = historyCodeList.concat(lastLine)
+                    }
+                    ...
+                }
+                ...
+                break;
+            ...
+        }
+});
+```
+这里也用到了终端控制符，另外就是用了一个字符串数组来记录历史代码行，主要要注意以下几点：
+1. 上下边界判断；
+2. 复原正在编辑的代码；
+3. 多行代码里行首不同；
+4. 回车后记得清除索引；
+5. 超出终端高度计算相对位置；
+
 #### 代码着色  
 另外相比官方的Python终端，我还借助`pygments`库给代码们加上了着色，代码如下：  
 ```javascript
@@ -292,8 +563,9 @@ pyodide.runPythonAsync(`
     _PY_highlighted_code[:-1]
 `).then(output => {
     term.write(output.replaceAll('\n', '\r\n... '))
-})
+}) // 注意，示例代码中我把python代码中的库引入放到pyodide的初始化中去了
 ```
+主要注意点就是这里的字符串转义和输出显示换行。
 `pygments`还支持多种语言着色（包括python的错误异常信息着色），除了终端着色以外还支持以`html`、`svg`、`img`等多种输出格式，具体可前往其[pygments.org](https://pygments.org)官网查看。
 
 ### 效果

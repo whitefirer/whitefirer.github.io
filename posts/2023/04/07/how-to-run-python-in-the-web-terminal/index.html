@@ -9,7 +9,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://whitefirer.org/posts/2023/04/07/how-to-run-python-in-the-web-terminal/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2023-04-07T11:04:59+08:00" />
-<meta property="article:modified_time" content="2023-04-09T12:49:15+08:00" /><meta property="og:site_name" content="whitefirer[PG]" />
+<meta property="article:modified_time" content="2023-04-11T00:55:43+08:00" /><meta property="og:site_name" content="whitefirer[PG]" />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="如何在页面上跑一个Python终端？"/>
 <meta name="twitter:description" content="细心的朋友可能已经发现我在首页终端上加上了Now you can use the Python directly in this console!这句话，是的，现在python命令已经加入了首页终端中！目前"/>
@@ -27,8 +27,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/whitefirer.org\/posts\/2023\/04\/07\/how-to-run-python-in-the-web-terminal\/"
-        },"genre": "posts","keywords": "tech, xterm.js, python, pyodide, wasm","wordcount":  2216 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2023\/04\/07\/how-to-run-python-in-the-web-terminal\/","datePublished": "2023-04-07T11:04:59+08:00","dateModified": "2023-04-09T12:49:15+08:00","license": "2022©️whitefirer","publisher": {
+        },"genre": "posts","keywords": "tech, xterm.js, python, pyodide, wasm","wordcount":  3625 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2023\/04\/07\/how-to-run-python-in-the-web-terminal\/","datePublished": "2023-04-07T11:04:59+08:00","dateModified": "2023-04-11T00:55:43+08:00","license": "2022©️whitefirer","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -107,8 +107,8 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">如何在页面上跑一个Python终端？</h1><h2 class="single-subtitle">谈谈博客首页终端的那些事</h2><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-04-07">2023-04-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 2216 字&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 5 分钟&nbsp;<span id="/posts/2023/04/07/how-to-run-python-in-the-web-terminal/" class="leancloud_visitors" data-flag-title="如何在页面上跑一个Python终端？">
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-04-07">2023-04-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3625 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 8 分钟&nbsp;<span id="/posts/2023/04/07/how-to-run-python-in-the-web-terminal/" class="leancloud_visitors" data-flag-title="如何在页面上跑一个Python终端？">
                         <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
                     </span>&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
@@ -123,9 +123,10 @@
         <li><a href="#背景">背景</a></li>
         <li><a href="#方案">方案</a>
           <ul>
-            <li><a href="#演示代码">演示代码</a></li>
             <li><a href="#输出获取">输出获取</a></li>
             <li><a href="#多行代码">多行代码</a></li>
+            <li><a href="#插入编辑">插入编辑</a></li>
+            <li><a href="#历史翻页">历史翻页</a></li>
             <li><a href="#代码着色">代码着色</a></li>
           </ul>
         </li>
@@ -166,57 +167,6 @@
     </div>
 <p>盘点最近几的技术潮流，我们可以注意到一项技术，那就是webassembly(简称wasm)，完全可以用wasm在页面上跑python代码嘛，还记得之前大火的在web页面执行python代码的项目<a href="https://pyscript.net/" target="_blank" rel="noopener noreffer ">pyscript</a>吗？它就是基于wasm的接口项目<a href="https://pyodide.org/en/stable/index.html" target="_blank" rel="noopener noreffer ">pyodide</a>实现的。</p>
 <p>使用也很简单，调用<code>pyodide.runPython</code>就行：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="cp">&lt;!doctype html&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">      <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;https://cdn.jsdelivr.net/pyodide/v0.23.0/full/pyodide.js&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">  <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">    Pyodide test page <span class="p">&lt;</span><span class="nt">br</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">    Open your browser console to see Pyodide output
-</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;text/javascript&#34;</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">      <span class="kr">async</span> <span class="kd">function</span> <span class="nx">main</span><span class="p">(){</span>
-</span></span><span class="line"><span class="cl">        <span class="kd">let</span> <span class="nx">pyodide</span> <span class="o">=</span> <span class="kr">await</span> <span class="nx">loadPyodide</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">pyodide</span><span class="p">.</span><span class="nx">runPython</span><span class="p">(</span><span class="sb">`
-</span></span></span><span class="line"><span class="cl"><span class="sb">            import sys
-</span></span></span><span class="line"><span class="cl"><span class="sb">            sys.version
-</span></span></span><span class="line"><span class="cl"><span class="sb">        `</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">pyodide</span><span class="p">.</span><span class="nx">runPython</span><span class="p">(</span><span class="s2">&#34;print(1 + 2)&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">      <span class="p">}</span>
-</span></span><span class="line"><span class="cl">      <span class="nx">main</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">  <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>可以点击前面的链接跳转到它的官方文档看看有什么其它用法，总之挺强大的，支持加载包括numpy的各种库。</p>
-<h4 id="演示代码">演示代码</h4>
-<p>以下是我基于pyodide写的一个在页面上模拟python终端的demo代码：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">  1
@@ -376,6 +326,135 @@
 </span><span class="lnt">155
 </span><span class="lnt">156
 </span><span class="lnt">157
+</span><span class="lnt">158
+</span><span class="lnt">159
+</span><span class="lnt">160
+</span><span class="lnt">161
+</span><span class="lnt">162
+</span><span class="lnt">163
+</span><span class="lnt">164
+</span><span class="lnt">165
+</span><span class="lnt">166
+</span><span class="lnt">167
+</span><span class="lnt">168
+</span><span class="lnt">169
+</span><span class="lnt">170
+</span><span class="lnt">171
+</span><span class="lnt">172
+</span><span class="lnt">173
+</span><span class="lnt">174
+</span><span class="lnt">175
+</span><span class="lnt">176
+</span><span class="lnt">177
+</span><span class="lnt">178
+</span><span class="lnt">179
+</span><span class="lnt">180
+</span><span class="lnt">181
+</span><span class="lnt">182
+</span><span class="lnt">183
+</span><span class="lnt">184
+</span><span class="lnt">185
+</span><span class="lnt">186
+</span><span class="lnt">187
+</span><span class="lnt">188
+</span><span class="lnt">189
+</span><span class="lnt">190
+</span><span class="lnt">191
+</span><span class="lnt">192
+</span><span class="lnt">193
+</span><span class="lnt">194
+</span><span class="lnt">195
+</span><span class="lnt">196
+</span><span class="lnt">197
+</span><span class="lnt">198
+</span><span class="lnt">199
+</span><span class="lnt">200
+</span><span class="lnt">201
+</span><span class="lnt">202
+</span><span class="lnt">203
+</span><span class="lnt">204
+</span><span class="lnt">205
+</span><span class="lnt">206
+</span><span class="lnt">207
+</span><span class="lnt">208
+</span><span class="lnt">209
+</span><span class="lnt">210
+</span><span class="lnt">211
+</span><span class="lnt">212
+</span><span class="lnt">213
+</span><span class="lnt">214
+</span><span class="lnt">215
+</span><span class="lnt">216
+</span><span class="lnt">217
+</span><span class="lnt">218
+</span><span class="lnt">219
+</span><span class="lnt">220
+</span><span class="lnt">221
+</span><span class="lnt">222
+</span><span class="lnt">223
+</span><span class="lnt">224
+</span><span class="lnt">225
+</span><span class="lnt">226
+</span><span class="lnt">227
+</span><span class="lnt">228
+</span><span class="lnt">229
+</span><span class="lnt">230
+</span><span class="lnt">231
+</span><span class="lnt">232
+</span><span class="lnt">233
+</span><span class="lnt">234
+</span><span class="lnt">235
+</span><span class="lnt">236
+</span><span class="lnt">237
+</span><span class="lnt">238
+</span><span class="lnt">239
+</span><span class="lnt">240
+</span><span class="lnt">241
+</span><span class="lnt">242
+</span><span class="lnt">243
+</span><span class="lnt">244
+</span><span class="lnt">245
+</span><span class="lnt">246
+</span><span class="lnt">247
+</span><span class="lnt">248
+</span><span class="lnt">249
+</span><span class="lnt">250
+</span><span class="lnt">251
+</span><span class="lnt">252
+</span><span class="lnt">253
+</span><span class="lnt">254
+</span><span class="lnt">255
+</span><span class="lnt">256
+</span><span class="lnt">257
+</span><span class="lnt">258
+</span><span class="lnt">259
+</span><span class="lnt">260
+</span><span class="lnt">261
+</span><span class="lnt">262
+</span><span class="lnt">263
+</span><span class="lnt">264
+</span><span class="lnt">265
+</span><span class="lnt">266
+</span><span class="lnt">267
+</span><span class="lnt">268
+</span><span class="lnt">269
+</span><span class="lnt">270
+</span><span class="lnt">271
+</span><span class="lnt">272
+</span><span class="lnt">273
+</span><span class="lnt">274
+</span><span class="lnt">275
+</span><span class="lnt">276
+</span><span class="lnt">277
+</span><span class="lnt">278
+</span><span class="lnt">279
+</span><span class="lnt">280
+</span><span class="lnt">281
+</span><span class="lnt">282
+</span><span class="lnt">283
+</span><span class="lnt">284
+</span><span class="lnt">285
+</span><span class="lnt">286
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="cp">&lt;!DOCTYPE html&gt;</span>
@@ -385,7 +464,7 @@
 </span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">&#34;UTF-8&#34;</span><span class="p">&gt;</span>
 </span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>Pyodide in xterm.js<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
 </span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&#34;stylesheet&#34;</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;https://unpkg.com/xterm/css/xterm.css&#34;</span> <span class="p">/&gt;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;https://unpkg.com/xterm/lib/xterm.js&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;https://unpkg.com/xterm@5.1.0/lib/xterm.js&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
 </span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;https://cdn.jsdelivr.net/pyodide/v0.23.0/full/pyodide.js&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
 </span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
 </span></span><span class="line"><span class="cl">        <span class="p">#</span><span class="nn">terminal</span> <span class="p">{</span>
@@ -399,16 +478,23 @@
 </span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
 </span></span><span class="line"><span class="cl">        <span class="kr">const</span> <span class="nx">ENTER</span> <span class="o">=</span> <span class="s1">&#39;\r&#39;</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">        <span class="kr">const</span> <span class="nx">DEL</span> <span class="o">=</span> <span class="s1">&#39;\u007F&#39;</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="kd">var</span> <span class="nx">term</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Terminal</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">term</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;terminal&#39;</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">        <span class="kr">const</span> <span class="nx">VK_UP</span> <span class="o">=</span> <span class="s1">&#39;\x1b[A&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kr">const</span> <span class="nx">VK_DOWN</span> <span class="o">=</span> <span class="s1">&#39;\x1b[B&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kr">const</span> <span class="nx">VK_RIGHT</span> <span class="o">=</span> <span class="s1">&#39;\x1b[C&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kr">const</span> <span class="nx">VK_LEFT</span> <span class="o">=</span> <span class="s1">&#39;\x1b[D&#39;</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">        <span class="kd">var</span> <span class="nx">pyodide</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">pythonCodeX</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">pythonCodeY</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="kd">var</span> <span class="nx">pythonCodeX</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kd">var</span> <span class="nx">pythonCodeY</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kd">var</span> <span class="nx">historyCodeList</span> <span class="o">=</span> <span class="p">[];</span>
+</span></span><span class="line"><span class="cl">        <span class="kd">var</span> <span class="nx">lastPythonCodeLine</span> <span class="o">=</span> <span class="s2">&#34;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kd">var</span> <span class="nx">renderingCode</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">        <span class="kd">var</span> <span class="nx">stdout_codes</span> <span class="o">=</span> <span class="p">[];</span>
 </span></span><span class="line"><span class="cl">        <span class="kd">function</span> <span class="nx">rawstdout</span><span class="p">(</span><span class="nx">code</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">            <span class="nx">stdout_codes</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">code</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="kd">var</span> <span class="nx">term</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Terminal</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">term</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;terminal&#39;</span><span class="p">));</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">        <span class="kr">async</span> <span class="kd">function</span> <span class="nx">startPyodide</span><span class="p">()</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">            <span class="nx">term</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;Starting Python...&#39;</span><span class="p">);</span>
@@ -420,7 +506,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="sb">                    from pygments import highlight
 </span></span></span><span class="line"><span class="cl"><span class="sb">                    from pygments.lexers import PythonLexer
 </span></span></span><span class="line"><span class="cl"><span class="sb">                    from pygments.formatters import TerminalTrueColorFormatter
-</span></span></span><span class="line"><span class="cl"><span class="sb">                    sys.version
+</span></span></span><span class="line"><span class="cl"><span class="sb">                    sys.version + &#39; (https://whitefirer.org)&#39;
 </span></span></span><span class="line"><span class="cl"><span class="sb">                `</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">output</span> <span class="p">=&gt;</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">                <span class="nx">term</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;\rPython &#39;</span> <span class="o">+</span> <span class="nx">output</span> <span class="o">+</span> <span class="s1">&#39;\r\n&#39;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">                <span class="nx">term</span><span class="p">.</span><span class="nx">prompt</span><span class="p">();</span>
@@ -441,13 +527,107 @@
 </span></span><span class="line"><span class="cl">            <span class="s2">&#34;[&#34;</span><span class="o">:</span> <span class="s2">&#34;]&#34;</span><span class="p">,</span>
 </span></span><span class="line"><span class="cl">            <span class="s2">&#34;(&#34;</span><span class="o">:</span> <span class="s2">&#34;)&#34;</span><span class="p">,</span>
 </span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="kd">var</span> <span class="nx">historyIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kd">var</span> <span class="nx">historyCode</span> <span class="o">=</span> <span class="s2">&#34;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kd">var</span> <span class="nx">lastCRIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kd">function</span> <span class="nx">setCursorPosition</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">term</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="sb">`\x1b[</span><span class="si">${</span><span class="nx">y</span><span class="si">}</span><span class="sb">;</span><span class="si">${</span><span class="nx">x</span><span class="si">}</span><span class="sb">H`</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="kr">async</span> <span class="kd">function</span> <span class="nx">writeHightPythonCode</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">pythonCode</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// term.write(e);
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="nx">setCursorPosition</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="kr">await</span> <span class="nx">pyodide</span><span class="p">.</span><span class="nx">runPythonAsync</span><span class="p">(</span><span class="sb">`
+</span></span></span><span class="line"><span class="cl"><span class="sb">                _PY_code = &#34;&#34;&#34;
+</span></span></span><span class="line"><span class="cl"><span class="sb">                </span><span class="si">${</span><span class="nx">pythonCode</span><span class="p">.</span><span class="nx">replaceAll</span><span class="p">(</span><span class="s2">&#34;\\&#34;</span><span class="p">,</span> <span class="s2">&#34;\\\\&#34;</span><span class="p">)</span><span class="si">}</span><span class="sb">
+</span></span></span><span class="line"><span class="cl"><span class="sb">                &#34;&#34;&#34;
+</span></span></span><span class="line"><span class="cl"><span class="sb">                _PY_highlighted_code = highlight(_PY_code, PythonLexer(), TerminalTrueColorFormatter(style=&#39;native&#39;));
+</span></span></span><span class="line"><span class="cl"><span class="sb">                _PY_highlighted_code[:-1]
+</span></span></span><span class="line"><span class="cl"><span class="sb">            `</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">output</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">term</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">output</span><span class="p">.</span><span class="nx">replaceAll</span><span class="p">(</span><span class="s1">&#39;\n&#39;</span><span class="p">,</span> <span class="s1">&#39;\r\n... &#39;</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">            <span class="p">});</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="kd">function</span> <span class="nx">earseCureentLinePythonCode</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="nx">pythonCodeY</span> <span class="o">===</span> <span class="p">(</span><span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorY</span> <span class="o">+</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">term</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;\r\x1b[2K\x1b[01;32m&gt;&gt;&gt; &#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorX</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">term</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;\r\x1b[2K... &#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">term</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;\r\x1b[2K&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">        <span class="nx">term</span><span class="p">.</span><span class="nx">onData</span><span class="p">(</span><span class="nx">e</span> <span class="p">=&gt;</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">            <span class="kr">const</span> <span class="nx">printable</span> <span class="o">=</span> <span class="o">!</span><span class="nx">e</span><span class="p">.</span><span class="nx">altKey</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">e</span><span class="p">.</span><span class="nx">ctrlKey</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">e</span><span class="p">.</span><span class="nx">metaKey</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">            <span class="k">switch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="k">case</span> <span class="nx">VK_LEFT</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="p">(</span><span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorX</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">setCursorPosition</span><span class="p">(</span><span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorX</span><span class="p">,</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorY</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="k">case</span> <span class="nx">VK_RIGHT</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="p">(</span><span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorX</span> <span class="o">&lt;</span> <span class="p">(</span><span class="nx">lastPythonCodeLine</span><span class="p">.</span><span class="nx">length</span> <span class="o">%</span> <span class="nx">term</span><span class="p">.</span><span class="nx">cols</span> <span class="o">+</span> <span class="mi">4</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">setCursorPosition</span><span class="p">(</span><span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorX</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorY</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="k">case</span> <span class="nx">VK_UP</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="p">(</span><span class="nx">historyCodeList</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="p">(</span><span class="nx">pythonCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">pythonCodeX</span> <span class="o">=</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorX</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">pythonCodeY</span> <span class="o">=</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorY</span> <span class="o">+</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">historyCode</span> <span class="o">=</span> <span class="s2">&#34;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">historyIndex</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="p">(</span><span class="nx">historyIndex</span> <span class="o">&gt;</span> <span class="p">(</span><span class="nx">historyCodeList</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">historyIndex</span> <span class="o">=</span> <span class="nx">historyCodeList</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">historyIndex</span> <span class="o">!=</span> <span class="p">(</span><span class="nx">historyCodeList</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">historyCode</span> <span class="o">=</span> <span class="nx">historyCodeList</span><span class="p">[</span><span class="nx">historyCodeList</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="nx">historyIndex</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">earseCureentLinePythonCode</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">lastCRIndex</span> <span class="o">=</span> <span class="nx">pythonCode</span><span class="p">.</span><span class="nx">lastIndexOf</span><span class="p">(</span><span class="s1">&#39;\r&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">pythonCode</span> <span class="o">=</span> <span class="nx">pythonCode</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">lastCRIndex</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nx">historyCode</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="p">(</span><span class="nx">historyCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">writeHightPythonCode</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="nx">pythonCodeY</span> <span class="o">-</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span><span class="p">,</span> <span class="nx">pythonCode</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="k">case</span> <span class="nx">VK_DOWN</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="p">(</span><span class="nx">historyCodeList</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="p">(</span><span class="nx">pythonCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">pythonCodeX</span> <span class="o">=</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorX</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">pythonCodeY</span> <span class="o">=</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorY</span> <span class="o">+</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">historyCode</span> <span class="o">=</span> <span class="s2">&#34;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">historyIndex</span> <span class="o">-=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="p">(</span><span class="nx">historyIndex</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">historyIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">historyIndex</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">historyCode</span> <span class="o">=</span> <span class="nx">lastPythonCodeLine</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">historyCode</span> <span class="o">=</span> <span class="nx">historyCodeList</span><span class="p">[</span><span class="nx">historyCodeList</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="nx">historyIndex</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">earseCureentLinePythonCode</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">lastCRIndex</span> <span class="o">=</span> <span class="nx">pythonCode</span><span class="p">.</span><span class="nx">lastIndexOf</span><span class="p">(</span><span class="s1">&#39;\r&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">pythonCode</span> <span class="o">=</span> <span class="nx">pythonCode</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">lastCRIndex</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nx">historyCode</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="p">(</span><span class="nx">historyCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">writeHightPythonCode</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="nx">pythonCodeY</span> <span class="o">-</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span><span class="p">,</span> <span class="nx">pythonCode</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">break</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">                <span class="k">case</span> <span class="nx">ENTER</span><span class="o">:</span>
 </span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="p">(</span><span class="nx">pythonCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                        <span class="k">if</span> <span class="p">(((</span><span class="nx">pythonCode</span><span class="p">[</span><span class="nx">pythonCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="k">in</span> <span class="nx">blockMap</span><span class="p">))</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">blockFlag</span> <span class="o">==</span> <span class="s2">&#34;&#34;</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">historyIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                        <span class="kd">let</span> <span class="nx">pythonCodeList</span> <span class="o">=</span> <span class="nx">pythonCode</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;\r&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                        <span class="kd">let</span> <span class="nx">lastLine</span> <span class="o">=</span> <span class="nx">pythonCodeList</span><span class="p">[</span><span class="nx">pythonCodeList</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">                        <span class="k">if</span> <span class="p">(</span><span class="nx">lastLine</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                            <span class="nx">historyCodeList</span> <span class="o">=</span> <span class="nx">historyCodeList</span><span class="p">.</span><span class="nx">concat</span><span class="p">(</span><span class="nx">lastLine</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                        <span class="k">if</span> <span class="p">(((</span><span class="nx">pythonCode</span><span class="p">[</span><span class="nx">pythonCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="k">in</span> <span class="nx">blockMap</span><span class="p">))</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">blockFlag</span> <span class="o">===</span> <span class="s2">&#34;&#34;</span><span class="p">))</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">                            <span class="nx">blockFlag</span> <span class="o">=</span> <span class="nx">pythonCode</span><span class="p">[</span><span class="nx">pythonCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
 </span></span><span class="line"><span class="cl">                            <span class="nx">pythonCode</span> <span class="o">+=</span> <span class="nx">e</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">                            <span class="nx">term</span><span class="p">.</span><span class="nx">writeln</span><span class="p">(</span><span class="s2">&#34;\r&#34;</span><span class="p">);</span>
@@ -455,8 +635,8 @@
 </span></span><span class="line"><span class="cl">                            <span class="k">break</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">                        <span class="p">}</span>
 </span></span><span class="line"><span class="cl">                        <span class="k">if</span> <span class="p">(</span><span class="nx">blockFlag</span> <span class="o">!=</span> <span class="s2">&#34;&#34;</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                            <span class="k">if</span> <span class="p">(</span><span class="nx">pythonCode</span><span class="p">[</span><span class="nx">pythonCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="nx">blockMap</span><span class="p">[</span><span class="nx">blockFlag</span><span class="p">])</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                                <span class="nx">blockFlag</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                            <span class="k">if</span> <span class="p">(</span><span class="nx">pythonCode</span><span class="p">[</span><span class="nx">pythonCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">===</span> <span class="nx">blockMap</span><span class="p">[</span><span class="nx">blockFlag</span><span class="p">])</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                                <span class="nx">blockFlag</span> <span class="o">=</span> <span class="s2">&#34;&#34;</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">                            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">                                <span class="nx">pythonCode</span> <span class="o">+=</span> <span class="nx">e</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">                                <span class="nx">term</span><span class="p">.</span><span class="nx">writeln</span><span class="p">(</span><span class="s2">&#34;\r&#34;</span><span class="p">);</span>
@@ -497,35 +677,63 @@
 </span></span><span class="line"><span class="cl">                    <span class="nx">pythonCode</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">                    <span class="k">break</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">                <span class="k">case</span> <span class="nx">DEL</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="p">(</span><span class="nx">term</span><span class="p">.</span><span class="nx">_core</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">x</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                        <span class="nx">term</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;\b \b&#39;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">                        <span class="k">if</span> <span class="p">(</span><span class="nx">pythonCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                            <span class="nx">pythonCode</span> <span class="o">=</span> <span class="nx">pythonCode</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">pythonCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">lastCRIndex</span> <span class="o">=</span> <span class="nx">pythonCode</span><span class="p">.</span><span class="nx">lastIndexOf</span><span class="p">(</span><span class="s1">&#39;\r&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                        <span class="kd">let</span> <span class="nx">lastPythonCodeLine</span> <span class="o">=</span> <span class="nx">pythonCode</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="nx">lastCRIndex</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">pythonCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                        <span class="k">if</span> <span class="p">(</span><span class="nx">term</span><span class="p">.</span><span class="nx">_core</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">x</span> <span class="o">&gt;</span> <span class="mi">4</span> <span class="o">||</span> <span class="nx">lastPythonCodeLine</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;=</span> <span class="nx">term</span><span class="p">.</span><span class="nx">cols</span> <span class="o">-</span> <span class="mi">4</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                            <span class="kd">let</span> <span class="nx">currentCursorY</span> <span class="o">=</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorY</span> <span class="o">+</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                            <span class="kd">let</span> <span class="nx">lasetEditIndex</span> <span class="o">=</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorX</span> <span class="o">-</span> <span class="mi">4</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                            <span class="kd">let</span> <span class="nx">editIndex</span> <span class="o">=</span> <span class="nx">lasetEditIndex</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                            <span class="k">if</span> <span class="p">(</span><span class="nx">lastPythonCodeLine</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;=</span> <span class="nx">term</span><span class="p">.</span><span class="nx">cols</span> <span class="o">-</span> <span class="mi">4</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                                <span class="nx">editIndex</span> <span class="o">=</span> <span class="nx">lasetEditIndex</span> <span class="o">+</span> <span class="p">(</span><span class="nx">currentCursorY</span> <span class="o">-</span> <span class="nx">pythonCodeY</span><span class="p">)</span> <span class="o">*</span> <span class="nx">term</span><span class="p">.</span><span class="nx">cols</span>
+</span></span><span class="line"><span class="cl">                            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                            <span class="nx">pythonCode</span> <span class="o">=</span> <span class="nx">pythonCode</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">lastCRIndex</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nx">lastPythonCodeLine</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">editIndex</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nx">lastPythonCodeLine</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="nx">editIndex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                            <span class="nx">term</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;\x1b[?25l&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                            <span class="nx">earseCureentLinePythonCode</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">                            <span class="nx">writeHightPythonCode</span><span class="p">(</span><span class="nx">pythonCodeX</span><span class="p">,</span> <span class="nx">pythonCodeY</span> <span class="o">-</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span><span class="p">,</span> <span class="nx">pythonCode</span><span class="p">).</span><span class="nx">then</span><span class="p">(()</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                                <span class="k">if</span> <span class="p">(</span><span class="nx">lastPythonCodeLine</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="nx">term</span><span class="p">.</span><span class="nx">cols</span> <span class="o">-</span> <span class="mi">4</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                                    <span class="nx">setCursorPosition</span><span class="p">(</span><span class="nx">term</span><span class="p">.</span><span class="nx">cols</span><span class="p">,</span> <span class="nx">currentCursorY</span> <span class="o">-</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                                    <span class="nx">setCursorPosition</span><span class="p">(</span><span class="nx">lasetEditIndex</span> <span class="o">+</span> <span class="mi">4</span><span class="p">,</span> <span class="nx">currentCursorY</span> <span class="o">-</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                                <span class="nx">term</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;\x1b[?25h&#39;</span><span class="p">);</span> <span class="c1">// Show cursor
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                            <span class="p">});</span>
 </span></span><span class="line"><span class="cl">                        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">                        <span class="k">break</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">                    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">                    <span class="k">break</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">                <span class="k">default</span><span class="o">:</span>
 </span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="p">(</span><span class="nx">printable</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">                        <span class="k">if</span> <span class="p">(</span><span class="nx">e</span> <span class="o">&gt;=</span> <span class="nb">String</span><span class="p">.</span><span class="nx">fromCharCode</span><span class="p">(</span><span class="mh">0x20</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">e</span> <span class="o">&lt;=</span> <span class="nb">String</span><span class="p">.</span><span class="nx">fromCharCode</span><span class="p">(</span><span class="mh">0x7E</span><span class="p">)</span> <span class="o">||</span> <span class="nx">e</span> <span class="o">&gt;=</span> <span class="s1">&#39;\u00a0&#39;</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                            <span class="k">if</span> <span class="p">(</span><span class="nx">pythonCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                            <span class="k">if</span> <span class="p">(</span><span class="nx">renderingCode</span> <span class="o">===</span> <span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                                <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                            <span class="nx">renderingCode</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                            <span class="k">if</span> <span class="p">(</span><span class="nx">pythonCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">                                <span class="nx">pythonCodeX</span> <span class="o">=</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorX</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">                                <span class="nx">pythonCodeY</span> <span class="o">=</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorY</span> <span class="o">+</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">                            <span class="p">}</span>
-</span></span><span class="line"><span class="cl">                            <span class="nx">pythonCode</span> <span class="o">+=</span> <span class="nx">e</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">                            
-</span></span><span class="line"><span class="cl">                            <span class="c1">// term.write(e);
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                            <span class="nx">term</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="sb">`\x1b[?25l\x1b[</span><span class="si">${</span><span class="nx">pythonCodeY</span> <span class="o">-</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span><span class="si">}</span><span class="sb">;</span><span class="si">${</span><span class="nx">pythonCodeX</span><span class="si">}</span><span class="sb">H`</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">                            <span class="nx">pyodide</span><span class="p">.</span><span class="nx">runPythonAsync</span><span class="p">(</span><span class="sb">`
-</span></span></span><span class="line"><span class="cl"><span class="sb">                                _PY_code = &#34;&#34;&#34;
-</span></span></span><span class="line"><span class="cl"><span class="sb">                                </span><span class="si">${</span><span class="nx">pythonCode</span><span class="p">.</span><span class="nx">replaceAll</span><span class="p">(</span><span class="s2">&#34;\\&#34;</span><span class="p">,</span> <span class="s2">&#34;\\\\&#34;</span><span class="p">)</span><span class="si">}</span><span class="sb">
-</span></span></span><span class="line"><span class="cl"><span class="sb">                                &#34;&#34;&#34;
-</span></span></span><span class="line"><span class="cl"><span class="sb">                                _PY_highlighted_code = highlight(_PY_code, PythonLexer(), TerminalTrueColorFormatter(style=&#39;native&#39;));
-</span></span></span><span class="line"><span class="cl"><span class="sb">                                _PY_highlighted_code[:-1]
-</span></span></span><span class="line"><span class="cl"><span class="sb">                            `</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">output</span> <span class="p">=&gt;</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                                <span class="nx">term</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">output</span><span class="p">.</span><span class="nx">replaceAll</span><span class="p">(</span><span class="s1">&#39;\n&#39;</span><span class="p">,</span> <span class="s1">&#39;\r\n... &#39;</span><span class="p">))</span>
-</span></span><span class="line"><span class="cl">                            <span class="p">})</span>
-</span></span><span class="line"><span class="cl">                            <span class="nx">term</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;\x1b[?25h&#39;</span><span class="p">);</span> <span class="c1">// Show cursor
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                            <span class="kd">let</span> <span class="nx">currentCursorY</span> <span class="o">=</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorY</span> <span class="o">+</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                            <span class="nx">lastCRIndex</span> <span class="o">=</span> <span class="nx">pythonCode</span><span class="p">.</span><span class="nx">lastIndexOf</span><span class="p">(</span><span class="s1">&#39;\r&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                            <span class="kd">let</span> <span class="nx">lasetEditIndex</span> <span class="o">=</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorX</span> <span class="o">-</span> <span class="mi">4</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                            <span class="kd">let</span> <span class="nx">editIndex</span> <span class="o">=</span> <span class="nx">lasetEditIndex</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                            <span class="nx">lastPythonCodeLine</span> <span class="o">=</span> <span class="nx">pythonCode</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="nx">lastCRIndex</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">pythonCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                            <span class="k">if</span> <span class="p">(</span><span class="nx">lastPythonCodeLine</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;=</span> <span class="nx">term</span><span class="p">.</span><span class="nx">cols</span> <span class="o">-</span> <span class="mi">4</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                                <span class="nx">editIndex</span> <span class="o">=</span> <span class="nx">lasetEditIndex</span> <span class="o">+</span> <span class="p">(</span><span class="nx">currentCursorY</span> <span class="o">-</span> <span class="nx">pythonCodeY</span><span class="p">)</span> <span class="o">*</span> <span class="nx">term</span><span class="p">.</span><span class="nx">cols</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                            <span class="nx">lastPythonCodeLine</span> <span class="o">=</span> <span class="nx">lastPythonCodeLine</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">editIndex</span><span class="p">)</span> <span class="o">+</span> <span class="nx">e</span> <span class="o">+</span> <span class="nx">lastPythonCodeLine</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="nx">editIndex</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                            <span class="nx">pythonCode</span> <span class="o">=</span> <span class="nx">pythonCode</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">lastCRIndex</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nx">lastPythonCodeLine</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                            <span class="nx">term</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;\x1b[?25l&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                            <span class="nx">writeHightPythonCode</span><span class="p">(</span><span class="nx">pythonCodeX</span><span class="p">,</span> <span class="nx">pythonCodeY</span> <span class="o">-</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span><span class="p">,</span> <span class="nx">pythonCode</span><span class="p">).</span><span class="nx">then</span><span class="p">(()</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                                <span class="k">if</span> <span class="p">((</span><span class="nx">lasetEditIndex</span> <span class="o">+</span> <span class="mi">6</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nx">term</span><span class="p">.</span><span class="nx">cols</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                                    <span class="nx">setCursorPosition</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">currentCursorY</span> <span class="o">-</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                                    <span class="nx">setCursorPosition</span><span class="p">(</span><span class="nx">lasetEditIndex</span> <span class="o">+</span> <span class="mi">6</span><span class="p">,</span> <span class="nx">currentCursorY</span> <span class="o">-</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                                <span class="nx">term</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;\x1b[?25h&#39;</span><span class="p">);</span> <span class="c1">// Show cursor
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                                <span class="nx">renderingCode</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                            <span class="p">});</span>
+</span></span><span class="line"><span class="cl">                        <span class="p">}</span>
 </span></span><span class="line"><span class="cl">                    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">            <span class="p">}</span>
 </span></span><span class="line"><span class="cl">        <span class="p">});</span>
@@ -628,7 +836,7 @@
 </span></span><span class="line"><span class="cl">    <span class="k">switch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">        <span class="k">case</span> <span class="nx">ENTER</span><span class="o">:</span>
 </span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="nx">pythonCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(((</span><span class="nx">pythonCode</span><span class="p">[</span><span class="nx">pythonCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="k">in</span> <span class="nx">blockMap</span><span class="p">))</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">blockFlag</span> <span class="o">==</span> <span class="s2">&#34;&#34;</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(((</span><span class="nx">pythonCode</span><span class="p">[</span><span class="nx">pythonCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="k">in</span> <span class="nx">blockMap</span><span class="p">))</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">blockFlag</span> <span class="o">===</span> <span class="s2">&#34;&#34;</span><span class="p">))</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">                    <span class="nx">blockFlag</span> <span class="o">=</span> <span class="nx">pythonCode</span><span class="p">[</span><span class="nx">pythonCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
 </span></span><span class="line"><span class="cl">                    <span class="nx">pythonCode</span> <span class="o">+=</span> <span class="nx">e</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">                    <span class="nx">term</span><span class="p">.</span><span class="nx">writeln</span><span class="p">(</span><span class="s2">&#34;\r&#34;</span><span class="p">);</span>
@@ -636,7 +844,7 @@
 </span></span><span class="line"><span class="cl">                    <span class="k">break</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">                <span class="p">}</span>
 </span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="nx">blockFlag</span> <span class="o">!=</span> <span class="s2">&#34;&#34;</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="p">(</span><span class="nx">pythonCode</span><span class="p">[</span><span class="nx">pythonCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="nx">blockMap</span><span class="p">[</span><span class="nx">blockFlag</span><span class="p">])</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="p">(</span><span class="nx">pythonCode</span><span class="p">[</span><span class="nx">pythonCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">===</span> <span class="nx">blockMap</span><span class="p">[</span><span class="nx">blockFlag</span><span class="p">])</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">                        <span class="nx">blockFlag</span> <span class="o">=</span> <span class="s2">&#34;&#34;</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">                    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">                        <span class="nx">pythonCode</span> <span class="o">+=</span> <span class="nx">e</span><span class="p">;</span>
@@ -653,6 +861,337 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>多行支持的关键点在于第一次换行时最后一个字符是否需要多行的支持，并且需要一个字符来标记结束，我们通过一个map来映射这样的关系。</p>
+<h4 id="插入编辑">插入编辑</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span><span class="lnt">83
+</span><span class="lnt">84
+</span><span class="lnt">85
+</span><span class="lnt">86
+</span><span class="lnt">87
+</span><span class="lnt">88
+</span><span class="lnt">89
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"> <span class="kd">function</span> <span class="nx">setCursorPosition</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">term</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="sb">`\x1b[</span><span class="si">${</span><span class="nx">y</span><span class="si">}</span><span class="sb">;</span><span class="si">${</span><span class="nx">x</span><span class="si">}</span><span class="sb">H`</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">function</span> <span class="nx">earseCureentLinePythonCode</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nx">pythonCodeY</span> <span class="o">===</span> <span class="p">(</span><span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorY</span> <span class="o">+</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)){</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">term</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;\r\x1b[2K\x1b[01;32m&gt;&gt;&gt; &#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorX</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">term</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;\r\x1b[2K... &#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">term</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;\r\x1b[2K&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">term</span><span class="p">.</span><span class="nx">onData</span><span class="p">(</span><span class="nx">e</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">const</span> <span class="nx">printable</span> <span class="o">=</span> <span class="o">!</span><span class="nx">e</span><span class="p">.</span><span class="nx">altKey</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">e</span><span class="p">.</span><span class="nx">ctrlKey</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">e</span><span class="p">.</span><span class="nx">metaKey</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">switch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">case</span> <span class="nx">VK_LEFT</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorX</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">setCursorPosition</span><span class="p">(</span><span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorX</span><span class="p">,</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorY</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">case</span> <span class="nx">VK_RIGHT</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorX</span> <span class="o">&lt;</span> <span class="p">(</span><span class="nx">lastPythonCodeLine</span><span class="p">.</span><span class="nx">length</span><span class="o">%</span><span class="mi">80</span> <span class="o">+</span> <span class="mi">4</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">setCursorPosition</span><span class="p">(</span><span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorX</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorY</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">...</span>
+</span></span><span class="line"><span class="cl">        <span class="k">case</span> <span class="nx">DEL</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">            <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">lastCRIndex</span> <span class="o">=</span> <span class="nx">pythonCode</span><span class="p">.</span><span class="nx">lastIndexOf</span><span class="p">(</span><span class="s1">&#39;\r&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="kd">let</span> <span class="nx">lastPythonCodeLine</span> <span class="o">=</span> <span class="nx">pythonCode</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="nx">lastCRIndex</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">pythonCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="nx">term</span><span class="p">.</span><span class="nx">_core</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">x</span> <span class="o">&gt;</span> <span class="mi">4</span> <span class="o">||</span> <span class="nx">lastPythonCodeLine</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;=</span> <span class="nx">term</span><span class="p">.</span><span class="nx">cols</span> <span class="o">-</span> <span class="mi">4</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="kd">let</span> <span class="nx">currentCursorY</span> <span class="o">=</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorY</span> <span class="o">+</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="kd">let</span> <span class="nx">lasetEditIndex</span> <span class="o">=</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorX</span> <span class="o">-</span> <span class="mi">4</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="kd">let</span> <span class="nx">editIndex</span> <span class="o">=</span> <span class="nx">lasetEditIndex</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="nx">lastPythonCodeLine</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;=</span> <span class="nx">term</span><span class="p">.</span><span class="nx">cols</span> <span class="o">-</span> <span class="mi">4</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">editIndex</span> <span class="o">=</span> <span class="nx">lasetEditIndex</span> <span class="o">+</span> <span class="p">(</span><span class="nx">currentCursorY</span> <span class="o">-</span> <span class="nx">pythonCodeY</span><span class="p">)</span> <span class="o">*</span> <span class="nx">term</span><span class="p">.</span><span class="nx">cols</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">pythonCode</span> <span class="o">=</span> <span class="nx">pythonCode</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">lastCRIndex</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nx">lastPythonCodeLine</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">editIndex</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nx">lastPythonCodeLine</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="nx">editIndex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">term</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;\x1b[?25l&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">earseCureentLinePythonCode</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">writeHightPythonCode</span><span class="p">(</span><span class="nx">pythonCodeX</span><span class="p">,</span> <span class="nx">pythonCodeY</span> <span class="o">-</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span><span class="p">,</span> <span class="nx">pythonCode</span><span class="p">).</span><span class="nx">then</span><span class="p">(()</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="p">(</span><span class="nx">lastPythonCodeLine</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="nx">term</span><span class="p">.</span><span class="nx">cols</span> <span class="o">-</span> <span class="mi">4</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">setCursorPosition</span><span class="p">(</span><span class="nx">term</span><span class="p">.</span><span class="nx">cols</span><span class="p">,</span> <span class="nx">currentCursorY</span> <span class="o">-</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">setCursorPosition</span><span class="p">(</span><span class="nx">lasetEditIndex</span> <span class="o">+</span> <span class="mi">4</span><span class="p">,</span> <span class="nx">currentCursorY</span> <span class="o">-</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">term</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;\x1b[?25h&#39;</span><span class="p">);</span> <span class="c1">// Show cursor
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="p">});</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">            <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">default</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="nx">printable</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="nx">e</span> <span class="o">&gt;=</span> <span class="nb">String</span><span class="p">.</span><span class="nx">fromCharCode</span><span class="p">(</span><span class="mh">0x20</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">e</span> <span class="o">&lt;=</span> <span class="nb">String</span><span class="p">.</span><span class="nx">fromCharCode</span><span class="p">(</span><span class="mh">0x7E</span><span class="p">)</span> <span class="o">||</span> <span class="nx">e</span> <span class="o">&gt;=</span> <span class="s1">&#39;\u00a0&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="p">(</span><span class="nx">renderingCode</span> <span class="o">===</span> <span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">renderingCode</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="p">(</span><span class="nx">pythonCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">pythonCodeX</span> <span class="o">=</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorX</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">pythonCodeY</span> <span class="o">=</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorY</span> <span class="o">+</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="kd">let</span> <span class="nx">currentCursorY</span> <span class="o">=</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorY</span> <span class="o">+</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">lastCRIndex</span> <span class="o">=</span> <span class="nx">pythonCode</span><span class="p">.</span><span class="nx">lastIndexOf</span><span class="p">(</span><span class="s1">&#39;\r&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                    <span class="kd">let</span> <span class="nx">lasetEditIndex</span> <span class="o">=</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorX</span> <span class="o">-</span> <span class="mi">4</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="kd">let</span> <span class="nx">editIndex</span> <span class="o">=</span> <span class="nx">lasetEditIndex</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">lastPythonCodeLine</span> <span class="o">=</span> <span class="nx">pythonCode</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="nx">lastCRIndex</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">pythonCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="p">(</span><span class="nx">lastPythonCodeLine</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;=</span> <span class="nx">term</span><span class="p">.</span><span class="nx">cols</span> <span class="o">-</span> <span class="mi">4</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">editIndex</span> <span class="o">=</span> <span class="nx">lasetEditIndex</span> <span class="o">+</span> <span class="p">(</span><span class="nx">currentCursorY</span> <span class="o">-</span> <span class="nx">pythonCodeY</span><span class="p">)</span> <span class="o">*</span> <span class="nx">term</span><span class="p">.</span><span class="nx">cols</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">lastPythonCodeLine</span> <span class="o">=</span> <span class="nx">lastPythonCodeLine</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">editIndex</span><span class="p">)</span> <span class="o">+</span> <span class="nx">e</span> <span class="o">+</span> <span class="nx">lastPythonCodeLine</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="nx">editIndex</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">pythonCode</span> <span class="o">=</span> <span class="nx">pythonCode</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">lastCRIndex</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nx">lastPythonCodeLine</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">term</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;\x1b[?25l&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">writeHightPythonCode</span><span class="p">(</span><span class="nx">pythonCodeX</span><span class="p">,</span> <span class="nx">pythonCodeY</span> <span class="o">-</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span><span class="p">,</span> <span class="nx">pythonCode</span><span class="p">).</span><span class="nx">then</span><span class="p">(()</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="k">if</span> <span class="p">((</span><span class="nx">lasetEditIndex</span> <span class="o">+</span> <span class="mi">6</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nx">term</span><span class="p">.</span><span class="nx">cols</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                            <span class="nx">setCursorPosition</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">currentCursorY</span> <span class="o">-</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                            <span class="nx">setCursorPosition</span><span class="p">(</span><span class="nx">lasetEditIndex</span> <span class="o">+</span> <span class="mi">6</span><span class="p">,</span> <span class="nx">currentCursorY</span> <span class="o">-</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">term</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;\x1b[?25h&#39;</span><span class="p">);</span> <span class="c1">// Show cursor
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                        <span class="nx">renderingCode</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">});</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">});</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这里用到的的技巧有利用终端控制符来移动光标位置、光标显隐和清除当前行，其它的主要就是记往编辑位置进行字符串处理。</p>
+<h4 id="历史翻页">历史翻页</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">term</span><span class="p">.</span><span class="nx">onData</span><span class="p">(</span><span class="nx">e</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kr">const</span> <span class="nx">printable</span> <span class="o">=</span> <span class="o">!</span><span class="nx">e</span><span class="p">.</span><span class="nx">altKey</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">e</span><span class="p">.</span><span class="nx">ctrlKey</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">e</span><span class="p">.</span><span class="nx">metaKey</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">switch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">case</span> <span class="nx">VK_UP</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="nx">historyCodeList</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="nx">pythonCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">pythonCodeX</span> <span class="o">=</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorX</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">pythonCodeY</span> <span class="o">=</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorY</span> <span class="o">+</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">historyCode</span> <span class="o">=</span> <span class="s2">&#34;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">historyIndex</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="nx">historyIndex</span> <span class="o">&gt;</span> <span class="p">(</span><span class="nx">historyCodeList</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">historyIndex</span> <span class="o">=</span> <span class="nx">historyCodeList</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">historyIndex</span> <span class="o">!=</span> <span class="p">(</span><span class="nx">historyCodeList</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">historyCode</span> <span class="o">=</span> <span class="nx">historyCodeList</span><span class="p">[</span><span class="nx">historyCodeList</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="nx">historyIndex</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">earseCureentLinePythonCode</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">lastCRIndex</span> <span class="o">=</span> <span class="nx">pythonCode</span><span class="p">.</span><span class="nx">lastIndexOf</span><span class="p">(</span><span class="s1">&#39;\r&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">pythonCode</span> <span class="o">=</span> <span class="nx">pythonCode</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">lastCRIndex</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nx">historyCode</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="nx">historyCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">writeHightPythonCode</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="nx">pythonCodeY</span> <span class="o">-</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span><span class="p">,</span> <span class="nx">pythonCode</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">case</span> <span class="nx">VK_DOWN</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="nx">historyCodeList</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="nx">pythonCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">pythonCodeX</span> <span class="o">=</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorX</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">pythonCodeY</span> <span class="o">=</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">cursorY</span> <span class="o">+</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">historyCode</span> <span class="o">=</span> <span class="s2">&#34;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">historyIndex</span> <span class="o">-=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="nx">historyIndex</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">historyIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">historyIndex</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">historyCode</span> <span class="o">=</span> <span class="nx">lastPythonCodeLine</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span> 
+</span></span><span class="line"><span class="cl">                <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">historyCode</span> <span class="o">=</span> <span class="nx">historyCodeList</span><span class="p">[</span><span class="nx">historyCodeList</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="nx">historyIndex</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">earseCureentLinePythonCode</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">lastCRIndex</span> <span class="o">=</span> <span class="nx">pythonCode</span><span class="p">.</span><span class="nx">lastIndexOf</span><span class="p">(</span><span class="s1">&#39;\r&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">pythonCode</span> <span class="o">=</span> <span class="nx">pythonCode</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">lastCRIndex</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nx">historyCode</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="nx">historyCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">writeHightPythonCode</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="nx">pythonCodeY</span> <span class="o">-</span> <span class="nx">term</span><span class="p">.</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">_normal</span><span class="p">.</span><span class="nx">baseY</span><span class="p">,</span> <span class="nx">pythonCode</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">case</span> <span class="nx">ENTER</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="nx">pythonCode</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">historyIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="kd">let</span> <span class="nx">pythonCodeList</span> <span class="o">=</span> <span class="nx">pythonCode</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;\r&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                    <span class="kd">let</span> <span class="nx">lastLine</span> <span class="o">=</span> <span class="nx">pythonCodeList</span><span class="p">[</span><span class="nx">pythonCodeList</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="p">(</span><span class="nx">lastLine</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">historyCodeList</span> <span class="o">=</span> <span class="nx">historyCodeList</span><span class="p">.</span><span class="nx">concat</span><span class="p">(</span><span class="nx">lastLine</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">...</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                <span class="p">...</span>
+</span></span><span class="line"><span class="cl">                <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">...</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">});</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这里也用到了终端控制符，另外就是用了一个字符串数组来记录历史代码行，主要要注意以下几点：</p>
+<ol>
+<li>上下边界判断；</li>
+<li>复原正在编辑的代码；</li>
+<li>多行代码里行首不同；</li>
+<li>回车后记得清除索引；</li>
+<li>超出终端高度计算相对位置；</li>
+</ol>
 <h4 id="代码着色">代码着色</h4>
 <p>另外相比官方的Python终端，我还借助<code>pygments</code>库给代码们加上了着色，代码如下：</p>
 <div class="highlight"><div class="chroma">
@@ -684,10 +1223,11 @@
 </span></span></span><span class="line"><span class="cl"><span class="sb">    _PY_highlighted_code[:-1]
 </span></span></span><span class="line"><span class="cl"><span class="sb">`</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">output</span> <span class="p">=&gt;</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="nx">term</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">output</span><span class="p">.</span><span class="nx">replaceAll</span><span class="p">(</span><span class="s1">&#39;\n&#39;</span><span class="p">,</span> <span class="s1">&#39;\r\n... &#39;</span><span class="p">))</span>
-</span></span><span class="line"><span class="cl"><span class="p">})</span>
-</span></span></code></pre></td></tr></table>
+</span></span><span class="line"><span class="cl"><span class="p">})</span> <span class="c1">// 注意，示例代码中我把python代码中的库引入放到pyodide的初始化中去了
+</span></span></span></code></pre></td></tr></table>
 </div>
-</div><p><code>pygments</code>还支持多种语言着色（包括python的错误异常信息着色），除了终端着色以外还支持以<code>html</code>、<code>svg</code>、<code>img</code>等多种输出格式，具体可前往其<a href="https://pygments.org" target="_blank" rel="noopener noreffer ">pygments.org</a>官网查看。</p>
+</div><p>主要注意点就是这里的字符串转义和输出显示换行。
+<code>pygments</code>还支持多种语言着色（包括python的错误异常信息着色），除了终端着色以外还支持以<code>html</code>、<code>svg</code>、<code>img</code>等多种输出格式，具体可前往其<a href="https://pygments.org" target="_blank" rel="noopener noreffer ">pygments.org</a>官网查看。</p>
 <h3 id="效果">效果</h3>
 <p>效果如下，试试在里面敲你熟悉的python代码吧~：</p>
 <iframe height="450px" width="100%" frameborder=0 type="text/html" src="/html/pyodide/"></iframe>
@@ -697,8 +1237,8 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2023-04-09&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/f0206299bf532463fed15c078c4fec99a4a574b2" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) f0206299bf532463fed15c078c4fec99a4a574b2: add python code&#39;s color and mutil lines support to the console box">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>f020629</a></span>
+                <span>更新于 2023-04-11&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/2cc38b187a937b426d158587e6588f7fb587f0bf" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) 2cc38b187a937b426d158587e6588f7fb587f0bf: add python code edit &amp;&amp; history">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>2cc38b1</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
