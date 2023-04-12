@@ -141,6 +141,8 @@
                     }
                     break;
                 case VK_RIGHT:
+                    lastCRIndex = pythonCode.lastIndexOf('\r');
+                    lastPythonCodeLine = pythonCode.substring(lastCRIndex + 1, pythonCode.length + 1);
                     if (term.buffer._normal.cursorX < (lastPythonCodeLine.length % term.cols + 4)) {
                         setCursorPosition(term.buffer._normal.cursorX + 2, term.buffer._normal.cursorY + 1);
                     }
@@ -250,31 +252,29 @@
                     pythonCode = '';
                     break;
                 case DEL:
-                    {
-                        lastCRIndex = pythonCode.lastIndexOf('\r');
-                        let lastPythonCodeLine = pythonCode.substring(lastCRIndex + 1, pythonCode.length + 1);
-                        if (term._core.buffer.x > 4 || lastPythonCodeLine.length >= term.cols - 4) {
-                            let currentCursorY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
-                            let lasetEditIndex = term.buffer._normal.cursorX - 4;
-                            let editIndex = lasetEditIndex;
-                            if (lastPythonCodeLine.length >= term.cols - 4) {
-                                editIndex = lasetEditIndex + (currentCursorY - pythonCodeY) * term.cols
-                            }
-                            pythonCode = pythonCode.substring(0, lastCRIndex + 1) + lastPythonCodeLine.slice(0, editIndex - 1) + lastPythonCodeLine.slice(editIndex);
-                            term.write('\x1b[?25l');
-                            earseCureentLinePythonCode();
-                            writeHightPythonCode(pythonCodeX, pythonCodeY - term.buffer._normal.baseY, pythonCode).then(() => {
-                                if (lastPythonCodeLine.length === term.cols - 4) {
-                                    setCursorPosition(term.cols, currentCursorY - term.buffer._normal.baseY - 1);
-                                } else {
-                                    setCursorPosition(lasetEditIndex + 4, currentCursorY - term.buffer._normal.baseY);
-                                }
-                                term.write('\x1b[?25h'); // Show cursor
-                            });
+                    lastCRIndex = pythonCode.lastIndexOf('\r');
+                    lastPythonCodeLine = pythonCode.substring(lastCRIndex + 1, pythonCode.length + 1);
+                    if (term._core.buffer.x > 4 || lastPythonCodeLine.length >= term.cols - 4) {
+                        let currentCursorY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
+                        let lasetEditIndex = term.buffer._normal.cursorX - 4;
+                        let editIndex = lasetEditIndex;
+                        if (lastPythonCodeLine.length >= term.cols - 4) {
+                            editIndex = lasetEditIndex + (currentCursorY - pythonCodeY) * term.cols
                         }
-
-                        break;
+                        pythonCode = pythonCode.substring(0, lastCRIndex + 1) + lastPythonCodeLine.slice(0, editIndex - 1) + lastPythonCodeLine.slice(editIndex);
+                        term.write('\x1b[?25l');
+                        earseCureentLinePythonCode();
+                        writeHightPythonCode(pythonCodeX, pythonCodeY - term.buffer._normal.baseY, pythonCode).then(() => {
+                            if (lastPythonCodeLine.length === term.cols - 4) {
+                                setCursorPosition(term.cols, currentCursorY - term.buffer._normal.baseY - 1);
+                            } else {
+                                setCursorPosition(lasetEditIndex + 4, currentCursorY - term.buffer._normal.baseY);
+                            }
+                            term.write('\x1b[?25h'); // Show cursor
+                        });
                     }
+
+                    break;
                 default:
                     if (printable) {
                         if (e >= String.fromCharCode(0x20) && e <= String.fromCharCode(0x7E) || e >= '\u00a0') {
@@ -404,15 +404,16 @@ term.onData(e => {
             }
             break;
         case VK_RIGHT:
+            lastCRIndex = pythonCode.lastIndexOf('\r');
+            lastPythonCodeLine = pythonCode.substring(lastCRIndex + 1, pythonCode.length + 1);
             if (term.buffer._normal.cursorX < (lastPythonCodeLine.length%80 + 4)) {
                 setCursorPosition(term.buffer._normal.cursorX + 2, term.buffer._normal.cursorY + 1);
             }
             break;
         ...
         case DEL:
-            {
             lastCRIndex = pythonCode.lastIndexOf('\r');
-            let lastPythonCodeLine = pythonCode.substring(lastCRIndex + 1, pythonCode.length + 1);
+            lastPythonCodeLine = pythonCode.substring(lastCRIndex + 1, pythonCode.length + 1);
             if (term._core.buffer.x > 4 || lastPythonCodeLine.length >= term.cols - 4) {
                 let currentCursorY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
                 let lasetEditIndex = term.buffer._normal.cursorX - 4;
@@ -434,7 +435,6 @@ term.onData(e => {
             }
         
             break;
-        }
         default:
             if (printable) {
                 if (e >= String.fromCharCode(0x20) && e <= String.fromCharCode(0x7E) || e >= '\u00a0') {
