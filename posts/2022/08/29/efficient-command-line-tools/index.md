@@ -19,8 +19,10 @@ git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:
 
 ###### 自动补全（zsh-autosuggestions） 
 ```bash
-git clone git://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
+git clone https://github.com/zsh-users/zsh-autosuggestions.git $ZSH_CUSTOM/plugins/zsh-autosuggestions
 ```
+
+最后记得将它们加到`.zshrc`里。
 
 ###### 集群环境显示（zsh-kubectl-prompt)  
 可参考https://github.com/whitefirer/workspace/blob/main/.zshrc进行配置：
