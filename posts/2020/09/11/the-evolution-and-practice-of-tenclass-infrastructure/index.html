@@ -5,15 +5,15 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
         <title>荔枝微课基础架构的演进与实践 - whitefirer[PG]</title><meta name="Description" content="Welcome to the blog of whitefirer."><meta property="og:title" content="荔枝微课基础架构的演进与实践" />
-<meta property="og:description" content="近几年，云原生技术和理念得到广泛接受，众多企业开始探索云原生架构转型落地。本文将会详细讲述荔枝微课是如何做云原生下的微服务基础架构设计。 王诚" />
+<meta property="og:description" content="导语 本文整理自又拍云举办的微服务架构设计与实践｜Open Talk 线上公开课，荔枝微课基础架构负责人王诚强做的题为《荔枝微课基础架构的演进与实践 》 的" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://whitefirer.org/posts/2020/09/11/the-evolution-and-practice-of-tenclass-infrastructure/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2020-09-11T18:30:00+08:00" />
-<meta property="article:modified_time" content="2023-11-05T00:00:41+08:00" /><meta property="og:site_name" content="whitefirer[PG]" />
+<meta property="article:modified_time" content="2023-11-05T11:34:39+08:00" /><meta property="og:site_name" content="whitefirer[PG]" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="荔枝微课基础架构的演进与实践"/>
-<meta name="twitter:description" content="近几年，云原生技术和理念得到广泛接受，众多企业开始探索云原生架构转型落地。本文将会详细讲述荔枝微课是如何做云原生下的微服务基础架构设计。 王诚"/>
+<meta name="twitter:description" content="导语 本文整理自又拍云举办的微服务架构设计与实践｜Open Talk 线上公开课，荔枝微课基础架构负责人王诚强做的题为《荔枝微课基础架构的演进与实践 》 的"/>
 <meta name="application-name" content="whitefirer[PG]">
 <meta name="apple-mobile-web-app-title" content="whitefirer[PG]"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -28,8 +28,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/whitefirer.org\/posts\/2020\/09\/11\/the-evolution-and-practice-of-tenclass-infrastructure\/"
-        },"genre": "posts","keywords": "tech, cloud native","wordcount":  5893 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2020\/09\/11\/the-evolution-and-practice-of-tenclass-infrastructure\/","datePublished": "2020-09-11T18:30:00+08:00","dateModified": "2023-11-05T00:00:41+08:00","license": "2022©️whitefirer","publisher": {
+        },"genre": "posts","keywords": "tech, cloud native","wordcount":  6015 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2020\/09\/11\/the-evolution-and-practice-of-tenclass-infrastructure\/","datePublished": "2020-09-11T18:30:00+08:00","dateModified": "2023-11-05T11:34:39+08:00","license": "2022©️whitefirer","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -108,8 +108,8 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">荔枝微课基础架构的演进与实践</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2020-09-11">2020-09-11</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 5893 字&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 12 分钟&nbsp;<span id="/posts/2020/09/11/the-evolution-and-practice-of-tenclass-infrastructure/" class="leancloud_visitors" data-flag-title="荔枝微课基础架构的演进与实践">
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2020-09-11">2020-09-11</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 6015 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 13 分钟&nbsp;<span id="/posts/2020/09/11/the-evolution-and-practice-of-tenclass-infrastructure/" class="leancloud_visitors" data-flag-title="荔枝微课基础架构的演进与实践">
                         <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
                     </span>&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
@@ -151,7 +151,15 @@
     </li>
   </ul>
 </nav></div>
-            </div><div class="content" id="content"><p>近几年，云原生技术和理念得到广泛接受，众多企业开始探索云原生架构转型落地。本文将会详细讲述荔枝微课是如何做云原生下的微服务基础架构设计。</p>
+            </div><div class="content" id="content"><div class="details admonition tip open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-lightbulb fa-fw" aria-hidden="true"></i>导语<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">本文整理自又拍云举办的微服务架构设计与实践｜Open Talk 线上公开课，荔枝微课基础架构负责人王诚强做的题为《荔枝微课基础架构的演进与实践 》 的分享。本次活动还邀请了Apache APISIX 和又拍云等企业的技术专家分享 API、Service Mesh 等相关实战经验。</div>
+        </div>
+    </div>
+<p>近几年，云原生技术和理念得到广泛接受，众多企业开始探索云原生架构转型落地。本文将会详细讲述荔枝微课是如何做云原生下的微服务基础架构设计。</p>
 <p>王诚强，荔枝微课基础架构负责人。主要从事基础技术研究开发、基于云原生的基础架构设计以及基础架构团队的管理建设。致力于云原生理念下，以微服务搭建中台。</p>
 <h3 id="云原生未来架构的演化方向">云原生：未来架构的演化方向</h3>
 <p>云原生（Cloud Native）是未来架构的演化方向，包含了一组应用模式，用于帮助企业快速、持续、可靠、规模化地交付业务软件，由微服务架构、DevOps 和以容器为代表的敏捷基础架构组成，其中包含很多有利于我们做更多扩展持续演进的理念。我认为云原生是一种文化、一种理念， 也是一种生态，既包括技术（微服务、敏捷基础设施 K8S），也包括管理（DevOps、持续交付）， 范围极其广泛，<strong>总得来讲是一种围绕云计算时代的架构</strong>。</p>
@@ -319,8 +327,8 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2023-11-05&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/47286f91ebb38e2d6b9eb367cab93caaa2ca63ab" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) 47286f91ebb38e2d6b9eb367cab93caaa2ca63ab: post old articles for backup">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>47286f9</a></span>
+                <span>更新于 2023-11-05&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/869cc1c63c735440049f6cffb6fc5e99586122d3" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) 869cc1c63c735440049f6cffb6fc5e99586122d3: add introdutions for the new article">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>869cc1c</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>

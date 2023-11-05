@@ -58,7 +58,7 @@
     <pubDate>Tue, 13 Apr 2021 20:01:00 &#43;0800</pubDate>
     <author>whitefirer</author>
     <guid>https://whitefirer.org/posts/2021/04/13/building-a-distributed-pressure-testing-system-based-on-kubernetes/</guid>
-    <description><![CDATA[本文根据2021年4月10日深圳站举办的【腾讯云原生技术开放日】 线下活动中，荔枝微课基础架构负责人王诚强关于“基于 kubernetes 搭建分布式压测系统”的演]]></description>
+    <description><![CDATA[导语 本文根据2021年4月10日深圳站举办的【腾讯云原生技术开放日】 线下活动中，荔枝微课基础架构负责人王诚强关于“基于 kubernetes 搭建分布式压测系统”]]></description>
 </item>
 <item>
     <title>荔枝微课基础架构的演进与实践</title>
@@ -66,7 +66,7 @@
     <pubDate>Fri, 11 Sep 2020 18:30:00 &#43;0800</pubDate>
     <author>whitefirer</author>
     <guid>https://whitefirer.org/posts/2020/09/11/the-evolution-and-practice-of-tenclass-infrastructure/</guid>
-    <description><![CDATA[近几年，云原生技术和理念得到广泛接受，众多企业开始探索云原生架构转型落地。本文将会详细讲述荔枝微课是如何做云原生下的微服务基础架构设计。 王诚]]></description>
+    <description><![CDATA[导语 本文整理自又拍云举办的微服务架构设计与实践｜Open Talk 线上公开课，荔枝微课基础架构负责人王诚强做的题为《荔枝微课基础架构的演进与实践 》 的]]></description>
 </item>
 </channel>
 </rss>
