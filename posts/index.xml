@@ -52,5 +52,21 @@
     <guid>https://whitefirer.org/posts/2022/08/13/how-to-settingup-blog-with-hugo-github-netlify/</guid>
     <description><![CDATA[背景 方案 通过配置 Github Action 来编译构建我们的网站文件并发布到 Github Pages 。 与此同时，通过 Netlify 监听 Github 仓库的变化，同步更新部署到 Netlify App 网站。 当然其中每个步骤都可以替]]></description>
 </item>
+<item>
+    <title>荔枝微课基于 kubernetes 搭建分布式压测系统</title>
+    <link>https://whitefirer.org/posts/2021/04/13/building-a-distributed-pressure-testing-system-based-on-kubernetes/</link>
+    <pubDate>Tue, 13 Apr 2021 20:01:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2021/04/13/building-a-distributed-pressure-testing-system-based-on-kubernetes/</guid>
+    <description><![CDATA[本文根据2021年4月10日深圳站举办的【腾讯云原生技术开放日】 线下活动中，荔枝微课基础架构负责人王诚强关于“基于 kubernetes 搭建分布式压测系统”的演]]></description>
+</item>
+<item>
+    <title>荔枝微课基础架构的演进与实践</title>
+    <link>https://whitefirer.org/posts/2020/09/11/the-evolution-and-practice-of-tenclass-infrastructure/</link>
+    <pubDate>Fri, 11 Sep 2020 18:30:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2020/09/11/the-evolution-and-practice-of-tenclass-infrastructure/</guid>
+    <description><![CDATA[近几年，云原生技术和理念得到广泛接受，众多企业开始探索云原生架构转型落地。本文将会详细讲述荔枝微课是如何做云原生下的微服务基础架构设计。 王诚]]></description>
+</item>
 </channel>
 </rss>
