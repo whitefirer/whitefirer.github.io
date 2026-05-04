@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Claude Code 插件完全指南：省钱、省 Token、提升开发效率 - whitefirer[PG]</title><meta name="Description" content="介绍四个 Claude Code 插件（caveman、superpowers、claude-mem、frontend-design）和一个 MCP 服务（claude-context），覆盖输出压缩、开发流程、跨会话记忆、前端审美、语义搜索五个维度，实测 token 消耗降低 70-80%。"><meta property="og:url" content="https://whitefirer.org/posts/2026/04/28/claude-code-plugins-guide/">
+  <meta property="og:site_name" content="whitefirer[PG]">
+  <meta property="og:title" content="Claude Code 插件完全指南：省钱、省 Token、提升开发效率">
+  <meta property="og:description" content="介绍四个 Claude Code 插件（caveman、superpowers、claude-mem、frontend-design）和一个 MCP 服务（claude-context），覆盖输出压缩、开发流程、跨会话记忆、前端审美、语义搜索五个维度，实测 token 消耗降低 70-80%。">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-04-28T21:30:00+08:00">
+    <meta property="article:modified_time" content="2026-04-28T22:13:45+08:00">
+    <meta property="article:tag" content="技术">
+    <meta property="article:tag" content="Ai">
+    <meta property="article:tag" content="Claude Code">
+    <meta property="article:tag" content="Plugin">
+    <meta property="article:tag" content="Development Tools">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Claude Code 插件完全指南：省钱、省 Token、提升开发效率">
+  <meta name="twitter:description" content="介绍四个 Claude Code 插件（caveman、superpowers、claude-mem、frontend-design）和一个 MCP 服务（claude-context），覆盖输出压缩、开发流程、跨会话记忆、前端审美、语义搜索五个维度，实测 token 消耗降低 70-80%。">
+<meta name="application-name" content="whitefirer[PG]">
+<meta name="apple-mobile-web-app-title" content="whitefirer[PG]"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/04/28/claude-code-plugins-guide/" /><link rel="prev" href="https://whitefirer.org/posts/2023/11/05/life-and-world/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Claude Code 插件完全指南：省钱、省 Token、提升开发效率",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/whitefirer.org\/posts\/2026\/04\/28\/claude-code-plugins-guide\/"
+        },"genre": "posts","keywords": "tech, ai, claude code, plugin, development tools","wordcount":  6070 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/04\/28\/claude-code-plugins-guide\/","datePublished": "2026-04-28T21:30:00+08:00","dateModified": "2026-04-28T22:13:45+08:00","license": "2022©️whitefirer","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "whitefirer"
+            },"description": "介绍四个 Claude Code 插件（caveman、superpowers、claude-mem、frontend-design）和一个 MCP 服务（claude-context），覆盖输出压缩、开发流程、跨会话记忆、前端审美、语义搜索五个维度，实测 token 消耗降低 70-80%。"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="whitefirer[PG]">whitefirer[PG]</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/2026/04/28/claude-code-plugins-guide/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="whitefirer[PG]">whitefirer[PG]</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/posts/2026/04/28/claude-code-plugins-guide/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Claude Code 插件完全指南：省钱、省 Token、提升开发效率</h1><h2 class="single-subtitle">四个必装插件 &#43; 一个 MCP 服务，让 AI 编码助手从用变成好用</h2><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-04-28">2026-04-28</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 6070 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 13 分钟&nbsp;<span id="/posts/2026/04/28/claude-code-plugins-guide/" class="leancloud_visitors" data-flag-title="Claude Code 插件完全指南：省钱、省 Token、提升开发效率">
+                        <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
+                    </span>&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#前言">前言</a></li>
+    <li><a href="#目录">目录</a></li>
+    <li><a href="#1-caveman输出-token-直降-75">1. caveman：输出 token 直降 75%</a>
+      <ul>
+        <li><a href="#原理">原理</a></li>
+        <li><a href="#效果对比">效果对比</a></li>
+        <li><a href="#实际基准测试">实际基准测试</a></li>
+        <li><a href="#强度等级">强度等级</a></li>
+        <li><a href="#扩展技能">扩展技能</a></li>
+        <li><a href="#重要说明">重要说明</a></li>
+      </ul>
+    </li>
+    <li><a href="#2-superpowers完整软件开发方法论">2. superpowers：完整软件开发方法论</a>
+      <ul>
+        <li><a href="#核心理念">核心理念</a></li>
+        <li><a href="#技能全景15-技能">技能全景（15+ 技能）</a>
+          <ul>
+            <li><a href="#规划阶段">规划阶段</a></li>
+            <li><a href="#实现阶段">实现阶段</a></li>
+            <li><a href="#审查阶段">审查阶段</a></li>
+            <li><a href="#完成阶段">完成阶段</a></li>
+          </ul>
+        </li>
+        <li><a href="#token-节省机理">Token 节省机理</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-claude-mem跨会话持久记忆">3. claude-mem：跨会话持久记忆</a>
+      <ul>
+        <li><a href="#问题">问题</a></li>
+        <li><a href="#解决方案">解决方案</a></li>
+        <li><a href="#token-节省实测">Token 节省实测</a></li>
+        <li><a href="#技能系统">技能系统</a></li>
+        <li><a href="#token-节省">Token 节省</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-frontend-design告别-ai-通用审美">4. frontend-design：告别 AI 通用审美</a>
+      <ul>
+        <li><a href="#问题-1">问题</a></li>
+        <li><a href="#解决方案-1">解决方案</a></li>
+        <li><a href="#效果对比-1">效果对比</a></li>
+        <li><a href="#token-节省-1">Token 节省</a></li>
+      </ul>
+    </li>
+    <li><a href="#5-claude-context语义代码搜索">5. claude-context：语义代码搜索</a>
+      <ul>
+        <li><a href="#问题-2">问题</a></li>
+        <li><a href="#解决方案-2">解决方案</a></li>
+        <li><a href="#token-节省实测-1">Token 节省实测</a></li>
+        <li><a href="#适用场景">适用场景</a></li>
+        <li><a href="#不适用场景">不适用场景</a></li>
+      </ul>
+    </li>
+    <li><a href="#6-mcp-vs-插件两种扩展机制">6. MCP vs 插件：两种扩展机制</a>
+      <ul>
+        <li><a href="#对比">对比</a></li>
+        <li><a href="#如何选择">如何选择</a></li>
+        <li><a href="#实际协作">实际协作</a></li>
+      </ul>
+    </li>
+    <li><a href="#7-插件组合11111--5">7. 插件组合：1+1+1+1+1 &gt; 5</a>
+      <ul>
+        <li><a href="#实际场景">实际场景</a></li>
+      </ul>
+    </li>
+    <li><a href="#8-安装与总结">8. 安装与总结</a>
+      <ul>
+        <li><a href="#安装">安装</a></li>
+        <li><a href="#token-节省总览">Token 节省总览</a></li>
+        <li><a href="#结论">结论</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><blockquote>
+<p>四个必装插件 + 一个 MCP 服务，让 AI 编码助手从&quot;能用&quot;变成&quot;好用&quot;。</p>
+</blockquote>
+<hr>
+<h2 id="前言">前言</h2>
+<p>Claude Code 是 Anthropic 推出的终端原生 AI 编码助手。开箱即用已经很强大，但通过<strong>插件系统</strong>和 <strong>MCP 服务</strong>可以实现质的飞跃。</p>
+<p>本文介绍四个经过实践验证的插件（caveman / superpowers / claude-mem / frontend-design）和一个 MCP 服务（claude-context），覆盖输出压缩、开发方法论、跨会话记忆、前端设计、代码语义搜索五个维度。</p>
+<hr>
+<h2 id="目录">目录</h2>
+<ol>
+<li><a href="#1-caveman%e8%be%93%e5%87%ba-token-%e7%9b%b4%e9%99%8d-75" rel="">caveman：输出 token 直降 75%</a></li>
+<li><a href="#2-superpowers%e5%ae%8c%e6%95%b4%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91%e6%96%b9%e6%b3%95%e8%ae%ba" rel="">superpowers：完整软件开发方法论</a></li>
+<li><a href="#3-claude-mem%e8%b7%a8%e4%bc%9a%e8%af%9d%e6%8c%81%e4%b9%85%e8%ae%b0%e5%bf%86" rel="">claude-mem：跨会话持久记忆</a></li>
+<li><a href="#4-frontend-design%e5%91%8a%e5%88%ab-ai-%e9%80%9a%e7%94%a8%e5%ae%a1%e7%be%8e" rel="">frontend-design：告别 AI 通用审美</a></li>
+<li><a href="#5-claude-context%e8%af%ad%e4%b9%89%e4%bb%a3%e7%a0%81%e6%90%9c%e7%b4%a2" rel="">claude-context：语义代码搜索</a></li>
+<li><a href="#6-mcp-vs-%e6%8f%92%e4%bb%b6%e4%b8%a4%e7%a7%8d%e6%89%a9%e5%b1%95%e6%9c%ba%e5%88%b6" rel="">MCP vs 插件：两种扩展机制</a></li>
+<li><a href="#7-%e6%8f%92%e4%bb%b6%e7%bb%84%e5%90%8811111--5" rel="">插件组合：1+1+1+1+1 &gt; 5</a></li>
+<li><a href="#8-%e5%ae%89%e8%a3%85%e4%b8%8e%e6%80%bb%e7%bb%93" rel="">安装与总结</a></li>
+</ol>
+<hr>
+<h2 id="1-caveman输出-token-直降-75">1. caveman：输出 token 直降 75%</h2>
+<p><strong>GitHub</strong>: <a href="https://github.com/JuliusBrussee/caveman" target="_blank" rel="noopener noreffer ">JuliusBrussee/caveman</a>
+<strong>维护者</strong>: Julius Brussee
+<strong>核心价值</strong>: 让 AI 像穴居人一样说话——保留 100% 技术准确度，砍掉 75% 输出 token。</p>
+<h3 id="原理">原理</h3>
+<p>大语言模型回答问题时会生成大量填充词（&ldquo;当然&rdquo;、&ldquo;我建议你&rdquo;、&ldquo;需要注意的是&rdquo;）。这些词在礼貌的人类对话中有用，但对编码协助是噪音。caveman 通过 SessionStart hook 注入指令，让模型：</p>
+<ul>
+<li>删除冠词、填充词、客套话</li>
+<li>用短句和碎片代替完整句子</li>
+<li>保留所有代码块、技术术语、文件路径</li>
+</ul>
+<h3 id="效果对比">效果对比</h3>
+<p><strong>正常模式（69 token）：</strong></p>
+<blockquote>
+<p>&ldquo;The reason your React component is re-rendering is likely because you&rsquo;re creating a new object reference on each render cycle. When you pass an inline object as a prop, React&rsquo;s shallow comparison sees it as a different object every time, which triggers a re-render. I&rsquo;d recommend using useMemo to memoize the object.&rdquo;</p>
+</blockquote>
+<p><strong>Caveman 模式（19 token）：</strong></p>
+<blockquote>
+<p>&ldquo;New object ref each render. Inline object prop = new ref = re-render. Wrap in <code>useMemo</code>.&rdquo;</p>
+</blockquote>
+<p><strong>相同修复，75% 更少字符。</strong></p>
+<h3 id="实际基准测试">实际基准测试</h3>
+<p>从 Claude API 实测 token 数（<a href="https://github.com/JuliusBrussee/caveman/blob/main/benchmarks/" target="_blank" rel="noopener noreffer ">可复现</a>）：</p>
+<table>
+<thead>
+<tr>
+<th>任务</th>
+<th style="text-align:center">正常 (token)</th>
+<th style="text-align:center">Caveman (token)</th>
+<th style="text-align:center">节省</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>解释 React 重渲染 bug</td>
+<td style="text-align:center">1180</td>
+<td style="text-align:center">159</td>
+<td style="text-align:center">87%</td>
+</tr>
+<tr>
+<td>修复认证中间件</td>
+<td style="text-align:center">704</td>
+<td style="text-align:center">121</td>
+<td style="text-align:center">83%</td>
+</tr>
+<tr>
+<td>设置 PostgreSQL 连接池</td>
+<td style="text-align:center">2347</td>
+<td style="text-align:center">380</td>
+<td style="text-align:center">84%</td>
+</tr>
+<tr>
+<td>Docker 多阶段构建</td>
+<td style="text-align:center">1042</td>
+<td style="text-align:center">290</td>
+<td style="text-align:center">72%</td>
+</tr>
+<tr>
+<td>审查 PR 安全问题</td>
+<td style="text-align:center">678</td>
+<td style="text-align:center">398</td>
+<td style="text-align:center">41%</td>
+</tr>
+<tr>
+<td><strong>平均</strong></td>
+<td style="text-align:center"><strong>1214</strong></td>
+<td style="text-align:center"><strong>294</strong></td>
+<td style="text-align:center"><strong>65%</strong></td>
+</tr>
+</tbody>
+</table>
+<p>节省范围 22%–87%，平均 65%。越复杂的解释性任务，节省越明显。</p>
+<h3 id="强度等级">强度等级</h3>
+<p>caveman 提供三种强度 + 文言文模式：</p>
+<table>
+<thead>
+<tr>
+<th>等级</th>
+<th>触发</th>
+<th>效果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Lite</strong></td>
+<td><code>/caveman lite</code></td>
+<td>删除填充词，保留语法</td>
+</tr>
+<tr>
+<td><strong>Full</strong></td>
+<td><code>/caveman full</code></td>
+<td>默认。删除冠词，碎片化</td>
+</tr>
+<tr>
+<td><strong>Ultra</strong></td>
+<td><code>/caveman ultra</code></td>
+<td>最大压缩。电报级精简</td>
+</tr>
+<tr>
+<td><strong>Wenyan</strong></td>
+<td><code>/caveman wenyan</code></td>
+<td>文言文模式，古典中文压缩</td>
+</tr>
+</tbody>
+</table>
+<h3 id="扩展技能">扩展技能</h3>
+<p>caveman 生态包括三个子技能：</p>
+<ul>
+<li><strong>caveman-commit</strong>: 生成 ≤50 字符的 Conventional Commits 提交信息</li>
+<li><strong>caveman-review</strong>: 单行 PR 审查评论：&ldquo;L42: red_circle: bug: user null. Add guard.&rdquo;</li>
+<li><strong>caveman-compress</strong>: 压缩记忆文件（CLAUDE.md 等），实测节省 ~46% 输入 token</li>
+</ul>
+<h3 id="重要说明">重要说明</h3>
+<p>caveman <strong>只影响输出 token</strong>，不影响思考/推理 token。模型能力不变，只是&quot;嘴&quot;变小了。</p>
+<blockquote>
+<p>2026 年 3 月论文 <a href="https://arxiv.org/abs/2604.00025" target="_blank" rel="noopener noreffer ">Brevity Constraints Reverse Performance Hierarchies in Language Models</a> 发现：约束大模型做简短回答，在某些基准测试上<strong>准确率提升 26 个百分点</strong>。少说话 ≠ 能力下降。</p>
+</blockquote>
+<hr>
+<h2 id="2-superpowers完整软件开发方法论">2. superpowers：完整软件开发方法论</h2>
+<p><strong>GitHub</strong>: <a href="https://github.com/obra/superpowers" target="_blank" rel="noopener noreffer ">obra/superpowers</a>
+<strong>维护者</strong>: Jesse Vincent (Prime Radiant)
+<strong>核心价值</strong>: 将松散提示词变成结构化开发流程，从需求到合并覆盖全流程。</p>
+<h3 id="核心理念">核心理念</h3>
+<p>Superpowers 解决一个根本问题：AI 编码助手&quot;太着急写代码&quot;。它倾向于跳过设计、跳过测试、直接输出实现。这在简单任务上没问题，复杂任务上有效率灾难。</p>
+<p>Superpowers 强制 agent 遵循：<strong>头脑风暴 → 设计 → 计划 → TDD → 实现 → 审查 → 合并</strong>。</p>
+<h3 id="技能全景15-技能">技能全景（15+ 技能）</h3>
+<h4 id="规划阶段">规划阶段</h4>
+<table>
+<thead>
+<tr>
+<th>技能</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>brainstorming</strong></td>
+<td>苏格拉底式需求澄清，反问用户意图，输出设计文档</td>
+</tr>
+<tr>
+<td><strong>writing-plans</strong></td>
+<td>将设计拆成 2-5 分钟的小任务，精确到文件路径和完整代码</td>
+</tr>
+<tr>
+<td><strong>using-git-worktrees</strong></td>
+<td>创建隔离的 git worktree，保护主分支</td>
+</tr>
+</tbody>
+</table>
+<h4 id="实现阶段">实现阶段</h4>
+<table>
+<thead>
+<tr>
+<th>技能</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>test-driven-development</strong></td>
+<td>强制 RED-GREEN-REFACTOR 循环</td>
+</tr>
+<tr>
+<td><strong>executing-plans</strong></td>
+<td>按计划批量执行，含人工检查点</td>
+</tr>
+<tr>
+<td><strong>subagent-driven-development</strong></td>
+<td>每个任务派生子 agent，两次审查（规格 + 代码质量）</td>
+</tr>
+<tr>
+<td><strong>dispatching-parallel-agents</strong></td>
+<td>并行执行独立任务</td>
+</tr>
+</tbody>
+</table>
+<h4 id="审查阶段">审查阶段</h4>
+<table>
+<thead>
+<tr>
+<th>技能</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>requesting-code-review</strong></td>
+<td>对照计划审查，按严重性分类问题</td>
+</tr>
+<tr>
+<td><strong>receiving-code-review</strong></td>
+<td>接收反馈，技术严格验证，不盲目执行</td>
+</tr>
+<tr>
+<td><strong>verification-before-completion</strong></td>
+<td>声称完成前必须运行验证命令</td>
+</tr>
+</tbody>
+</table>
+<h4 id="完成阶段">完成阶段</h4>
+<table>
+<thead>
+<tr>
+<th>技能</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>finishing-a-development-branch</strong></td>
+<td>验证测试、提供选项（合并/PR/保留/丢弃）</td>
+</tr>
+<tr>
+<td><strong>writing-skills</strong></td>
+<td>创建新技能时的最佳实践</td>
+</tr>
+</tbody>
+</table>
+<h3 id="token-节省机理">Token 节省机理</h3>
+<p>superpowers 本身不直接压缩 token，而是通过<strong>减少返工</strong>间接节省。</p>
+<p><strong>实测估算方法</strong>：记录一个中型功能（API 接口 + 数据库迁移 + 前端表单）在没有 superpowers 和有 superpowers 时的上下文消耗对比：</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th style="text-align:center">无 superpowers</th>
+<th style="text-align:center">有 superpowers</th>
+<th style="text-align:center">节省</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>需求理解阶段</td>
+<td style="text-align:center">3 轮返工，~18k token</td>
+<td style="text-align:center">1 轮 brainstorm，~6k token</td>
+<td style="text-align:center">67%</td>
+</tr>
+<tr>
+<td>实现阶段</td>
+<td style="text-align:center">5 轮&quot;不对重来&quot;，~45k token</td>
+<td style="text-align:center">2 轮（计划 + 执行），~15k token</td>
+<td style="text-align:center">67%</td>
+</tr>
+<tr>
+<td>审查阶段</td>
+<td style="text-align:center">2 轮修 bug，~12k token</td>
+<td style="text-align:center">1 轮审查 + 验证，~5k token</td>
+<td style="text-align:center">58%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td style="text-align:center"><strong>~75k token</strong></td>
+<td style="text-align:center"><strong>~26k token</strong></td>
+<td style="text-align:center"><strong>65%</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>注：以上基于 TenBox VMM、goworkflow、APIForge 等项目的实际会话数据估算。token 数取自 Claude Code 会话统计。</p>
+</blockquote>
+<p>核心机制：错误方向浪费的上下文 → 设计阶段就避免了；&ldquo;写了一半发现不对重来&rdquo; → 计划分小任务，错了只废弃 2-5 分钟的内容；子 agent 隔离上下文 → 不污染主会话。</p>
+<hr>
+<h2 id="3-claude-mem跨会话持久记忆">3. claude-mem：跨会话持久记忆</h2>
+<p><strong>维护者</strong>: thedotmack
+<strong>核心价值</strong>: 让 AI 记住上次会话、上周的 bug 修复、上个月的架构决策。</p>
+<h3 id="问题">问题</h3>
+<p>默认情况下，Claude Code 每个会话是信息孤岛。周一会话不知道上周五做了什么。每个新会话都要重新解释项目背景、架构决策、已知问题。</p>
+<h3 id="解决方案">解决方案</h3>
+<p>claude-mem 提供三层记忆架构：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">search(query) → 搜索观测记录 → 获取索引 (~50-100 token/条)
+</span></span><span class="line"><span class="cl">    ↓
+</span></span><span class="line"><span class="cl">timeline(anchor=ID) → 查看上下文 → 了解前后关联
+</span></span><span class="line"><span class="cl">    ↓
+</span></span><span class="line"><span class="cl">get_observations([IDs]) → 过滤后获取详情 → 仅获取需要的完整内容
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>核心原则</strong>：绝不一次性获取所有详情。先搜索 → 过滤 → 再获取，节省 10 倍 token。</p>
+<h3 id="token-节省实测">Token 节省实测</h3>
+<p>从 TenBox VMM 项目的跨会话实际使用数据：</p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th style="text-align:center">无 claude-mem</th>
+<th style="text-align:center">有 claude-mem</th>
+<th style="text-align:center">节省</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>会话启动上下文解释</td>
+<td style="text-align:center">~8k token</td>
+<td style="text-align:center">~500 token（索引查询）</td>
+<td style="text-align:center">94%</td>
+</tr>
+<tr>
+<td>代码探索（查一个函数）</td>
+<td style="text-align:center">grep + read 5 文件，~12k token</td>
+<td style="text-align:center">smart-explore AST 搜索，~2k token</td>
+<td style="text-align:center">83%</td>
+</tr>
+<tr>
+<td>历史决策查询</td>
+<td style="text-align:center">无（得重聊），消耗 ~5k 上下文</td>
+<td style="text-align:center">timeline + get_observations，~800 token</td>
+<td style="text-align:center">84%</td>
+</tr>
+<tr>
+<td>全会话跨会话总节省</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">~50-60%</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>注：数据基于 2026-04-30 TenBox 探索会话实测。该会话 59k token 工作内容，通过 claude-mem 索引后，后续会话仅需 ~2k token 即可恢复全部上下文。</p>
+</blockquote>
+<h3 id="技能系统">技能系统</h3>
+<table>
+<thead>
+<tr>
+<th>技能</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>mem-search</strong></td>
+<td>搜索跨会话记忆库</td>
+</tr>
+<tr>
+<td><strong>smart-explore</strong></td>
+<td>AST 级代码结构搜索（tree-sitter），只看结构不读全文</td>
+</tr>
+<tr>
+<td><strong>smart-outline</strong></td>
+<td>文件符号大纲（函数、类、方法），折叠方法体</td>
+</tr>
+<tr>
+<td><strong>smart-unfold</strong></td>
+<td>展开特定符号查看完整代码</td>
+</tr>
+<tr>
+<td><strong>make-plan</strong></td>
+<td>创建分阶段实现计划</td>
+</tr>
+<tr>
+<td><strong>do</strong></td>
+<td>用子 agent 执行计划</td>
+</tr>
+<tr>
+<td><strong>timeline-report</strong></td>
+<td>生成项目开发历史叙述报告</td>
+</tr>
+<tr>
+<td><strong>knowledge-agent</strong></td>
+<td>从观测历史构建可查询知识库</td>
+</tr>
+<tr>
+<td><strong>pathfinder</strong></td>
+<td>分析代码库架构，映射功能分组</td>
+</tr>
+<tr>
+<td><strong>version-bump</strong></td>
+<td>自动化语义版本和发布</td>
+</tr>
+</tbody>
+</table>
+<h3 id="token-节省">Token 节省</h3>
+<ul>
+<li><strong>smart-explore</strong>: 不看完整文件，只看 AST 结构，省 ~70% 代码探索 token</li>
+<li><strong>跨会话记忆</strong>: 免去每会话重新解释，实测省 ~50-60% 上下文窗口</li>
+<li><strong>3 层过滤</strong>: 避免一次拉取大量历史，精准获取，10 倍 token 节省</li>
+</ul>
+<hr>
+<h2 id="4-frontend-design告别-ai-通用审美">4. frontend-design：告别 AI 通用审美</h2>
+<p><strong>维护者</strong>: Anthropic (Prithvi Rajasekaran, Alexander Bricken)
+<strong>核心价值</strong>: 自动生成有设计感的前端界面，避免 AI 默认的&quot;灰白蓝&quot;通用风格。</p>
+<h3 id="问题-1">问题</h3>
+<p>默认 AI 生成的前端界面通常：</p>
+<ul>
+<li>配色保守（白底 + 蓝色按钮）</li>
+<li>字体无个性（系统默认 Inter/Roboto）</li>
+<li>缺乏动效和视觉细节</li>
+<li>看起来&quot;像 demo，不像产品&quot;</li>
+</ul>
+<h3 id="解决方案-1">解决方案</h3>
+<p>frontend-design 指导 agent 做出大胆的美学选择。具体来说，它会指示模型：</p>
+<ul>
+<li><strong>色彩</strong>：选择有记忆点的配色方案，不限于蓝色系。深色背景、渐变、高饱和强调色</li>
+<li><strong>字体</strong>：搭配有对比度的字体组合（标题用展示字体，正文用阅读字体），字号层次分明</li>
+<li><strong>空间</strong>：大胆的留白和非对称布局，打破居中对称的默认习惯</li>
+<li><strong>动效</strong>：有节奏的入场动画、hover 微交互、页面过渡</li>
+<li><strong>细节</strong>：阴影层次、边框圆角的一致性、图标风格统一</li>
+</ul>
+<h3 id="效果对比-1">效果对比</h3>
+<p>以同一个&quot;任务管理仪表盘&quot;需求为例，分别用默认 Claude 和加载 frontend-design 生成：</p>
+<p><strong>默认模式输出</strong>：</p>
+<ul>
+<li>白色背景，蓝色 #3B82F6 主按钮</li>
+<li>表格列表，标准卡片布局</li>
+<li>无动效，功能完整但视觉平淡</li>
+<li>常见评价：&ldquo;能用，但像内部工具&rdquo;</li>
+</ul>
+<p><strong>frontend-design 模式输出</strong>：</p>
+<ul>
+<li>深色主题底色（#0F172A），渐变强调色（#6366F1 → #A855F7）</li>
+<li>数据用统计卡片 + 迷你图表，非单调列表</li>
+<li>卡片 hover 时微浮升（transform: translateY(-2px) + 阴影加深），页面加载有 staggered 入场动画</li>
+<li>常见评价：&ldquo;截图就可以放产品页&rdquo;</li>
+</ul>
+<h3 id="token-节省-1">Token 节省</h3>
+<p>前端开发是高迭代领域——通常需要 5-10 轮&quot;不够好看&quot;&ldquo;风格不对&quot;的调整。frontend-design 一次性输出高质量设计。</p>
+<p>实测数据（基于 3 个前端项目的会话统计）：</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th style="text-align:center">无 frontend-design</th>
+<th style="text-align:center">有 frontend-design</th>
+<th style="text-align:center">节省</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>博客首页</td>
+<td style="text-align:center">7 轮迭代，~32k token</td>
+<td style="text-align:center">2 轮微调，~10k token</td>
+<td style="text-align:center">69%</td>
+</tr>
+<tr>
+<td>仪表盘组件</td>
+<td style="text-align:center">5 轮迭代，~28k token</td>
+<td style="text-align:center">1 轮到位，~7k token</td>
+<td style="text-align:center">75%</td>
+</tr>
+<tr>
+<td>设置页面</td>
+<td style="text-align:center">4 轮迭代，~18k token</td>
+<td style="text-align:center">2 轮微调，~9k token</td>
+<td style="text-align:center">50%</td>
+</tr>
+<tr>
+<td><strong>平均</strong></td>
+<td style="text-align:center"><strong>~26k token</strong></td>
+<td style="text-align:center"><strong>~8.7k token</strong></td>
+<td style="text-align:center"><strong>67%</strong></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="5-claude-context语义代码搜索">5. claude-context：语义代码搜索</h2>
+<p><strong>MCP 服务</strong>: <code>@zilliz/claude-context-mcp</code>
+<strong>核心价值</strong>: 用向量语义搜索替代盲目的 grep + read 循环，大幅减少代码探索阶段的 token 消耗。</p>
+<h3 id="问题-2">问题</h3>
+<p>传统代码探索流程效率极低：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">grep &#34;connection pool&#34; → 返回 47 个匹配
+</span></span><span class="line"><span class="cl">  → read file1.ts (200 行) → 不是这个
+</span></span><span class="line"><span class="cl">  → read file2.go (350 行) → 不是这个
+</span></span><span class="line"><span class="cl">  → 换关键词 grep &#34;pool init&#34; → 12 个匹配
+</span></span><span class="line"><span class="cl">    → read file3.rs (180 行) → 找到了，但上下文不够
+</span></span><span class="line"><span class="cl">    → read file3.rs 周围更多 → 终于定位
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>整个过程可能消耗 15k-25k token，其中大量浪费在无关文件上。</p>
+<h3 id="解决方案-2">解决方案</h3>
+<p>claude-context 基于 Milvus 向量数据库，对代码库做语义索引：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">index_codebase(path) → 用 AST 分割代码 + embedding → 存入 Milvus
+</span></span><span class="line"><span class="cl">    ↓
+</span></span><span class="line"><span class="cl">search_code(&#34;连接池初始化在哪里？&#34;) → 语义匹配 → 返回精确片段
+</span></span><span class="line"><span class="cl">    ↓
+</span></span><span class="line"><span class="cl">直接定位目标代码，一次查询 &lt; 1k token
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>技术栈</strong>：</p>
+<ul>
+<li>向量数据库：Milvus (localhost:19530)</li>
+<li>Embedding 模型：text-embedding-v4（通过阿里云 DashScope）</li>
+<li>代码分割：AST-aware splitter（按函数/类/方法边界切割，非盲目字符切割）</li>
+</ul>
+<h3 id="token-节省实测-1">Token 节省实测</h3>
+<p>在 TenBox VMM 项目（249 个编译目标，C++/C# 混合代码库）上的对比：</p>
+<table>
+<thead>
+<tr>
+<th>探索任务</th>
+<th style="text-align:center">grep + read 传统</th>
+<th style="text-align:center">claude-context 语义</th>
+<th style="text-align:center">节省</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>找到 IPC 层实现</td>
+<td style="text-align:center">5 次 grep + 3 次 read，~18k token</td>
+<td style="text-align:center">1 次 search，~800 token</td>
+<td style="text-align:center">96%</td>
+</tr>
+<tr>
+<td>定位平台后端切换逻辑</td>
+<td style="text-align:center">3 次 grep + 4 次 read，~22k token</td>
+<td style="text-align:center">1 次 search，~900 token</td>
+<td style="text-align:center">96%</td>
+</tr>
+<tr>
+<td>查找 WinSparkle 更新调用</td>
+<td style="text-align:center">4 次 grep + 2 次 read，~14k token</td>
+<td style="text-align:center">1 次 search，~600 token</td>
+<td style="text-align:center">96%</td>
+</tr>
+<tr>
+<td><strong>平均</strong></td>
+<td style="text-align:center"><strong>~18k token</strong></td>
+<td style="text-align:center"><strong>~770 token</strong></td>
+<td style="text-align:center"><strong>95%</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>注：首次索引消耗约 30k-50k token（一次性），之后每次搜索 &lt; 1k token。项目越大、探索越频繁，收益越高。</p>
+</blockquote>
+<h3 id="适用场景">适用场景</h3>
+<ul>
+<li><strong>大型代码库</strong>（50+ 文件）：强烈推荐。grep 噪声大，语义搜索价值高</li>
+<li><strong>不熟悉的新项目</strong>：不必猜关键词，用自然语言描述意图即可定位</li>
+<li><strong>频繁跨文件探索</strong>：一次索引，多次搜索，边际成本极低</li>
+</ul>
+<h3 id="不适用场景">不适用场景</h3>
+<ul>
+<li><strong>小型项目</strong>（&lt; 20 文件）：grep 足够快，索引开销不划算</li>
+<li><strong>一次性简单查询</strong>：如果只需要找一个明确的函数名，grep 更快</li>
+</ul>
+<hr>
+<h2 id="6-mcp-vs-插件两种扩展机制">6. MCP vs 插件：两种扩展机制</h2>
+<p>许多用户混淆&quot;插件&quot;和&quot;MCP 服务&rdquo;。两者都在 Claude Code 的工具列表里出现，但本质不同。</p>
+<h3 id="对比">对比</h3>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>插件 (Plugin)</th>
+<th>MCP 服务 (MCP Server)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>机制</strong></td>
+<td>注入 System Prompt / Hook / Skill</td>
+<td>暴露外部工具（Tool），模型可调用</td>
+</tr>
+<tr>
+<td><strong>运行方式</strong></td>
+<td>上下文注入，无独立进程</td>
+<td>独立进程，stdio/HTTP 通信</td>
+</tr>
+<tr>
+<td><strong>典型用途</strong></td>
+<td>改变模型行为（压缩、TDD、记忆）</td>
+<td>连接外部系统（数据库、搜索、API）</td>
+</tr>
+<tr>
+<td><strong>安装</strong></td>
+<td><code>claude plugin install</code></td>
+<td>在 <code>settings.json</code> 中配置 <code>mcpServers</code></td>
+</tr>
+<tr>
+<td><strong>Token 影响</strong></td>
+<td>注入指令消耗少量上下文，但节省更多</td>
+<td>每次调用消耗 tool result token</td>
+</tr>
+<tr>
+<td><strong>例子</strong></td>
+<td>caveman, superpowers, claude-mem</td>
+<td>claude-context, GitHub MCP, Postgres MCP</td>
+</tr>
+</tbody>
+</table>
+<h3 id="如何选择">如何选择</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">要改变模型&#34;怎么想、怎么说&#34; → 插件
+</span></span><span class="line"><span class="cl">  - 压缩输出 / 强制设计流程 / 跨会话记忆 / 前端审美
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">要连接外部系统获取数据 → MCP 服务
+</span></span><span class="line"><span class="cl">  - 向量搜索代码 / 查数据库 / 调 API / 读写文件系统
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="实际协作">实际协作</h3>
+<p>本文五个工具中，四个是插件，一个是 MCP 服务。它们在同一会话中可以同时工作：</p>
+<ul>
+<li>caveman 压缩模型的回复</li>
+<li>superpowers 指导模型的开发流程</li>
+<li>claude-mem 提供跨会话记忆</li>
+<li>frontend-design 指导模型的前端审美</li>
+<li>claude-context 让模型能语义搜索代码库</li>
+</ul>
+<p>五者互不冲突，在同一会话中叠加生效。</p>
+<hr>
+<h2 id="7-插件组合11111--5">7. 插件组合：1+1+1+1+1 &gt; 5</h2>
+<p>五个工具覆盖不同维度，组合使用有叠加效应：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">┌──────────────────────────────────────────────────────────┐
+</span></span><span class="line"><span class="cl">│                      Claude Code                          │
+</span></span><span class="line"><span class="cl">│                                                          │
+</span></span><span class="line"><span class="cl">│  ┌───────┐ ┌───────┐ ┌───────┐ ┌───────┐ ┌───────────┐  │
+</span></span><span class="line"><span class="cl">│  │caveman│ │super- │ │claude-│ │front- │ │  claude-  │  │
+</span></span><span class="line"><span class="cl">│  │       │ │powers │ │  mem  │ │  end  │ │  context  │  │
+</span></span><span class="line"><span class="cl">│  │输出   │ │流程   │ │跨会话 │ │设计   │ │ 语义搜索  │  │
+</span></span><span class="line"><span class="cl">│  │ -75%  │ │不跑偏 │ │记忆   │ │不烂   │ │ 省探索    │  │
+</span></span><span class="line"><span class="cl">│  └───┬───┘ └───┬───┘ └───┬───┘ └───┬───┘ └─────┬─────┘  │
+</span></span><span class="line"><span class="cl">│      │         │         │         │            │        │
+</span></span><span class="line"><span class="cl">│  ┌───┴─────────┴─────────┴─────────┴────────────┴──────┐ │
+</span></span><span class="line"><span class="cl">│  │                   协同效果                            │ │
+</span></span><span class="line"><span class="cl">│  ├──────────────────────────────────────────────────────┤ │
+</span></span><span class="line"><span class="cl">│  │ cave + super + context = 搜索→设计→实现→输出全压缩   │ │
+</span></span><span class="line"><span class="cl">│  │ cave + mem             = 回忆历史不占输出上下文       │ │
+</span></span><span class="line"><span class="cl">│  │ super + mem + context  = 计划复用历史决策 + 精准定位  │ │
+</span></span><span class="line"><span class="cl">│  │ cave + front + context = 搜索参考→设计→一轮到位       │ │
+</span></span><span class="line"><span class="cl">│  │ 五个全开               = 输入探索省 + 流程不返工      │ │
+</span></span><span class="line"><span class="cl">│  │                          + 输出压缩 + 跨会话记忆      │ │
+</span></span><span class="line"><span class="cl">│  │                          + 前端审美不烂              │ │
+</span></span><span class="line"><span class="cl">│  └──────────────────────────────────────────────────────┘ │
+</span></span><span class="line"><span class="cl">└──────────────────────────────────────────────────────────┘
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="实际场景">实际场景</h3>
+<p><strong>场景 1：新功能开发</strong>
+claude-context（语义搜索相关代码）→ superpowers（brainstorm → plan → TDD → execute）→ caveman（压缩输出）→ claude-mem（查历史决策）</p>
+<p><strong>场景 2：Bug 修复</strong>
+claude-context（搜索相似 bug 代码位置）→ claude-mem（查上次修没修过）→ superpowers（systematic-debugging）→ caveman（精简输出）</p>
+<p><strong>场景 3：前端页面</strong>
+claude-context（搜索现有组件和样式）→ frontend-design（高质量设计）→ superpowers（brainstorm 需求）→ caveman（精简反馈）</p>
+<p><strong>场景 4：新项目上手</strong>
+claude-context（索引 + 语义探索，省 grep）→ claude-mem（自动记录探索过程，下次不重来）→ caveman（压缩解释输出）</p>
+<hr>
+<h2 id="8-安装与总结">8. 安装与总结</h2>
+<h3 id="安装">安装</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Caveman - 输出压缩</span>
+</span></span><span class="line"><span class="cl">claude plugin marketplace add JuliusBrussee/caveman
+</span></span><span class="line"><span class="cl">claude plugin install caveman@caveman
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Superpowers - 开发方法论（官方市场，自动安装）</span>
+</span></span><span class="line"><span class="cl">claude plugin install superpowers@claude-plugins-official
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Frontend Design（官方市场）</span>
+</span></span><span class="line"><span class="cl">claude plugin install frontend-design@claude-plugins-official
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Claude Mem - 跨会话记忆</span>
+</span></span><span class="line"><span class="cl">claude plugin marketplace add thedotmack/claude-mem
+</span></span><span class="line"><span class="cl">claude plugin install claude-mem@thedotmack
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>claude-context 需要在 <code>~/.claude.json</code> 或项目的 <code>.claude/settings.json</code> 中配置 MCP 服务：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;mcpServers&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;claude-context&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;stdio&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;npx&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;args&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;@zilliz/claude-context-mcp@latest&#34;</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;env&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;OPENAI_API_KEY&#34;</span><span class="p">:</span> <span class="s2">&#34;your-api-key&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;OPENAI_BASE_URL&#34;</span><span class="p">:</span> <span class="s2">&#34;https://dashscope.aliyuncs.com/compatible-mode/v1&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;EMBEDDING_MODEL&#34;</span><span class="p">:</span> <span class="s2">&#34;text-embedding-v4&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;MILVUS_ADDRESS&#34;</span><span class="p">:</span> <span class="s2">&#34;localhost:19530&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>需提前启动 Milvus（Docker 或本地安装）。</p>
+<h3 id="token-节省总览">Token 节省总览</h3>
+<table>
+<thead>
+<tr>
+<th>工具</th>
+<th>类型</th>
+<th>节省方式</th>
+<th style="text-align:center">实测节省</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>caveman</td>
+<td>插件</td>
+<td>输出压缩</td>
+<td style="text-align:center">输出 -65%（基准测试）</td>
+</tr>
+<tr>
+<td>caveman-compress</td>
+<td>技能</td>
+<td>记忆文件压缩</td>
+<td style="text-align:center">输入 -46%（文件实测）</td>
+</tr>
+<tr>
+<td>superpowers</td>
+<td>插件</td>
+<td>减少返工</td>
+<td style="text-align:center">上下文 -65%（会话数据）</td>
+</tr>
+<tr>
+<td>claude-mem</td>
+<td>插件</td>
+<td>记忆复用 + AST 探索</td>
+<td style="text-align:center">探索 -83%，上下文 -50%（会话数据）</td>
+</tr>
+<tr>
+<td>frontend-design</td>
+<td>插件</td>
+<td>减少设计迭代</td>
+<td style="text-align:center">UI 迭代 -67%（会话数据）</td>
+</tr>
+<tr>
+<td>claude-context</td>
+<td>MCP</td>
+<td>语义搜索替代 grep</td>
+<td style="text-align:center">代码探索 -95%（会话数据）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="结论">结论</h3>
+<p>五个工具各自解决一个痛点：</p>
+<ul>
+<li><strong>caveman</strong> — AI 太啰嗦</li>
+<li><strong>superpowers</strong> — AI 太着急写代码</li>
+<li><strong>claude-mem</strong> — AI 记不住上次的事</li>
+<li><strong>frontend-design</strong> — AI 做的界面太丑</li>
+<li><strong>claude-context</strong> — AI 找代码太盲目</li>
+</ul>
+<p>装完这五个，Claude Code 从&quot;好用的终端助手&quot;变成&quot;能独立完成复杂任务的工程搭档&quot;。每个工具覆盖开发流程的不同阶段，五维叠加后，一个典型中型功能的端到端 token 消耗降低 70-80%。</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2026-04-28</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/2026/04/28/claude-code-plugins-guide/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/04/28/claude-code-plugins-guide/" data-title="Claude Code 插件完全指南：省钱、省 Token、提升开发效率" data-hashtags="tech,ai,claude code,plugin,development tools"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/04/28/claude-code-plugins-guide/" data-hashtag="tech"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/04/28/claude-code-plugins-guide/" data-title="Claude Code 插件完全指南：省钱、省 Token、提升开发效率"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/04/28/claude-code-plugins-guide/" data-title="Claude Code 插件完全指南：省钱、省 Token、提升开发效率"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/04/28/claude-code-plugins-guide/" data-title="Claude Code 插件完全指南：省钱、省 Token、提升开发效率"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/tech/">技术</a>,&nbsp;<a href="/tags/ai/">Ai</a>,&nbsp;<a href="/tags/claude-code/">Claude Code</a>,&nbsp;<a href="/tags/plugin/">Plugin</a>,&nbsp;<a href="/tags/development-tools/">Development Tools</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2023/11/05/life-and-world/" class="prev" rel="prev" title="路过人间"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>路过人间</a></div>
+</div>
+<div id="comments"><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.131.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/valine@1.5.0/dist/Valine.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Comments","categoryId":"DIC_kwDOH2gmzc4CQ_fM","darkTheme":"dark","emitMetadata":"0","inputPosition":"bottom","lang":"zh-CN","lazyLoading":true,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"whitefirer/whitefirer.github.io","repoId":"R_kgDOH2gmzQ"},"valine":{"appId":"n6h55x0vTgCaFtA95qPPqpN0-9Nh9j0Va","appKey":"cxNbhYeWTE358UtBG90uf0Sn","avatar":"mp","el":"#valine","emojiCDN":"https://fastly.jsdelivr.net/npm/emoji-datasource-google@14.0.0/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":false,"highlight":true,"lang":"zh-CN","pageSize":10,"placeholder":"你的评论 ...","recordIP":true,"visitor":true}},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-70Q8REKE17', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-70Q8REKE17" async></script></body>
+</html>
