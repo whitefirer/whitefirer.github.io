@@ -11,7 +11,15 @@
                     hreflang="zh-cn"
                     href="https://whitefirer.org/categories/"
                     /></url><url>
-            <loc>https://whitefirer.org/posts/</loc><lastmod>2023-11-05T22:19:32&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://whitefirer.org/posts/</loc><lastmod>2023-11-05T22:19:32&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority><xhtml:link
+                        rel="alternate"
+                        hreflang="en"
+                        href="https://whitefirer.org/en/posts/"
+                        /><xhtml:link
+                    rel="alternate"
+                    hreflang="zh-cn"
+                    href="https://whitefirer.org/posts/"
+                    /></url><url>
             <loc>https://whitefirer.org/tags/</loc><lastmod>2023-11-05T22:19:32&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
@@ -21,7 +29,7 @@
                     hreflang="zh-cn"
                     href="https://whitefirer.org/tags/"
                     /></url><url>
-            <loc>https://whitefirer.org/</loc><lastmod>2023-11-05T22:19:32&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority><xhtml:link
+            <loc>https://whitefirer.org/</loc><lastmod>2024-01-17T05:59:44&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://whitefirer.org/en/"
@@ -45,7 +53,7 @@
             <loc>https://whitefirer.org/tags/hugo/</loc><lastmod>2023-11-05T21:27:40&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://whitefirer.org/categories/hugo/</loc><lastmod>2023-11-05T21:27:40&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://whitefirer.org/posts/2022/08/28/hugo-asciinema-player/</loc><lastmod>2022-09-16T16:26:59&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>https://whitefirer.org/about/</loc><lastmod>2024-01-17T05:59:44&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://whitefirer.org/about/</loc><lastmod>2024-01-17T05:59:44&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://whitefirer.org/en/about/"

@@ -11,6 +11,24 @@
                     hreflang="en"
                     href="https://whitefirer.org/en/about/"
                     /></url><url>
+            <loc>https://whitefirer.org/en/</loc><lastmod>2022-09-16T16:26:59&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority><xhtml:link
+                        rel="alternate"
+                        hreflang="zh-cn"
+                        href="https://whitefirer.org/"
+                        /><xhtml:link
+                    rel="alternate"
+                    hreflang="en"
+                    href="https://whitefirer.org/en/"
+                    /></url><url>
+            <loc>https://whitefirer.org/en/posts/</loc><lastmod>2022-08-30T16:53:40&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority><xhtml:link
+                        rel="alternate"
+                        hreflang="zh-cn"
+                        href="https://whitefirer.org/posts/"
+                        /><xhtml:link
+                    rel="alternate"
+                    hreflang="en"
+                    href="https://whitefirer.org/en/posts/"
+                    /></url><url>
             <loc>https://whitefirer.org/en/categories/</loc><changefreq>weekly</changefreq><priority>0.5</priority><xhtml:link
                         rel="alternate"
                         hreflang="zh-cn"
@@ -28,13 +46,4 @@
                     rel="alternate"
                     hreflang="en"
                     href="https://whitefirer.org/en/tags/"
-                    /></url><url>
-            <loc>https://whitefirer.org/en/</loc><changefreq>weekly</changefreq><priority>0.5</priority><xhtml:link
-                        rel="alternate"
-                        hreflang="zh-cn"
-                        href="https://whitefirer.org/"
-                        /><xhtml:link
-                    rel="alternate"
-                    hreflang="en"
-                    href="https://whitefirer.org/en/"
                     /></url></urlset>

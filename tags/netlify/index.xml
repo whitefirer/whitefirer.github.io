@@ -1,8 +1,8 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>netlify - 标签 - whitefirer[PG]</title>
+        <title>Netlify - 标签 - whitefirer[PG]</title>
         <link>https://whitefirer.org/tags/netlify/</link>
-        <description>netlify - 标签 - whitefirer[PG]</description>
+        <description>Netlify - 标签 - whitefirer[PG]</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
             <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sat, 13 Aug 2022 14:51:05 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/netlify/" rel="self" type="application/rss+xml" /><item>
     <title>如何使用Hugo&#43;Github&#43;Netlify搭建博客</title>
