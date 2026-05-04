@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Prompt Caching 深度解析：插件 &#43; 缓存 = 98% 费用节省 - whitefirer[PG]</title><meta name="Description" content="拆解两层省钱机制——插件砍 token 量（省 97%），Prompt Caching 砍单价（多省 46%）。深入 DeepSeek V4 Pro 的三池异构 KV Cache 架构和 ShadowRadix 前缀复用系统，解析 120 倍缓存折扣的底层原理。"><meta property="og:url" content="https://whitefirer.org/posts/2026/05/03/prompt-caching-deepseek/">
+  <meta property="og:site_name" content="whitefirer[PG]">
+  <meta property="og:title" content="Prompt Caching 深度解析：插件 &#43; 缓存 = 98% 费用节省">
+  <meta property="og:description" content="拆解两层省钱机制——插件砍 token 量（省 97%），Prompt Caching 砍单价（多省 46%）。深入 DeepSeek V4 Pro 的三池异构 KV Cache 架构和 ShadowRadix 前缀复用系统，解析 120 倍缓存折扣的底层原理。">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-05-03T22:15:00+08:00">
+    <meta property="article:modified_time" content="2026-05-03T22:15:00+08:00">
+    <meta property="article:tag" content="技术">
+    <meta property="article:tag" content="Ai">
+    <meta property="article:tag" content="Prompt Caching">
+    <meta property="article:tag" content="Deepseek">
+    <meta property="article:tag" content="Claude Code">
+    <meta property="article:tag" content="Cost Optimization">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Prompt Caching 深度解析：插件 &#43; 缓存 = 98% 费用节省">
+  <meta name="twitter:description" content="拆解两层省钱机制——插件砍 token 量（省 97%），Prompt Caching 砍单价（多省 46%）。深入 DeepSeek V4 Pro 的三池异构 KV Cache 架构和 ShadowRadix 前缀复用系统，解析 120 倍缓存折扣的底层原理。">
+<meta name="application-name" content="whitefirer[PG]">
+<meta name="apple-mobile-web-app-title" content="whitefirer[PG]"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/05/03/prompt-caching-deepseek/" /><link rel="prev" href="https://whitefirer.org/posts/2026/04/28/claude-code-plugins-guide/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Prompt Caching 深度解析：插件 + 缓存 = 98% 费用节省",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/whitefirer.org\/posts\/2026\/05\/03\/prompt-caching-deepseek\/"
+        },"genre": "posts","keywords": "tech, ai, prompt caching, deepseek, claude code, cost optimization","wordcount":  4282 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/05\/03\/prompt-caching-deepseek\/","datePublished": "2026-05-03T22:15:00+08:00","dateModified": "2026-05-03T22:15:00+08:00","license": "2022©️whitefirer","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "whitefirer"
+            },"description": "拆解两层省钱机制——插件砍 token 量（省 97%），Prompt Caching 砍单价（多省 46%）。深入 DeepSeek V4 Pro 的三池异构 KV Cache 架构和 ShadowRadix 前缀复用系统，解析 120 倍缓存折扣的底层原理。"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="whitefirer[PG]">whitefirer[PG]</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/2026/05/03/prompt-caching-deepseek/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="whitefirer[PG]">whitefirer[PG]</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/posts/2026/05/03/prompt-caching-deepseek/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Prompt Caching 深度解析：插件 + 缓存 = 98% 费用节省</h1><h2 class="single-subtitle">DeepSeek V4 架构如何把缓存折扣做到 120 倍</h2><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-05-03">2026-05-03</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 4282 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 9 分钟&nbsp;<span id="/posts/2026/05/03/prompt-caching-deepseek/" class="leancloud_visitors" data-flag-title="Prompt Caching 深度解析：插件 &#43; 缓存 = 98% 费用节省">
+                        <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
+                    </span>&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#两层省钱机制">两层省钱机制</a></li>
+    <li><a href="#插件层怎么砍-token-量">插件层：怎么砍 token 量</a>
+      <ul>
+        <li><a href="#caveman--输出压缩-6575">caveman — 输出压缩 65%~75%</a></li>
+        <li><a href="#claude-mem--探索效率提升-30">claude-mem — 探索效率提升 ~30%</a></li>
+        <li><a href="#superpowers--减少返工-50">superpowers — 减少返工 ~50%</a></li>
+        <li><a href="#caveman-compress--记忆文件压缩-46">caveman-compress — 记忆文件压缩 ~46%</a></li>
+        <li><a href="#插件合计">插件合计</a></li>
+      </ul>
+    </li>
+    <li><a href="#缓存层怎么砍-token-单价">缓存层：怎么砍 token 单价</a>
+      <ul>
+        <li><a href="#deepseek-v4-定价">DeepSeek V4 定价</a></li>
+        <li><a href="#哪些内容被缓存">哪些内容被缓存</a></li>
+        <li><a href="#缓存层节省">缓存层节省</a></li>
+      </ul>
+    </li>
+    <li><a href="#四场景完整对比">四场景完整对比</a></li>
+    <li><a href="#两层缓存机制">两层缓存机制</a></li>
+    <li><a href="#对比-anthropic-模型">对比 Anthropic 模型</a></li>
+    <li><a href="#deepseek-为什么能-120-倍缓存折扣">DeepSeek 为什么能 120 倍缓存折扣？</a>
+      <ul>
+        <li><a href="#缓存命中率为什么高">缓存命中率为什么高？</a></li>
+        <li><a href="#三池异构-kv-cache">三池异构 KV Cache</a></li>
+        <li><a href="#关键创新压缩--稀疏的两级漏斗">关键创新：压缩 + 稀疏的两级漏斗</a></li>
+        <li><a href="#推理框架层shadowradix-前缀复用">推理框架层：ShadowRadix 前缀复用</a></li>
+        <li><a href="#为什么整体能低价四层叠加">为什么整体能低价：四层叠加</a></li>
+        <li><a href="#对比总结">对比总结</a></li>
+      </ul>
+    </li>
+    <li><a href="#实际会话费用明细">实际会话费用明细</a></li>
+    <li><a href="#优化清单">优化清单</a></li>
+    <li><a href="#结论">结论</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><blockquote>
+<p>402 轮编码会话，从 ¥113 ($16.36) 压到 ¥1.89 ($0.27)。插件砍 token 量，缓存砍 token 单价。</p>
+</blockquote>
+<hr>
+<h2 id="两层省钱机制">两层省钱机制</h2>
+<p>很多人把省钱都归功于 Prompt Caching。实际上有<strong>两层独立机制</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>层次</th>
+<th>由谁做</th>
+<th>怎么省</th>
+<th style="text-align:right">本次节省</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>减少 token 生成量</strong></td>
+<td>插件（caveman / claude-mem / superpowers）</td>
+<td>少说废话、不重复探索、少返工</td>
+<td style="text-align:right"><strong>97%</strong></td>
+</tr>
+<tr>
+<td><strong>降低 token 单价</strong></td>
+<td>Prompt Caching</td>
+<td>静态内容只付 1/30 价格</td>
+<td style="text-align:right"><strong>46%</strong>（在插件基础上）</td>
+</tr>
+</tbody>
+</table>
+<p>两者不是竞争关系——是叠加。插件先把 token 量砍到 1/6，缓存再把剩余部分的单价打到骨折。</p>
+<hr>
+<h2 id="插件层怎么砍-token-量">插件层：怎么砍 token 量</h2>
+<h3 id="caveman--输出压缩-6575">caveman — 输出压缩 65%~75%</h3>
+<p><strong>原理</strong>：删除冠词、填充词、客套话，保留所有技术内容。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">正常模式：The reason your React component is re-rendering is likely
+</span></span><span class="line"><span class="cl">          because you&#39;re creating a new object reference on each render
+</span></span><span class="line"><span class="cl">          cycle. I&#39;d recommend using useMemo. (32 tok)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Caveman： New object ref each render. Inline object prop = new ref.
+</span></span><span class="line"><span class="cl">          Wrap in useMemo. (17 tok) → 省 47%
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>本次会话实测：输出 109k token。若无 caveman，估算 312k token。<strong>单这一项省了 3 倍输出。</strong></p>
+<h3 id="claude-mem--探索效率提升-30">claude-mem — 探索效率提升 ~30%</h3>
+<p><strong>smart-explore</strong>：用 tree-sitter AST 解析代码结构，不读全文。找函数、找类型只返回大纲。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 不用 claude-mem：读整个文件</span>
+</span></span><span class="line"><span class="cl">cat workflow/executor.go  <span class="c1"># 500+ 行，~8000 token</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 用 smart-outline：只看函数签名</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 返回 15 个函数名 + 参数列表，~200 token</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>每个文件查找省 70% token。一场会话查 20 个文件，积少成多。</p>
+<h3 id="superpowers--减少返工-50">superpowers — 减少返工 ~50%</h3>
+<p>强制 brainstorming → plan → TDD → execute → review 流程。避免&quot;写了一半发现走错路全删重来&quot;。</p>
+<p>典型场景：没有 superpowers，中型功能 3-5 轮返工，每轮 10k-20k token。有 superpowers 通常 1 轮到位。</p>
+<h3 id="caveman-compress--记忆文件压缩-46">caveman-compress — 记忆文件压缩 ~46%</h3>
+<p>CLAUDE.md 等文件每会话加载。压缩后从 939 token 降到 ~500。</p>
+<h3 id="插件合计">插件合计</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">无插件估算：    输入 36,987k  +  输出 312k  =  ~37M token
+</span></span><span class="line"><span class="cl">有插件实际：    输入 30,784k  +  输出 109k  =  ~31M token
+</span></span><span class="line"><span class="cl">─────────────────────────────────────────────────
+</span></span><span class="line"><span class="cl">插件节省：      ~6M token（16%）+ 输出降低 65%
+</span></span><span class="line"><span class="cl">费用节省：      97%（¥112.84 → ¥3.49）
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>注：输入 token 的绝对节省不如输出明显（因静态开销 76k/轮基数大），但输出端 caveman 效果显著。</p>
+</blockquote>
+<hr>
+<h2 id="缓存层怎么砍-token-单价">缓存层：怎么砍 token 单价</h2>
+<h3 id="deepseek-v4-定价">DeepSeek V4 定价</h3>
+<blockquote>
+<p>DeepSeek 同时公布美元和人民币价格，各自独立定价。汇率换算后基本一致（&lt;2% 偏差）。以下来自<a href="https://api-docs.deepseek.com/zh-cn/quick_start/pricing" target="_blank" rel="noopener noreffer ">官方定价页</a>。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>计费项</th>
+<th style="text-align:right">V4 Pro (2.5折)</th>
+<th style="text-align:right">V4 Flash</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>输入 (缓存命中)</td>
+<td style="text-align:right">¥0.025/M ($0.0036/M)</td>
+<td style="text-align:right">¥0.02/M ($0.0028/M)</td>
+</tr>
+<tr>
+<td>输入 (缓存未命中)</td>
+<td style="text-align:right">¥3.0/M ($0.435/M)</td>
+<td style="text-align:right">¥1.0/M ($0.14/M)</td>
+</tr>
+<tr>
+<td>输出</td>
+<td style="text-align:right">¥6.0/M ($0.87/M)</td>
+<td style="text-align:right">¥2.0/M ($0.28/M)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>V4 Pro 限时 2.5 折（75% off），原至北京时间 2026/05/05 23:59，延长至 2026/05/31 23:59。缓存命中全系列降为首发价 1/10。缓存命中折扣后 ¥0.025/M —— 120 倍于未命中价。</p>
+</blockquote>
+<h3 id="哪些内容被缓存">哪些内容被缓存</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">每次请求 = 你的输入 (5~500 tok) + 固定开销 (~76,000 tok)
+</span></span><span class="line"><span class="cl">                                    │
+</span></span><span class="line"><span class="cl">                           ┌────────┴────────┐
+</span></span><span class="line"><span class="cl">                           │  全部可缓存      │
+</span></span><span class="line"><span class="cl">                           │  · 系统提示词    │
+</span></span><span class="line"><span class="cl">                           │  · 工具定义      │
+</span></span><span class="line"><span class="cl">                           │  · MCP 工具     │
+</span></span><span class="line"><span class="cl">                           │  · Skills 列表  │
+</span></span><span class="line"><span class="cl">                           │  · Memory 文件  │
+</span></span><span class="line"><span class="cl">                           └─────────────────┘
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>402 轮 × 76k = 30,628,352 token 全部命中缓存。实际新增输入仅 155,241 token。</p>
+<h3 id="缓存层节省">缓存层节省</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">有插件 + 无缓存：  ¥93.01 ($13.49)
+</span></span><span class="line"><span class="cl">有插件 + 有缓存：  ¥1.89 ($0.27)
+</span></span><span class="line"><span class="cl">────────────────────────
+</span></span><span class="line"><span class="cl">缓存节省：         ¥91.12/$13.22（98% 缓存命中折扣）
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>缓存层在 DeepSeek 价下省了 ¥91（从不缓存 ¥93 到缓存 ¥1.89），效果极其显著。如果用 Anthropic Opus 原价，缓存层能省 <strong>$440+</strong>。</p>
+<hr>
+<h2 id="四场景完整对比">四场景完整对比</h2>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th style="text-align:right">输入 Token</th>
+<th style="text-align:right">输出 Token</th>
+<th style="text-align:right">USD</th>
+<th style="text-align:right">CNY</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>插件 · 缓存</td>
+<td style="text-align:right">36,986,884</td>
+<td style="text-align:right">312,457</td>
+<td style="text-align:right">$16.36</td>
+<td style="text-align:right">¥112.84</td>
+</tr>
+<tr>
+<td>插件 · 缓存</td>
+<td style="text-align:right">36,986,884</td>
+<td style="text-align:right">312,457</td>
+<td style="text-align:right">$0.51</td>
+<td style="text-align:right">¥3.49</td>
+</tr>
+<tr>
+<td>插件 · 缓存</td>
+<td style="text-align:right">30,783,593</td>
+<td style="text-align:right">109,360</td>
+<td style="text-align:right">$13.49</td>
+<td style="text-align:right">¥93.01</td>
+</tr>
+<tr>
+<td>插件 · 缓存</td>
+<td style="text-align:right">30,783,593</td>
+<td style="text-align:right">109,360</td>
+<td style="text-align:right"><strong>$0.27</strong></td>
+<td style="text-align:right"><strong>¥1.89</strong></td>
+</tr>
+</tbody>
+</table>
+<p>关键发现：</p>
+<ol>
+<li><strong>插件是主力</strong>——从 ¥112.84 砍到 ¥3.49（省 97%）。减少 token 生成量永远是第一优先级</li>
+<li><strong>缓存也很关键</strong>——从 ¥3.49 再砍到 ¥1.89（多省 46%）。120 倍的缓存命中折扣让静态开销几乎免费</li>
+<li><strong>两者叠加</strong>——¥112.84 → ¥1.89，节省 98%</li>
+</ol>
+<blockquote>
+<p>DeepSeek 缓存折扣 120 倍，比 Anthropic（Opus ~12 倍、Sonnet ~10 倍）更激进。同样的 3000 万 token，不缓存 ¥93 vs 缓存 ¥1.89，差了 50 倍。</p>
+</blockquote>
+<hr>
+<h2 id="两层缓存机制">两层缓存机制</h2>
+<p>Anthropic API（DeepSeek 兼容实现）：</p>
+<table>
+<thead>
+<tr>
+<th>缓存层</th>
+<th>TTL</th>
+<th style="text-align:center">续期</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5 分钟缓存</td>
+<td>5 min</td>
+<td style="text-align:center">每次命中续</td>
+<td>会话内连续请求</td>
+</tr>
+<tr>
+<td>1 小时缓存</td>
+<td>1 hour</td>
+<td style="text-align:center">不续期</td>
+<td>跨短间隔会话</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">会话 A (10:00-10:30)  →  5分钟缓存持续活跃
+</span></span><span class="line"><span class="cl">                        写入 1小时缓存
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">会话 B (10:35 新开)    →  5分钟过期，1小时命中
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">会话 C (12:00 下午)    →  全部过期，从头计费
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>重要</strong>：59 分时读到缓存，1 分后照样过期。不会续期。</p>
+<hr>
+<h2 id="对比-anthropic-模型">对比 Anthropic 模型</h2>
+<p>同一会话，不同模型/缓存组合：</p>
+<table>
+<thead>
+<tr>
+<th>模型组合</th>
+<th style="text-align:right">费用 (USD)</th>
+<th style="text-align:right">费用 (CNY)</th>
+<th style="text-align:right">vs 最优</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DeepSeek V4 Pro + 插件 + 缓存</td>
+<td style="text-align:right">$0.27</td>
+<td style="text-align:right">¥1.89</td>
+<td style="text-align:right">基准</td>
+</tr>
+<tr>
+<td>DeepSeek V4 Pro + 插件 · 无缓存</td>
+<td style="text-align:right">$13.49</td>
+<td style="text-align:right">¥93.01</td>
+<td style="text-align:right">49x</td>
+</tr>
+<tr>
+<td>DeepSeek V4 Pro · 无插件 + 缓存</td>
+<td style="text-align:right">$0.51</td>
+<td style="text-align:right">¥3.49</td>
+<td style="text-align:right">1.8x</td>
+</tr>
+<tr>
+<td>DeepSeek V4 Pro · 无插件 · 无缓存</td>
+<td style="text-align:right">$16.36</td>
+<td style="text-align:right">¥112.84</td>
+<td style="text-align:right">60x</td>
+</tr>
+<tr>
+<td>Anthropic Sonnet 4 (估算) + 插件 + 缓存</td>
+<td style="text-align:right">~$3.50</td>
+<td style="text-align:right">~¥24</td>
+<td style="text-align:right">12.7x</td>
+</tr>
+<tr>
+<td>Anthropic Opus 4 (估算) + 插件 + 缓存</td>
+<td style="text-align:right">~$17.40</td>
+<td style="text-align:right">~¥120</td>
+<td style="text-align:right">63x</td>
+</tr>
+<tr>
+<td>Anthropic Opus 4 · 无插件 · 无缓存</td>
+<td style="text-align:right">~$870</td>
+<td style="text-align:right">~¥6000+</td>
+<td style="text-align:right">3000x+</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Anthropic 缓存溢价更高——在 Opus 上缓存层能省 $440+，远超插件层的 token 量优化。</p>
+</blockquote>
+<hr>
+<h2 id="deepseek-为什么能-120-倍缓存折扣">DeepSeek 为什么能 120 倍缓存折扣？</h2>
+<p>Anthropic 的缓存命中折扣约 10-12 倍（Opus ~12×，Sonnet ~10×），而 DeepSeek V4 Pro 达到 120 倍。这不是补贴，是架构优势的算术结果。</p>
+<h3 id="缓存命中率为什么高">缓存命中率为什么高？</h3>
+<p>本次 402 轮会话，缓存命中率 99.5%（30,628,352 / 30,783,593 输入 token）。编码 Agent 场景天然适合缓存——system prompt、工具定义、历史上下文每轮重复传输，只有新一行的用户输入需要重新编码。命中率主要由场景决定，但<strong>命中后的单价</strong>由架构决定。</p>
+<h3 id="三池异构-kv-cache">三池异构 KV Cache</h3>
+<p>传统 Transformer 用 Dense Attention，每个 token 的 KV 对全精度存储，序列多长 KV Cache 就有多大。DeepSeek V4 把 KV Cache 拆成三个池，按信息密度分层存储：</p>
+<table>
+<thead>
+<tr>
+<th>缓存池</th>
+<th>压缩比</th>
+<th>精度</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SWA</strong> (Sliding Window)</td>
+<td>无压缩，仅保留最近 128 token</td>
+<td>全精度</td>
+<td>局部细节补强</td>
+</tr>
+<tr>
+<td><strong>CSA</strong> (Compressed Sparse Attention)</td>
+<td>4 token → 1 压缩 entry</td>
+<td>FP8/BF16，Indexer 跑 FP4</td>
+<td>Lightning Indexer 选 top-1024 后做稀疏注意力</td>
+</tr>
+<tr>
+<td><strong>HCA</strong> (Heavily Compressed Attention)</td>
+<td>128 token → 1 压缩 entry</td>
+<td>FP8/BF16</td>
+<td>全局 dense attention，永久在线的&quot;摘要通道&quot;</td>
+</tr>
+</tbody>
+</table>
+<p>V4-Pro 总 61 层：前 2 层用 HCA 建立全局感知，后续层 CSA/HCA 交替排布。</p>
+<p><strong>效果</strong>：1M token 上下文下，V4-Pro 的单 token 推理 FLOPs 仅为 DeepSeek V3.2 的 27%，KV Cache 体积仅为其 10%。相较于传统 GQA 架构，KV Cache 仅约 2%。</p>
+<h3 id="关键创新压缩--稀疏的两级漏斗">关键创新：压缩 + 稀疏的两级漏斗</h3>
+<p><strong>CSA 的跨块重叠压缩</strong></p>
+<p>每 4 个 token 压缩为 1 条 entry 时，不是简单硬切。相邻压缩块有 50% 重叠——块 i 用 Cᵃ 投影当前 token，Cᵇ 投影前块 token，两者叠加。避免硬切带来的边界信息断裂。</p>
+<p><strong>Lightning Indexer（闪电索引器）</strong></p>
+<p>压缩后的序列仍很长。Indexer 是一个轻量级小注意力模块：</p>
+<ul>
+<li>全程 FP4 精度</li>
+<li>仅 64 个 head（主 attention 128 个），head dim 仅 128（主 attention 512）</li>
+<li>ReLU 过滤 + per-head 加权，任何 head 认为相关即贡献正分</li>
+<li>从压缩序列中选出 top-1024 个最相关的块</li>
+</ul>
+<p><strong>HCA 的极端压缩</strong></p>
+<p>每 128 token 压缩为 1 条 entry。1M 上下文仅剩约 7,800 条，直接做 dense attention 完全可控。不做稀疏选择——省去 Indexer 参数和 Top-k 排序开销。</p>
+<h3 id="推理框架层shadowradix-前缀复用">推理框架层：ShadowRadix 前缀复用</h3>
+<p>SGLang 团队为 V4 专门设计的原生前缀缓存系统。</p>
+<p>传统 prefix cache 用 Radix Tree 管理 KV Cache 复用，但 V4 每层有三个异构 KV 池 + 两套压缩状态，传统方案直接失效。ShadowRadix 的做法：</p>
+<ol>
+<li>用一个 Radix Tree 索引<strong>虚拟的完整 token 槽位</strong>（统一坐标系统）</li>
+<li>每个虚拟槽位投影（shadow）到三个物理 KV 池</li>
+<li>压缩状态的环形缓冲区通过二级算术映射独立寻址</li>
+<li>每个节点带双计数器锁——<code>full_lock_ref</code> 覆盖源节点及 C4/C128 shadow，<code>swa_lock_ref</code> 仅追踪滑动窗口</li>
+<li>当 SWA 计数归零，只释放 SWA 槽位，压缩 shadow 保留在树中继续被其他请求复用</li>
+</ol>
+<p><strong>效果</strong>：1 万 token 的请求只占 128 个 SWA token + 完整 CSA/HCA 压缩 KV。压缩 KV 正是跨请求复用的部分。在 B200 上，V4-Pro 从 4K 到 900K 上下文，解码吞吐仅从 199 tok/s 降到 180 tok/s（降幅不到 10%）。</p>
+<h3 id="为什么整体能低价四层叠加">为什么整体能低价：四层叠加</h3>
+<p>DeepSeek 的低价不是烧钱补贴，是从注意力机制到推理框架全链路效率叠加：</p>
+<p><strong>第一层：MoE 存算分离</strong></p>
+<ul>
+<li>V4-Pro 总参 1.6T，每次推理只激活 49B（3%）</li>
+<li>每 token 仅激活 2-4 个专家（传统 MoE 需 8-16 个），计算资源利用率 92%</li>
+</ul>
+<p><strong>第二层：MLA → CSA + HCA 注意力压缩</strong></p>
+<ul>
+<li>DeepSeek-V2（2024）先用 MLA（多头潜在注意力）沿特征维度压缩 KV，减少 93.3% KV Cache [arxiv:2405.04434]</li>
+<li>V4 进一步沿序列维度压缩，KV Cache 再降至 V3.2 的 10%</li>
+</ul>
+<p><strong>第三层：混合精度 + 量化</strong></p>
+<ul>
+<li>RoPE 维度保留 BF16（保证位置编码精度），其余压缩至 FP8</li>
+<li>CSA Indexer 的 QK 路径全程 FP4</li>
+<li>Flash Compressor 将 5 步压缩链融合为单次片上 pass，HBM 往返从 5 降到 2</li>
+</ul>
+<p><strong>第四层：HiSparse CPU offload + 三档磁盘策略</strong></p>
+<ul>
+<li>将不活跃的 C4（CSA）KV Cache offload 到 CPU 内存，长上下文吞吐提升 3×</li>
+<li>磁盘策略按算力/存储比弹性选择（Full / Periodic / Zero）</li>
+</ul>
+<h3 id="对比总结">对比总结</h3>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>Anthropic (Opus 4)</th>
+<th>DeepSeek V4 Pro</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>注意力架构</td>
+<td>Dense Attention</td>
+<td>CSA + HCA 混合稀疏压缩</td>
+</tr>
+<tr>
+<td>KV Cache 体积</td>
+<td>全精度，序列多长大</td>
+<td>压缩至传统 2%，混合精度</td>
+</tr>
+<tr>
+<td>缓存折扣</td>
+<td>~12×</td>
+<td>~120×（命中 ¥0.025/M vs 未命中 ¥3.0/M）</td>
+</tr>
+<tr>
+<td>单 token 推理算力</td>
+<td>高（全量激活）</td>
+<td>V3.2 的 27%（MoE + 压缩）</td>
+</tr>
+<tr>
+<td>前缀复用</td>
+<td>标准 Radix Tree</td>
+<td>ShadowRadix 异构池影子投影</td>
+</tr>
+</tbody>
+</table>
+<p>DeepSeek 的 120 倍缓存折扣，本质是<strong>架构上把 KV Cache 做到了传统模型的 2%</strong>。缓存命中后，只需对压缩后的极少量 KV 做计算，成本自然断崖式下降。而 Anthropic 的 dense 架构下，缓存命中只是免了 prefill 的矩阵乘法，KV Cache 本身并没有变小——这是 120× vs 12× 差距的根源。</p>
+<blockquote>
+<p><strong>参考来源</strong>：</p>
+<ul>
+<li>DeepSeek-V4 Technical Report (2026-04-24), HuggingFace: <a href="https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro" target="_blank" rel="noopener noreffer ">deepseek-ai/DeepSeek-V4-Pro</a></li>
+<li>DeepSeek-V2: <em>A Strong, Economical, and Efficient Mixture-of-Experts Language Model</em>, arxiv: <a href="https://arxiv.org/abs/2405.04434" target="_blank" rel="noopener noreffer ">2405.04434</a> — 首次提出 MLA</li>
+<li>LMSYS Blog: <a href="https://www.lmsys.org/blog/2026-04-25-deepseek-v4/" target="_blank" rel="noopener noreffer ">DeepSeek-V4 on Day 0: From Fast Inference to Verified RL with SGLang and Miles</a> (2026-04-25) — ShadowRadix 机制详解</li>
+<li>SGLang Docs: <a href="https://docs.sglang.io/cookbook/autoregressive/DeepSeek/DeepSeek-V4" target="_blank" rel="noopener noreffer ">DeepSeek-V4 Cookbook</a></li>
+<li>mHC: <em>Manifold-Constrained Hyper-Connections</em>, arxiv (2025-12) — 梁文锋署名，V4 训练稳定性基础</li>
+<li><a href="https://api-docs.deepseek.com/zh-cn/quick_start/pricing" target="_blank" rel="noopener noreffer ">DeepSeek 官方定价页</a></li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="实际会话费用明细">实际会话费用明细</h2>
+<p>本次 402 轮编码会话（2026-04-28）：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">💰 费用明细 (DeepSeek V4 Pro, 2.5折)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Cache Miss:     155,241 tok × ¥3.0/M ($0.435/M) = ¥0.47 ($0.07)
+</span></span><span class="line"><span class="cl">Cache Hit:   30,628,352 tok × ¥0.025/M ($0.0036/M) = ¥0.77 ($0.11)
+</span></span><span class="line"><span class="cl">Output:        109,360 tok × ¥6.0/M ($0.87/M) = ¥0.66 ($0.10)
+</span></span><span class="line"><span class="cl">─────────────────────────────────────────────────
+</span></span><span class="line"><span class="cl">总计:                                              ¥1.89 ($0.27)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>¥1.89 ($0.27) 完成 402 轮编码对话——包括代码探索、文件整理、环境配置、博客撰写。</strong></p>
+<hr>
+<h2 id="优化清单">优化清单</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">优先级</th>
+<th>操作</th>
+<th style="text-align:center">预期节省</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td>装 caveman</td>
+<td style="text-align:center">输出 -65%~75%</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td>装 superpowers</td>
+<td style="text-align:center">减少返工，总 token -50%</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td>装 claude-mem</td>
+<td style="text-align:center">探索效率 +70%，免重复上下文</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td>精简 CLAUDE.md</td>
+<td style="text-align:center">每轮省 ~400 input token</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td>关掉不用的插件</td>
+<td style="text-align:center">减少 MCP/Skills 定义</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td>caveman:compress 记忆文件</td>
+<td style="text-align:center">输入 -5%~10%</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td>5 分钟内连续对话</td>
+<td style="text-align:center">缓存永续</td>
+</tr>
+<tr>
+<td style="text-align:center">8</td>
+<td>闲暇时用 Flash 代替 Pro</td>
+<td style="text-align:center">降至 1/3 价格</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="结论">结论</h2>
+<p>两层机制，分工明确：</p>
+<ul>
+<li><strong>插件层</strong>：砍 token 生成量（主力，省 97%）</li>
+<li><strong>缓存层</strong>：砍 token 单价（120x 折扣，多省 46%）</li>
+</ul>
+<p>二者叠加 = ¥112.84 → ¥1.89（98% 节省）。</p>
+<p>DeepSeek 的缓存折扣其实比 Anthropic 更激进——120 倍 vs Opus 的 12 倍。只不过 DeepSeek 基础价低，绝对值看起来小。换成 Opus，这场会话无缓存 ¥2100，有缓存 ¥180，都是肉疼。</p>
+<p><strong>结论：四个插件都装上，别让会话间隔超过一小时。缓存折扣 120 倍不是摆设——没缓存贵 50 倍。</strong></p>
+<hr>
+<blockquote>
+<p>数据来自 2026-04-28 实际编码会话，402 轮。</p>
+<p>DeepSeek V4 Pro 含 2.5折限时折扣（原至北京时间 2026/05/05 23:59，延长至 2026/05/31 23:59）。</p>
+<p>人民币为 DeepSeek 原始定价。</p>
+<p><a href="https://api-docs.deepseek.com/quick_start/pricing" target="_blank" rel="noopener noreffer ">DeepSeek 定价页</a> · <a href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching" target="_blank" rel="noopener noreffer ">Anthropic Prompt Caching</a></p>
+</blockquote>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2026-05-03</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/2026/05/03/prompt-caching-deepseek/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/05/03/prompt-caching-deepseek/" data-title="Prompt Caching 深度解析：插件 &#43; 缓存 = 98% 费用节省" data-hashtags="tech,ai,prompt caching,deepseek,claude code,cost optimization"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/05/03/prompt-caching-deepseek/" data-hashtag="tech"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/05/03/prompt-caching-deepseek/" data-title="Prompt Caching 深度解析：插件 &#43; 缓存 = 98% 费用节省"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/05/03/prompt-caching-deepseek/" data-title="Prompt Caching 深度解析：插件 &#43; 缓存 = 98% 费用节省"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/05/03/prompt-caching-deepseek/" data-title="Prompt Caching 深度解析：插件 &#43; 缓存 = 98% 费用节省"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/tech/">技术</a>,&nbsp;<a href="/tags/ai/">Ai</a>,&nbsp;<a href="/tags/prompt-caching/">Prompt Caching</a>,&nbsp;<a href="/tags/deepseek/">Deepseek</a>,&nbsp;<a href="/tags/claude-code/">Claude Code</a>,&nbsp;<a href="/tags/cost-optimization/">Cost Optimization</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2026/04/28/claude-code-plugins-guide/" class="prev" rel="prev" title="Claude Code 插件完全指南：省钱、省 Token、提升开发效率"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Claude Code 插件完全指南：省钱、省 Token、提升开发效率</a></div>
+</div>
+<div id="comments"><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.131.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/valine@1.5.0/dist/Valine.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Comments","categoryId":"DIC_kwDOH2gmzc4CQ_fM","darkTheme":"dark","emitMetadata":"0","inputPosition":"bottom","lang":"zh-CN","lazyLoading":true,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"whitefirer/whitefirer.github.io","repoId":"R_kgDOH2gmzQ"},"valine":{"appId":"n6h55x0vTgCaFtA95qPPqpN0-9Nh9j0Va","appKey":"cxNbhYeWTE358UtBG90uf0Sn","avatar":"mp","el":"#valine","emojiCDN":"https://fastly.jsdelivr.net/npm/emoji-datasource-google@14.0.0/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":false,"highlight":true,"lang":"zh-CN","pageSize":10,"placeholder":"你的评论 ...","recordIP":true,"visitor":true}},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-70Q8REKE17', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-70Q8REKE17" async></script></body>
+</html>

@@ -5,6 +5,14 @@
         <description>技术 - 分类 - whitefirer[PG]</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
             <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><atom:link href="https://whitefirer.org/categories/tech/" rel="self" type="application/rss+xml" /><item>
+    <title>Prompt Caching 深度解析：插件 &#43; 缓存 = 98% 费用节省</title>
+    <link>https://whitefirer.org/posts/2026/05/03/prompt-caching-deepseek/</link>
+    <pubDate>Sun, 03 May 2026 22:15:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/05/03/prompt-caching-deepseek/</guid>
+    <description><![CDATA[402 轮编码会话，从 ¥113 ($16.36) 压到 ¥1.89 ($0.27)。插件砍 token 量，缓存砍 token 单价。 两层省钱机制 很多人把省钱都归功于 Prompt Caching。实际上有]]></description>
+</item>
+<item>
     <title>Claude Code 插件完全指南：省钱、省 Token、提升开发效率</title>
     <link>https://whitefirer.org/posts/2026/04/28/claude-code-plugins-guide/</link>
     <pubDate>Tue, 28 Apr 2026 21:30:00 &#43;0800</pubDate>

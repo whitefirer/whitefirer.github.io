@@ -4,9 +4,17 @@
         <link>https://whitefirer.org/</link>
         <description>This is my cool site</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Tue, 28 Apr 2026 21:30:00 &#43;0800</lastBuildDate>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sun, 03 May 2026 22:15:00 &#43;0800</lastBuildDate>
             <atom:link href="https://whitefirer.org/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>Prompt Caching 深度解析：插件 &#43; 缓存 = 98% 费用节省</title>
+    <link>https://whitefirer.org/posts/2026/05/03/prompt-caching-deepseek/</link>
+    <pubDate>Sun, 03 May 2026 22:15:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/05/03/prompt-caching-deepseek/</guid>
+    <description><![CDATA[402 轮编码会话，从 ¥113 ($16.36) 压到 ¥1.89 ($0.27)。插件砍 token 量，缓存砍 token 单价。 两层省钱机制 很多人把省钱都归功于 Prompt Caching。实际上有]]></description>
+</item>
+<item>
     <title>Claude Code 插件完全指南：省钱、省 Token、提升开发效率</title>
     <link>https://whitefirer.org/posts/2026/04/28/claude-code-plugins-guide/</link>
     <pubDate>Tue, 28 Apr 2026 21:30:00 &#43;0800</pubDate>
@@ -77,14 +85,6 @@
     <author>whitefirer</author>
     <guid>https://whitefirer.org/posts/2021/04/13/building-a-distributed-pressure-testing-system-based-on-kubernetes/</guid>
     <description><![CDATA[导语 本文根据2021年4月10日深圳站举办的【腾讯云原生技术开放日】 线下活动中，荔枝微课基础架构负责人王诚强关于“基于 kubernetes 搭建分布式压测系统”]]></description>
-</item>
-<item>
-    <title>荔枝微课基础架构的演进与实践</title>
-    <link>https://whitefirer.org/posts/2020/09/11/the-evolution-and-practice-of-tenclass-infrastructure/</link>
-    <pubDate>Fri, 11 Sep 2020 18:30:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/posts/2020/09/11/the-evolution-and-practice-of-tenclass-infrastructure/</guid>
-    <description><![CDATA[导语 本文整理自又拍云举办的微服务架构设计与实践｜Open Talk 线上公开课，荔枝微课基础架构负责人王诚强做的题为《荔枝微课基础架构的演进与实践 》 的]]></description>
 </item>
 </channel>
 </rss>
