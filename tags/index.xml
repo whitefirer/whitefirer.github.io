@@ -61,27 +61,27 @@
     <description><![CDATA[]]></description>
 </item>
 <item>
+    <title>Programming</title>
+    <link>https://whitefirer.org/tags/programming/</link>
+    <pubDate>Mon, 13 Apr 2026 22:17:43 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/programming/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Thoughts</title>
+    <link>https://whitefirer.org/tags/thoughts/</link>
+    <pubDate>Mon, 13 Apr 2026 22:17:43 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/thoughts/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>Pyodide</title>
     <link>https://whitefirer.org/tags/pyodide/</link>
     <pubDate>Fri, 07 Apr 2023 11:04:59 &#43;0800</pubDate>
     <author>whitefirer</author>
     <guid>https://whitefirer.org/tags/pyodide/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Python</title>
-    <link>https://whitefirer.org/tags/python/</link>
-    <pubDate>Fri, 07 Apr 2023 11:04:59 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/python/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Wasm</title>
-    <link>https://whitefirer.org/tags/wasm/</link>
-    <pubDate>Fri, 07 Apr 2023 11:04:59 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/wasm/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>

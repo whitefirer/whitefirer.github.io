@@ -21,6 +21,14 @@
     <description><![CDATA[四个必装插件 + 一个 MCP 服务，让 AI 编码助手从&quot;能用&quot;变成&quot;好用&quot;。 前言 Claude Code 是 Anthropic 推出的终端原生 AI 编码助手。]]></description>
 </item>
 <item>
+    <title>也谈谈 AI 编程</title>
+    <link>https://whitefirer.org/posts/2026/04/13/ai-programming-thoughts/</link>
+    <pubDate>Mon, 13 Apr 2026 22:17:43 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/04/13/ai-programming-thoughts/</guid>
+    <description><![CDATA[使用 AI 编程已经有一段时间了，从最初的代码补全，到辅助编程，再到完全由 AI 生成代码——体验和感受都和以往大不相同。 从恐惧到接纳 起初，我还会调侃 AI]]></description>
+</item>
+<item>
     <title>如何在页面上跑一个Python终端？</title>
     <link>https://whitefirer.org/posts/2023/04/07/how-to-run-python-in-the-web-terminal/</link>
     <pubDate>Fri, 07 Apr 2023 11:04:59 &#43;0800</pubDate>
