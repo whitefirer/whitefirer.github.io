@@ -12,7 +12,7 @@
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
     <meta property="article:published_time" content="2026-05-03T22:15:00+08:00">
-    <meta property="article:modified_time" content="2026-05-05T21:44:54+08:00">
+    <meta property="article:modified_time" content="2026-05-06T03:31:30+08:00">
     <meta property="article:tag" content="技术">
     <meta property="article:tag" content="Ai">
     <meta property="article:tag" content="Prompt Caching">
@@ -37,8 +37,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/whitefirer.org\/posts\/2026\/05\/03\/prompt-caching-deepseek\/"
-        },"genre": "posts","keywords": "tech, ai, prompt caching, deepseek, claude code, cost optimization","wordcount":  4290 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2026\/05\/03\/prompt-caching-deepseek\/","datePublished": "2026-05-03T22:15:00+08:00","dateModified": "2026-05-05T21:44:54+08:00","license": "2022©️whitefirer","publisher": {
+        },"genre": "posts","keywords": "tech, ai, prompt caching, deepseek, claude code, cost optimization","wordcount":  4352 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/05\/03\/prompt-caching-deepseek\/","datePublished": "2026-05-03T22:15:00+08:00","dateModified": "2026-05-06T03:31:30+08:00","license": "2022©️whitefirer","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -117,7 +117,7 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Prompt Caching 深度解析：插件 + 缓存 = 98% 费用节省</h1><h2 class="single-subtitle">DeepSeek V4 架构如何把缓存折扣做到 120 倍</h2><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-05-03">2026-05-03</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 4290 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-05-03">2026-05-03</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 4352 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 9 分钟&nbsp;<span id="/posts/2026/05/03/prompt-caching-deepseek/" class="leancloud_visitors" data-flag-title="Prompt Caching 深度解析：插件 &#43; 缓存 = 98% 费用节省">
                         <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
                     </span>&nbsp;</div>
@@ -437,7 +437,19 @@
 </span></span><span class="line"><span class="cl">会话 C (12:00 下午)    →  全部过期，从头计费
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p><strong>重要</strong>：59 分时读到缓存，1 分后照样过期。不会续期。</p>
+</div><div class="mermaid" id="id-1">gantt
+    title 两层缓存生命周期
+    dateFormat  HH:mm
+    axisFormat  %H:%M
+    section 会话 A
+    5分钟缓存 (活跃)     :active, 10:00, 30min
+    1小时缓存             :crit, 10:00, 60min
+    section 会话 B
+    1小时缓存命中         :done, 10:35, 25min
+    section 会话 C
+    缓存全过期            :1min</div>
+<script>window.config=window.config||{};window.config.data=window.config.data||{};window.config.data['id-1']=document.getElementById('id-1').textContent.trim();</script>
+<p><strong>重要</strong>：59 分时读到缓存，1 分后照样过期。不会续期。</p>
 <hr>
 <h2 id="对比-anthropic-模型">对比 Anthropic 模型</h2>
 <p>同一会话，不同模型/缓存组合：</p>
@@ -731,7 +743,7 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2026-05-05</span>
+                <span>更新于 2026-05-06</span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
@@ -768,7 +780,557 @@
             </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
                 <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
             </a>
-        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/valine@1.5.0/dist/Valine.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Comments","categoryId":"DIC_kwDOH2gmzc4CQ_fM","darkTheme":"dark","emitMetadata":"0","inputPosition":"bottom","lang":"zh-CN","lazyLoading":true,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"whitefirer/whitefirer.github.io","repoId":"R_kgDOH2gmzQ"},"valine":{"appId":"n6h55x0vTgCaFtA95qPPqpN0-9Nh9j0Va","appKey":"cxNbhYeWTE358UtBG90uf0Sn","avatar":"mp","el":"#valine","emojiCDN":"https://fastly.jsdelivr.net/npm/emoji-datasource-google@14.0.0/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":false,"highlight":true,"lang":"zh-CN","pageSize":10,"placeholder":"你的评论 ...","recordIP":true,"visitor":true}},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">
+        </div><style>
+    .mermaid-wrapper {
+        position: relative; margin: 1.2em 0;
+        border: 1px solid var(--color-contrast-low, #e0e0e0);
+        border-radius: 6px; overflow: hidden;
+        background: var(--color-body, #fff);
+    }
+    [theme=dark] .mermaid-wrapper { border-color: #3a3a3a; background: #1e1e1e; }
+    .mermaid-tab-bar {
+        display: flex; align-items: center;
+        border-bottom: 1px solid var(--color-contrast-low, #e0e0e0);
+        background: var(--color-contrast-lower, #fafafa);
+        padding: 0 8px; height: 36px;
+    }
+    [theme=dark] .mermaid-tab-bar { border-color: #3a3a3a; background: #252525; }
+    .mermaid-tab-bar .tab-btn {
+        padding: 0 14px; height: 100%; font-size: 13px; cursor: pointer;
+        background: none; border: none; border-bottom: 2px solid transparent;
+        color: var(--color-text-muted, #888); transition: all .15s;
+        display: flex; align-items: center;
+    }
+    .mermaid-tab-bar .tab-btn:hover { color: var(--color-text, #333); }
+    [theme=dark] .mermaid-tab-bar .tab-btn:hover { color: #ddd; }
+    .mermaid-tab-bar .tab-btn.active {
+        color: var(--color-primary, #4C7CF3);
+        border-bottom-color: var(--color-primary, #4C7CF3);
+        font-weight: 500;
+    }
+    .mermaid-tab-bar .toolbar-spacer { flex: 1; }
+    .mermaid-toolbar { display: flex; gap: 1px; align-items: center; padding-right: 2px; }
+    .mermaid-toolbar button {
+        display: flex; align-items: center; justify-content: center;
+        height: 28px; min-width: 28px; padding: 0 4px;
+        background: transparent; border: none; border-radius: 4px;
+        cursor: pointer; color: var(--color-text-muted, #888);
+        transition: background .15s, color .15s; font-size: 12px; gap: 2px;
+    }
+    .mermaid-toolbar button:hover { background: var(--color-contrast-low, #e5e5e5); color: var(--color-text, #333); }
+    [theme=dark] .mermaid-toolbar button:hover { background: #3a3a3a; color: #eee; }
+    .mermaid-toolbar button svg { width: 15px; height: 15px; pointer-events: none; }
+    .mermaid-toolbar .chevron { width: 10px; height: 10px; margin-left: -1px; }
+     
+    .mermaid-dd-wrap { position: relative; }
+    .mermaid-dd-menu {
+        display: none; position: absolute; top: 100%; right: 0;
+        background: var(--color-body, #fff);
+        border: 1px solid var(--color-contrast-low, #e0e0e0);
+        border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,.1);
+        z-index: 100; min-width: 130px; padding: 4px; margin-top: 4px;
+    }
+    [theme=dark] .mermaid-dd-menu { border-color: #3a3a3a; background: #2a2a2a; box-shadow: 0 4px 12px rgba(0,0,0,.4); }
+    .mermaid-dd-menu.open { display: block; }
+    .mermaid-dd-menu .dd-item {
+        display: flex; align-items: center; gap: 8px;
+        padding: 7px 10px; border-radius: 4px; cursor: pointer;
+        font-size: 13px; color: var(--color-text, #333); white-space: nowrap;
+    }
+    [theme=dark] .mermaid-dd-menu .dd-item { color: #ddd; }
+    .mermaid-dd-menu .dd-item:hover { background: var(--color-contrast-lower, #f5f5f5); }
+    [theme=dark] .mermaid-dd-menu .dd-item:hover { background: #3a3a3a; }
+    .mermaid-dd-menu .dd-item svg { width: 14px; height: 14px; flex-shrink: 0; opacity: .6; }
+     
+    .mermaid-tab-content { display: none; }
+    .mermaid-tab-content.active { display: block; }
+    .mermaid-tab-content.diagram {
+        padding: 8px; overflow: auto; text-align: center;
+        min-height: 60px; position: relative;
+    }
+    .mermaid-stage {
+        display: block; padding: 12px;
+    }
+    .mermaid-stage .mermaid { display: block; text-align: left; }
+    .mermaid-stage .mermaid svg { max-width: 100%; height: auto; }
+    .mermaid-stage.dragging { cursor: grabbing; -webkit-user-select: none; user-select: none; }
+    .mermaid-stage .mermaid { transform-origin: 0 0; will-change: transform; }
+    .mermaid-stage .mermaid.animate { transition: transform .2s ease; }
+    .mermaid-stage-reset {
+        position: absolute; bottom: 8px; right: 8px; z-index: 5;
+        padding: 3px 10px; font-size: 11px; border-radius: 4px;
+        background: var(--color-contrast-low, #e0e0e0); border: none;
+        cursor: pointer; color: var(--color-text-muted, #666);
+        display: none;
+    }
+    [theme=dark] .mermaid-stage-reset { background: #3a3a3a; color: #aaa; }
+    .mermaid-stage-reset.visible { display: block; }
+    .mermaid-source-panel {
+        padding: 14px 18px; margin: 0;
+        font-size: 13px; line-height: 1.6; white-space: pre-wrap;
+        overflow-x: auto; max-height: 420px; overflow-y: auto;
+        font-family: 'Fira Code','Consolas','SF Mono',monospace;
+        background: var(--color-contrast-lower, #fafafa);
+        color: var(--color-text, #333); position: relative;
+    }
+    [theme=dark] .mermaid-source-panel { background: #1e1e1e; color: #ddd; }
+    .mermaid-source-panel .code-copy-btn {
+        position: absolute; top: 8px; right: 8px;
+        display: flex; align-items: center; justify-content: center;
+        width: 28px; height: 28px; padding: 0;
+        background: var(--color-contrast-low, #e0e0e0); border: none;
+        border-radius: 4px; cursor: pointer; color: var(--color-text-muted, #666);
+        opacity: 0; transition: opacity .15s;
+    }
+    [theme=dark] .mermaid-source-panel .code-copy-btn { background: #3a3a3a; color: #aaa; }
+    .mermaid-source-panel:hover .code-copy-btn { opacity: 1; }
+    .mermaid-source-panel .code-copy-btn:hover { color: var(--color-text, #333); }
+    [theme=dark] .mermaid-source-panel .code-copy-btn:hover { color: #fff; }
+    .mermaid-source-panel .code-copy-btn svg { width: 14px; height: 14px; pointer-events: none; }
+     
+    .mermaid-source-panel .hl-keyword { color: #c678dd; }
+    .mermaid-source-panel .hl-graph { color: #e06c75; }
+    .mermaid-source-panel .hl-node { color: #61afef; }
+    .mermaid-source-panel .hl-edge { color: #abb2bf; }
+    .mermaid-source-panel .hl-comment { color: #5c6370; font-style: italic; }
+    .mermaid-source-panel .hl-string { color: #98c379; }
+    .mermaid-source-panel .hl-arrow { color: #d19a66; }
+    [theme=dark] .mermaid-source-panel .hl-keyword { color: #c678dd; }
+    [theme=dark] .mermaid-source-panel .hl-graph { color: #e06c75; }
+    [theme=dark] .mermaid-source-panel .hl-node { color: #61afef; }
+    [theme=dark] .mermaid-source-panel .hl-edge { color: #abb2bf; }
+    [theme=dark] .mermaid-source-panel .hl-comment { color: #5c6370; font-style: italic; }
+    [theme=dark] .mermaid-source-panel .hl-string { color: #98c379; }
+    [theme=dark] .mermaid-source-panel .hl-arrow { color: #d19a66; }
+     
+    .mermaid-fs-overlay {
+        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+        background: rgba(255,255,255,.98); z-index: 9999;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    [theme=dark] .mermaid-fs-overlay { background: rgba(18,18,18,.98); }
+    .mermaid-fs-overlay svg { max-width: 96vw; max-height: 88vh; }
+    .mermaid-fs-overlay .fs-close {
+        position: absolute; top: 20px; right: 20px;
+        width: 40px; height: 40px; cursor: pointer;
+        background: var(--color-contrast-low, #e0e0e0); border: none;
+        border-radius: 50%; font-size: 20px; display: flex;
+        align-items: center; justify-content: center;
+        color: var(--color-text, #333);
+    }
+    [theme=dark] .mermaid-fs-overlay .fs-close { background: #444; color: #eee; }
+    .mermaid-fs-overlay .fs-close:hover { opacity: .8; }
+    .mermaid-fs-overlay .fs-zoom {
+        position: absolute; bottom: 24px; display: flex; gap: 4px;
+    }
+    .mermaid-fs-overlay .fs-zoom button {
+        width: 36px; height: 36px; cursor: pointer;
+        background: var(--color-contrast-low, #e0e0e0); border: none;
+        border-radius: 50%; font-size: 18px; display: flex;
+        align-items: center; justify-content: center;
+        color: var(--color-text, #333);
+    }
+    [theme=dark] .mermaid-fs-overlay .fs-zoom button { background: #444; color: #eee; }
+    .mermaid-fs-overlay .fs-zoom button:hover { opacity: .8; }
+    .mermaid-fs-overlay .fs-svg-wrap {
+        overflow: hidden; display: flex; align-items: center; justify-content: center;
+        width: 100%; height: 100%;
+    }
+    .mermaid-fs-overlay .fs-svg-wrap svg { transform-origin: center center; will-change: transform; }
+     
+    .mermaid-toast {
+        position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
+        background: #333; color: #fff; padding: 9px 20px; border-radius: 8px;
+        font-size: 13px; z-index: 99999; pointer-events: none;
+        animation: mmd-toast-in .2s ease, mmd-toast-out .2s ease 1.5s forwards;
+    }
+    [theme=dark] .mermaid-toast { background: #555; }
+    @keyframes mmd-toast-in { from { opacity: 0; transform: translateX(-50%) translateY(10px); } }
+    @keyframes mmd-toast-out { to { opacity: 0; transform: translateX(-50%) translateY(-10px); } }
+    </style><script>
+    (function(){
+        var ICONS = {
+            zoomin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg>',
+            zoomout: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M8 11h6"/></svg>',
+            fullscreen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>',
+            download: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+            copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
+            chevron: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>'
+        };
+
+        function getSource(el) { return (window.config&&window.config.data&&window.config.data[el.id])||''; }
+
+        function highlightMermaid(src) {
+            var escaped = src.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+            escaped = escaped.replace(/(%%[^\n]*)/g, '<span class="hl-comment">$1</span>');
+            escaped = escaped.replace(/\b(gantt|graph\s+(TB|TD|BT|RL|LR)|flowchart\s+(TB|TD|BT|RL|LR)|sequenceDiagram|classDiagram|stateDiagram(-v2)?|erDiagram|journey|pie|gitGraph|mindmap|timeline)\b/gi,
+                '<span class="hl-graph">$1</span>');
+            escaped = escaped.replace(/\b(title|dateFormat|axisFormat|section|todayMarker|excludes|includes|tickInterval|weekday|accTitle|accDescr)\b/g,
+                '<span class="hl-keyword">$1</span>');
+            escaped = escaped.replace(/(:active|:done|:crit|:milestone)(?=\s|,|$)/g,
+                '<span class="hl-arrow">$1</span>');
+            escaped = escaped.replace(/(--&gt;|--&gt;&gt;|==&gt;|-\.-&gt;|\.\.-&gt;)/g,
+                '<span class="hl-edge">$1</span>');
+            return escaped;
+        }
+
+        function toast(msg) {
+            var t = document.createElement('div'); t.className = 'mermaid-toast';
+            t.textContent = msg; document.body.appendChild(t);
+            setTimeout(function(){ t.remove(); }, 1800);
+        }
+
+        function getSVGSize(svg) {
+            var vb = svg.getAttribute('viewBox');
+            if (vb) { var p = vb.split(/\s+/); return { w: parseFloat(p[2]), h: parseFloat(p[3]) }; }
+            var b = svg.getBBox();
+            return { w: Math.ceil(b.width + b.x), h: Math.ceil(b.height + b.y) };
+        }
+
+        function downloadSVG(el) {
+            var svg = el.querySelector('svg'); if (!svg) return;
+            var clone = svg.cloneNode(true);
+            var s = getSVGSize(svg);
+            clone.setAttribute('width', s.w); clone.setAttribute('height', s.h);
+            var str = '<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n' + new XMLSerializer().serializeToString(clone);
+            var blob = new Blob([str], {type: 'image/svg+xml;charset=utf-8'});
+            var a = document.createElement('a');
+            a.download = (el.id||'mermaid') + '.svg';
+            a.href = URL.createObjectURL(blob); a.click();
+            URL.revokeObjectURL(a.href);
+        }
+
+        function downloadPNG(el) {
+            var svg = el.querySelector('svg'); if (!svg) return;
+            var size = getSVGSize(svg); if (!size.w||!size.h) return;
+            var scale = 2, w = size.w*scale, h = size.h*scale;
+            var clone = svg.cloneNode(true);
+            clone.setAttribute('width', w); clone.setAttribute('height', h);
+            var str = new XMLSerializer().serializeToString(clone);
+            var blob = new Blob([str], {type: 'image/svg+xml;charset=utf-8'});
+            var url = URL.createObjectURL(blob);
+            var img = new Image();
+            img.onload = function() {
+                var c = document.createElement('canvas'); c.width=w; c.height=h;
+                var ctx = c.getContext('2d');
+                ctx.drawImage(img, 0, 0, w, h);
+                URL.revokeObjectURL(url);
+                c.toBlob(function(b) {
+                    var a = document.createElement('a');
+                    a.download = (el.id||'mermaid') + '.png';
+                    a.href = URL.createObjectURL(b); a.click();
+                    URL.revokeObjectURL(a.href);
+                }, 'image/png');
+            };
+            img.src = url;
+        }
+
+        function closeAllDropdowns() {
+            document.querySelectorAll('.mermaid-dd-menu.open').forEach(function(m){ m.classList.remove('open'); });
+        }
+
+        function wrapMermaid(el) {
+            if (el.closest && el.closest('.mermaid-wrapper')) return;
+            var wrapper = document.createElement('div');
+            wrapper.className = 'mermaid-wrapper';
+            el.parentNode.insertBefore(wrapper, el);
+
+            
+            var tabBar = document.createElement('div');
+            tabBar.className = 'mermaid-tab-bar';
+
+            var diagramTab = document.createElement('button');
+            diagramTab.className = 'tab-btn active'; diagramTab.textContent = '图表';
+
+            var codeTab = document.createElement('button');
+            codeTab.className = 'tab-btn'; codeTab.textContent = '代码';
+
+            var spacer = document.createElement('div');
+            spacer.className = 'toolbar-spacer';
+
+            
+            var toolbar = document.createElement('div');
+            toolbar.className = 'mermaid-toolbar';
+
+            
+            var stage = document.createElement('div');
+            stage.className = 'mermaid-stage';
+            stage.style.cursor = '';
+            var mermaidEl = el;
+            mermaidEl.classList.add('animate');
+
+            
+            var scale = 1, tx = 0, ty = 0, isDragging = false, dragStartX, dragStartY, startTx, startTy;
+            var resetBtn = document.createElement('button');
+            resetBtn.className = 'mermaid-stage-reset';
+            resetBtn.textContent = '复位';
+            resetBtn.onclick = function(e) { e.stopPropagation(); scale = 1; tx = 0; ty = 0; applyTransform(true); resetBtn.classList.remove('visible'); };
+
+            function applyTransform(animate) {
+                if (animate) { mermaidEl.classList.add('animate'); }
+                else { mermaidEl.classList.remove('animate'); }
+                mermaidEl.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+                var zoomed = scale !== 1 || tx !== 0 || ty !== 0;
+                resetBtn.classList.toggle('visible', zoomed);
+                stage.style.cursor = isOverflowing() ? 'grab' : '';
+                if (animate) { setTimeout(function(){ mermaidEl.classList.remove('animate'); }, 200); }
+            }
+
+            function clampScale(s) { return Math.min(Math.max(s, 0.2), 8); }
+
+            
+            var zoomOutBtn = document.createElement('button');
+            zoomOutBtn.title = '缩小';
+            zoomOutBtn.innerHTML = ICONS.zoomout;
+            zoomOutBtn.onclick = function(e) {
+                e.stopPropagation(); closeAllDropdowns();
+                var rect = stage.getBoundingClientRect();
+                var cx = rect.width / 2, cy = rect.height / 2;
+                var newScale = clampScale(scale / 1.4);
+                tx = cx - (cx - tx) * (newScale / scale);
+                ty = cy - (cy - ty) * (newScale / scale);
+                scale = newScale;
+                applyTransform(true);
+            };
+
+            var zoomInBtn = document.createElement('button');
+            zoomInBtn.title = '放大';
+            zoomInBtn.innerHTML = ICONS.zoomin;
+            zoomInBtn.onclick = function(e) {
+                e.stopPropagation(); closeAllDropdowns();
+                var rect = stage.getBoundingClientRect();
+                var cx = rect.width / 2, cy = rect.height / 2;
+                var newScale = clampScale(scale * 1.4);
+                tx = cx - (cx - tx) * (newScale / scale);
+                ty = cy - (cy - ty) * (newScale / scale);
+                scale = newScale;
+                applyTransform(true);
+            };
+
+            
+            var fsBtn = document.createElement('button');
+            fsBtn.title = '全屏查看';
+            fsBtn.innerHTML = ICONS.fullscreen;
+            fsBtn.onclick = function(e) {
+                e.stopPropagation(); closeAllDropdowns();
+                var svg = el.querySelector('svg'); if (!svg) return;
+                var overlay = document.createElement('div');
+                overlay.className = 'mermaid-fs-overlay';
+                var close = document.createElement('button');
+                close.className = 'fs-close'; close.innerHTML = '&times;';
+                
+                var svgWrap = document.createElement('div');
+                svgWrap.className = 'fs-svg-wrap';
+                var svgClone = svg.cloneNode(true);
+                svgWrap.appendChild(svgClone);
+                
+                var fsZoom = document.createElement('div');
+                fsZoom.className = 'fs-zoom';
+                var fsScale = 1, fsTx = 0, fsTy = 0;
+                function fsApply() {
+                    svgClone.style.transform = 'translate(' + fsTx + 'px,' + fsTy + 'px) scale(' + fsScale + ')';
+                }
+                var fsZoomOut = document.createElement('button');
+                fsZoomOut.innerHTML = '−';
+                fsZoomOut.onclick = function(ev) { ev.stopPropagation(); fsScale = Math.max(fsScale/1.3, 0.1); fsApply(); };
+                var fsZoomIn = document.createElement('button');
+                fsZoomIn.innerHTML = '+';
+                fsZoomIn.onclick = function(ev) { ev.stopPropagation(); fsScale = Math.min(fsScale*1.3, 10); fsApply(); };
+                var fsReset = document.createElement('button');
+                fsReset.innerHTML = '1:1';
+                fsReset.onclick = function(ev) { ev.stopPropagation(); fsScale = 1; fsTx = 0; fsTy = 0; fsApply(); };
+                fsZoom.appendChild(fsZoomOut);
+                fsZoom.appendChild(fsReset);
+                fsZoom.appendChild(fsZoomIn);
+                
+                svgWrap.addEventListener('wheel', function(ev) {
+                    ev.preventDefault(); ev.stopPropagation();
+                    var d = ev.deltaY > 0 ? 0.88 : 1.12;
+                    var ns = Math.min(Math.max(fsScale*d, 0.1), 10);
+                    var rect = svgWrap.getBoundingClientRect();
+                    var cx = ev.clientX - rect.left, cy = ev.clientY - rect.top;
+                    fsTx = cx - (cx - fsTx)*(ns/fsScale);
+                    fsTy = cy - (cy - fsTy)*(ns/fsScale);
+                    fsScale = ns;
+                    fsApply();
+                }, {passive: false});
+                
+                var fsDragging = false, fsStartX, fsStartY, fsStartTx, fsStartTy;
+                svgWrap.addEventListener('mousedown', function(ev) {
+                    if (ev.button !== 0) return;
+                    fsDragging = true; fsStartX = ev.clientX; fsStartY = ev.clientY;
+                    fsStartTx = fsTx; fsStartTy = fsTy;
+                    ev.preventDefault();
+                });
+                window.addEventListener('mousemove', function fsMove(ev) {
+                    if (!fsDragging) return;
+                    fsTx = fsStartTx + (ev.clientX - fsStartX);
+                    fsTy = fsStartTy + (ev.clientY - fsStartY);
+                    fsApply();
+                });
+                window.addEventListener('mouseup', function fsUp() {
+                    fsDragging = false;
+                });
+                overlay.appendChild(svgWrap);
+                overlay.appendChild(close);
+                overlay.appendChild(fsZoom);
+                overlay.addEventListener('click', function(ev) {
+                    if (ev.target === overlay) overlay.remove();
+                });
+                close.onclick = function() { overlay.remove(); };
+                document.addEventListener('keydown', function esc(e) {
+                    if (e.key === 'Escape') { overlay.remove(); document.removeEventListener('keydown', esc); }
+                });
+                document.body.appendChild(overlay);
+            };
+
+            
+            var ddWrap = document.createElement('div');
+            ddWrap.className = 'mermaid-dd-wrap';
+            var ddBtn = document.createElement('button');
+            ddBtn.title = '下载';
+            ddBtn.innerHTML = ICONS.download + ICONS.chevron.replace('class="chevron"','class="chevron" style="width:10px;height:10px"');
+            var ddMenu = document.createElement('div');
+            ddMenu.className = 'mermaid-dd-menu';
+
+            function makeDDItem(label, action) {
+                var item = document.createElement('div');
+                item.className = 'dd-item';
+                item.textContent = label;
+                item.onclick = function(e) { e.stopPropagation(); closeAllDropdowns(); action(); };
+                return item;
+            }
+            ddMenu.appendChild(makeDDItem('下载 SVG', function(){ downloadSVG(el); }));
+            ddMenu.appendChild(makeDDItem('下载 PNG', function(){ downloadPNG(el); }));
+            ddBtn.onclick = function(e) {
+                e.stopPropagation();
+                ddMenu.classList.toggle('open');
+            };
+            ddWrap.appendChild(ddBtn);
+            ddWrap.appendChild(ddMenu);
+
+            
+            var copyBtn = document.createElement('button');
+            copyBtn.title = '复制代码';
+            copyBtn.innerHTML = ICONS.copy;
+            copyBtn.onclick = function(e) {
+                e.stopPropagation(); closeAllDropdowns();
+                var src = getSource(el);
+                if (!src) return;
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(src).then(function(){ toast('代码已复制'); });
+                } else {
+                    var ta = document.createElement('textarea');
+                    ta.value = src; ta.style.position='fixed'; ta.style.opacity='0';
+                    document.body.appendChild(ta); ta.select();
+                    document.execCommand('copy'); document.body.removeChild(ta);
+                    toast('代码已复制');
+                }
+            };
+
+            toolbar.appendChild(zoomOutBtn);
+            toolbar.appendChild(zoomInBtn);
+            toolbar.appendChild(fsBtn);
+            toolbar.appendChild(ddWrap);
+            toolbar.appendChild(copyBtn);
+
+            
+            var toolbarDiagramBtns = [zoomOutBtn, zoomInBtn, fsBtn, ddWrap];
+            function showDiagramToolbar() {
+                toolbarDiagramBtns.forEach(function(b){ b.style.display = ''; });
+            }
+            function showCodeToolbar() {
+                toolbarDiagramBtns.forEach(function(b){ b.style.display = 'none'; });
+            }
+            showDiagramToolbar();
+
+            tabBar.appendChild(diagramTab);
+            tabBar.appendChild(codeTab);
+            tabBar.appendChild(spacer);
+            tabBar.appendChild(toolbar);
+
+            wrapper.appendChild(tabBar);
+
+            
+            var tabDiagram = document.createElement('div');
+            tabDiagram.className = 'mermaid-tab-content diagram active';
+            stage.appendChild(el);
+            tabDiagram.appendChild(stage);
+            tabDiagram.appendChild(resetBtn);
+
+            var tabCode = document.createElement('pre');
+            tabCode.className = 'mermaid-tab-content mermaid-source-panel';
+            tabCode.innerHTML = highlightMermaid(getSource(el));
+
+            wrapper.appendChild(tabDiagram);
+            wrapper.appendChild(tabCode);
+
+            
+            diagramTab.onclick = function() {
+                diagramTab.classList.add('active'); codeTab.classList.remove('active');
+                tabDiagram.classList.add('active'); tabCode.classList.remove('active');
+                showDiagramToolbar();
+            };
+            codeTab.onclick = function() {
+                codeTab.classList.add('active'); diagramTab.classList.remove('active');
+                tabCode.classList.add('active'); tabDiagram.classList.remove('active');
+                showCodeToolbar();
+            };
+
+            
+            function isOverflowing() {
+                var svg = el.querySelector('svg'); if (!svg) return false;
+                var vb = svg.getAttribute('viewBox'); if (!vb) return false;
+                var parts = vb.split(/\s+/);
+                var sw = parseFloat(parts[2]) * scale, sh = parseFloat(parts[3]) * scale;
+                var rect = stage.getBoundingClientRect();
+                return sw > rect.width + 1 || sh > rect.height + 1;
+            }
+            stage.addEventListener('mousedown', function(e) {
+                if (e.button !== 0 || !isOverflowing()) return;
+                isDragging = true; stage.classList.add('dragging');
+                dragStartX = e.clientX; dragStartY = e.clientY;
+                startTx = tx; startTy = ty;
+                e.preventDefault();
+            });
+            window.addEventListener('mousemove', function(e) {
+                if (!isDragging) return;
+                tx = startTx + (e.clientX - dragStartX);
+                ty = startTy + (e.clientY - dragStartY);
+                applyTransform(false);
+            });
+            window.addEventListener('mouseup', function() {
+                if (isDragging) { isDragging = false; stage.classList.remove('dragging'); }
+            });
+            
+            stage.addEventListener('wheel', function(e) {
+                e.preventDefault();
+                var delta = e.deltaY > 0 ? 0.85 : 1.15;
+                if (e.ctrlKey) delta = e.deltaY > 0 ? 0.95 : 1.05;
+                var newScale = clampScale(scale * delta);
+                var rect = stage.getBoundingClientRect();
+                var cx = e.clientX - rect.left, cy = e.clientY - rect.top;
+                tx = cx - (cx - tx) * (newScale / scale);
+                ty = cy - (cy - ty) * (newScale / scale);
+                scale = newScale;
+                applyTransform(false);
+            }, { passive: false });
+        }
+
+        function setup() { document.querySelectorAll('.mermaid').forEach(wrapMermaid); }
+
+        setup();
+        
+        document.addEventListener('click', closeAllDropdowns);
+        
+        var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(m) {
+                if (m.target.classList.contains('mermaid') && m.target.querySelector('svg')) wrapMermaid(m.target);
+            });
+        });
+        document.querySelectorAll('.mermaid').forEach(function(el) { observer.observe(el, { childList: true }); });
+    })();
+    </script><link rel="stylesheet" href="/lib/valine/valine.min.css"><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/valine@1.5.0/dist/Valine.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mermaid@9.1.3/dist/mermaid.min.js"></script><script type="text/javascript">window.config=Object.assign(window.config||{},{"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Comments","categoryId":"DIC_kwDOH2gmzc4CQ_fM","darkTheme":"dark","emitMetadata":"0","inputPosition":"bottom","lang":"zh-CN","lazyLoading":true,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"whitefirer/whitefirer.github.io","repoId":"R_kgDOH2gmzQ"},"valine":{"appId":"n6h55x0vTgCaFtA95qPPqpN0-9Nh9j0Va","appKey":"cxNbhYeWTE358UtBG90uf0Sn","avatar":"mp","el":"#valine","emojiCDN":"https://fastly.jsdelivr.net/npm/emoji-datasource-google@14.0.0/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":false,"highlight":true,"lang":"zh-CN","pageSize":10,"placeholder":"你的评论 ...","recordIP":true,"visitor":true}},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}});</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">
             window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
             gtag('config', 'G-70Q8REKE17', { 'anonymize_ip': true });
         </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-70Q8REKE17" async></script></body>

@@ -154,6 +154,20 @@ Anthropic API（DeepSeek 兼容实现）：
 会话 C (12:00 下午)    →  全部过期，从头计费
 ```
 
+{{< mermaid >}}
+gantt
+    title 两层缓存生命周期
+    dateFormat  HH:mm
+    axisFormat  %H:%M
+    section 会话 A
+    5分钟缓存 (活跃)     :active, 10:00, 30min
+    1小时缓存             :crit, 10:00, 60min
+    section 会话 B
+    1小时缓存命中         :done, 10:35, 25min
+    section 会话 C
+    缓存全过期            :1min
+{{< /mermaid >}}
+
 **重要**：59 分时读到缓存，1 分后照样过期。不会续期。
 
 ---
