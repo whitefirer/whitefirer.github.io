@@ -12,7 +12,7 @@
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
     <meta property="article:published_time" content="2026-04-28T21:30:00+08:00">
-    <meta property="article:modified_time" content="2026-05-06T05:15:55+08:00">
+    <meta property="article:modified_time" content="2026-05-07T03:47:56+08:00">
     <meta property="article:tag" content="技术">
     <meta property="article:tag" content="Ai">
     <meta property="article:tag" content="Claude Code">
@@ -36,8 +36,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/whitefirer.org\/posts\/2026\/04\/28\/claude-code-plugins-guide\/"
-        },"genre": "posts","keywords": "tech, ai, claude code, plugin, development tools","wordcount":  5939 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2026\/04\/28\/claude-code-plugins-guide\/","datePublished": "2026-04-28T21:30:00+08:00","dateModified": "2026-05-06T05:15:55+08:00","license": "2022©️whitefirer","publisher": {
+        },"genre": "posts","keywords": "tech, ai, claude code, plugin, development tools","wordcount":  5530 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/04\/28\/claude-code-plugins-guide\/","datePublished": "2026-04-28T21:30:00+08:00","dateModified": "2026-05-07T03:47:56+08:00","license": "2022©️whitefirer","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -116,7 +116,7 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Claude Code 插件完全指南：省钱、省 Token、提升开发效率</h1><h2 class="single-subtitle">四个必装插件 &#43; 一个 MCP 服务，让 AI 编码助手从用变成好用</h2><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-04-28">2026-04-28</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 5939 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-04-28">2026-04-28</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 5530 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 12 分钟&nbsp;<span id="/posts/2026/04/28/claude-code-plugins-guide/" class="leancloud_visitors" data-flag-title="Claude Code 插件完全指南：省钱、省 Token、提升开发效率">
                         <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
                     </span>&nbsp;</div>
@@ -843,57 +843,8 @@
 <hr>
 <h2 id="7-插件组合11111--5">7. 插件组合：1+1+1+1+1 &gt; 5</h2>
 <p>五个工具覆盖不同维度，组合使用有叠加效应：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">┌──────────────────────────────────────────────────────────┐
-</span></span><span class="line"><span class="cl">│                      Claude Code                          │
-</span></span><span class="line"><span class="cl">│                                                          │
-</span></span><span class="line"><span class="cl">│  ┌───────┐ ┌───────┐ ┌───────┐ ┌───────┐ ┌───────────┐  │
-</span></span><span class="line"><span class="cl">│  │caveman│ │super- │ │claude-│ │front- │ │  claude-  │  │
-</span></span><span class="line"><span class="cl">│  │       │ │powers │ │  mem  │ │  end  │ │  context  │  │
-</span></span><span class="line"><span class="cl">│  │输出   │ │流程   │ │跨会话 │ │设计   │ │ 语义搜索  │  │
-</span></span><span class="line"><span class="cl">│  │ -75%  │ │不跑偏 │ │记忆   │ │不烂   │ │ 省探索    │  │
-</span></span><span class="line"><span class="cl">│  └───┬───┘ └───┬───┘ └───┬───┘ └───┬───┘ └─────┬─────┘  │
-</span></span><span class="line"><span class="cl">│      │         │         │         │            │        │
-</span></span><span class="line"><span class="cl">│  ┌───┴─────────┴─────────┴─────────┴────────────┴──────┐ │
-</span></span><span class="line"><span class="cl">│  │                   协同效果                            │ │
-</span></span><span class="line"><span class="cl">│  ├──────────────────────────────────────────────────────┤ │
-</span></span><span class="line"><span class="cl">│  │ cave + super + context = 搜索→设计→实现→输出全压缩   │ │
-</span></span><span class="line"><span class="cl">│  │ cave + mem             = 回忆历史不占输出上下文       │ │
-</span></span><span class="line"><span class="cl">│  │ super + mem + context  = 计划复用历史决策 + 精准定位  │ │
-</span></span><span class="line"><span class="cl">│  │ cave + front + context = 搜索参考→设计→一轮到位       │ │
-</span></span><span class="line"><span class="cl">│  │ 五个全开               = 输入探索省 + 流程不返工      │ │
-</span></span><span class="line"><span class="cl">│  │                          + 输出压缩 + 跨会话记忆      │ │
-</span></span><span class="line"><span class="cl">│  │                          + 前端审美不烂              │ │
-</span></span><span class="line"><span class="cl">│  └──────────────────────────────────────────────────────┘ │
-</span></span><span class="line"><span class="cl">└──────────────────────────────────────────────────────────┘
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="实际场景">实际场景</h3>
+<div id="synergy-diagram-wrapper" style="position:relative;max-width:680px;margin:1.2em auto"><svg id="plugin-synergy-diagram" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 370" width="100%" style="max-width:680px;display:block;margin:1.2em auto"><defs><linearGradient id="c1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#fbbf24"/></linearGradient><linearGradient id="c2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#818cf8"/></linearGradient><linearGradient id="c3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#34d399"/></linearGradient><linearGradient id="c4" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ec4899"/><stop offset="100%" stop-color="#f472b6"/></linearGradient><linearGradient id="c5" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#22d3ee"/></linearGradient><linearGradient id="syn" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#667eea"/><stop offset="100%" stop-color="#764ba2"/></linearGradient><filter id="sh"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.12"/></filter></defs><g filter="url(#sh)"><rect x="16" y="12" width="114" height="128" rx="8" fill="#fff" stroke="#f59e0b" stroke-width="1.5"/><rect x="16" y="12" width="114" height="38" rx="8" fill="url(#c1)"/><rect x="16" y="42" width="114" height="8" fill="url(#c1)"/><text x="73" y="36" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">caveman</text><text x="73" y="72" text-anchor="middle" fill="#374151" font-size="13" font-family="system-ui,sans-serif">输出压缩</text><text x="73" y="92" text-anchor="middle" fill="#f59e0b" font-size="18" font-weight="700" font-family="system-ui,sans-serif">不啰嗦</text><text x="73" y="112" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="system-ui,sans-serif">输出 Token ↓ 75%</text></g><g filter="url(#sh)"><rect x="146" y="12" width="114" height="128" rx="8" fill="#fff" stroke="#6366f1" stroke-width="1.5"/><rect x="146" y="12" width="114" height="38" rx="8" fill="url(#c2)"/><rect x="146" y="42" width="114" height="8" fill="url(#c2)"/><text x="203" y="36" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="system-ui,sans-serif">superpowers</text><text x="203" y="72" text-anchor="middle" fill="#374151" font-size="13" font-family="system-ui,sans-serif">开发流程</text><text x="203" y="92" text-anchor="middle" fill="#6366f1" font-size="18" font-weight="700" font-family="system-ui,sans-serif">不跑偏</text><text x="203" y="112" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="system-ui,sans-serif">返工 ↓ 65%</text></g><g filter="url(#sh)"><rect x="276" y="12" width="114" height="128" rx="8" fill="#fff" stroke="#10b981" stroke-width="1.5"/><rect x="276" y="12" width="114" height="38" rx="8" fill="url(#c3)"/><rect x="276" y="42" width="114" height="8" fill="url(#c3)"/><text x="333" y="36" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="system-ui,sans-serif">claude-mem</text><text x="333" y="72" text-anchor="middle" fill="#374151" font-size="13" font-family="system-ui,sans-serif">跨会话记忆</text><text x="333" y="92" text-anchor="middle" fill="#10b981" font-size="18" font-weight="700" font-family="system-ui,sans-serif">不忘事</text><text x="333" y="112" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="system-ui,sans-serif">上下文 ↓ 50%</text></g><g filter="url(#sh)"><rect x="406" y="12" width="114" height="128" rx="8" fill="#fff" stroke="#ec4899" stroke-width="1.5"/><rect x="406" y="12" width="114" height="38" rx="8" fill="url(#c4)"/><rect x="406" y="42" width="114" height="8" fill="url(#c4)"/><text x="463" y="36" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="system-ui,sans-serif">frontend-design</text><text x="463" y="72" text-anchor="middle" fill="#374151" font-size="13" font-family="system-ui,sans-serif">前端审美</text><text x="463" y="92" text-anchor="middle" fill="#ec4899" font-size="18" font-weight="700" font-family="system-ui,sans-serif">不丑了</text><text x="463" y="112" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="system-ui,sans-serif">迭代 ↓ 67%</text></g><g filter="url(#sh)"><rect x="536" y="12" width="128" height="128" rx="8" fill="#fff" stroke="#06b6d4" stroke-width="1.5"/><rect x="536" y="12" width="128" height="38" rx="8" fill="url(#c5)"/><rect x="536" y="42" width="128" height="8" fill="url(#c5)"/><text x="600" y="36" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="system-ui,sans-serif">claude-context</text><text x="600" y="72" text-anchor="middle" fill="#374151" font-size="13" font-family="system-ui,sans-serif">语义搜索</text><text x="600" y="92" text-anchor="middle" fill="#06b6d4" font-size="18" font-weight="700" font-family="system-ui,sans-serif">找得快</text><text x="600" y="112" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="system-ui,sans-serif">探索 ↓ 95%</text></g><line x1="73" y1="140" x2="73" y2="148" stroke="#f59e0b" stroke-width="1.2" stroke-dasharray="2,2"/><line x1="203" y1="140" x2="203" y2="148" stroke="#6366f1" stroke-width="1.2" stroke-dasharray="2,2"/><line x1="333" y1="140" x2="333" y2="148" stroke="#10b981" stroke-width="1.2" stroke-dasharray="2,2"/><line x1="463" y1="140" x2="463" y2="148" stroke="#ec4899" stroke-width="1.2" stroke-dasharray="2,2"/><line x1="600" y1="140" x2="600" y2="148" stroke="#06b6d4" stroke-width="1.2" stroke-dasharray="2,2"/><polygon points="69,148 73,155 77,148" fill="#f59e0b"/><polygon points="199,148 203,155 207,148" fill="#6366f1"/><polygon points="329,148 333,155 337,148" fill="#10b981"/><polygon points="459,148 463,155 467,148" fill="#ec4899"/><polygon points="596,148 600,155 604,148" fill="#06b6d4"/><g filter="url(#sh)"><rect x="10" y="155" width="660" height="205" rx="10" fill="#fff" stroke="#667eea" stroke-width="1.8"/><rect x="10" y="155" width="660" height="36" rx="10" fill="url(#syn)"/><rect x="10" y="181" width="660" height="10" fill="url(#syn)"/><text x="340" y="178" text-anchor="middle" fill="#fff" font-size="14" font-weight="700" font-family="system-ui,sans-serif">协同效果 — 五维叠加，1+1+1+1+1 > 5</text><text x="28" y="218" fill="#374151" font-size="12" font-family="system-ui,monospace"><tspan font-weight="700" fill="#f59e0b">cave</tspan> + <tspan font-weight="700" fill="#6366f1">super</tspan> + <tspan font-weight="700" fill="#06b6d4">context</tspan> = 搜索 → 设计 → 实现 → 输出全压缩</text><text x="28" y="242" fill="#374151" font-size="12" font-family="system-ui,monospace"><tspan font-weight="700" fill="#f59e0b">cave</tspan> + <tspan font-weight="700" fill="#10b981">mem</tspan>                  = 回忆历史不占输出上下文</text><text x="28" y="266" fill="#374151" font-size="12" font-family="system-ui,monospace"><tspan font-weight="700" fill="#6366f1">super</tspan> + <tspan font-weight="700" fill="#10b981">mem</tspan> + <tspan font-weight="700" fill="#06b6d4">context</tspan>  = 计划复用历史决策 + 精准定位</text><text x="28" y="290" fill="#374151" font-size="12" font-family="system-ui,monospace"><tspan font-weight="700" fill="#f59e0b">cave</tspan> + <tspan font-weight="700" fill="#ec4899">front</tspan> + <tspan font-weight="700" fill="#06b6d4">context</tspan> = 搜索参考 → 设计 → 一轮到位</text><text x="28" y="314" fill="#374151" font-size="12" font-family="system-ui,monospace"><tspan font-weight="700" fill="#667eea">五个全开</tspan>                 = 输入探索省 + 流程不返工 + 输出压缩</text><text x="28" y="338" fill="#9ca3af" font-size="11" font-family="system-ui,monospace">                                    + 跨会话记忆 + 前端审美不烂</text><rect x="530" y="305" width="126" height="42" rx="6" fill="url(#syn)"/><text x="593" y="321" text-anchor="middle" fill="#fff" font-size="13" font-weight="700" font-family="system-ui,sans-serif">端到端 Token</text><text x="593" y="338" text-anchor="middle" fill="#fff" font-size="14" font-weight="800" font-family="system-ui,sans-serif">↓ 70-80%</text></g></svg><button id="save-diagram-btn" title="保存为 PNG" style="position:absolute;top:8px;right:12px;opacity:0;transition:opacity .2s;background:rgba(255,255,255,.85);border:1px solid #e5e7eb;border-radius:6px;padding:5px 8px;cursor:pointer;color:#9ca3af;line-height:1"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></div>
+<h3 id="实际场景">实际场景</h3>
 <p><strong>场景 1：新功能开发</strong>
 claude-context（语义搜索相关代码）→ superpowers（brainstorm → plan → TDD → execute）→ caveman（压缩输出）→ claude-mem（查历史决策）</p>
 <p><strong>场景 2：Bug 修复</strong>
@@ -1038,7 +989,7 @@ claude-context（索引 + 语义探索，省 grep）→ claude-mem（自动记�
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2026-05-06</span>
+                <span>更新于 2026-05-07</span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
