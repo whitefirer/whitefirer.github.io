@@ -12,7 +12,7 @@
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
     <meta property="article:published_time" content="2026-05-03T22:15:00+08:00">
-    <meta property="article:modified_time" content="2026-05-07T05:24:49+08:00">
+    <meta property="article:modified_time" content="2026-05-08T04:45:08+08:00">
     <meta property="article:tag" content="技术">
     <meta property="article:tag" content="Ai">
     <meta property="article:tag" content="Prompt Caching">
@@ -37,8 +37,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/whitefirer.org\/posts\/2026\/05\/03\/prompt-caching-deepseek\/"
-        },"genre": "posts","keywords": "tech, ai, prompt caching, deepseek, claude code, cost optimization","wordcount":  4354 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2026\/05\/03\/prompt-caching-deepseek\/","datePublished": "2026-05-03T22:15:00+08:00","dateModified": "2026-05-07T05:24:49+08:00","license": "2022©️whitefirer","publisher": {
+        },"genre": "posts","keywords": "tech, ai, prompt caching, deepseek, claude code, cost optimization","wordcount":  4465 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/05\/03\/prompt-caching-deepseek\/","datePublished": "2026-05-03T22:15:00+08:00","dateModified": "2026-05-08T04:45:08+08:00","license": "2022©️whitefirer","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -117,7 +117,7 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Prompt Caching 深度解析：插件 + 缓存 = 98% 费用节省</h1><h2 class="single-subtitle">DeepSeek V4 架构如何把缓存折扣做到 120 倍</h2><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-05-03">2026-05-03</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 4354 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-05-03">2026-05-03</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 4465 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 9 分钟&nbsp;<span id="/posts/2026/05/03/prompt-caching-deepseek/" class="leancloud_visitors" data-flag-title="Prompt Caching 深度解析：插件 &#43; 缓存 = 98% 费用节省">
                         <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
                     </span>&nbsp;</div>
@@ -323,7 +323,8 @@
 </span></span><span class="line"><span class="cl">                           └─────────────────┘
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>402 轮 × 76k = 30,628,352 token 全部命中缓存。实际新增输入仅 155,241 token。</p>
+</div><p><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 300" width="100%" style="max-width:680px;display:block;margin:1.2em auto"><defs><linearGradient id="inp" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#94a3b8"/><stop offset="100%" stop-color="#cbd5e1"/></linearGradient><linearGradient id="ohd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#818cf8"/></linearGradient><linearGradient id="cbx" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#34d399"/></linearGradient><filter id="sh"><feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-opacity="0.1"/></filter></defs><rect x="20" y="20" width="640" height="44" rx="8" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.2"/><text x="340" y="40" text-anchor="middle" fill="#475569" font-size="13" font-weight="600" font-family="system-ui,sans-serif">每次请求</text><text x="340" y="56" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="system-ui,sans-serif">系统固定开销 + 你的输入</text><line x1="340" y1="64" x2="340" y2="80" stroke="#94a3b8" stroke-width="1.5"/><line x1="235" y1="80" x2="550" y2="80" stroke="#94a3b8" stroke-width="1.5"/><line x1="235" y1="80" x2="235" y2="100" stroke="#94a3b8" stroke-width="1.5"/><line x1="550" y1="80" x2="550" y2="100" stroke="#94a3b8" stroke-width="1.5"/><g filter="url(#sh)"><rect x="40" y="100" width="390" height="56" rx="8" fill="#fff" stroke="#6366f1" stroke-width="1.5"/><text x="235" y="126" text-anchor="middle" fill="#6366f1" font-size="13" font-weight="600" font-family="system-ui,sans-serif">系统固定开销</text><text x="235" y="144" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="system-ui,sans-serif">~76,000 tok / 次（固定，不随输入变化）</text></g><text x="445" y="132" fill="#94a3b8" font-size="18" font-family="system-ui,sans-serif">+</text><g filter="url(#sh)"><rect x="470" y="100" width="170" height="56" rx="8" fill="#fff" stroke="#94a3b8" stroke-width="1.2"/><text x="555" y="126" text-anchor="middle" fill="#64748b" font-size="13" font-weight="600" font-family="system-ui,sans-serif">你的输入</text><text x="555" y="144" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="system-ui,sans-serif">5 ~ 500 tok / 次</text></g><line x1="235" y1="156" x2="235" y2="176" stroke="#6366f1" stroke-width="1.5"/><polygon points="235,176 229,170 241,170" fill="#6366f1"/><g filter="url(#sh)"><rect x="120" y="180" width="240" height="108" rx="8" fill="#fff" stroke="#10b981" stroke-width="1.8"/><rect x="120" y="180" width="240" height="32" rx="8" fill="url(#cbx)"/><rect x="120" y="204" width="240" height="8" fill="url(#cbx)"/><text x="240" y="202" text-anchor="middle" fill="#fff" font-size="13" font-weight="700" font-family="system-ui,sans-serif">全部可缓存</text><circle cx="140" cy="230" r="3" fill="#10b981"/><text x="148" y="234" fill="#475569" font-size="12" font-family="system-ui,sans-serif">系统提示词</text><circle cx="140" cy="250" r="3" fill="#10b981"/><text x="148" y="254" fill="#475569" font-size="12" font-family="system-ui,sans-serif">工具定义</text><circle cx="280" cy="230" r="3" fill="#10b981"/><text x="288" y="234" fill="#475569" font-size="12" font-family="system-ui,sans-serif">MCP 工具</text><circle cx="280" cy="250" r="3" fill="#10b981"/><text x="288" y="254" fill="#475569" font-size="12" font-family="system-ui,sans-serif">Skills 列表</text><circle cx="280" cy="270" r="3" fill="#10b981"/><text x="288" y="274" fill="#475569" font-size="12" font-family="system-ui,sans-serif">Memory 文件</text></g><rect x="390" y="210" width="250" height="54" rx="6" fill="url(#ohd)"/><text x="515" y="232" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">402 轮会话</text><text x="515" y="252" text-anchor="middle" fill="#fff" font-size="11" font-family="system-ui,sans-serif">30,628,352 tok 全部命中缓存</text></svg></p>
+<p>402 轮 × 76k = 30,628,352 token 全部命中缓存。实际新增输入仅 155,241 token。</p>
 <h3 id="缓存层节省">缓存层节省</h3>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -743,7 +744,7 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2026-05-07</span>
+                <span>更新于 2026-05-08</span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
