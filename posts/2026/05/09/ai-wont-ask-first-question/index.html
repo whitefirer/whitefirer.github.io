@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>AI 不会问第一个问题 - whitefirer[PG]</title><meta name="Description" content="从 Linux 到 mRNA，为什么范式突破永远始于人的不满，而不是 AI 的推理。自驱力决定方向，创新来自范式突破——这些恰好是 AI 够不到的东西。"><meta property="og:url" content="https://whitefirer.org/posts/2026/05/09/ai-wont-ask-first-question/">
+  <meta property="og:site_name" content="whitefirer[PG]">
+  <meta property="og:title" content="AI 不会问第一个问题">
+  <meta property="og:description" content="从 Linux 到 mRNA，为什么范式突破永远始于人的不满，而不是 AI 的推理。自驱力决定方向，创新来自范式突破——这些恰好是 AI 够不到的东西。">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-05-09T22:17:43+08:00">
+    <meta property="article:modified_time" content="2026-05-12T04:17:12+08:00">
+      <meta property="og:see_also" content="https://whitefirer.org/posts/2026/05/10/ai-trust-meaning/">
+      <meta property="og:see_also" content="https://whitefirer.org/posts/2026/04/13/ai-programming-thoughts/">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="AI 不会问第一个问题">
+  <meta name="twitter:description" content="从 Linux 到 mRNA，为什么范式突破永远始于人的不满，而不是 AI 的推理。自驱力决定方向，创新来自范式突破——这些恰好是 AI 够不到的东西。">
+<meta name="application-name" content="whitefirer[PG]">
+<meta name="apple-mobile-web-app-title" content="whitefirer[PG]"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/05/09/ai-wont-ask-first-question/" /><link rel="prev" href="https://whitefirer.org/posts/2026/05/03/prompt-caching-deepseek/" /><link rel="next" href="https://whitefirer.org/posts/2026/05/10/ai-trust-meaning/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "AI 不会问第一个问题",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/whitefirer.org\/posts\/2026\/05\/09\/ai-wont-ask-first-question\/"
+        },"genre": "posts","keywords": "ai, creativity, thoughts","wordcount":  4456 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/05\/09\/ai-wont-ask-first-question\/","datePublished": "2026-05-09T22:17:43+08:00","dateModified": "2026-05-12T04:17:12+08:00","license": "2022©️whitefirer","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "whitefirer"
+            },"description": "从 Linux 到 mRNA，为什么范式突破永远始于人的不满，而不是 AI 的推理。自驱力决定方向，创新来自范式突破——这些恰好是 AI 够不到的东西。"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="whitefirer[PG]">whitefirer[PG]</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/2026/05/09/ai-wont-ask-first-question/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="whitefirer[PG]">whitefirer[PG]</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/posts/2026/05/09/ai-wont-ask-first-question/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">AI 不会问第一个问题</h1><h2 class="single-subtitle">AI杂谈·之二：自驱力与创新，人的最后护城河</h2><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-05-09">2026-05-09</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 4456 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 9 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#没有自驱力就没有第一个问题">没有自驱力，就没有第一个问题</a></li>
+    <li><a href="#有了问题之后两种创新">有了问题之后：两种创新</a></li>
+    <li><a href="#四十年没人鼓掌为什么还在做">四十年没人鼓掌，为什么还在做？</a></li>
+    <li><a href="#自驱力然后呢">自驱力，然后呢？</a></li>
+    <li><a href="#你的护城河">你的护城河</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>假设现在是凌晨两点。你盯着屏幕上 AI 刚生成的几百行代码，功能跑通了，测试也绿了，但你心里清楚一件事——这段代码之所以存在，是因为你问了一个问题。</p>
+<p>AI 没有在凌晨两点自己醒过来想&quot;那个缓存命中率是不是可以再提 5%&quot;。它不会在洗澡的时候突然觉得&quot;现在的前端状态管理方式太蠢了&quot;。它更不会在被降职 20 年后仍然相信一段没人看好的 mRNA 序列能改变医学。</p>
+<p>第一个问题，永远是人问的。</p>
+<p>这就是 AI 时代容易被忽略的真相：AI 越来越强，但它强在答题，不在提问。而提问的能力，来自对现状的不满、对某个方向的好奇，以及在没有外部奖励的情况下持续深钻的意愿，这三样，恰好是自驱力和创新的起点。</p>
+<h2 id="没有自驱力就没有第一个问题">没有自驱力，就没有第一个问题</h2>
+<p>自驱力是什么？不是&quot;能干事&quot;，是&quot;没人让你干你还是干了&quot;。</p>
+<p>1991 年，赫尔辛基大学一个 21 岁的学生买了一台 386 电脑。他本来只是想学学 80386 的保护模式，顺便写个终端模拟器来拨号上学校的 Unix 服务器。后来他觉得 Minix 不太好用，于是开始给自己的终端程序加文件系统、加任务切换、加设备驱动。</p>
+<p>这个人叫 Linus Torvalds。他在 1991 年 8 月 25 日发了一条如今刻在互联网历史上的 Usenet 帖子：</p>
+<blockquote>
+<p>&ldquo;I&rsquo;m doing a (free) operating system (just a hobby, won&rsquo;t be big and professional like gnu).&rdquo;</p>
+</blockquote>
+<p>一个&quot;just a hobby&quot;的项目，没有人给他提需求，没有人付他工资，没有 PM 排期，纯粹是自己想做一个东西。今天全球 90% 以上的云计算负载跑在这个 hobby project 上。</p>
+<p>如果你打开 Linux 内核的 git 仓库，<code>git log --reverse</code> 第一条 commit 还在那里，你可以亲眼看到那个起点。</p>
+<figure><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/2026/05/09/ai-wont-ask-first-question/linus_usenet.png"
+        data-srcset="/posts/2026/05/09/ai-wont-ask-first-question/linus_usenet.png, /posts/2026/05/09/ai-wont-ask-first-question/linus_usenet.png 1.5x, /posts/2026/05/09/ai-wont-ask-first-question/linus_usenet.png 2x"
+        data-sizes="auto"
+        alt="Linus Torvalds 在 comp.os.minix 新闻组的帖子"
+        title="Linus Torvalds 在 comp.os.minix 新闻组的帖子" width="600px" height="770" /><figcaption class="image-caption">1991年8月25日，comp.os.minix 新闻组。</figcaption>
+    </figure>
+<p>这就是自驱力的本质：它不从外部指令来，不从奖励机制来。它来自人对现状的一种内在不适感：&ldquo;这个东西应该能更好&rdquo;、&ldquo;这个方案我不满意&rdquo;、&ldquo;我偏要试试另一种做法&rdquo;。</p>
+<p>而 AI 恰好反过来。它的全部行动来自外部 prompt。你输入一句，它输出一段。你没有输入，它停在原地。它不会对任何东西感到不适，因为你没有给它&quot;令人不适&quot;的训练数据。它不会在代码审查时皱眉头，不会在凌晨醒来觉得那个架构选择有问题。它连厌倦都不会。</p>
+<p>所以，AI 不会问第一个问题。第一个问题永远来自一个对现状不满的人。</p>
+<h2 id="有了问题之后两种创新">有了问题之后：两种创新</h2>
+<p>有了第一个问题，下一步是找答案。这一步上，人和 AI 的分界线更微妙。</p>
+<p>AI 能做一种创新：<strong>组合式创新</strong>。即把距离很远的知识点连接起来，如网络协议和超文本、密码学和博弈论、编译器理论和终端交互。这种跨领域的远距离连接，AI 做起来比人快得多、广得多。因为它的训练数据覆盖了几十个领域，而一个人的脑子里通常装不下那么多。</p>
+<p>但 AI 做不了另一种创新：<strong>范式创新</strong>。不是把已有的东西拼起来，而是推翻前提，重新定义问题本身。</p>
+<p>2011 年的 Facebook，广告团队正在被复杂的 UI 状态管理折磨。DOM 操作散落在各个回调里，数据流和 UI 状态难以同步，bug 层出不穷。一个叫 Jordan Walke 的工程师实在受不了了，他提出一个在当时看来反直觉的想法：与其手动更新 DOM，不如每次把整个 UI 重新渲染一遍，然后在虚拟 DOM 里 diff 出最小变更。</p>
+<p>这个想法不符合任何当时的&quot;最佳实践&quot;。DOM 操作被认为是昂贵的，重新渲染整个页面是荒谬的。但 Walke 的不适感不是对某个具体的 bug，而是对&quot;我们管理 UI 状态的整个范式&quot;推动他跳出了现有框架。</p>
+<p>React 最初的 commit 还在 GitHub 上，JSConf 2013 的演讲视频还在 YouTube 上。你可以亲眼看到范式的起点是一个人对&quot;这样做不对头&quot;的直觉，而不是一份训练数据。</p>
+<p>更早的案例更干净：1989 年，CERN 的软件顾问 Tim Berners-Lee 写了一份提案《Information Management: A Proposal》。超文本早就有了，互联网也早已存在，但没有人把它们拼成&quot;一个可以在任意文档间跳转的全球信息系统&quot;。他的老板在提案封面上批了一行字：&ldquo;Vague but exciting.&rdquo; 这份提案至今还在 W3C 的网站上，页面标题就是这句话。</p>
+<figure><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/2026/05/09/ai-wont-ask-first-question/cern.png"
+        data-srcset="/posts/2026/05/09/ai-wont-ask-first-question/cern.png, /posts/2026/05/09/ai-wont-ask-first-question/cern.png 1.5x, /posts/2026/05/09/ai-wont-ask-first-question/cern.png 2x"
+        data-sizes="auto"
+        alt="Tim Berners-Lee 1989年CERN提案封面"
+        title="Tim Berners-Lee 1989年CERN提案封面" width="600px" height="1644" /><figcaption class="image-caption">Information Management: A Proposal——万维网的起点。Vague but exciting.</figcaption>
+    </figure>
+<p>互联网改变了一切，但它的起点不是技术突破，是一个人对&quot;科学家们找不到彼此的文档&quot;这件事的不爽。</p>
+<p>范式创新有一个共同特征：它来自对现有框架本身的不满，而不是对已有方案之间排列组合的不满足。这种不适感是潜意识的，你能感觉到什么东西不对劲，但说不太清楚哪里不对劲。它不是一个 prompt 能描述清楚的。</p>
+<p>而这，恰好是 AI 的盲区。LLM 的本质是在训练数据分布里做插值。React 不存在于 2011 年的任何代码库里，万维网不存在于 1989 年的任何论文里，比特币不存在于 2008 年的任何金融协议里。它们不是已有知识的组合而是已有前提的否定。插值引擎终究否定不了前提。</p>
+<h2 id="四十年没人鼓掌为什么还在做">四十年没人鼓掌，为什么还在做？</h2>
+<p>最能验证&quot;自驱力 × 创新&quot;这个框架的例子，不在编程领域。</p>
+<p>Katalin Karikó，2023 年诺贝尔生理学或医学奖得主。她在 1970 年代末开始研究 mRNA 的治疗潜力。当时科学界的主流共识是：mRNA 太不稳定，免疫原性太强，不可能成药。</p>
+<p>她的整个职业生涯都在和这个共识对抗。在宾夕法尼亚大学她被降职，从 tenure track 降到 adjunct。经费申请被拒了一遍又一遍。没有任何一个同行觉得这条路能走通。她后来在自传《Breaking Through》里回忆，有人当面告诉她&quot;你的研究毫无价值&quot;。</p>
+<p>但她没有停下来。不是因为她知道会成功，相反她并不知道。她继续做的原因很简单：她相信 mRNA 的原理是对的，只是还没找到正确的技术路径。最终她和 Drew Weissman 发现了关键：用假尿苷修饰核苷酸可以绕过免疫识别，这个突破让 mRNA 疫苗成为可能，在新冠疫情中挽救了数百万人的生命。</p>
+<p>从 1978 年到 2023 年拿诺贝尔奖，不是五年，不是十年，而是将近半个世纪。没有外部奖励信号，没有行业认可，连最基本的经费都没有。这种级别的坚持，靠的是什么？</p>
+<p>不是&quot;毅力&quot;这种空泛的品质。靠的是一个人对一个问题持续 40 年的&quot;不甘心&quot;，我偏不信这条路走不通。</p>
+<p>现在想想 AI。要模拟这种坚持，你需要什么？你需要在没有任何正面训练信号的 40 年里持续认为&quot;这个方向是对的&quot;。而 LLM 的输出概率分布，会在第一个 10 年的&quot;缺乏正面数据&quot;之后就把这个方向的概率压到接近于零。</p>
+<p>AI 不需要面对 Karikó 面对的问题：全世界都告诉你你是错的，你还要不要继续？但这个问题的答案，定义了所有真正重要的创新。</p>
+<h2 id="自驱力然后呢">自驱力，然后呢？</h2>
+<p>自驱力不是鸡汤。不是说&quot;你要有热情&quot;你就自然能创新了。自驱力的实际价值在于：<strong>它决定了你在哪个层面上和 AI 协作。</strong></p>
+<p>如果你停留在&quot;AI 帮我实现需求&quot;的层面，那么你的价值也只是翻译：把产品需求翻译成 prompt。这个活，产品经理也能干。</p>
+<p>但如果你从自驱力出发，那么你自己就是那个&quot;对什么东西不舒服&quot;的人，你和 AI 的关系也就反过来了。不是 AI 帮你做东西，是你用 AI 来加速你已经在做的东西。</p>
+<p>如上一篇讲过的 Hunter Bown，音乐家出身，凭一句&quot;想在终端里和 AI 对话&quot;的念头，用 AI 辅助做出了 DeepSeek-TUI，GitHub 近 5000 star，他的出发点纯粹是：我自己需要这个东西。</p>
+<p>另一个更早的例子：2009 年，意大利程序员 Salvatore Sanfilippo（网名 antirez）在做一个实时网页分析系统。现有的 MySQL 太慢，他试着用内存数据结构来缓存页面，发现效果出奇地好。于是他在一个周末把那段代码抽出来，起了个名字叫 Redis（REmote DIctionary Server）。第一条 commit 在 GitHub 上可查，Hacker News 上的首发帖标题是&quot;Redis, a fast key-value store&quot;。那时候没人让他造一个数据库，MySQL、PostgreSQL 活得好好的。他只是被自己的实际需求逼到了墙角：现有工具不对路，那就自己造一个。</p>
+<p>Redis 后来成为了全球最流行的内存数据库之一，改变了整整一代人对&quot;数据库应该怎么存数据&quot;的认知。它的起点不是一个商业计划，是一个人对现状的直接不满，是&quot;这个东西不够快，我得想个别的办法&quot;。</p>
+<p>更妙的是 2026 年 5 月 7 日，antirez 又干了一次。DeepSeek V4 Flash 发布后，现有的推理引擎跑不出他想要的性能，他索性自己写了一个，那就是<a href="https://github.com/antirez/ds4" target="_blank" rel="noopener noreffer ">ds4</a>，1500 行 C 代码，专为 DeepSeek V4 Flash 量身定制的推理引擎，理念就一句：&ldquo;One Model, One Engine&rdquo;。项目上线 48 小时即获 2600+ star，一键接入 Claude Code 等编程 Agent。Redis 是 2009 年，ds4 是 2026 年，整整17 年过去了，同一个人，同一种模式：没有人让他干这件事，他只是对&quot;跑得不够快&quot;不爽。自驱力不是一次性的灵光，它是一种持久的人格配置，跨域、跨时代、跨技术栈反复验证。</p>
+<figure><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/2026/05/09/ai-wont-ask-first-question/ds4.webp"
+        data-srcset="/posts/2026/05/09/ai-wont-ask-first-question/ds4.webp, /posts/2026/05/09/ai-wont-ask-first-question/ds4.webp 1.5x, /posts/2026/05/09/ai-wont-ask-first-question/ds4.webp 2x"
+        data-sizes="auto"
+        alt="antirez 的 ds4 项目 README"
+        title="antirez 的 ds4 项目 README" width="600px" height="1402" /><figcaption class="image-caption">antirez/ds4——One Model, One Engine。2026年5月7日上线，48小时2600+ star。</figcaption>
+    </figure>
+<p>DHH 创建 Rails 之前，也只是 Basecamp 里一个被复杂 Java 框架搞烦了的程序员。他不是想&quot;发明一个框架&quot;，他是想&quot;让 web 开发少写点配置&quot;。Rails 最初的 commit message 平淡无奇，但改变了整整一代 web 开发的范式：不是因为他想改变世界，是因为他自己先被现在的做法烦透了。</p>
+<p>这些人的路径是一样的：<strong>自驱力引发第一个问题，持续深钻产生洞察，洞察导致范式级创新。</strong> 他们可能不是&quot;最有创造力的人&quot;，但他们肯定是&quot;最有自驱力的人&quot;。创造只是自驱力推到底之后的副产品。</p>
+<h2 id="你的护城河">你的护城河</h2>
+<p>回到一开始的问题：AI 时代，人还剩什么？</p>
+<p>答案不在&quot;做什么&quot;，在&quot;为什么做&quot;和&quot;什么值得做&quot;。</p>
+<p>AI 能在已有知识的分布里给你最优解，但它不能告诉你哪个问题值得花 40 年。它能把组合式创新做到极致，但它不能对现有范式感到&quot;不对头&quot;。它能替代一个执行者，但替代不了一个对现状不爽、偏要试试另一种做法的人。</p>
+<p>十年后，程序员这个职业不会消失，但&quot;程序员&quot;这个词的含义会变。它不再意味着&quot;能写代码的人&quot;，因为所有人都能写了。它意味着&quot;知道自己想造什么、为什么值得造、并且愿意为此负责的人&quot;。</p>
+<p>自驱力是你最值钱的资产。不是你的 GitHub streak，不是你的 LeetCode 刷题量，不是你用了几种语言。是你有没有一个让你凌晨两点睡不着的问题。</p>
+<p>因为 AI 不会问第一个问题。</p>
+<p>而第一个问题，决定了后面的所有答案。</p>
+<hr>
+<p>你最近一次对什么东西感到&quot;这不对，应该有更好的方式&quot;是什么时候？如果你有一个让你不爽的问题，AI 是全世界最便宜的加速器。如果你还没有问第一个问题，那才是真正该焦虑的事。</p>
+<hr>
+<p><em>本文是「AI杂谈」系列之二。上一篇：<a href="/posts/2026/04/13/ai-programming-thoughts/" rel="">也谈谈 AI 编程</a> —— AI 的三大局限与三条行动建议。下一篇：<a href="/posts/ai-trust-meaning/" rel="">AI 能做事，不能扛事</a> —— 价值判断、信任与意义，AI 碰不到的存在层。</em></p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2026-05-12</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/2026/05/09/ai-wont-ask-first-question/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/05/09/ai-wont-ask-first-question/" data-title="AI 不会问第一个问题" data-hashtags="ai,creativity,thoughts"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/05/09/ai-wont-ask-first-question/" data-hashtag="ai"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/05/09/ai-wont-ask-first-question/" data-title="AI 不会问第一个问题"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/05/09/ai-wont-ask-first-question/" data-title="AI 不会问第一个问题"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/05/09/ai-wont-ask-first-question/" data-title="AI 不会问第一个问题"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href=""></a>,&nbsp;<a href=""></a>,&nbsp;<a href=""></a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2026/05/03/prompt-caching-deepseek/" class="prev" rel="prev" title="Prompt Caching 深度解析：插件 &#43; 缓存 = 98% 费用节省"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Prompt Caching 深度解析：插件 + 缓存 = 98% 费用节省</a>
+            <a href="/posts/2026/05/10/ai-trust-meaning/" class="next" rel="next" title="AI 能做事，不能扛事">AI 能做事，不能扛事<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="waline" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://waline.js.org/">Waline</a>.
+            </noscript><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.131.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="/lib/waline/waline.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config=Object.assign(window.config||{},{"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Comments","categoryId":"DIC_kwDOH2gmzc4CQ_fM","darkTheme":"dark","emitMetadata":"0","inputPosition":"bottom","lang":"zh-CN","lazyLoading":true,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"whitefirer/whitefirer.github.io","repoId":"R_kgDOH2gmzQ"},"waline":{"dark":"auto","el":"#waline","lang":"zh-CN","pageSize":10,"requiredMeta":["nick","mail"],"serverURL":"https://my-site-comment-qlau9xu72-whitefirers-projects.vercel.app"}},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}});</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">!function(){function svgToPng(svg,cb){var c=svg.cloneNode(!0),d=new XMLSerializer().serializeToString(c),img=new Image(),cv=document.createElement('canvas'),w=c.viewBox.animVal.width||c.getBoundingClientRect().width||400,h=c.viewBox.animVal.height||c.getBoundingClientRect().height||300,s=2;cv.width=w*s,cv.height=h*s;var ctx=cv.getContext('2d'),b=new Blob([d],{type:'image/svg+xml;charset=utf-8'}),u=URL.createObjectURL(b);img.onload=function(){ctx.fillStyle='#fff',ctx.fillRect(0,0,cv.width,cv.height),ctx.drawImage(img,0,0,cv.width,cv.height),URL.revokeObjectURL(u),cv.toBlob(function(blob){var a=document.createElement('a');a.href=URL.createObjectURL(blob);var id=svg.id||'diagram';a.download=id+'.png',a.click(),URL.revokeObjectURL(a.href),cb&&cb()})},img.src=u}function addSaveBtn(svg){if(svg.closest('.mermaid-stage,.mermaid-fs-overlay,.mermaid-wrapper,.mermaid-toolbar,.svg-diagram-wrap'))return;var wrap=document.createElement('div');wrap.className='svg-diagram-wrap';var d=svg.style.display||'block',w=svg.style.width||svg.getAttribute('width')||'100%',mw=svg.style.maxWidth||'',m=svg.style.margin||'';wrap.style.cssText='position:relative;display:'+d+';width:'+w+';'+(mw?'max-width:'+mw+';':'')+(m?'margin:'+m+';':'')+'line-height:0';svg.style.display='block';svg.style.width='100%';svg.style.maxWidth='';svg.style.margin='0';svg.parentNode.insertBefore(wrap,svg);wrap.appendChild(svg);var bar=document.createElement('div');bar.style.cssText='text-align:right;padding-top:6px';var btn=document.createElement('button');btn.className='svg-save-btn',btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span style="vertical-align:middle;font-size:12px">保存图片</span>',btn.style.cssText='background:none;border:1px solid transparent;border-radius:4px;padding:2px 6px;cursor:pointer;color:#b0b7c3;font-family:system-ui,sans-serif;line-height:1';bar.appendChild(btn);wrap.appendChild(bar);btn.onmouseenter=function(){btn.style.color='#6366f1';btn.style.borderColor='#e5e7eb'};btn.onmouseleave=function(){btn.style.color='#b0b7c3';btn.style.borderColor='transparent'};btn.onclick=function(e){e.stopPropagation();var orig=btn.innerHTML;btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span style="vertical-align:middle;font-size:12px">导出中...</span>';btn.disabled=!0;svgToPng(svg,function(){btn.innerHTML=orig;btn.disabled=!1})}}function initSvgButtons(){document.querySelectorAll('.content svg').forEach(function(svg){addSaveBtn(svg)})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initSvgButtons);else initSvgButtons()}()</script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-70Q8REKE17', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-70Q8REKE17" async></script></body>
+</html>

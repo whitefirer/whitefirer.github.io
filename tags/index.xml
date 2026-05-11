@@ -1,88 +1,14 @@
-<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
-    <channel>
-        <title>Tags - 标签 - whitefirer[PG]</title>
-        <link>https://whitefirer.org/tags/</link>
-        <description>Tags - 标签 - whitefirer[PG]</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sun, 03 May 2026 22:15:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/" rel="self" type="application/rss+xml" /><item>
-    <title>Ai</title>
-    <link>https://whitefirer.org/tags/ai/</link>
-    <pubDate>Sun, 03 May 2026 22:15:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/ai/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Claude Code</title>
-    <link>https://whitefirer.org/tags/claude-code/</link>
-    <pubDate>Sun, 03 May 2026 22:15:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/claude-code/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Cost Optimization</title>
-    <link>https://whitefirer.org/tags/cost-optimization/</link>
-    <pubDate>Sun, 03 May 2026 22:15:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/cost-optimization/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Deepseek</title>
-    <link>https://whitefirer.org/tags/deepseek/</link>
-    <pubDate>Sun, 03 May 2026 22:15:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/deepseek/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Prompt Caching</title>
-    <link>https://whitefirer.org/tags/prompt-caching/</link>
-    <pubDate>Sun, 03 May 2026 22:15:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/prompt-caching/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Development Tools</title>
-    <link>https://whitefirer.org/tags/development-tools/</link>
-    <pubDate>Tue, 28 Apr 2026 21:30:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/development-tools/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Plugin</title>
-    <link>https://whitefirer.org/tags/plugin/</link>
-    <pubDate>Tue, 28 Apr 2026 21:30:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/plugin/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Programming</title>
-    <link>https://whitefirer.org/tags/programming/</link>
-    <pubDate>Mon, 13 Apr 2026 22:17:43 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/programming/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Thoughts</title>
-    <link>https://whitefirer.org/tags/thoughts/</link>
-    <pubDate>Mon, 13 Apr 2026 22:17:43 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/thoughts/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Pyodide</title>
-    <link>https://whitefirer.org/tags/pyodide/</link>
-    <pubDate>Fri, 07 Apr 2023 11:04:59 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/pyodide/</guid>
-    <description><![CDATA[]]></description>
-</item>
-</channel>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on whitefirer[PG]</title>
+    <link>https://whitefirer.org/tags/</link>
+    <description>Recent content in Tags on whitefirer[PG]</description>
+    <generator>Hugo</generator>
+    <language>zh-CN</language>
+    <managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
+    <webMaster>whitefirer@gmail.com (whitefirer)</webMaster>
+    <copyright>2022©️whitefirer</copyright>
+    <atom:link href="https://whitefirer.org/tags/index.xml" rel="self" type="application/rss+xml" />
+  </channel>
 </rss>

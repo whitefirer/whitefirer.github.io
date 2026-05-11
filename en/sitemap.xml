@@ -29,21 +29,12 @@
                     hreflang="en"
                     href="https://whitefirer.org/en/posts/"
                     /></url><url>
-            <loc>https://whitefirer.org/en/categories/</loc><changefreq>weekly</changefreq><priority>0.5</priority><xhtml:link
+            <loc>https://whitefirer.org/en/series/</loc><changefreq>weekly</changefreq><priority>0.5</priority><xhtml:link
                         rel="alternate"
                         hreflang="zh-cn"
-                        href="https://whitefirer.org/categories/"
+                        href="https://whitefirer.org/series/"
                         /><xhtml:link
                     rel="alternate"
                     hreflang="en"
-                    href="https://whitefirer.org/en/categories/"
-                    /></url><url>
-            <loc>https://whitefirer.org/en/tags/</loc><changefreq>weekly</changefreq><priority>0.5</priority><xhtml:link
-                        rel="alternate"
-                        hreflang="zh-cn"
-                        href="https://whitefirer.org/tags/"
-                        /><xhtml:link
-                    rel="alternate"
-                    hreflang="en"
-                    href="https://whitefirer.org/en/tags/"
+                    href="https://whitefirer.org/en/series/"
                     /></url></urlset>
