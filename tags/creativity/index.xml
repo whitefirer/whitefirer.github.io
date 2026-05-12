@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Creativity - 标签 - whitefirer[PG]</title>
+        <link>https://whitefirer.org/tags/creativity/</link>
+        <description>Creativity - 标签 - whitefirer[PG]</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sat, 09 May 2026 22:17:43 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/creativity/" rel="self" type="application/rss+xml" /><item>
+    <title>AI 不会问第一个问题</title>
+    <link>https://whitefirer.org/posts/2026/05/09/ai-wont-ask-first-question/</link>
+    <pubDate>Sat, 09 May 2026 22:17:43 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/05/09/ai-wont-ask-first-question/</guid>
+    <description><![CDATA[假设现在是凌晨两点。你盯着屏幕上 AI 刚生成的几百行代码，功能跑通了，测试也绿了，但你心里清楚一件事——这段代码之所以存在，是因为你问了一个问题]]></description>
+</item>
+</channel>
+</rss>

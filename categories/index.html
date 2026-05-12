@@ -44,7 +44,7 @@
                     <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
                 </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
                     <i class="fa fa-globe" aria-hidden="true"></i>                      
-                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/categories/" selected>简体中文</option></select>
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/categories/" selected>简体中文</option><option value="/en/categories/">English</option></select>
                 </a></div>
         </div>
     </div>
@@ -78,7 +78,7 @@
                 <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
             </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
                     <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
-                    <select class="language-select" onchange="location = this.value;"><option value="/categories/" selected>简体中文</option></select>
+                    <select class="language-select" onchange="location = this.value;"><option value="/categories/" selected>简体中文</option><option value="/en/categories/">English</option></select>
                 </a></div>
     </div>
 </header><div class="search-dropdown desktop">
@@ -87,16 +87,55 @@
     <div class="search-dropdown mobile">
         <div id="search-dropdown-mobile"></div>
     </div><main class="main">
-                <div class="container"><div class="page archive"><h2 class="single-title animate__animated animate__pulse animate__faster">所有分类</h2><h3 class="group-title">0001</h3><article class="archive-item">
-                        <a href="/categories/title-tattle/" class="archive-item-link">杂谈</a>
-                        <span class="archive-item-date">01-01</span>
-                    </article><article class="archive-item">
-                        <a href="/categories/tech/" class="archive-item-link">技术</a>
-                        <span class="archive-item-date">01-01</span>
-                    </article><article class="archive-item">
-                        <a href="/categories/story/" class="archive-item-link">故事</a>
-                        <span class="archive-item-date">01-01</span>
-                    </article></div></div>
+                <div class="container"><div class="page archive"><h2 class="single-title animate__animated animate__pulse animate__faster">所有分类</h2><div class="categories-card"><div class="card-item">
+                        <div class="card-item-wrapper">
+                            <h3 class="card-item-title">
+                                <a href="/categories/tech/">
+                                    <i class="far fa-folder fa-fw" aria-hidden="true"></i>&nbsp;技术
+                                </a>
+                            </h3><article class="archive-item">
+                                    <a href="/posts/2026/05/10/ai-trust-meaning/" class="archive-item-link">AI 能做事，不能扛事</a>
+                                </article><article class="archive-item">
+                                    <a href="/posts/2026/05/09/ai-wont-ask-first-question/" class="archive-item-link">AI 不会问第一个问题</a>
+                                </article><article class="archive-item">
+                                    <a href="/posts/2026/05/03/prompt-caching-deepseek/" class="archive-item-link">Prompt Caching 深度解析：插件 + 缓存 = 98% 费用节省</a>
+                                </article><article class="archive-item">
+                                    <a href="/posts/2026/04/28/claude-code-plugins-guide/" class="archive-item-link">Claude Code 插件完全指南：省钱、省 Token、提升开发效率</a>
+                                </article><article class="archive-item">
+                                    <a href="/posts/2026/04/13/ai-programming-thoughts/" class="archive-item-link">也谈谈 AI 编程</a>
+                                </article><span class="more-post">
+                                    <a href="/categories/tech/" class="more-single-link">更多 >></a>
+                                </span></div>
+                    </div><div class="card-item">
+                        <div class="card-item-wrapper">
+                            <h3 class="card-item-title">
+                                <a href="/categories/hugo/">
+                                    <i class="far fa-folder fa-fw" aria-hidden="true"></i>&nbsp;Hugo
+                                </a>
+                            </h3><article class="archive-item">
+                                    <a href="/posts/2022/08/28/hugo-asciinema-player/" class="archive-item-link">如何在Hugo博客中使用终端播放器Asciinema-Player</a>
+                                </article><article class="archive-item">
+                                    <a href="/posts/2022/08/13/how-to-settingup-blog-with-hugo-github-netlify/" class="archive-item-link">如何使用Hugo+Github+Netlify搭建博客</a>
+                                </article></div>
+                    </div><div class="card-item">
+                        <div class="card-item-wrapper">
+                            <h3 class="card-item-title">
+                                <a href="/categories/title-tattle/">
+                                    <i class="far fa-folder fa-fw" aria-hidden="true"></i>&nbsp;杂谈
+                                </a>
+                            </h3><article class="archive-item">
+                                    <a href="/posts/2023/11/05/life-and-world/" class="archive-item-link">路过人间</a>
+                                </article></div>
+                    </div><div class="card-item">
+                        <div class="card-item-wrapper">
+                            <h3 class="card-item-title">
+                                <a href="/categories/workspace/">
+                                    <i class="far fa-folder fa-fw" aria-hidden="true"></i>&nbsp;Workspace
+                                </a>
+                            </h3><article class="archive-item">
+                                    <a href="/posts/2022/08/29/efficient-command-line-tools/" class="archive-item-link">高效终端命令行工具</a>
+                                </article></div>
+                    </div></div></div></div>
             </main><footer class="footer">
         <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.131.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
                 </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span></div>

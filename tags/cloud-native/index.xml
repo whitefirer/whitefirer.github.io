@@ -1,14 +1,40 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>云原生 on whitefirer[PG]</title>
-    <link>https://whitefirer.org/tags/cloud-native/</link>
-    <description>Recent content in 云原生 on whitefirer[PG]</description>
-    <generator>Hugo</generator>
-    <language>zh-CN</language>
-    <managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-    <webMaster>whitefirer@gmail.com (whitefirer)</webMaster>
-    <copyright>2022©️whitefirer</copyright>
-    <atom:link href="https://whitefirer.org/tags/cloud-native/index.xml" rel="self" type="application/rss+xml" />
-  </channel>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>云原生 - 标签 - whitefirer[PG]</title>
+        <link>https://whitefirer.org/tags/cloud-native/</link>
+        <description>云原生 - 标签 - whitefirer[PG]</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><atom:link href="https://whitefirer.org/tags/cloud-native/" rel="self" type="application/rss+xml" /><item>
+    <title>Polaris2Istio的实现和说明</title>
+    <link>https://whitefirer.org/posts/2022/08/30/polaris2istio/</link>
+    <pubDate>Tue, 30 Aug 2022 10:33:20 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2022/08/30/polaris2istio/</guid>
+    <description><![CDATA[背景 如融合、扩展Service Mesh文中所述，为了让第三方服务发现的服务能够接入到Istio服务网格当中，我设计开放一个名为Polaris]]></description>
+</item>
+<item>
+    <title>融合、扩展Service Mesh</title>
+    <link>https://whitefirer.org/posts/2022/08/29/extension-and-expansion-of-service-mesh/</link>
+    <pubDate>Mon, 29 Aug 2022 17:10:46 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2022/08/29/extension-and-expansion-of-service-mesh/</guid>
+    <description><![CDATA[导语 没有最完美的架构，只有最合适的架构。 背景 很多时候服务网格在业务难以落地，往往是因为有历史包袱或者特殊需求，反而没有新设计的项目接入服务网]]></description>
+</item>
+<item>
+    <title>荔枝微课基于 kubernetes 搭建分布式压测系统</title>
+    <link>https://whitefirer.org/posts/2021/04/13/building-a-distributed-pressure-testing-system-based-on-kubernetes/</link>
+    <pubDate>Tue, 13 Apr 2021 20:01:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2021/04/13/building-a-distributed-pressure-testing-system-based-on-kubernetes/</guid>
+    <description><![CDATA[导语 本文根据2021年4月10日深圳站举办的【腾讯云原生技术开放日】 线下活动中，荔枝微课基础架构负责人王诚强关于“基于 kubernetes 搭建分布式压测系统”]]></description>
+</item>
+<item>
+    <title>荔枝微课基础架构的演进与实践</title>
+    <link>https://whitefirer.org/posts/2020/09/11/the-evolution-and-practice-of-tenclass-infrastructure/</link>
+    <pubDate>Fri, 11 Sep 2020 18:30:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2020/09/11/the-evolution-and-practice-of-tenclass-infrastructure/</guid>
+    <description><![CDATA[导语 本文整理自又拍云举办的微服务架构设计与实践｜Open Talk 线上公开课，荔枝微课基础架构负责人王诚强做的题为《荔枝微课基础架构的演进与实践 》 的]]></description>
+</item>
+</channel>
 </rss>
