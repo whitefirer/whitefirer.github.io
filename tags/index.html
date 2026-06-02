@@ -29,7 +29,10 @@
             <a href="/" title="whitefirer[PG]">whitefirer[PG]</a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/series/ai-zatan/"> AI 杂谈 </a><a class="menu-item" href="/"> AI 编程 </a><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item active" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+            <div class="menu-inner"><a class="menu-item" href="/series/ai-zatan/"> AI 杂谈 </a><div class="menu-item has-dropdown">
+                            <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                            <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a></div>
+                        </div><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item active" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
                             <i class="fas fa-search fa-fw" aria-hidden="true"></i>
@@ -48,7 +51,24 @@
                 </a></div>
         </div>
     </div>
-</header><header class="mobile" id="header-mobile">
+</header>
+<script>
+(function() {
+    document.querySelectorAll('.has-dropdown .dropdown-toggle').forEach(function(toggle) {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var parent = this.closest('.has-dropdown');
+            parent.classList.toggle('open');
+        });
+    });
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.has-dropdown.open').forEach(function(d) {
+            d.classList.remove('open');
+        });
+    });
+})();
+</script><header class="mobile" id="header-mobile">
     <div class="header-container">
         <div class="header-wrapper">
             <div class="header-title">
@@ -74,7 +94,10 @@
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         取消
                     </a>
-                </div><a class="menu-item" href="/series/ai-zatan/" title="">AI 杂谈</a><a class="menu-item" href="/" title="">AI 编程</a><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                </div><a class="menu-item" href="/series/ai-zatan/" title="">AI 杂谈</a><div class="menu-item has-dropdown">
+                        <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                        <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a></div>
+                    </div><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
                 <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
             </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
                     <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
@@ -87,7 +110,7 @@
     <div class="search-dropdown mobile">
         <div id="search-dropdown-mobile"></div>
     </div><main class="main">
-                <div class="container"><div class="page archive"><h2 class="single-title animate__animated animate__pulse animate__faster">所有标签</h2><div class="tag-cloud-tags"><a href="/tags/tech/">技术 <sup>10</sup></a><a href="/tags/ai/">Ai <sup>5</sup></a><a href="/tags/cloud-native/">云原生 <sup>4</sup></a><a href="/tags/thoughts/">Thoughts <sup>3</sup></a><a href="/tags/claude-code/">Claude Code <sup>2</sup></a><a href="/tags/hugo/">Hugo <sup>2</sup></a><a href="/tags/service-mesh/">服务网格 <sup>2</sup></a><a href="/tags/asciinema/">Asciinema <sup>1</sup></a><a href="/tags/command-line-tools/">命令行工具 <sup>1</sup></a><a href="/tags/cost-optimization/">Cost Optimization <sup>1</sup></a><a href="/tags/creativity/">Creativity <sup>1</sup></a><a href="/tags/deepseek/">Deepseek <sup>1</sup></a><a href="/tags/development-tools/">Development Tools <sup>1</sup></a><a href="/tags/github/">Github <sup>1</sup></a><a href="/tags/istio/">Istio <sup>1</sup></a><a href="/tags/netlify/">Netlify <sup>1</sup></a><a href="/tags/plugin/">Plugin <sup>1</sup></a><a href="/tags/programming/">Programming <sup>1</sup></a><a href="/tags/prompt-caching/">Prompt Caching <sup>1</sup></a><a href="/tags/pyodide/">Pyodide <sup>1</sup></a><a href="/tags/python/">Python <sup>1</sup></a><a href="/tags/title-tattle/">杂谈 <sup>1</sup></a><a href="/tags/wasm/">Wasm <sup>1</sup></a><a href="/tags/xterm.js/">Xterm.js <sup>1</sup></a></div></div></div>
+                <div class="container"><div class="page archive"><h2 class="single-title animate__animated animate__pulse animate__faster">所有标签</h2><div class="tag-cloud-tags"><a href="/tags/tech/">技术 <sup>11</sup></a><a href="/tags/ai/">Ai <sup>6</sup></a><a href="/tags/cloud-native/">云原生 <sup>4</sup></a><a href="/tags/claude-code/">Claude Code <sup>3</sup></a><a href="/tags/thoughts/">Thoughts <sup>3</sup></a><a href="/tags/hugo/">Hugo <sup>2</sup></a><a href="/tags/service-mesh/">服务网格 <sup>2</sup></a><a href="/tags/asciinema/">Asciinema <sup>1</sup></a><a href="/tags/automation/">Automation <sup>1</sup></a><a href="/tags/command-line-tools/">命令行工具 <sup>1</sup></a><a href="/tags/cost-optimization/">Cost Optimization <sup>1</sup></a><a href="/tags/creativity/">Creativity <sup>1</sup></a><a href="/tags/deepseek/">Deepseek <sup>1</sup></a><a href="/tags/development-tools/">Development Tools <sup>1</sup></a><a href="/tags/github/">Github <sup>1</sup></a><a href="/tags/hooks/">Hooks <sup>1</sup></a><a href="/tags/istio/">Istio <sup>1</sup></a><a href="/tags/netlify/">Netlify <sup>1</sup></a><a href="/tags/plugin/">Plugin <sup>1</sup></a><a href="/tags/programming/">Programming <sup>1</sup></a><a href="/tags/prompt-caching/">Prompt Caching <sup>1</sup></a><a href="/tags/pyodide/">Pyodide <sup>1</sup></a><a href="/tags/python/">Python <sup>1</sup></a><a href="/tags/title-tattle/">杂谈 <sup>1</sup></a><a href="/tags/wasm/">Wasm <sup>1</sup></a><a href="/tags/xterm.js/">Xterm.js <sup>1</sup></a></div></div></div>
             </main><footer class="footer">
         <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.131.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
                 </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span></div>

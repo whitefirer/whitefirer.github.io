@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Claude Code Hooks 指南：自动化你的 AI 编程工作流 - whitefirer[PG]</title><meta name="Description" content="全面介绍 Claude Code 的 Hooks 系统：PreToolUse、PostToolUse、Notification 等九种 Hook 的用法与实战，包含飞书通知、防呆操作、上下文注入等秒用场景。"><meta property="og:url" content="https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/">
+  <meta property="og:site_name" content="whitefirer[PG]">
+  <meta property="og:title" content="Claude Code Hooks 指南：自动化你的 AI 编程工作流">
+  <meta property="og:description" content="全面介绍 Claude Code 的 Hooks 系统：PreToolUse、PostToolUse、Notification 等九种 Hook 的用法与实战，包含飞书通知、防呆操作、上下文注入等秒用场景。">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-06-02T03:50:00+08:00">
+    <meta property="article:modified_time" content="2026-06-02T19:34:55+08:00">
+    <meta property="article:tag" content="技术">
+    <meta property="article:tag" content="Ai">
+    <meta property="article:tag" content="Claude Code">
+    <meta property="article:tag" content="Hooks">
+    <meta property="article:tag" content="Automation">
+      <meta property="og:see_also" content="https://whitefirer.org/posts/2026/04/28/claude-code-plugins-guide/">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Claude Code Hooks 指南：自动化你的 AI 编程工作流">
+  <meta name="twitter:description" content="全面介绍 Claude Code 的 Hooks 系统：PreToolUse、PostToolUse、Notification 等九种 Hook 的用法与实战，包含飞书通知、防呆操作、上下文注入等秒用场景。">
+<meta name="application-name" content="whitefirer[PG]">
+<meta name="apple-mobile-web-app-title" content="whitefirer[PG]"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/" /><link rel="prev" href="https://whitefirer.org/posts/2026/05/10/ai-trust-meaning/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Claude Code Hooks 指南：自动化你的 AI 编程工作流",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/whitefirer.org\/posts\/2026\/06\/02\/claude-code-hooks-guide\/"
+        },"genre": "posts","keywords": "tech, ai, claude code, hooks, automation","wordcount":  5453 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/06\/02\/claude-code-hooks-guide\/","datePublished": "2026-06-02T03:50:00+08:00","dateModified": "2026-06-02T19:34:55+08:00","license": "2022©️whitefirer","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "whitefirer"
+            },"description": "全面介绍 Claude Code 的 Hooks 系统：PreToolUse、PostToolUse、Notification 等九种 Hook 的用法与实战，包含飞书通知、防呆操作、上下文注入等秒用场景。"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="whitefirer[PG]">whitefirer[PG]</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/series/ai-zatan/"> AI 杂谈 </a><div class="menu-item has-dropdown">
+                            <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                            <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a></div>
+                        </div><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/2026/06/02/claude-code-hooks-guide/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header>
+<script>
+(function() {
+    document.querySelectorAll('.has-dropdown .dropdown-toggle').forEach(function(toggle) {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var parent = this.closest('.has-dropdown');
+            parent.classList.toggle('open');
+        });
+    });
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.has-dropdown.open').forEach(function(d) {
+            d.classList.remove('open');
+        });
+    });
+})();
+</script><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="whitefirer[PG]">whitefirer[PG]</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/series/ai-zatan/" title="">AI 杂谈</a><div class="menu-item has-dropdown">
+                        <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                        <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a></div>
+                    </div><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/posts/2026/06/02/claude-code-hooks-guide/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Claude Code Hooks 指南：自动化你的 AI 编程工作流</h1><h2 class="single-subtitle">九种 Hook 类型 &#43; 十个秒用场景，把 Claude Code 从工具变成搭档</h2><div class="post-series">
+                <a href="/series/claude-code-deep-dive/"><i class="fas fa-layer-group fa-fw" aria-hidden="true"></i>AI 编程·Claude Code</a>
+            </div><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-06-02">2026-06-02</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 5453 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 11 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#前言">前言</a></li>
+    <li><a href="#基础hook-怎么配">基础：Hook 怎么配</a></li>
+    <li><a href="#九种-hook-类型">九种 Hook 类型</a>
+      <ul>
+        <li><a href="#sessionstart--会话启动时">SessionStart — 会话启动时</a></li>
+        <li><a href="#userpromptsubmit--用户提交消息时">UserPromptSubmit — 用户提交消息时</a></li>
+        <li><a href="#pretooluse--工具调用前">PreToolUse — 工具调用前</a></li>
+        <li><a href="#posttooluse--工具调用后">PostToolUse — 工具调用后</a></li>
+        <li><a href="#permissionrequest--权限请求时">PermissionRequest — 权限请求时</a></li>
+        <li><a href="#notification--收到通知时">Notification — 收到通知时</a></li>
+        <li><a href="#stop--响应结束时">Stop — 响应结束时</a></li>
+        <li><a href="#subagentstop--子代理结束时">SubagentStop — 子代理结束时</a></li>
+        <li><a href="#precompact--上下文压缩前">PreCompact — 上下文压缩前</a></li>
+      </ul>
+    </li>
+    <li><a href="#十个秒用场景">十个秒用场景</a>
+      <ul>
+        <li><a href="#场景一自动格式化--刷新">场景一：自动格式化 + 刷新</a></li>
+        <li><a href="#场景二危险命令拦截">场景二：危险命令拦截</a></li>
+        <li><a href="#场景三长时间任务飞书通知">场景三：长时间任务飞书通知</a></li>
+        <li><a href="#场景四空闲超时飞书通知">场景四：空闲超时飞书通知</a></li>
+        <li><a href="#场景五自动注入状态快照">场景五：自动注入状态快照</a></li>
+        <li><a href="#场景六precompact-防上下文丢失">场景六：PreCompact 防上下文丢失</a></li>
+        <li><a href="#场景七远程审批推送">场景七：远程审批推送</a></li>
+        <li><a href="#场景八敏感文件保护">场景八：敏感文件保护</a></li>
+        <li><a href="#场景九命令审计日志">场景九：命令审计日志</a></li>
+        <li><a href="#场景十stop-强制验证不跑通不下班">场景十：Stop 强制验证——&ldquo;不跑通不下班&rdquo;</a></li>
+      </ul>
+    </li>
+    <li><a href="#插件hooks-的打包形态">插件：Hooks 的打包形态</a></li>
+    <li><a href="#组合拳推荐配置">组合拳：推荐配置</a></li>
+    <li><a href="#注意事项">注意事项</a></li>
+    <li><a href="#结语">结语</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><blockquote>
+<p>九种 Hook 类型 + 十个秒用场景，把 Claude Code 从工具变成搭档。</p>
+</blockquote>
+<hr>
+<h2 id="前言">前言</h2>
+<p>之前写了<a href="/posts/claude-code-plugins-guide/" rel="">《Claude Code 插件完全指南》</a>，介绍四个插件和一个 MCP 服务。那是&quot;用什么&quot;的问题。</p>
+<p>本文解决&quot;怎么自动化&quot;的问题：<strong>Hooks 系统</strong>。</p>
+<p>Hooks 是 Claude Code 的事件驱动脚本机制——在工具调用、会话启停、权限请求等节点执行自定义逻辑。如果你用过 Git hooks 或 GitHub Actions，概念完全一样。</p>
+<p>读完你会知道：九种 Hook 分别干什么，怎么配，以及十个让你想立刻动手的妙用场景。</p>
+<hr>
+<h2 id="基础hook-怎么配">基础：Hook 怎么配</h2>
+<p>所有 Hook 配置在 <code>.claude/settings.json</code>（项目级）或 <code>~/.claude/settings.json</code>（用户级）的 <code>hooks</code> 字段下。</p>
+<p>结构长这样：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;HookType&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;matcher&#34;</span><span class="p">:</span> <span class="s2">&#34;Tool1|Tool2&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">          <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;command&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;python3 /path/to/your_script.py&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><code>matcher</code> 决定拦截哪些工具调用（<code>Bash|Write|Edit</code> 表示只对这三个工具生效）。设为空字符串表示匹配所有。Hook 脚本从 stdin 读 JSON 获取上下文信息，exit 0 表示放行，exit 2 表示阻止（仅部分 Hook 类型支持）。</p>
+<hr>
+<h2 id="九种-hook-类型">九种 Hook 类型</h2>
+<h3 id="sessionstart--会话启动时">SessionStart — 会话启动时</h3>
+<p>最早执行的 Hook。caveman 插件就是靠它注入 caveman 模式提示词。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;matcher&#34;</span><span class="p">:</span> <span class="s2">&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">[{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;command&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;bash /path/to/startup.sh&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>传入的上下文：<code>session_id</code>、<code>cwd</code>、<code>model</code> 等。可以用来初始化环境变量、检查依赖、注入提示词。</p>
+<h3 id="userpromptsubmit--用户提交消息时">UserPromptSubmit — 用户提交消息时</h3>
+<p>每次你按回车发送消息，这个 Hook 触发。可以在消息进入 Claude 之前附加上下文。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;matcher&#34;</span><span class="p">:</span> <span class="s2">&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">[{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;command&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;python3 /path/to/inject_context.py&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>传入信息包含用户的原始消息内容。脚本可以通过 stdout 返回 <code>hookSpecificOutput</code> 注入额外文本。</p>
+<h3 id="pretooluse--工具调用前">PreToolUse — 工具调用前</h3>
+<p>最实用的 Hook 之一。可以在工具执行前拦截、修改或阻止调用。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;matcher&#34;</span><span class="p">:</span> <span class="s2">&#34;Bash&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">[{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;command&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;python3 /path/to/pre_check.py&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>传入 <code>tool_name</code>、<code>tool_input</code>。exit 2 阻止操作，exit 0 放行。</p>
+<h3 id="posttooluse--工具调用后">PostToolUse — 工具调用后</h3>
+<p>工具执行完立即触发。传入完整的执行结果，包括 <code>duration_ms</code>、<code>stdout</code>、<code>exit_code</code> 等。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;matcher&#34;</span><span class="p">:</span> <span class="s2">&#34;Bash|Write|Edit&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">[{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;command&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;python3 /path/to/post_process.py&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这是实现&quot;长时间任务通知&quot;的核心 Hook。</p>
+<h3 id="permissionrequest--权限请求时">PermissionRequest — 权限请求时</h3>
+<p>Claude Code 弹出权限对话框之前触发。xiaozhi MCP 用它来记录权限请求日志。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;matcher&#34;</span><span class="p">:</span> <span class="s2">&#34;Bash|Write|Edit&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">[{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;command&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;python3 /path/to/perm_hook.py&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以用来实现自定义的权限策略：白名单自动放行、危险操作二次确认。</p>
+<h3 id="notification--收到通知时">Notification — 收到通知时</h3>
+<p>外部系统可以通过通知机制向 Claude Code 发送消息。配合 cron 或 CI webhook 使用效果最佳。</p>
+<h3 id="stop--响应结束时">Stop — 响应结束时</h3>
+<p>Claude 回复完毕、进入等待状态时触发。适合做清理、保存状态、更新状态栏。</p>
+<h3 id="subagentstop--子代理结束时">SubagentStop — 子代理结束时</h3>
+<p>使用 Agent 工具启动的子代理完成时触发。</p>
+<h3 id="precompact--上下文压缩前">PreCompact — 上下文压缩前</h3>
+<p>上下文接近窗口上限、触发自动压缩前执行。可以在这里抢救关键信息，防止压缩丢失上下文。</p>
+<hr>
+<h2 id="十个秒用场景">十个秒用场景</h2>
+<h3 id="场景一自动格式化--刷新">场景一：自动格式化 + 刷新</h3>
+<p>写完代码 → 自动格式化 → 自动刷新浏览器。一步不落。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># post_tool_hook.py — PostToolUse，matcher: Write|Edit</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">subprocess</span><span class="o">,</span> <span class="nn">os</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl"><span class="n">file_path</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;tool_input&#34;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;file_path&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="n">file_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">((</span><span class="s2">&#34;.py&#34;</span><span class="p">,</span> <span class="s2">&#34;.ts&#34;</span><span class="p">,</span> <span class="s2">&#34;.tsx&#34;</span><span class="p">,</span> <span class="s2">&#34;.json&#34;</span><span class="p">)):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&#34;npx&#34;</span><span class="p">,</span> <span class="s2">&#34;prettier&#34;</span><span class="p">,</span> <span class="s2">&#34;--write&#34;</span><span class="p">,</span> <span class="n">file_path</span><span class="p">],</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Hugo 博客：markdown 变更时刷新浏览器</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="n">file_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&#34;.md&#34;</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&#34;touch&#34;</span><span class="p">,</span> <span class="s2">&#34;.hugo_build_trigger&#34;</span><span class="p">])</span>  <span class="c1"># 触发 air 重载</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>配一次，之后写代码再也不用想格式化的事。</p>
+<h3 id="场景二危险命令拦截">场景二：危险命令拦截</h3>
+<p>防呆不防傻。PreToolUse 在 Bash 执行前拦截高危操作。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># pre_tool_guard.py — PreToolUse，matcher: Bash</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">sys</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl"><span class="n">cmd</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;tool_input&#34;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;command&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">DANGER</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;rm -rf /&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;git push --force main&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;git push --force master&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;DROP TABLE&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;DROP DATABASE&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;&gt; /dev/sda&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">DANGER</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">cmd</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># 向 Claude 返回阻止信息</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;hookSpecificOutput&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;hookEventName&#34;</span><span class="p">:</span> <span class="s2">&#34;PreToolUse&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;permissionDecision&#34;</span><span class="p">:</span> <span class="s2">&#34;deny&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;permissionDecisionReason&#34;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&#34;危险命令已拦截: </span><span class="si">{</span><span class="n">pattern</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}))</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>不影响正常工作流，只在真正危险时亮红灯。</p>
+<h3 id="场景三长时间任务飞书通知">场景三：长时间任务飞书通知</h3>
+<p>Bash 跑了超过 5 分钟 → 飞书机器人推消息到你手机上。不需要盯着终端。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># long_task_notify.py — PostToolUse，matcher: Bash</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">threading</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">THRESHOLD</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&#34;NOTIFY_THRESHOLD_SEC&#34;</span><span class="p">,</span> <span class="s2">&#34;300&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="n">WEBHOOK</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&#34;FEISHU_WEBHOOK&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl"><span class="n">duration_s</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;duration_ms&#34;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="n">duration_s</span> <span class="o">&lt;</span> <span class="n">THRESHOLD</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">WEBHOOK</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">tool</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;tool_name&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">cmd</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;tool_input&#34;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;command&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)[:</span><span class="mi">80</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">send</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="kn">import</span> <span class="nn">requests</span>
+</span></span><span class="line"><span class="cl">        <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">WEBHOOK</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;msg_type&#34;</span><span class="p">:</span> <span class="s2">&#34;text&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;content&#34;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&#34;text&#34;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&#34;⏰ Claude Code 任务完成</span><span class="se">\n</span><span class="s2">工具: </span><span class="si">{</span><span class="n">tool</span><span class="si">}</span><span class="se">\n</span><span class="s2">耗时: </span><span class="si">{</span><span class="n">duration_s</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">s</span><span class="se">\n</span><span class="s2">命令: </span><span class="si">{</span><span class="n">cmd</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">pass</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">send</span><span class="p">,</span> <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>关键点：daemon 线程 + timeout=5，主进程立刻退出，HTTP 调用不阻塞 Claude Code。</p>
+<h3 id="场景四空闲超时飞书通知">场景四：空闲超时飞书通知</h3>
+<p>有时候不是你盯着 Claude Code 等它，而是它在等你——你切出去干别的，忘了回来。空闲超过 5 分钟，飞书推你。</p>
+<p>这个场景需要 Stop Hook + 后台检测器配合：Stop 记录最后活跃时间，同时启动一个延迟检查器，5 分钟后如果时间戳没更新（没有新的 Stop 事件），说明你离开了。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># idle_notify.py — Stop hook，matcher: &#34;&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">subprocess</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">TIMESTAMP_FILE</span> <span class="o">=</span> <span class="s2">&#34;/tmp/claude-last-stop&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">THRESHOLD</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&#34;IDLE_THRESHOLD_SEC&#34;</span><span class="p">,</span> <span class="s2">&#34;300&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="n">WEBHOOK</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&#34;FEISHU_WEBHOOK&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">TIMESTAMP_FILE</span><span class="p">,</span> <span class="s2">&#34;w&#34;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">now</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="ow">not</span> <span class="n">WEBHOOK</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 后台检测脚本：睡 threshold 秒后检查时间戳是否未变</span>
+</span></span><span class="line"><span class="cl"><span class="n">checker</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&#39;&#39;
+</span></span></span><span class="line"><span class="cl"><span class="s1">import time, requests
+</span></span></span><span class="line"><span class="cl"><span class="s1">webhook = </span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">WEBHOOK</span><span class="p">)</span><span class="si">}</span><span class="s1">
+</span></span></span><span class="line"><span class="cl"><span class="s1">threshold = </span><span class="si">{</span><span class="n">THRESHOLD</span><span class="si">}</span><span class="s1">
+</span></span></span><span class="line"><span class="cl"><span class="s1">last_active = </span><span class="si">{</span><span class="n">now</span><span class="si">}</span><span class="s1">
+</span></span></span><span class="line"><span class="cl"><span class="s1">
+</span></span></span><span class="line"><span class="cl"><span class="s1">time.sleep(threshold)
+</span></span></span><span class="line"><span class="cl"><span class="s1">try:
+</span></span></span><span class="line"><span class="cl"><span class="s1">    with open(&#34;</span><span class="si">{</span><span class="n">TIMESTAMP_FILE</span><span class="si">}</span><span class="s1">&#34;) as f:
+</span></span></span><span class="line"><span class="cl"><span class="s1">        current = float(f.read().strip())
+</span></span></span><span class="line"><span class="cl"><span class="s1">    if current == last_active:
+</span></span></span><span class="line"><span class="cl"><span class="s1">        idle_min = threshold // 60
+</span></span></span><span class="line"><span class="cl"><span class="s1">        requests.post(webhook, json=</span><span class="se">{{</span><span class="s1">
+</span></span></span><span class="line"><span class="cl"><span class="s1">            &#34;msg_type&#34;: &#34;text&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s1">            &#34;content&#34;: </span><span class="se">{{</span><span class="s1">&#34;text&#34;: f&#34;🫥 Claude Code 空闲超过 </span><span class="se">{{</span><span class="s1">idle_min</span><span class="se">}}</span><span class="s1"> 分钟，你还在吗？&#34;</span><span class="se">}}</span><span class="s1">
+</span></span></span><span class="line"><span class="cl"><span class="s1">        </span><span class="se">}}</span><span class="s1">, timeout=5)
+</span></span></span><span class="line"><span class="cl"><span class="s1">except Exception:
+</span></span></span><span class="line"><span class="cl"><span class="s1">    pass
+</span></span></span><span class="line"><span class="cl"><span class="s1">&#39;&#39;&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="s2">&#34;python3&#34;</span><span class="p">,</span> <span class="s2">&#34;-c&#34;</span><span class="p">,</span> <span class="n">checker</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">    <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">DEVNULL</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">DEVNULL</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">start_new_session</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>   <span class="c1"># daemonize，不随 Stop hook 退出</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>核心技巧：<code>start_new_session=True</code> 让子进程脱离 Stop hook 的生命周期独立运行。每次 Claude 回复完毕触发 Stop，覆盖时间戳并重新启动一个检测器。如果连续 5 分钟没有新回复，上一次的检测器就会发通知。</p>
+<p>和场景三配合：场景三通知你&quot;活干完了&quot;，场景四通知你&quot;你人跑了&quot;。</p>
+<h3 id="场景五自动注入状态快照">场景五：自动注入状态快照</h3>
+<p>每次发消息，Claude 自动看到当前 git 状态和最近操作日志。不需要你手动 <code>git status</code>。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># inject_git_status.py — UserPromptSubmit，matcher: &#34;&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">subprocess</span><span class="o">,</span> <span class="nn">os</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">git_status</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span><span class="s2">&#34;git status --short&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">git_log</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span><span class="s2">&#34;git log --oneline -3&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">context</span> <span class="o">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="n">git_status</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">context</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&#34;Git 状态:</span><span class="se">\n</span><span class="si">{</span><span class="n">git_status</span><span class="si">}</span><span class="se">\n</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="n">git_log</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">context</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&#34;最近提交:</span><span class="se">\n</span><span class="si">{</span><span class="n">git_log</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="n">context</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;hookSpecificOutput&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;hookEventName&#34;</span><span class="p">:</span> <span class="s2">&#34;UserPromptSubmit&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;additionalContext&#34;</span><span class="p">:</span> <span class="n">context</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>效果：Claude 始终知道工程的 git 状态，回答更准确，不需要你重复描述上下文。</p>
+<h3 id="场景六precompact-防上下文丢失">场景六：PreCompact 防上下文丢失</h3>
+<p>上下文压缩是 Claude Code 的自动机制，但可能丢掉关键任务信息。PreCompact Hook 在压缩前把当前任务状态写到一个恢复文件，压缩后 Claude 可以通过它找回方向。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># save_context.py — PreCompact，matcher: &#34;&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 把当前任务摘要写到恢复文件</span>
+</span></span><span class="line"><span class="cl"><span class="n">backup</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;session_id&#34;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;session_id&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;cwd&#34;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;cwd&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;trigger&#34;</span><span class="p">:</span> <span class="s2">&#34;pre_compact&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;timestamp&#34;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;timestamp&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&#34;/tmp/claude-context-backup.json&#34;</span><span class="p">,</span> <span class="s2">&#34;w&#34;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">backup</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>配合 SessionStart Hook 读取这个备份文件，可以实现跨压缩的任务连续性。</p>
+<h3 id="场景七远程审批推送">场景七：远程审批推送</h3>
+<p>Hooks 的长链玩法：不只通知，还能让你在手机上直接审批 Claude Code 的权限请求。</p>
+<p>原理不复杂——Hook 只做第一步拦截，后面交给一个服务端处理全链路。</p>
+<div class="mermaid" id="id-1">sequenceDiagram
+    participant H as PermissionRequest Hook
+    participant S as 服务端
+    participant F as 飞书/App
+    participant U as 你（手机）
+    participant P as PTY
+    participant C as Claude Code
+
+    H-&gt;&gt;S: POST /permission-request
+    S-&gt;&gt;F: 推送审批卡片/通知
+    F-&gt;&gt;U: 显示 [批准] [拒绝]
+    U-&gt;&gt;F: 点击按钮
+    F-&gt;&gt;S: 回调审批结果
+    S-&gt;&gt;P: 写入 &#34;1&#34; 或 &#34;3&#34;
+    P-&gt;&gt;C: 按键注入，对话框关闭</div>
+<script>window.config=window.config||{};window.config.data=window.config.data||{};window.config.data['id-1']=document.getElementById('id-1').textContent.trim();</script>
+<p>换成流程图视角，数据流向是这样的：</p>
+<div class="mermaid" id="id-2">flowchart TD
+    A[PermissionRequest Hook] --&gt;|写文件 / 调接口| B[&#34;服务端 Python/Go/Node&#34;]
+    B --&gt;|推送审批卡片| C[飞书交互卡片]
+    B --&gt;|推送通知| D[&#34;自建 App WebSocket&#34;]
+    C --&gt;|点击按钮| E[&#34;你 手机审批&#34;]
+    D --&gt;|点击按钮| E
+    E --&gt;|回调审批结果| B
+    B --&gt;|注入按键| F[PTY]
+    F --&gt;|按键 1 批准 3 拒绝| G[&#34;Claude Code 继续 / 中断&#34;]</div>
+<script>window.config=window.config||{};window.config.data=window.config.data||{};window.config.data['id-2']=document.getElementById('id-2').textContent.trim();</script>
+<p>文字版（ASCII）：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">PermissionRequest Hook → 写请求到文件或调接口
+</span></span><span class="line"><span class="cl">                            ↓
+</span></span><span class="line"><span class="cl">                    服务端（Python/Go/Node，跑在本机）
+</span></span><span class="line"><span class="cl">                            ↓
+</span></span><span class="line"><span class="cl">                  ┌────────┴────────┐
+</span></span><span class="line"><span class="cl">                  ↓                  ↓
+</span></span><span class="line"><span class="cl">            飞书交互卡片         自建 App (WebSocket)
+</span></span><span class="line"><span class="cl">                  ↓                  ↓
+</span></span><span class="line"><span class="cl">           你在手机上点 [批准] / [拒绝]
+</span></span><span class="line"><span class="cl">                  ↓
+</span></span><span class="line"><span class="cl">           服务端收到回调
+</span></span><span class="line"><span class="cl">                  ↓
+</span></span><span class="line"><span class="cl">         PTY 向终端会话输入 &#34;1&#34; 或 &#34;3&#34;
+</span></span><span class="line"><span class="cl">                  ↓
+</span></span><span class="line"><span class="cl">        Claude Code 收到按键，继续 / 中断
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Hook 脚本只需把权限请求转交给服务端：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># perm_forward.py — PermissionRequest，matcher: Bash|Write|Edit</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">requests</span><span class="o">,</span> <span class="nn">os</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">SERVER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&#34;APPROVAL_SERVER&#34;</span><span class="p">,</span> <span class="s2">&#34;http://127.0.0.1:9999&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 转交服务端，不等响应</span>
+</span></span><span class="line"><span class="cl"><span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">SERVER</span><span class="si">}</span><span class="s2">/permission-request&#34;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;tool&#34;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;tool_name&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;hint&#34;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;tool_input&#34;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;command&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)[:</span><span class="mi">120</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;session_id&#34;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;session_id&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">pass</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Hook 不做审批决策，让 Claude Code 弹原生对话框</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 服务端通过 PTY 在后台替你按键</span>
+</span></span><span class="line"><span class="cl"><span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Hook 退出了，但 Claude Code 原生权限弹窗还在等。这时候服务端已经拿到请求数据，推送到了你的手机上——飞书卡片也好，自建 App 的通知栏也好。你点一下按钮，服务端收到回调，通过 PTY 向终端会话注入一个 <code>1</code>（批准）或 <code>3</code>（拒绝），对话框关闭，Claude Code 继续干活。</p>
+<p>飞书方案适合已有飞书工作流的团队，零客户端成本。自建 App 方案更轻量，WebSocket 长连接延迟更低。无论哪种，Hooks 做的都是第一环——<strong>把权限请求从终端里拽出来，丢到你能触达的地方</strong>。</p>
+<p>这模式不止用于权限审批。PreToolUse 拦截危险命令可以推，PostToolUse 长时间任务可以推，Stop 空闲提醒已经在场景四推了。把推送逻辑统一交给服务端，每个 Hook 只负责&quot;触发事件&quot;这一件事。</p>
+<h3 id="场景八敏感文件保护">场景八：敏感文件保护</h3>
+<p>场景二拦截的是危险命令。但 Claude 还有一个能力是直接写文件——如果它误改了 <code>.env</code>、删了 SSH 密钥，命令拦截管不到。PreToolUse 配合 <code>Write|Edit</code> matcher 可以补上这个缺口。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># file_guard.py — PreToolUse，matcher: Write|Edit</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">sys</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl"><span class="n">file_path</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;tool_input&#34;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;file_path&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">PROTECTED</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;.env&#34;</span><span class="p">,</span> <span class="s2">&#34;.env.local&#34;</span><span class="p">,</span> <span class="s2">&#34;.env.production&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;secrets.yaml&#34;</span><span class="p">,</span> <span class="s2">&#34;credentials.json&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;*.pem&#34;</span><span class="p">,</span> <span class="s2">&#34;*.key&#34;</span><span class="p">,</span> <span class="s2">&#34;id_rsa&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;package-lock.json&#34;</span><span class="p">,</span> <span class="s2">&#34;yarn.lock&#34;</span><span class="p">,</span> <span class="s2">&#34;pnpm-lock.yaml&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">PROTECTED</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">pattern</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&#34;*&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span> <span class="ow">in</span> <span class="n">file_path</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;hookSpecificOutput&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;hookEventName&#34;</span><span class="p">:</span> <span class="s2">&#34;PreToolUse&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;permissionDecision&#34;</span><span class="p">:</span> <span class="s2">&#34;deny&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;permissionDecisionReason&#34;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&#34;受保护文件，禁止直接修改: </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}))</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>和场景二一起配，Bash + Write/Edit 两条 PreToolUse 规则，一个管命令一个管文件，安全兜底就完整了。</p>
+<h3 id="场景九命令审计日志">场景九：命令审计日志</h3>
+<p>PostToolUse 在每次 Bash 执行后追加一条记录到审计日志。出问题时复现、排查误操作、分析 Claude 的命令习惯，全靠这条日志。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># audit_log.py — PostToolUse，matcher: Bash</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl"><span class="n">cmd</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;tool_input&#34;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;command&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">duration</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;duration_ms&#34;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000</span>
+</span></span><span class="line"><span class="cl"><span class="n">exit_code</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;exit_code&#34;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">log_line</span> <span class="o">=</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="sa">f</span><span class="s2">&#34;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span><span class="si">}</span><span class="s2">] &#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="sa">f</span><span class="s2">&#34;exit=</span><span class="si">{</span><span class="n">exit_code</span><span class="si">}</span><span class="s2"> &#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="sa">f</span><span class="s2">&#34;duration=</span><span class="si">{</span><span class="n">duration</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">s &#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="sa">f</span><span class="s2">&#34;cmd=</span><span class="si">{</span><span class="n">cmd</span><span class="p">[:</span><span class="mi">200</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">log_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&#34;~/.claude/bash-audit.log&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_path</span><span class="p">,</span> <span class="s2">&#34;a&#34;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">log_line</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>跑一阵子后 <code>cat ~/.claude/bash-audit.log</code> 就能看到 Claude 都执行了什么、哪些慢、哪些容易失败。安全审计 + 性能诊断两用。</p>
+<h3 id="场景十stop-强制验证不跑通不下班">场景十：Stop 强制验证——&ldquo;不跑通不下班&rdquo;</h3>
+<p>前面的场景是&quot;做完了通知你&quot;和&quot;你忘了回来提醒你&quot;。这个场景反过来——Claude 想结束响应？先自检：代码改了吗？测试跑了吗？构建通过了吗？</p>
+<p>用 Stop hook 的 <code>prompt</code> 类型，让 LLM 自己审查本轮对话：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;matcher&#34;</span><span class="p">:</span> <span class="s2">&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">[{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;prompt&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;prompt&#34;</span><span class="p">:</span> <span class="s2">&#34;Review the last assistant response. If any code files were modified or created during this session: 1) Were tests run and did they pass? 2) Did the build succeed? 3) Were all user questions answered? If any check fails, return &#39;block:&lt;reason&gt;&#39; explaining what&#39;s still needed. If all pass, return &#39;approve&#39;.&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><code>prompt</code> 类型的好处是不需要你写复杂的检测脚本——让 LLM 自己判断。返回 <code>block</code> 就阻止 Claude 结束，它会被迫回去修。返回 <code>approve</code> 正常结束。</p>
+<p>三个检查项可以按项目定制。如果是 Hugo 博客项目，检查改成&quot;文章能不能正常渲染&quot;；如果是 API 服务，改成&quot;接口能不能返回 200&quot;。本质是把&quot;完成标准&quot;写进规则里，让 Claude 自己对照检查。</p>
+<hr>
+<h2 id="插件hooks-的打包形态">插件：Hooks 的打包形态</h2>
+<p>上面十个场景都是自定义 Hook 脚本。但如果你留意过自己装的插件，会发现很多插件本质上就是打包好的 Hooks。</p>
+<p>以你环境里实际跑着的为例：</p>
+<p><strong>caveman 插件</strong> — 两个 Hook 驱动：</p>
+<ul>
+<li><code>SessionStart</code> — 会话启动时注入 caveman 模式提示词，压缩 Claude 输出风格</li>
+<li><code>UserPromptSubmit</code> — 每次提交消息时维持模式不退化，防止多轮对话后 Claude 恢复啰嗦</li>
+</ul>
+<p><strong>hookify 插件</strong> — 自动化规则生成：</p>
+<ul>
+<li><code>Stop</code> hook — 每次响应结束后分析对话，如果发现&quot;这个行为应该被禁止&quot;，自动建议创建新 Hook 规则。Hook 自己进化 Hook，元 Hook。</li>
+</ul>
+<p><strong>superpowers 插件</strong> — 多 Hook 工作流编排：</p>
+<ul>
+<li><code>SessionStart</code> → 加载 TDD、debugging、brainstorming 等开发方法论的提示词</li>
+<li><code>UserPromptSubmit</code> → 检测用户意图，自动匹配对应 Skill 并加载</li>
+<li><code>Stop</code> → 完成检查点验证，确保开发流程不跳步</li>
+</ul>
+<p>你会发现这些插件做的事情和前面十个场景本质上一样——Hook 拦截事件，注入逻辑。区别只在于插件把这些 Hook + Skills + 提示词打包好，你可以开箱即用；而自定义 Hook 脚本是给你最灵活的底层能力，配一次想怎么玩都行。</p>
+<p>选插件还是自己写？简单法则：<strong>重复出现的通用流程 → 找插件。一次性特定需求 → 自己写 Hook。两者不互斥——插件管大流程，自定义 Hook 补边角。</strong></p>
+<hr>
+<h2 id="组合拳推荐配置">组合拳：推荐配置</h2>
+<p>从十种场景里挑最值的六条，这是我的推荐：</p>
+<ol>
+<li><strong>PreToolUse</strong> — 危险命令拦截 + 敏感文件保护（场景二 + 八，合并一条规则）</li>
+<li><strong>PostToolUse</strong> — 自动格式化 + 审计日志（场景一 + 九）</li>
+<li><strong>PostToolUse</strong> — 长任务飞书通知（场景三，改 Slack/钉钉同理）</li>
+<li><strong>Stop</strong> — 空闲超时飞书通知（场景四）</li>
+<li><strong>UserPromptSubmit</strong> — git 状态注入（场景五）</li>
+<li><strong>Stop</strong> — 强制验证（场景十，宽松起步）</li>
+</ol>
+<p>远程审批（场景七）需要额外服务端，PreCompact（场景六）按需启用，先不放进基础配置。</p>
+<p>全部配在 <code>~/.claude/settings.json</code>，一次配置，所有项目生效。场景十的 Stop 强制验证可以先从宽松规则开始——只检查&quot;测试跑没跑&quot;，不检查通过率——等 Claude 习惯了再收紧。</p>
+<hr>
+<h2 id="注意事项">注意事项</h2>
+<p>Hooks 脚本在 Claude Code 进程内同步执行（除非设置 <code>parallel: true</code>）。脚本出错不会影响 Claude Code 运行——exit 非零只是丢弃本次事件。但脚本卡死是可能的，务必加 timeout。</p>
+<p>对于网络请求（飞书通知、日志上报），用 daemon 线程 + timeout 避免阻塞。</p>
+<p>另外 Hooks 脚本的日志不会显示在 Claude Code 界面里——调试时写文件日志，或直接 <code>python3 script.py</code> 在终端单独跑。</p>
+<hr>
+<h2 id="结语">结语</h2>
+<p>Hooks 本质是把 Claude Code 从&quot;被动的对话工具&quot;变成&quot;可编程的自动化平台&quot;。如果说插件扩展了 Claude 的能力边界，那 Hooks 扩展的是<strong>工作流的自动化边界</strong>。</p>
+<p>每个 Hook 脚本不超过 30 行代码，配一次，受益终身。试过飞书通知之后，你就回不去了。</p>
+<hr>
+<div class="post-series-nav">
+                <em>本文是「<a href="/series/claude-code-deep-dive/">AI 编程·Claude Code</a>」系列第 2 篇，共 2 篇。上一篇：<a href="/posts/2026/04/28/claude-code-plugins-guide/">Claude Code 插件完全指南：省钱、省 Token、提升开发效率</a>。</em>
+            </div></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2026-06-02</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/2026/06/02/claude-code-hooks-guide/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/" data-title="Claude Code Hooks 指南：自动化你的 AI 编程工作流" data-hashtags="tech,ai,claude code,hooks,automation"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/" data-hashtag="tech"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/" data-title="Claude Code Hooks 指南：自动化你的 AI 编程工作流"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/" data-title="Claude Code Hooks 指南：自动化你的 AI 编程工作流"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/" data-title="Claude Code Hooks 指南：自动化你的 AI 编程工作流"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/tech/">技术</a>,&nbsp;<a href="/tags/ai/">Ai</a>,&nbsp;<a href="/tags/claude-code/">Claude Code</a>,&nbsp;<a href="/tags/hooks/">Hooks</a>,&nbsp;<a href="/tags/automation/">Automation</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2026/05/10/ai-trust-meaning/" class="prev" rel="prev" title="AI 能做事，不能扛事"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>AI 能做事，不能扛事</a></div>
+
+</div>
+<div id="comments"><div id="waline" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://waline.js.org/">Waline</a>.
+            </noscript><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.131.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><style>
+    .mermaid-wrapper {
+        position: relative; margin: 1.2em 0;
+        border: 1px solid var(--color-contrast-low, #e0e0e0);
+        border-radius: 6px; overflow: hidden;
+        background: var(--color-body, #fff);
+    }
+    [theme=dark] .mermaid-wrapper { border-color: #3a3a3a; background: #1e1e1e; }
+    .mermaid-tab-bar {
+        display: flex; align-items: center;
+        border-bottom: 1px solid var(--color-contrast-low, #e0e0e0);
+        background: var(--color-contrast-lower, #fafafa);
+        padding: 0 8px; height: 36px;
+    }
+    [theme=dark] .mermaid-tab-bar { border-color: #3a3a3a; background: #252525; }
+    .mermaid-tab-bar .tab-btn {
+        padding: 0 14px; height: 100%; font-size: 13px; cursor: pointer;
+        background: none; border: none; border-bottom: 2px solid transparent;
+        color: var(--color-text-muted, #888); transition: all .15s;
+        display: flex; align-items: center;
+    }
+    .mermaid-tab-bar .tab-btn:hover { color: var(--color-text, #333); }
+    [theme=dark] .mermaid-tab-bar .tab-btn:hover { color: #ddd; }
+    .mermaid-tab-bar .tab-btn.active {
+        color: var(--color-primary, #4C7CF3);
+        border-bottom-color: var(--color-primary, #4C7CF3);
+        font-weight: 500;
+    }
+    .mermaid-tab-bar .toolbar-spacer { flex: 1; }
+    .mermaid-toolbar { display: flex; gap: 1px; align-items: center; padding-right: 2px; }
+    .mermaid-toolbar button {
+        display: flex; align-items: center; justify-content: center;
+        height: 28px; min-width: 28px; padding: 0 4px;
+        background: transparent; border: none; border-radius: 4px;
+        cursor: pointer; color: var(--color-text-muted, #888);
+        transition: background .15s, color .15s; font-size: 12px; gap: 2px;
+    }
+    .mermaid-toolbar button:hover { background: var(--color-contrast-low, #e5e5e5); color: var(--color-text, #333); }
+    [theme=dark] .mermaid-toolbar button:hover { background: #3a3a3a; color: #eee; }
+    .mermaid-toolbar button svg { width: 15px; height: 15px; pointer-events: none; }
+    .mermaid-toolbar .chevron { width: 10px; height: 10px; margin-left: -1px; }
+     
+    .mermaid-dd-wrap { position: relative; }
+    .mermaid-dd-menu {
+        display: none; position: absolute; top: 100%; right: 0;
+        background: var(--color-body, #fff);
+        border: 1px solid var(--color-contrast-low, #e0e0e0);
+        border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,.1);
+        z-index: 100; min-width: 130px; padding: 4px; margin-top: 4px;
+    }
+    [theme=dark] .mermaid-dd-menu { border-color: #3a3a3a; background: #2a2a2a; box-shadow: 0 4px 12px rgba(0,0,0,.4); }
+    .mermaid-dd-menu.open { display: block; }
+    .mermaid-dd-menu .dd-item {
+        display: flex; align-items: center; gap: 8px;
+        padding: 7px 10px; border-radius: 4px; cursor: pointer;
+        font-size: 13px; color: var(--color-text, #333); white-space: nowrap;
+    }
+    [theme=dark] .mermaid-dd-menu .dd-item { color: #ddd; }
+    .mermaid-dd-menu .dd-item:hover { background: var(--color-contrast-lower, #f5f5f5); }
+    [theme=dark] .mermaid-dd-menu .dd-item:hover { background: #3a3a3a; }
+    .mermaid-dd-menu .dd-item svg { width: 14px; height: 14px; flex-shrink: 0; opacity: .6; }
+     
+    .mermaid-tab-content { display: none; }
+    .mermaid-tab-content.active { display: block; }
+    .mermaid-tab-content.diagram {
+        padding: 8px; overflow: auto; text-align: center;
+        min-height: 60px; position: relative;
+    }
+    .mermaid-stage {
+        display: block; padding: 12px;
+    }
+    .mermaid-stage .mermaid { display: block; text-align: left; }
+    .mermaid-stage .mermaid svg { max-width: 100%; height: auto; }
+    .mermaid-stage.dragging { cursor: grabbing; -webkit-user-select: none; user-select: none; }
+    .mermaid-stage .mermaid { transform-origin: 0 0; will-change: transform; }
+    .mermaid-stage .mermaid.animate { transition: transform .2s ease; }
+    .mermaid-stage-reset {
+        position: absolute; bottom: 8px; right: 8px; z-index: 5;
+        padding: 3px 10px; font-size: 11px; border-radius: 4px;
+        background: var(--color-contrast-low, #e0e0e0); border: none;
+        cursor: pointer; color: var(--color-text-muted, #666);
+        display: none;
+    }
+    [theme=dark] .mermaid-stage-reset { background: #3a3a3a; color: #aaa; }
+    .mermaid-stage-reset.visible { display: block; }
+    .mermaid-source-panel {
+        padding: 14px 18px; margin: 0;
+        font-size: 13px; line-height: 1.6; white-space: pre-wrap;
+        overflow-x: auto; max-height: 420px; overflow-y: auto;
+        font-family: 'Fira Code','Consolas','SF Mono',monospace;
+        background: var(--color-contrast-lower, #fafafa);
+        color: var(--color-text, #333); position: relative;
+    }
+    [theme=dark] .mermaid-source-panel { background: #1e1e1e; color: #ddd; }
+    .mermaid-source-panel .code-copy-btn {
+        position: absolute; top: 8px; right: 8px;
+        display: flex; align-items: center; justify-content: center;
+        width: 28px; height: 28px; padding: 0;
+        background: var(--color-contrast-low, #e0e0e0); border: none;
+        border-radius: 4px; cursor: pointer; color: var(--color-text-muted, #666);
+        opacity: 0; transition: opacity .15s;
+    }
+    [theme=dark] .mermaid-source-panel .code-copy-btn { background: #3a3a3a; color: #aaa; }
+    .mermaid-source-panel:hover .code-copy-btn { opacity: 1; }
+    .mermaid-source-panel .code-copy-btn:hover { color: var(--color-text, #333); }
+    [theme=dark] .mermaid-source-panel .code-copy-btn:hover { color: #fff; }
+    .mermaid-source-panel .code-copy-btn svg { width: 14px; height: 14px; pointer-events: none; }
+     
+    .mermaid-source-panel .hl-keyword { color: #c678dd; }
+    .mermaid-source-panel .hl-graph { color: #e06c75; }
+    .mermaid-source-panel .hl-node { color: #61afef; }
+    .mermaid-source-panel .hl-edge { color: #abb2bf; }
+    .mermaid-source-panel .hl-comment { color: #5c6370; font-style: italic; }
+    .mermaid-source-panel .hl-string { color: #98c379; }
+    .mermaid-source-panel .hl-arrow { color: #d19a66; }
+    [theme=dark] .mermaid-source-panel .hl-keyword { color: #c678dd; }
+    [theme=dark] .mermaid-source-panel .hl-graph { color: #e06c75; }
+    [theme=dark] .mermaid-source-panel .hl-node { color: #61afef; }
+    [theme=dark] .mermaid-source-panel .hl-edge { color: #abb2bf; }
+    [theme=dark] .mermaid-source-panel .hl-comment { color: #5c6370; font-style: italic; }
+    [theme=dark] .mermaid-source-panel .hl-string { color: #98c379; }
+    [theme=dark] .mermaid-source-panel .hl-arrow { color: #d19a66; }
+     
+    .mermaid-fs-overlay {
+        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+        background: rgba(255,255,255,.98); z-index: 9999;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    [theme=dark] .mermaid-fs-overlay { background: rgba(18,18,18,.98); }
+    .mermaid-fs-overlay svg { max-width: 96vw; max-height: 88vh; }
+    .mermaid-fs-overlay .fs-close {
+        position: absolute; top: 20px; right: 20px;
+        width: 40px; height: 40px; cursor: pointer;
+        background: var(--color-contrast-low, #e0e0e0); border: none;
+        border-radius: 50%; font-size: 20px; display: flex;
+        align-items: center; justify-content: center;
+        color: var(--color-text, #333);
+    }
+    [theme=dark] .mermaid-fs-overlay .fs-close { background: #444; color: #eee; }
+    .mermaid-fs-overlay .fs-close:hover { opacity: .8; }
+    .mermaid-fs-overlay .fs-zoom {
+        position: absolute; bottom: 24px; display: flex; gap: 4px;
+    }
+    .mermaid-fs-overlay .fs-zoom button {
+        width: 36px; height: 36px; cursor: pointer;
+        background: var(--color-contrast-low, #e0e0e0); border: none;
+        border-radius: 50%; font-size: 18px; display: flex;
+        align-items: center; justify-content: center;
+        color: var(--color-text, #333);
+    }
+    [theme=dark] .mermaid-fs-overlay .fs-zoom button { background: #444; color: #eee; }
+    .mermaid-fs-overlay .fs-zoom button:hover { opacity: .8; }
+    .mermaid-fs-overlay .fs-svg-wrap {
+        overflow: hidden; display: flex; align-items: center; justify-content: center;
+        width: 100%; height: 100%;
+    }
+    .mermaid-fs-overlay .fs-svg-wrap svg { transform-origin: center center; will-change: transform; }
+     
+    .mermaid-toast {
+        position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
+        background: #333; color: #fff; padding: 9px 20px; border-radius: 8px;
+        font-size: 13px; z-index: 99999; pointer-events: none;
+        animation: mmd-toast-in .2s ease, mmd-toast-out .2s ease 1.5s forwards;
+    }
+    [theme=dark] .mermaid-toast { background: #555; }
+    @keyframes mmd-toast-in { from { opacity: 0; transform: translateX(-50%) translateY(10px); } }
+    @keyframes mmd-toast-out { to { opacity: 0; transform: translateX(-50%) translateY(-10px); } }
+    </style><script>
+    (function(){
+        var ICONS = {
+            zoomin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg>',
+            zoomout: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M8 11h6"/></svg>',
+            fullscreen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>',
+            download: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+            copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
+            chevron: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>'
+        };
+
+        function getSource(el) { return (window.config&&window.config.data&&window.config.data[el.id])||''; }
+
+        function highlightMermaid(src) {
+            var escaped = src.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+            escaped = escaped.replace(/(%%[^\n]*)/g, '<span class="hl-comment">$1</span>');
+            escaped = escaped.replace(/\b(gantt|graph\s+(TB|TD|BT|RL|LR)|flowchart\s+(TB|TD|BT|RL|LR)|sequenceDiagram|classDiagram|stateDiagram(-v2)?|erDiagram|journey|pie|gitGraph|mindmap|timeline)\b/gi,
+                '<span class="hl-graph">$1</span>');
+            escaped = escaped.replace(/\b(title|dateFormat|axisFormat|section|todayMarker|excludes|includes|tickInterval|weekday|accTitle|accDescr)\b/g,
+                '<span class="hl-keyword">$1</span>');
+            escaped = escaped.replace(/(:active|:done|:crit|:milestone)(?=\s|,|$)/g,
+                '<span class="hl-arrow">$1</span>');
+            escaped = escaped.replace(/(--&gt;|--&gt;&gt;|==&gt;|-\.-&gt;|\.\.-&gt;)/g,
+                '<span class="hl-edge">$1</span>');
+            return escaped;
+        }
+
+        function toast(msg) {
+            var t = document.createElement('div'); t.className = 'mermaid-toast';
+            t.textContent = msg; document.body.appendChild(t);
+            setTimeout(function(){ t.remove(); }, 1800);
+        }
+
+        function getSVGSize(svg) {
+            var vb = svg.getAttribute('viewBox');
+            if (vb) { var p = vb.split(/\s+/); return { w: parseFloat(p[2]), h: parseFloat(p[3]) }; }
+            var b = svg.getBBox();
+            return { w: Math.ceil(b.width + b.x), h: Math.ceil(b.height + b.y) };
+        }
+
+        function downloadSVG(el) {
+            var svg = el.querySelector('svg'); if (!svg) return;
+            var clone = svg.cloneNode(true);
+            var s = getSVGSize(svg);
+            clone.setAttribute('width', s.w); clone.setAttribute('height', s.h);
+            var str = '<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n' + new XMLSerializer().serializeToString(clone);
+            var blob = new Blob([str], {type: 'image/svg+xml;charset=utf-8'});
+            var a = document.createElement('a');
+            a.download = (el.id||'mermaid') + '.svg';
+            a.href = URL.createObjectURL(blob); a.click();
+            URL.revokeObjectURL(a.href);
+        }
+
+        function downloadPNG(el) {
+            var svg = el.querySelector('svg'); if (!svg) return;
+            var size = getSVGSize(svg); if (!size.w||!size.h) return;
+            var scale = 2, w = size.w*scale, h = size.h*scale;
+            var clone = svg.cloneNode(true);
+            clone.setAttribute('width', w); clone.setAttribute('height', h);
+            var str = new XMLSerializer().serializeToString(clone);
+            var blob = new Blob([str], {type: 'image/svg+xml;charset=utf-8'});
+            var url = URL.createObjectURL(blob);
+            var img = new Image();
+            img.onload = function() {
+                var c = document.createElement('canvas'); c.width=w; c.height=h;
+                var ctx = c.getContext('2d');
+                ctx.drawImage(img, 0, 0, w, h);
+                URL.revokeObjectURL(url);
+                c.toBlob(function(b) {
+                    var a = document.createElement('a');
+                    a.download = (el.id||'mermaid') + '.png';
+                    a.href = URL.createObjectURL(b); a.click();
+                    URL.revokeObjectURL(a.href);
+                }, 'image/png');
+            };
+            img.src = url;
+        }
+
+        function closeAllDropdowns() {
+            document.querySelectorAll('.mermaid-dd-menu.open').forEach(function(m){ m.classList.remove('open'); });
+        }
+
+        function wrapMermaid(el) {
+            if (el.closest && el.closest('.mermaid-wrapper')) return;
+            var wrapper = document.createElement('div');
+            wrapper.className = 'mermaid-wrapper';
+            el.parentNode.insertBefore(wrapper, el);
+
+            
+            var tabBar = document.createElement('div');
+            tabBar.className = 'mermaid-tab-bar';
+
+            var diagramTab = document.createElement('button');
+            diagramTab.className = 'tab-btn active'; diagramTab.textContent = '图表';
+
+            var codeTab = document.createElement('button');
+            codeTab.className = 'tab-btn'; codeTab.textContent = '代码';
+
+            var spacer = document.createElement('div');
+            spacer.className = 'toolbar-spacer';
+
+            
+            var toolbar = document.createElement('div');
+            toolbar.className = 'mermaid-toolbar';
+
+            
+            var stage = document.createElement('div');
+            stage.className = 'mermaid-stage';
+            stage.style.cursor = '';
+            var mermaidEl = el;
+            mermaidEl.classList.add('animate');
+
+            
+            var scale = 1, tx = 0, ty = 0, isDragging = false, dragStartX, dragStartY, startTx, startTy;
+            var resetBtn = document.createElement('button');
+            resetBtn.className = 'mermaid-stage-reset';
+            resetBtn.textContent = '复位';
+            resetBtn.onclick = function(e) { e.stopPropagation(); scale = 1; tx = 0; ty = 0; applyTransform(true); resetBtn.classList.remove('visible'); };
+
+            function applyTransform(animate) {
+                if (animate) { mermaidEl.classList.add('animate'); }
+                else { mermaidEl.classList.remove('animate'); }
+                mermaidEl.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+                var zoomed = scale !== 1 || tx !== 0 || ty !== 0;
+                resetBtn.classList.toggle('visible', zoomed);
+                stage.style.cursor = isOverflowing() ? 'grab' : '';
+                if (animate) { setTimeout(function(){ mermaidEl.classList.remove('animate'); }, 200); }
+            }
+
+            function clampScale(s) { return Math.min(Math.max(s, 0.2), 8); }
+
+            
+            var zoomOutBtn = document.createElement('button');
+            zoomOutBtn.title = '缩小';
+            zoomOutBtn.innerHTML = ICONS.zoomout;
+            zoomOutBtn.onclick = function(e) {
+                e.stopPropagation(); closeAllDropdowns();
+                var rect = stage.getBoundingClientRect();
+                var cx = rect.width / 2, cy = rect.height / 2;
+                var newScale = clampScale(scale / 1.4);
+                tx = cx - (cx - tx) * (newScale / scale);
+                ty = cy - (cy - ty) * (newScale / scale);
+                scale = newScale;
+                applyTransform(true);
+            };
+
+            var zoomInBtn = document.createElement('button');
+            zoomInBtn.title = '放大';
+            zoomInBtn.innerHTML = ICONS.zoomin;
+            zoomInBtn.onclick = function(e) {
+                e.stopPropagation(); closeAllDropdowns();
+                var rect = stage.getBoundingClientRect();
+                var cx = rect.width / 2, cy = rect.height / 2;
+                var newScale = clampScale(scale * 1.4);
+                tx = cx - (cx - tx) * (newScale / scale);
+                ty = cy - (cy - ty) * (newScale / scale);
+                scale = newScale;
+                applyTransform(true);
+            };
+
+            
+            var fsBtn = document.createElement('button');
+            fsBtn.title = '全屏查看';
+            fsBtn.innerHTML = ICONS.fullscreen;
+            fsBtn.onclick = function(e) {
+                e.stopPropagation(); closeAllDropdowns();
+                var svg = el.querySelector('svg'); if (!svg) return;
+                var overlay = document.createElement('div');
+                overlay.className = 'mermaid-fs-overlay';
+                var close = document.createElement('button');
+                close.className = 'fs-close'; close.innerHTML = '&times;';
+                
+                var svgWrap = document.createElement('div');
+                svgWrap.className = 'fs-svg-wrap';
+                var svgClone = svg.cloneNode(true);
+                svgWrap.appendChild(svgClone);
+                
+                var fsZoom = document.createElement('div');
+                fsZoom.className = 'fs-zoom';
+                var fsScale = 1, fsTx = 0, fsTy = 0;
+                function fsApply() {
+                    svgClone.style.transform = 'translate(' + fsTx + 'px,' + fsTy + 'px) scale(' + fsScale + ')';
+                }
+                var fsZoomOut = document.createElement('button');
+                fsZoomOut.innerHTML = '−';
+                fsZoomOut.onclick = function(ev) { ev.stopPropagation(); fsScale = Math.max(fsScale/1.3, 0.1); fsApply(); };
+                var fsZoomIn = document.createElement('button');
+                fsZoomIn.innerHTML = '+';
+                fsZoomIn.onclick = function(ev) { ev.stopPropagation(); fsScale = Math.min(fsScale*1.3, 10); fsApply(); };
+                var fsReset = document.createElement('button');
+                fsReset.innerHTML = '1:1';
+                fsReset.onclick = function(ev) { ev.stopPropagation(); fsScale = 1; fsTx = 0; fsTy = 0; fsApply(); };
+                fsZoom.appendChild(fsZoomOut);
+                fsZoom.appendChild(fsReset);
+                fsZoom.appendChild(fsZoomIn);
+                
+                svgWrap.addEventListener('wheel', function(ev) {
+                    ev.preventDefault(); ev.stopPropagation();
+                    var d = ev.deltaY > 0 ? 0.88 : 1.12;
+                    var ns = Math.min(Math.max(fsScale*d, 0.1), 10);
+                    var rect = svgWrap.getBoundingClientRect();
+                    var cx = ev.clientX - rect.left, cy = ev.clientY - rect.top;
+                    fsTx = cx - (cx - fsTx)*(ns/fsScale);
+                    fsTy = cy - (cy - fsTy)*(ns/fsScale);
+                    fsScale = ns;
+                    fsApply();
+                }, {passive: false});
+                
+                var fsDragging = false, fsStartX, fsStartY, fsStartTx, fsStartTy;
+                svgWrap.addEventListener('mousedown', function(ev) {
+                    if (ev.button !== 0) return;
+                    fsDragging = true; fsStartX = ev.clientX; fsStartY = ev.clientY;
+                    fsStartTx = fsTx; fsStartTy = fsTy;
+                    ev.preventDefault();
+                });
+                window.addEventListener('mousemove', function fsMove(ev) {
+                    if (!fsDragging) return;
+                    fsTx = fsStartTx + (ev.clientX - fsStartX);
+                    fsTy = fsStartTy + (ev.clientY - fsStartY);
+                    fsApply();
+                });
+                window.addEventListener('mouseup', function fsUp() {
+                    fsDragging = false;
+                });
+                overlay.appendChild(svgWrap);
+                overlay.appendChild(close);
+                overlay.appendChild(fsZoom);
+                overlay.addEventListener('click', function(ev) {
+                    if (ev.target === overlay) overlay.remove();
+                });
+                close.onclick = function() { overlay.remove(); };
+                document.addEventListener('keydown', function esc(e) {
+                    if (e.key === 'Escape') { overlay.remove(); document.removeEventListener('keydown', esc); }
+                });
+                document.body.appendChild(overlay);
+            };
+
+            
+            var ddWrap = document.createElement('div');
+            ddWrap.className = 'mermaid-dd-wrap';
+            var ddBtn = document.createElement('button');
+            ddBtn.title = '下载';
+            ddBtn.innerHTML = ICONS.download + ICONS.chevron.replace('class="chevron"','class="chevron" style="width:10px;height:10px"');
+            var ddMenu = document.createElement('div');
+            ddMenu.className = 'mermaid-dd-menu';
+
+            function makeDDItem(label, action) {
+                var item = document.createElement('div');
+                item.className = 'dd-item';
+                item.textContent = label;
+                item.onclick = function(e) { e.stopPropagation(); closeAllDropdowns(); action(); };
+                return item;
+            }
+            ddMenu.appendChild(makeDDItem('下载 SVG', function(){ downloadSVG(el); }));
+            ddMenu.appendChild(makeDDItem('下载 PNG', function(){ downloadPNG(el); }));
+            ddBtn.onclick = function(e) {
+                e.stopPropagation();
+                ddMenu.classList.toggle('open');
+            };
+            ddWrap.appendChild(ddBtn);
+            ddWrap.appendChild(ddMenu);
+
+            
+            var copyBtn = document.createElement('button');
+            copyBtn.title = '复制代码';
+            copyBtn.innerHTML = ICONS.copy;
+            copyBtn.onclick = function(e) {
+                e.stopPropagation(); closeAllDropdowns();
+                var src = getSource(el);
+                if (!src) return;
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(src).then(function(){ toast('代码已复制'); });
+                } else {
+                    var ta = document.createElement('textarea');
+                    ta.value = src; ta.style.position='fixed'; ta.style.opacity='0';
+                    document.body.appendChild(ta); ta.select();
+                    document.execCommand('copy'); document.body.removeChild(ta);
+                    toast('代码已复制');
+                }
+            };
+
+            toolbar.appendChild(zoomOutBtn);
+            toolbar.appendChild(zoomInBtn);
+            toolbar.appendChild(fsBtn);
+            toolbar.appendChild(ddWrap);
+            toolbar.appendChild(copyBtn);
+
+            
+            var toolbarDiagramBtns = [zoomOutBtn, zoomInBtn, fsBtn, ddWrap];
+            function showDiagramToolbar() {
+                toolbarDiagramBtns.forEach(function(b){ b.style.display = ''; });
+            }
+            function showCodeToolbar() {
+                toolbarDiagramBtns.forEach(function(b){ b.style.display = 'none'; });
+            }
+            showDiagramToolbar();
+
+            tabBar.appendChild(diagramTab);
+            tabBar.appendChild(codeTab);
+            tabBar.appendChild(spacer);
+            tabBar.appendChild(toolbar);
+
+            wrapper.appendChild(tabBar);
+
+            
+            var tabDiagram = document.createElement('div');
+            tabDiagram.className = 'mermaid-tab-content diagram active';
+            stage.appendChild(el);
+            tabDiagram.appendChild(stage);
+            tabDiagram.appendChild(resetBtn);
+
+            var tabCode = document.createElement('pre');
+            tabCode.className = 'mermaid-tab-content mermaid-source-panel';
+            tabCode.innerHTML = highlightMermaid(getSource(el));
+
+            wrapper.appendChild(tabDiagram);
+            wrapper.appendChild(tabCode);
+
+            
+            diagramTab.onclick = function() {
+                diagramTab.classList.add('active'); codeTab.classList.remove('active');
+                tabDiagram.classList.add('active'); tabCode.classList.remove('active');
+                showDiagramToolbar();
+            };
+            codeTab.onclick = function() {
+                codeTab.classList.add('active'); diagramTab.classList.remove('active');
+                tabCode.classList.add('active'); tabDiagram.classList.remove('active');
+                showCodeToolbar();
+            };
+
+            
+            function isOverflowing() {
+                var svg = el.querySelector('svg'); if (!svg) return false;
+                var vb = svg.getAttribute('viewBox'); if (!vb) return false;
+                var parts = vb.split(/\s+/);
+                var sw = parseFloat(parts[2]) * scale, sh = parseFloat(parts[3]) * scale;
+                var rect = stage.getBoundingClientRect();
+                return sw > rect.width + 1 || sh > rect.height + 1;
+            }
+            stage.addEventListener('mousedown', function(e) {
+                if (e.button !== 0 || !isOverflowing()) return;
+                isDragging = true; stage.classList.add('dragging');
+                dragStartX = e.clientX; dragStartY = e.clientY;
+                startTx = tx; startTy = ty;
+                e.preventDefault();
+            });
+            window.addEventListener('mousemove', function(e) {
+                if (!isDragging) return;
+                tx = startTx + (e.clientX - dragStartX);
+                ty = startTy + (e.clientY - dragStartY);
+                applyTransform(false);
+            });
+            window.addEventListener('mouseup', function() {
+                if (isDragging) { isDragging = false; stage.classList.remove('dragging'); }
+            });
+            
+            stage.addEventListener('wheel', function(e) {
+                e.preventDefault();
+                var delta = e.deltaY > 0 ? 0.85 : 1.15;
+                if (e.ctrlKey) delta = e.deltaY > 0 ? 0.95 : 1.05;
+                var newScale = clampScale(scale * delta);
+                var rect = stage.getBoundingClientRect();
+                var cx = e.clientX - rect.left, cy = e.clientY - rect.top;
+                tx = cx - (cx - tx) * (newScale / scale);
+                ty = cy - (cy - ty) * (newScale / scale);
+                scale = newScale;
+                applyTransform(false);
+            }, { passive: false });
+        }
+
+        function setup() { document.querySelectorAll('.mermaid').forEach(wrapMermaid); }
+
+        setup();
+        
+        document.addEventListener('click', closeAllDropdowns);
+        
+        var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(m) {
+                if (m.target.classList.contains('mermaid') && m.target.querySelector('svg')) wrapMermaid(m.target);
+            });
+        });
+        document.querySelectorAll('.mermaid').forEach(function(el) { observer.observe(el, { childList: true }); });
+    })();
+    </script><link rel="stylesheet" href="/lib/waline/waline.min.css"><script type="text/javascript" src="/lib/waline/waline.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mermaid@10.9.5/dist/mermaid.min.js"></script><script type="text/javascript">!function(){if(typeof mermaid!=='undefined'){var r=mermaid.render.bind(mermaid);mermaid.render=function(id,text,cb,el){if(arguments.length>=4&&typeof cb==='function'){return r(id,text,el).then(function(o){cb(o.svg||o)})}return r.apply(mermaid,arguments)}}}()</script><script type="text/javascript">window.config=Object.assign(window.config||{},{"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Comments","categoryId":"DIC_kwDOH2gmzc4CQ_fM","darkTheme":"dark","emitMetadata":"0","inputPosition":"bottom","lang":"zh-CN","lazyLoading":true,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"whitefirer/whitefirer.github.io","repoId":"R_kgDOH2gmzQ"},"waline":{"dark":"auto","el":"#waline","lang":"zh-CN","pageSize":10,"requiredMeta":["nick","mail"],"serverURL":"https://comment.whitefirer.org"}},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}});</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">!function(){function svgToPng(svg,cb){var c=svg.cloneNode(!0),d=new XMLSerializer().serializeToString(c),img=new Image(),cv=document.createElement('canvas'),w=c.viewBox.animVal.width||c.getBoundingClientRect().width||400,h=c.viewBox.animVal.height||c.getBoundingClientRect().height||300,s=2;cv.width=w*s,cv.height=h*s;var ctx=cv.getContext('2d'),b=new Blob([d],{type:'image/svg+xml;charset=utf-8'}),u=URL.createObjectURL(b);img.onload=function(){ctx.fillStyle='#fff',ctx.fillRect(0,0,cv.width,cv.height),ctx.drawImage(img,0,0,cv.width,cv.height),URL.revokeObjectURL(u),cv.toBlob(function(blob){var a=document.createElement('a');a.href=URL.createObjectURL(blob);var id=svg.id||'diagram';a.download=id+'.png',a.click(),URL.revokeObjectURL(a.href),cb&&cb()})},img.src=u}function addSaveBtn(svg){if(svg.closest('.mermaid-stage,.mermaid-fs-overlay,.mermaid-wrapper,.mermaid-toolbar,.svg-diagram-wrap'))return;var wrap=document.createElement('div');wrap.className='svg-diagram-wrap';var d=svg.style.display||'block',w=svg.style.width||svg.getAttribute('width')||'100%',mw=svg.style.maxWidth||'',m=svg.style.margin||'';wrap.style.cssText='position:relative;display:'+d+';width:'+w+';'+(mw?'max-width:'+mw+';':'')+(m?'margin:'+m+';':'')+'line-height:0';svg.style.display='block';svg.style.width='100%';svg.style.maxWidth='';svg.style.margin='0';svg.parentNode.insertBefore(wrap,svg);wrap.appendChild(svg);var bar=document.createElement('div');bar.style.cssText='text-align:right;padding-top:6px';var btn=document.createElement('button');btn.className='svg-save-btn',btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span style="vertical-align:middle;font-size:12px">保存图片</span>',btn.style.cssText='background:none;border:1px solid transparent;border-radius:4px;padding:2px 6px;cursor:pointer;color:#b0b7c3;font-family:system-ui,sans-serif;line-height:1';bar.appendChild(btn);wrap.appendChild(bar);btn.onmouseenter=function(){btn.style.color='#6366f1';btn.style.borderColor='#e5e7eb'};btn.onmouseleave=function(){btn.style.color='#b0b7c3';btn.style.borderColor='transparent'};btn.onclick=function(e){e.stopPropagation();var orig=btn.innerHTML;btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span style="vertical-align:middle;font-size:12px">导出中...</span>';btn.disabled=!0;svgToPng(svg,function(){btn.innerHTML=orig;btn.disabled=!1})}}function initSvgButtons(){document.querySelectorAll('.content svg').forEach(function(svg){addSaveBtn(svg)})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initSvgButtons);else initSvgButtons()}()</script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-70Q8REKE17', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-70Q8REKE17" async></script></body>
+</html>
