@@ -1,10 +1,10 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>Ai-Zatan - series - whitefirer[PG]</title>
+        <title>AI 杂谈 - series - whitefirer[PG]</title>
         <link>https://whitefirer.org/series/ai-zatan/</link>
-        <description>Ai-Zatan - series - whitefirer[PG]</description>
+        <description>AI 杂谈 - series - whitefirer[PG]</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sun, 10 May 2026 20:11:28 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/series/ai-zatan/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><atom:link href="https://whitefirer.org/series/ai-zatan/" rel="self" type="application/rss+xml" /><item>
     <title>AI 能做事，不能扛事</title>
     <link>https://whitefirer.org/posts/2026/05/10/ai-trust-meaning/</link>
     <pubDate>Sun, 10 May 2026 20:11:28 &#43;0800</pubDate>

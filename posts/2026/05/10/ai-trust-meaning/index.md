@@ -161,5 +161,4 @@ pizza team 能做出来。但做出来之后的事，比如谁签字、谁兜底
 
 ---
 
-*本文是「AI杂谈」系列之三。上一篇：[AI 不会问第一个问题](/posts/ai-wont-ask-first-question/) —— 自驱力与创新，为什么人的护城河不在"做"而在"问"。更早一篇：[也谈谈 AI 编程](/posts/2026/04/13/ai-programming-thoughts/) —— AI 的三大局限与三条行动建议。*
-
+---
