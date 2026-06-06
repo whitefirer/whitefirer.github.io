@@ -4,15 +4,15 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <title>Claude Code Hooks 指南：自动化你的 AI 编程工作流 - whitefirer[PG]</title><meta name="Description" content="全面介绍 Claude Code 的 Hooks 系统：PreToolUse、PostToolUse、Notification 等九种 Hook 的用法与实战，包含飞书通知、防呆操作、上下文注入等秒用场景。"><meta property="og:url" content="https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/">
+        <title>Claude Code Hooks 指南：事件驱动的 AI 编程自动化 - whitefirer[PG]</title><meta name="Description" content="全面介绍 Claude Code 的 Hooks 系统：PreToolUse、PostToolUse、Notification 等九种 Hook 的用法与实战，包含本地桌面通知、飞书推送、危险命令拦截、上下文注入等十一个秒用场景。"><meta property="og:url" content="https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/">
   <meta property="og:site_name" content="whitefirer[PG]">
-  <meta property="og:title" content="Claude Code Hooks 指南：自动化你的 AI 编程工作流">
-  <meta property="og:description" content="全面介绍 Claude Code 的 Hooks 系统：PreToolUse、PostToolUse、Notification 等九种 Hook 的用法与实战，包含飞书通知、防呆操作、上下文注入等秒用场景。">
+  <meta property="og:title" content="Claude Code Hooks 指南：事件驱动的 AI 编程自动化">
+  <meta property="og:description" content="全面介绍 Claude Code 的 Hooks 系统：PreToolUse、PostToolUse、Notification 等九种 Hook 的用法与实战，包含本地桌面通知、飞书推送、危险命令拦截、上下文注入等十一个秒用场景。">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
     <meta property="article:published_time" content="2026-06-02T03:50:00+08:00">
-    <meta property="article:modified_time" content="2026-06-02T19:34:55+08:00">
+    <meta property="article:modified_time" content="2026-06-06T21:10:19+08:00">
     <meta property="article:tag" content="技术">
     <meta property="article:tag" content="Ai">
     <meta property="article:tag" content="Claude Code">
@@ -21,8 +21,8 @@
       <meta property="og:see_also" content="https://whitefirer.org/posts/2026/04/28/claude-code-plugins-guide/">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Claude Code Hooks 指南：自动化你的 AI 编程工作流">
-  <meta name="twitter:description" content="全面介绍 Claude Code 的 Hooks 系统：PreToolUse、PostToolUse、Notification 等九种 Hook 的用法与实战，包含飞书通知、防呆操作、上下文注入等秒用场景。">
+  <meta name="twitter:title" content="Claude Code Hooks 指南：事件驱动的 AI 编程自动化">
+  <meta name="twitter:description" content="全面介绍 Claude Code 的 Hooks 系统：PreToolUse、PostToolUse、Notification 等九种 Hook 的用法与实战，包含本地桌面通知、飞书推送、危险命令拦截、上下文注入等十一个秒用场景。">
 <meta name="application-name" content="whitefirer[PG]">
 <meta name="apple-mobile-web-app-title" content="whitefirer[PG]"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -32,18 +32,18 @@
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
-        "headline": "Claude Code Hooks 指南：自动化你的 AI 编程工作流",
+        "headline": "Claude Code Hooks 指南：事件驱动的 AI 编程自动化",
         "inLanguage": "zh-CN",
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/whitefirer.org\/posts\/2026\/06\/02\/claude-code-hooks-guide\/"
-        },"genre": "posts","keywords": "tech, ai, claude code, hooks, automation","wordcount":  5453 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2026\/06\/02\/claude-code-hooks-guide\/","datePublished": "2026-06-02T03:50:00+08:00","dateModified": "2026-06-02T19:34:55+08:00","license": "2022©️whitefirer","publisher": {
+        },"genre": "posts","keywords": "tech, ai, claude code, hooks, automation","wordcount":  6448 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/06\/02\/claude-code-hooks-guide\/","datePublished": "2026-06-02T03:50:00+08:00","dateModified": "2026-06-06T21:10:19+08:00","license": "2022©️whitefirer","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
                 "name": "whitefirer"
-            },"description": "全面介绍 Claude Code 的 Hooks 系统：PreToolUse、PostToolUse、Notification 等九种 Hook 的用法与实战，包含飞书通知、防呆操作、上下文注入等秒用场景。"
+            },"description": "全面介绍 Claude Code 的 Hooks 系统：PreToolUse、PostToolUse、Notification 等九种 Hook 的用法与实战，包含本地桌面通知、飞书推送、危险命令拦截、上下文注入等十一个秒用场景。"
     }
     </script></head>
     <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
@@ -139,12 +139,12 @@
             <h2 class="toc-title">目录</h2>
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><div style="display:flex;align-items:baseline;gap:0">
-        <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">Claude Code Hooks 指南：自动化你的 AI 编程工作流</h1></div><h2 class="single-subtitle">九种 Hook 类型 &#43; 十个秒用场景，把 Claude Code 从工具变成搭档</h2><div class="post-series">
+        <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">Claude Code Hooks 指南：事件驱动的 AI 编程自动化</h1></div><h2 class="single-subtitle">九种 Hook 类型 &#43; 十一个秒用场景，把 Claude Code 从工具变成搭档</h2><div class="post-series">
                 <a href="/series/claude-code-deep-dive/"><i class="fas fa-layer-group fa-fw" aria-hidden="true"></i>AI 编程·Claude Code</a>
             </div><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-06-02">2026-06-02</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 5453 字&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 11 分钟&nbsp;</div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-06-02">2026-06-02</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 6448 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 13 分钟&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
                     <span>目录</span>
@@ -167,18 +167,19 @@
         <li><a href="#precompact--上下文压缩前">PreCompact — 上下文压缩前</a></li>
       </ul>
     </li>
-    <li><a href="#十个秒用场景">十个秒用场景</a>
+    <li><a href="#十一个秒用场景">十一个秒用场景</a>
       <ul>
         <li><a href="#场景一自动格式化--刷新">场景一：自动格式化 + 刷新</a></li>
         <li><a href="#场景二危险命令拦截">场景二：危险命令拦截</a></li>
-        <li><a href="#场景三长时间任务飞书通知">场景三：长时间任务飞书通知</a></li>
-        <li><a href="#场景四空闲超时飞书通知">场景四：空闲超时飞书通知</a></li>
-        <li><a href="#场景五自动注入状态快照">场景五：自动注入状态快照</a></li>
-        <li><a href="#场景六precompact-防上下文丢失">场景六：PreCompact 防上下文丢失</a></li>
-        <li><a href="#场景七远程审批推送">场景七：远程审批推送</a></li>
-        <li><a href="#场景八敏感文件保护">场景八：敏感文件保护</a></li>
-        <li><a href="#场景九命令审计日志">场景九：命令审计日志</a></li>
-        <li><a href="#场景十stop-强制验证不跑通不下班">场景十：Stop 强制验证——&ldquo;不跑通不下班&rdquo;</a></li>
+        <li><a href="#场景三本地桌面通知--权限请求带上命令内容">场景三：本地桌面通知 — 权限请求带上命令内容</a></li>
+        <li><a href="#场景四长时间任务飞书通知">场景四：长时间任务飞书通知</a></li>
+        <li><a href="#场景五空闲超时飞书通知">场景五：空闲超时飞书通知</a></li>
+        <li><a href="#场景六自动注入状态快照">场景六：自动注入状态快照</a></li>
+        <li><a href="#场景七precompact-防上下文丢失">场景七：PreCompact 防上下文丢失</a></li>
+        <li><a href="#场景八远程审批推送">场景八：远程审批推送</a></li>
+        <li><a href="#场景九敏感文件保护">场景九：敏感文件保护</a></li>
+        <li><a href="#场景十命令审计日志">场景十：命令审计日志</a></li>
+        <li><a href="#场景十一stop-强制验证不跑通不下班">场景十一：Stop 强制验证——&ldquo;不跑通不下班&rdquo;</a></li>
       </ul>
     </li>
     <li><a href="#插件hooks-的打包形态">插件：Hooks 的打包形态</a></li>
@@ -188,14 +189,14 @@
   </ul>
 </nav></div>
             </div><div class="content" id="content"><blockquote>
-<p>九种 Hook 类型 + 十个秒用场景，把 Claude Code 从工具变成搭档。</p>
+<p>九种 Hook 类型 + 十一个秒用场景，把 Claude Code 从工具变成搭档。</p>
 </blockquote>
 <hr>
 <h2 id="前言">前言</h2>
 <p>之前写了<a href="/posts/claude-code-plugins-guide/" rel="">《Claude Code 插件完全指南》</a>，介绍四个插件和一个 MCP 服务。那是&quot;用什么&quot;的问题。</p>
 <p>本文解决&quot;怎么自动化&quot;的问题：<strong>Hooks 系统</strong>。</p>
 <p>Hooks 是 Claude Code 的事件驱动脚本机制——在工具调用、会话启停、权限请求等节点执行自定义逻辑。如果你用过 Git hooks 或 GitHub Actions，概念完全一样。</p>
-<p>读完你会知道：九种 Hook 分别干什么，怎么配，以及十个让你想立刻动手的妙用场景。</p>
+<p>读完你会知道：九种 Hook 分别干什么，怎么配，以及十一个让你想立刻动手的妙用场景。</p>
 <hr>
 <h2 id="基础hook-怎么配">基础：Hook 怎么配</h2>
 <p>所有 Hook 配置在 <code>.claude/settings.json</code>（项目级）或 <code>~/.claude/settings.json</code>（用户级）的 <code>hooks</code> 字段下。</p>
@@ -355,7 +356,7 @@
 </div>
 </div><p>可以用来实现自定义的权限策略：白名单自动放行、危险操作二次确认。</p>
 <h3 id="notification--收到通知时">Notification — 收到通知时</h3>
-<p>外部系统可以通过通知机制向 Claude Code 发送消息。配合 cron 或 CI webhook 使用效果最佳。</p>
+<p>两种触发方式。一是 <code>permission_prompt</code> matcher：Claude Code 弹出权限对话框前触发，JSON 携带 <code>tool_name</code>、<code>tool_input</code>、<code>session_id</code>、<code>cwd</code>——你可以在权限请求到达屏幕之前先拿到上下文。二是外部系统推送：cron 或 CI webhook 通过通知机制向 Claude Code 发送消息。场景三会用第一种方式做本地桌面弹窗，场景七用第二种做远程审批。</p>
 <h3 id="stop--响应结束时">Stop — 响应结束时</h3>
 <p>Claude 回复完毕、进入等待状态时触发。适合做清理、保存状态、更新状态栏。</p>
 <h3 id="subagentstop--子代理结束时">SubagentStop — 子代理结束时</h3>
@@ -363,7 +364,7 @@
 <h3 id="precompact--上下文压缩前">PreCompact — 上下文压缩前</h3>
 <p>上下文接近窗口上限、触发自动压缩前执行。可以在这里抢救关键信息，防止压缩丢失上下文。</p>
 <hr>
-<h2 id="十个秒用场景">十个秒用场景</h2>
+<h2 id="十一个秒用场景">十一个秒用场景</h2>
 <h3 id="场景一自动格式化--刷新">场景一：自动格式化 + 刷新</h3>
 <p>写完代码 → 自动格式化 → 自动刷新浏览器。一步不落。</p>
 <div class="highlight"><div class="chroma">
@@ -466,7 +467,165 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>不影响正常工作流，只在真正危险时亮红灯。</p>
-<h3 id="场景三长时间任务飞书通知">场景三：长时间任务飞书通知</h3>
+<h3 id="场景三本地桌面通知--权限请求带上命令内容">场景三：本地桌面通知 — 权限请求带上命令内容</h3>
+<p>前面两个场景分别管格式化和安全，都是&quot;拦住 Claude&quot;的逻辑。这个场景反过来——让 Claude 找你的时候，你能看到它在要什么。</p>
+<p>飞书推送（场景四、五、八）适合远程场景，但多数时候你就坐在电脑前。Linux 桌面栈（<code>notify-send</code> + <code>paplay</code>）零依赖、零延迟，是最直接的落地方式。</p>
+<p>配两条 Hook：Notification 拦截权限请求，Stop 响应任务完成。一条脚本两件事，按 <code>hook_event_name</code> 分派：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="ch">#!/usr/bin/env python3</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># notify-hook — Notification (permission_prompt) + Stop</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">subprocess</span><span class="o">,</span> <span class="nn">sys</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">SOUND_DIR</span> <span class="o">=</span> <span class="s2">&#34;/usr/share/sounds/freedesktop/stereo&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">notify_send</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&#34;notify-send&#34;</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">body</span><span class="p">],</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">paplay</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="s2">&#34;paplay&#34;</span><span class="p">,</span> <span class="n">path</span><span class="p">],</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">DEVNULL</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">ellipsis</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">80</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">s</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">n</span> <span class="k">else</span> <span class="n">s</span><span class="p">[:</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&#34;...&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl"><span class="n">event</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;hook_event_name&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="n">event</span> <span class="o">==</span> <span class="s2">&#34;Notification&#34;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">tool</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;tool_name&#34;</span><span class="p">,</span> <span class="s2">&#34;?&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">inp</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;tool_input&#34;</span><span class="p">,</span> <span class="p">{})</span>
+</span></span><span class="line"><span class="cl">    <span class="n">detail</span> <span class="o">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">tool</span> <span class="o">==</span> <span class="s2">&#34;Bash&#34;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">detail</span> <span class="o">=</span> <span class="n">ellipsis</span><span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;command&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">),</span> <span class="mi">100</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">elif</span> <span class="n">tool</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&#34;Write&#34;</span><span class="p">,</span> <span class="s2">&#34;Edit&#34;</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="n">detail</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;file_path&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="k">elif</span> <span class="n">tool</span> <span class="o">==</span> <span class="s2">&#34;WebSearch&#34;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">detail</span> <span class="o">=</span> <span class="n">ellipsis</span><span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;query&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">),</span> <span class="mi">100</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">notify_send</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;Claude Code 需要授权 — </span><span class="si">{</span><span class="n">tool</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">,</span> <span class="n">detail</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">paplay</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">SOUND_DIR</span><span class="si">}</span><span class="s2">/dialog-information.oga&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">elif</span> <span class="n">event</span> <span class="o">==</span> <span class="s2">&#34;Stop&#34;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ts</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;timestamp&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">time_str</span> <span class="o">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">ts</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">t</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&#34;Z&#34;</span><span class="p">,</span> <span class="s2">&#34;+00:00&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">            <span class="n">time_str</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&#34;%H:%M:%S&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">            <span class="k">pass</span>
+</span></span><span class="line"><span class="cl">    <span class="n">notify_send</span><span class="p">(</span><span class="s2">&#34;Claude Code 任务完成&#34;</span><span class="p">,</span> <span class="n">time_str</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">paplay</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">SOUND_DIR</span><span class="si">}</span><span class="s2">/complete.oga&#34;</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>配置 hooks：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;Notification&#34;</span><span class="p">:</span> <span class="p">[{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;matcher&#34;</span><span class="p">:</span> <span class="s2">&#34;permission_prompt&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">[{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;command&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;python3 /path/to/notify-hook&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;async&#34;</span><span class="p">:</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}]</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}],</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;Stop&#34;</span><span class="p">:</span> <span class="p">[{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;matcher&#34;</span><span class="p">:</span> <span class="s2">&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">[{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;command&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;python3 /path/to/notify-hook&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;async&#34;</span><span class="p">:</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}]</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>数据流很简单——Hook 负责把 JSON 从 Claude Code 管道丢给脚本，脚本按事件类型拆两路，分别拼消息、播音效：</p>
+<div class="mermaid" id="id-1">flowchart LR
+    A[Claude Code&lt;br/&gt;Hook 触发] --&gt;|stdin JSON| B[notify-hook]
+    B --&gt;|hook_event_name| C{事件分派}
+    C --&gt;|Notification| D[取 tool_name&lt;br/&gt;tool_input]
+    C --&gt;|Stop| E[取 timestamp]
+    D --&gt;|拼消息| F[&#34;notify-send&lt;br/&gt;需要授权 — Bash: ...&#34;]
+    E --&gt;|拼消息| G[&#34;notify-send&lt;br/&gt;任务完成 · 20:30:00&#34;]
+    F --&gt; H[paplay 提示音]
+    G --&gt; I[paplay 完成音]</div>
+<script>window.config=window.config||{};window.config.data=window.config.data||{};window.config.data['id-1']=document.getElementById('id-1').textContent.trim();</script>
+<p>核心只有一步——<code>json.loads(sys.stdin.read())</code> 拿到完整上下文，然后按 <code>tool_name</code> 从 <code>tool_input</code> 里取对应字段拼消息。这和场景二取 <code>command</code>、场景一取 <code>file_path</code> 的模式完全一致。Notification Hook 的 JSON payload 结构跟 PreToolUse 相同，学会取一次，所有 Hook 的通知识别都照这个模式来。</p>
+<p>需要远程推送时再看场景四（飞书）。坐电脑前，本地弹窗够用。</p>
+<h3 id="场景四长时间任务飞书通知">场景四：长时间任务飞书通知</h3>
 <p>Bash 跑了超过 5 分钟 → 飞书机器人推消息到你手机上。不需要盯着终端。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -529,7 +688,7 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>关键点：daemon 线程 + timeout=5，主进程立刻退出，HTTP 调用不阻塞 Claude Code。</p>
-<h3 id="场景四空闲超时飞书通知">场景四：空闲超时飞书通知</h3>
+<h3 id="场景五空闲超时飞书通知">场景五：空闲超时飞书通知</h3>
 <p>有时候不是你盯着 Claude Code 等它，而是它在等你——你切出去干别的，忘了回来。空闲超过 5 分钟，飞书推你。</p>
 <p>这个场景需要 Stop Hook + 后台检测器配合：Stop 记录最后活跃时间，同时启动一个延迟检查器，5 分钟后如果时间戳没更新（没有新的 Stop 事件），说明你离开了。</p>
 <div class="highlight"><div class="chroma">
@@ -623,8 +782,8 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>核心技巧：<code>start_new_session=True</code> 让子进程脱离 Stop hook 的生命周期独立运行。每次 Claude 回复完毕触发 Stop，覆盖时间戳并重新启动一个检测器。如果连续 5 分钟没有新回复，上一次的检测器就会发通知。</p>
-<p>和场景三配合：场景三通知你&quot;活干完了&quot;，场景四通知你&quot;你人跑了&quot;。</p>
-<h3 id="场景五自动注入状态快照">场景五：自动注入状态快照</h3>
+<p>和场景四配合：场景四通知你&quot;活干完了&quot;，场景五通知你&quot;你人跑了&quot;。</p>
+<h3 id="场景六自动注入状态快照">场景六：自动注入状态快照</h3>
 <p>每次发消息，Claude 自动看到当前 git 状态和最近操作日志。不需要你手动 <code>git status</code>。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -687,7 +846,7 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>效果：Claude 始终知道工程的 git 状态，回答更准确，不需要你重复描述上下文。</p>
-<h3 id="场景六precompact-防上下文丢失">场景六：PreCompact 防上下文丢失</h3>
+<h3 id="场景七precompact-防上下文丢失">场景七：PreCompact 防上下文丢失</h3>
 <p>上下文压缩是 Claude Code 的自动机制，但可能丢掉关键任务信息。PreCompact Hook 在压缩前把当前任务状态写到一个恢复文件，压缩后 Claude 可以通过它找回方向。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -730,10 +889,10 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>配合 SessionStart Hook 读取这个备份文件，可以实现跨压缩的任务连续性。</p>
-<h3 id="场景七远程审批推送">场景七：远程审批推送</h3>
+<h3 id="场景八远程审批推送">场景八：远程审批推送</h3>
 <p>Hooks 的长链玩法：不只通知，还能让你在手机上直接审批 Claude Code 的权限请求。</p>
 <p>原理不复杂——Hook 只做第一步拦截，后面交给一个服务端处理全链路。</p>
-<div class="mermaid" id="id-1">sequenceDiagram
+<div class="mermaid" id="id-2">sequenceDiagram
     participant H as PermissionRequest Hook
     participant S as 服务端
     participant F as 飞书/App
@@ -748,9 +907,9 @@
     F-&gt;&gt;S: 回调审批结果
     S-&gt;&gt;P: 写入 &#34;1&#34; 或 &#34;3&#34;
     P-&gt;&gt;C: 按键注入，对话框关闭</div>
-<script>window.config=window.config||{};window.config.data=window.config.data||{};window.config.data['id-1']=document.getElementById('id-1').textContent.trim();</script>
+<script>window.config=window.config||{};window.config.data=window.config.data||{};window.config.data['id-2']=document.getElementById('id-2').textContent.trim();</script>
 <p>换成流程图视角，数据流向是这样的：</p>
-<div class="mermaid" id="id-2">flowchart TD
+<div class="mermaid" id="id-3">flowchart TD
     A[PermissionRequest Hook] --&gt;|写文件 / 调接口| B[&#34;服务端 Python/Go/Node&#34;]
     B --&gt;|推送审批卡片| C[飞书交互卡片]
     B --&gt;|推送通知| D[&#34;自建 App WebSocket&#34;]
@@ -759,7 +918,7 @@
     E --&gt;|回调审批结果| B
     B --&gt;|注入按键| F[PTY]
     F --&gt;|按键 1 批准 3 拒绝| G[&#34;Claude Code 继续 / 中断&#34;]</div>
-<script>window.config=window.config||{};window.config.data=window.config.data||{};window.config.data['id-2']=document.getElementById('id-2').textContent.trim();</script>
+<script>window.config=window.config||{};window.config.data=window.config.data||{};window.config.data['id-3']=document.getElementById('id-3').textContent.trim();</script>
 <p>文字版（ASCII）：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -844,8 +1003,8 @@
 </div>
 </div><p>Hook 退出了，但 Claude Code 原生权限弹窗还在等。这时候服务端已经拿到请求数据，推送到了你的手机上——飞书卡片也好，自建 App 的通知栏也好。你点一下按钮，服务端收到回调，通过 PTY 向终端会话注入一个 <code>1</code>（批准）或 <code>3</code>（拒绝），对话框关闭，Claude Code 继续干活。</p>
 <p>飞书方案适合已有飞书工作流的团队，零客户端成本。自建 App 方案更轻量，WebSocket 长连接延迟更低。无论哪种，Hooks 做的都是第一环——<strong>把权限请求从终端里拽出来，丢到你能触达的地方</strong>。</p>
-<p>这模式不止用于权限审批。PreToolUse 拦截危险命令可以推，PostToolUse 长时间任务可以推，Stop 空闲提醒已经在场景四推了。把推送逻辑统一交给服务端，每个 Hook 只负责&quot;触发事件&quot;这一件事。</p>
-<h3 id="场景八敏感文件保护">场景八：敏感文件保护</h3>
+<p>这模式不止用于权限审批。PreToolUse 拦截危险命令可以推，PostToolUse 长时间任务可以推，Stop 空闲提醒已经在场景五推了。把推送逻辑统一交给服务端，每个 Hook 只负责&quot;触发事件&quot;这一件事。</p>
+<h3 id="场景九敏感文件保护">场景九：敏感文件保护</h3>
 <p>场景二拦截的是危险命令。但 Claude 还有一个能力是直接写文件——如果它误改了 <code>.env</code>、删了 SSH 密钥，命令拦截管不到。PreToolUse 配合 <code>Write|Edit</code> matcher 可以补上这个缺口。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -904,7 +1063,7 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>和场景二一起配，Bash + Write/Edit 两条 PreToolUse 规则，一个管命令一个管文件，安全兜底就完整了。</p>
-<h3 id="场景九命令审计日志">场景九：命令审计日志</h3>
+<h3 id="场景十命令审计日志">场景十：命令审计日志</h3>
 <p>PostToolUse 在每次 Bash 执行后追加一条记录到审计日志。出问题时复现、排查误操作、分析 Claude 的命令习惯，全靠这条日志。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -955,7 +1114,7 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>跑一阵子后 <code>cat ~/.claude/bash-audit.log</code> 就能看到 Claude 都执行了什么、哪些慢、哪些容易失败。安全审计 + 性能诊断两用。</p>
-<h3 id="场景十stop-强制验证不跑通不下班">场景十：Stop 强制验证——&ldquo;不跑通不下班&rdquo;</h3>
+<h3 id="场景十一stop-强制验证不跑通不下班">场景十一：Stop 强制验证——&ldquo;不跑通不下班&rdquo;</h3>
 <p>前面的场景是&quot;做完了通知你&quot;和&quot;你忘了回来提醒你&quot;。这个场景反过来——Claude 想结束响应？先自检：代码改了吗？测试跑了吗？构建通过了吗？</p>
 <p>用 Stop hook 的 <code>prompt</code> 类型，让 LLM 自己审查本轮对话：</p>
 <div class="highlight"><div class="chroma">
@@ -982,7 +1141,7 @@
 <p>三个检查项可以按项目定制。如果是 Hugo 博客项目，检查改成&quot;文章能不能正常渲染&quot;；如果是 API 服务，改成&quot;接口能不能返回 200&quot;。本质是把&quot;完成标准&quot;写进规则里，让 Claude 自己对照检查。</p>
 <hr>
 <h2 id="插件hooks-的打包形态">插件：Hooks 的打包形态</h2>
-<p>上面十个场景都是自定义 Hook 脚本。但如果你留意过自己装的插件，会发现很多插件本质上就是打包好的 Hooks。</p>
+<p>上面十一个场景都是自定义 Hook 脚本。但如果你留意过自己装的插件，会发现很多插件本质上就是打包好的 Hooks。</p>
 <p>以你环境里实际跑着的为例：</p>
 <p><strong>caveman 插件</strong> — 两个 Hook 驱动：</p>
 <ul>
@@ -999,21 +1158,22 @@
 <li><code>UserPromptSubmit</code> → 检测用户意图，自动匹配对应 Skill 并加载</li>
 <li><code>Stop</code> → 完成检查点验证，确保开发流程不跳步</li>
 </ul>
-<p>你会发现这些插件做的事情和前面十个场景本质上一样——Hook 拦截事件，注入逻辑。区别只在于插件把这些 Hook + Skills + 提示词打包好，你可以开箱即用；而自定义 Hook 脚本是给你最灵活的底层能力，配一次想怎么玩都行。</p>
+<p>你会发现这些插件做的事情和前面十一个场景本质上一样——Hook 拦截事件，注入逻辑。区别只在于插件把这些 Hook + Skills + 提示词打包好，你可以开箱即用；而自定义 Hook 脚本是给你最灵活的底层能力，配一次想怎么玩都行。</p>
 <p>选插件还是自己写？简单法则：<strong>重复出现的通用流程 → 找插件。一次性特定需求 → 自己写 Hook。两者不互斥——插件管大流程，自定义 Hook 补边角。</strong></p>
 <hr>
 <h2 id="组合拳推荐配置">组合拳：推荐配置</h2>
-<p>从十种场景里挑最值的六条，这是我的推荐：</p>
+<p>从十一种场景里挑最值的七条，这是我的推荐：</p>
 <ol>
-<li><strong>PreToolUse</strong> — 危险命令拦截 + 敏感文件保护（场景二 + 八，合并一条规则）</li>
-<li><strong>PostToolUse</strong> — 自动格式化 + 审计日志（场景一 + 九）</li>
-<li><strong>PostToolUse</strong> — 长任务飞书通知（场景三，改 Slack/钉钉同理）</li>
-<li><strong>Stop</strong> — 空闲超时飞书通知（场景四）</li>
-<li><strong>UserPromptSubmit</strong> — git 状态注入（场景五）</li>
-<li><strong>Stop</strong> — 强制验证（场景十，宽松起步）</li>
+<li><strong>PreToolUse</strong> — 危险命令拦截 + 敏感文件保护（场景二 + 九，合并一条规则）</li>
+<li><strong>PostToolUse</strong> — 自动格式化 + 审计日志（场景一 + 十）</li>
+<li><strong>Notification + Stop</strong> — 本地桌面通知（场景三，Linux 桌面首选，不需要飞书等外部依赖）</li>
+<li><strong>PostToolUse</strong> — 长任务飞书通知（场景四，改 Slack/钉钉同理）</li>
+<li><strong>Stop</strong> — 空闲超时飞书通知（场景五）</li>
+<li><strong>UserPromptSubmit</strong> — git 状态注入（场景六）</li>
+<li><strong>Stop</strong> — 强制验证（场景十一，宽松起步）</li>
 </ol>
-<p>远程审批（场景七）需要额外服务端，PreCompact（场景六）按需启用，先不放进基础配置。</p>
-<p>全部配在 <code>~/.claude/settings.json</code>，一次配置，所有项目生效。场景十的 Stop 强制验证可以先从宽松规则开始——只检查&quot;测试跑没跑&quot;，不检查通过率——等 Claude 习惯了再收紧。</p>
+<p>远程审批（场景八）需要额外服务端，PreCompact（场景七）按需启用，先不放进基础配置。</p>
+<p>全部配在 <code>~/.claude/settings.json</code>，一次配置，所有项目生效。场景十一的 Stop 强制验证可以先从宽松规则开始——只检查&quot;测试跑没跑&quot;，不检查通过率——等 Claude 习惯了再收紧。</p>
 <hr>
 <h2 id="注意事项">注意事项</h2>
 <p>Hooks 脚本在 Claude Code 进程内同步执行（除非设置 <code>parallel: true</code>）。脚本出错不会影响 Claude Code 运行——exit 非零只是丢弃本次事件。但脚本卡死是可能的，务必加 timeout。</p>
@@ -1030,14 +1190,14 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2026-06-02</span>
+                <span>更新于 2026-06-06</span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
                             <a class="link-to-markdown" href="/posts/2026/06/02/claude-code-hooks-guide/index.md" target="_blank">阅读原始文档</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/" data-title="Claude Code Hooks 指南：自动化你的 AI 编程工作流" data-hashtags="tech,ai,claude code,hooks,automation"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/" data-hashtag="tech"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/" data-title="Claude Code Hooks 指南：自动化你的 AI 编程工作流"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/" data-title="Claude Code Hooks 指南：自动化你的 AI 编程工作流"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/" data-title="Claude Code Hooks 指南：自动化你的 AI 编程工作流"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/" data-title="Claude Code Hooks 指南：事件驱动的 AI 编程自动化" data-hashtags="tech,ai,claude code,hooks,automation"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/" data-hashtag="tech"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/" data-title="Claude Code Hooks 指南：事件驱动的 AI 编程自动化"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/" data-title="Claude Code Hooks 指南：事件驱动的 AI 编程自动化"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/" data-title="Claude Code Hooks 指南：事件驱动的 AI 编程自动化"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>

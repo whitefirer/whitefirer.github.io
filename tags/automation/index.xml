@@ -5,12 +5,12 @@
         <description>Automation - 标签 - whitefirer[PG]</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
             <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Tue, 02 Jun 2026 03:50:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/automation/" rel="self" type="application/rss+xml" /><item>
-    <title>Claude Code Hooks 指南：自动化你的 AI 编程工作流</title>
+    <title>Claude Code Hooks 指南：事件驱动的 AI 编程自动化</title>
     <link>https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/</link>
     <pubDate>Tue, 02 Jun 2026 03:50:00 &#43;0800</pubDate>
     <author>whitefirer</author>
     <guid>https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/</guid>
-    <description><![CDATA[九种 Hook 类型 + 十个秒用场景，把 Claude Code 从工具变成搭档。 前言 之前写了《Claude Code 插件完全指南》，介绍四个插件和一个 MCP 服务。那是&quot;用什么]]></description>
+    <description><![CDATA[九种 Hook 类型 + 十一个秒用场景，把 Claude Code 从工具变成搭档。 前言 之前写了《Claude Code 插件完全指南》，介绍四个插件和一个 MCP 服务。那是&quot;用什]]></description>
 </item>
 </channel>
 </rss>
