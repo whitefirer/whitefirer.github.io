@@ -1,4 +1,4 @@
-# Claude Code Hooks 指南：事件驱动的 AI 编程自动化
+# Claude Code Hooks 完全指南：事件驱动的 AI 编程自动化
 
 
 > 九种 Hook 类型 + 十一个秒用场景，把 Claude Code 从工具变成搭档。
