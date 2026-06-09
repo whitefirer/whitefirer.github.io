@@ -12,12 +12,13 @@
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
     <meta property="article:published_time" content="2026-06-02T03:50:00+08:00">
-    <meta property="article:modified_time" content="2026-06-06T21:34:32+08:00">
+    <meta property="article:modified_time" content="2026-06-09T23:48:26+08:00">
     <meta property="article:tag" content="技术">
     <meta property="article:tag" content="Ai">
     <meta property="article:tag" content="Claude Code">
     <meta property="article:tag" content="Hooks">
     <meta property="article:tag" content="Automation">
+      <meta property="og:see_also" content="https://whitefirer.org/posts/2026/06/09/claude-code-skills-guide/">
       <meta property="og:see_also" content="https://whitefirer.org/posts/2026/04/28/claude-code-plugins-guide/">
 
   <meta name="twitter:card" content="summary">
@@ -26,7 +27,7 @@
 <meta name="application-name" content="whitefirer[PG]">
 <meta name="apple-mobile-web-app-title" content="whitefirer[PG]"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/" /><link rel="prev" href="https://whitefirer.org/posts/2026/05/10/ai-trust-meaning/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/" /><link rel="prev" href="https://whitefirer.org/posts/2026/05/10/ai-trust-meaning/" /><link rel="next" href="https://whitefirer.org/posts/2026/06/09/claude-code-skills-guide/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
     {
@@ -37,8 +38,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/whitefirer.org\/posts\/2026\/06\/02\/claude-code-hooks-guide\/"
-        },"genre": "posts","keywords": "tech, ai, claude code, hooks, automation","wordcount":  6448 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2026\/06\/02\/claude-code-hooks-guide\/","datePublished": "2026-06-02T03:50:00+08:00","dateModified": "2026-06-06T21:34:32+08:00","license": "2022©️whitefirer","publisher": {
+        },"genre": "posts","keywords": "tech, ai, claude code, hooks, automation","wordcount":  6454 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/06\/02\/claude-code-hooks-guide\/","datePublished": "2026-06-02T03:50:00+08:00","dateModified": "2026-06-09T23:48:26+08:00","license": "2022©️whitefirer","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -143,7 +144,7 @@
                 <a href="/series/claude-code-deep-dive/"><i class="fas fa-layer-group fa-fw" aria-hidden="true"></i>AI 编程·Claude Code</a>
             </div><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-06-02">2026-06-02</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 6448 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-06-02">2026-06-02</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 6454 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 13 分钟&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
@@ -193,7 +194,7 @@
 </blockquote>
 <hr>
 <h2 id="前言">前言</h2>
-<p>之前写了<a href="/posts/claude-code-plugins-guide/" rel="">《Claude Code 插件完全指南》</a>，介绍四个插件和一个 MCP 服务。那是&quot;用什么&quot;的问题。</p>
+<p>之前写了<a href="/posts/2026/04/28/claude-code-plugins-guide/" rel="">《Claude Code 插件完全指南》</a>，介绍四个插件和一个 MCP 服务。那是&quot;用什么&quot;的问题。</p>
 <p>本文解决&quot;怎么自动化&quot;的问题：<strong>Hooks 系统</strong>。</p>
 <p>Hooks 是 Claude Code 的事件驱动脚本机制——在工具调用、会话启停、权限请求等节点执行自定义逻辑。如果你用过 Git hooks 或 GitHub Actions，概念完全一样。</p>
 <p>读完你会知道：九种 Hook 分别干什么，怎么配，以及十一个让你想立刻动手的妙用场景。</p>
@@ -1154,7 +1155,7 @@
 </ul>
 <p><strong>superpowers 插件</strong> — 多 Hook 工作流编排：</p>
 <ul>
-<li><code>SessionStart</code> → 加载 TDD、debugging、brainstorming 等开发方法论的提示词</li>
+<li><code>SessionStart</code> → 把 Skill 的元信息（名称和描述）注入上下文，让 Agent 知道有哪些可用。完整 Skill 内容在 <code>UserPromptSubmit</code> 匹配到意图时才加载</li>
 <li><code>UserPromptSubmit</code> → 检测用户意图，自动匹配对应 Skill 并加载</li>
 <li><code>Stop</code> → 完成检查点验证，确保开发流程不跳步</li>
 </ul>
@@ -1185,12 +1186,12 @@
 <p>每个 Hook 脚本不超过 30 行代码，配一次，受益终身。试过飞书通知之后，你就回不去了。</p>
 <hr>
 <div class="post-series-nav">
-                <em>本文是「<a href="/series/claude-code-deep-dive/">AI 编程·Claude Code</a>」系列第 2 篇，共 2 篇。上一篇：<a href="/posts/2026/04/28/claude-code-plugins-guide/">Claude Code 插件完全指南：省钱、省 Token、提升开发效率</a>。</em>
+                <em>本文是「<a href="/series/claude-code-deep-dive/">AI 编程·Claude Code</a>」系列第 2 篇，共 3 篇。上一篇：<a href="/posts/2026/04/28/claude-code-plugins-guide/">Claude Code 插件完全指南：省钱、省 Token、提升开发效率</a>。下一篇：<a href="/posts/2026/06/09/claude-code-skills-guide/">Claude Code Skills 深度解析：把经验写成可复用的知识模块</a>。</em>
             </div></div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2026-06-06</span>
+                <span>更新于 2026-06-09</span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
@@ -1209,7 +1210,8 @@
         </section>
     </div>
 
-    <div class="post-nav"><a href="/posts/2026/05/10/ai-trust-meaning/" class="prev" rel="prev" title="AI 能做事，不能扛事"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>AI 能做事，不能扛事</a></div>
+    <div class="post-nav"><a href="/posts/2026/05/10/ai-trust-meaning/" class="prev" rel="prev" title="AI 能做事，不能扛事"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>AI 能做事，不能扛事</a>
+            <a href="/posts/2026/06/09/claude-code-skills-guide/" class="next" rel="next" title="Claude Code Skills 深度解析：把经验写成可复用的知识模块">Claude Code Skills 深度解析：把经验写成可复用的知识模块<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 
 </div>
 <div id="comments"><div id="waline" class="comment"></div><noscript>

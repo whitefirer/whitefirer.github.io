@@ -7,7 +7,7 @@
 
 ## 前言
 
-之前写了[《Claude Code 插件完全指南》](/posts/claude-code-plugins-guide/)，介绍四个插件和一个 MCP 服务。那是"用什么"的问题。
+之前写了[《Claude Code 插件完全指南》](/posts/2026/04/28/claude-code-plugins-guide/)，介绍四个插件和一个 MCP 服务。那是"用什么"的问题。
 
 本文解决"怎么自动化"的问题：**Hooks 系统**。
 
@@ -646,7 +646,7 @@ sys.exit(0)
 - `Stop` hook — 每次响应结束后分析对话，如果发现"这个行为应该被禁止"，自动建议创建新 Hook 规则。Hook 自己进化 Hook，元 Hook。
 
 **superpowers 插件** — 多 Hook 工作流编排：
-- `SessionStart` → 加载 TDD、debugging、brainstorming 等开发方法论的提示词
+- `SessionStart` → 把 Skill 的元信息（名称和描述）注入上下文，让 Agent 知道有哪些可用。完整 Skill 内容在 `UserPromptSubmit` 匹配到意图时才加载
 - `UserPromptSubmit` → 检测用户意图，自动匹配对应 Skill 并加载
 - `Stop` → 完成检查点验证，确保开发流程不跳步
 

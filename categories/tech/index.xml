@@ -5,6 +5,14 @@
         <description>技术 - 分类 - whitefirer[PG]</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
             <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><atom:link href="https://whitefirer.org/categories/tech/" rel="self" type="application/rss+xml" /><item>
+    <title>Claude Code Skills 深度解析：把经验写成可复用的知识模块</title>
+    <link>https://whitefirer.org/posts/2026/06/09/claude-code-skills-guide/</link>
+    <pubDate>Tue, 09 Jun 2026 21:43:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/06/09/claude-code-skills-guide/</guid>
+    <description><![CDATA[插件给能力，Hooks 给自动化，Skill 给的是方法论。三层递进，打造 AI 编程的完整技术栈。 前言 《Claude Code 插件完全指南》 讲了&quot;]]></description>
+</item>
+<item>
     <title>Claude Code Hooks 完全指南：事件驱动的 AI 编程自动化</title>
     <link>https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/</link>
     <pubDate>Tue, 02 Jun 2026 03:50:00 &#43;0800</pubDate>
@@ -75,14 +83,6 @@
     <author>whitefirer</author>
     <guid>https://whitefirer.org/posts/2022/08/29/extension-and-expansion-of-service-mesh/</guid>
     <description><![CDATA[导语 没有最完美的架构，只有最合适的架构。 背景 很多时候服务网格在业务难以落地，往往是因为有历史包袱或者特殊需求，反而没有新设计的项目接入服务网]]></description>
-</item>
-<item>
-    <title>高效终端命令行工具</title>
-    <link>https://whitefirer.org/posts/2022/08/29/efficient-command-line-tools/</link>
-    <pubDate>Mon, 29 Aug 2022 15:41:16 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/posts/2022/08/29/efficient-command-line-tools/</guid>
-    <description><![CDATA[导语 工欲善其事，必先利其器。 作为技术人员，一个高效的工作环境尤为重要。下面分享下我的终端命令行下的环境和工具配置。 zsh&amp;oh-my-zsh 安装 参考：https:/]]></description>
 </item>
 </channel>
 </rss>

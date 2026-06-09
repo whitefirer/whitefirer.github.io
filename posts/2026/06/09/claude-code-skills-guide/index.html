@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Claude Code Skills 深度解析：把经验写成可复用的知识模块 - whitefirer[PG]</title><meta name="Description" content="深入拆解 Claude Code 的 Skill 体系：从 Superpowers 的 TDD skill 源码级解剖到 CLAUDE.md 定制，从加载机制到设计原则。读完你会理解什么是好的 Skill，怎么写一个，以及为什么 Skill 是 AI 编程工具链的最后一块拼图。"><meta property="og:url" content="https://whitefirer.org/posts/2026/06/09/claude-code-skills-guide/">
+  <meta property="og:site_name" content="whitefirer[PG]">
+  <meta property="og:title" content="Claude Code Skills 深度解析：把经验写成可复用的知识模块">
+  <meta property="og:description" content="深入拆解 Claude Code 的 Skill 体系：从 Superpowers 的 TDD skill 源码级解剖到 CLAUDE.md 定制，从加载机制到设计原则。读完你会理解什么是好的 Skill，怎么写一个，以及为什么 Skill 是 AI 编程工具链的最后一块拼图。">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-06-09T21:43:00+08:00">
+    <meta property="article:modified_time" content="2026-06-09T23:48:26+08:00">
+    <meta property="article:tag" content="技术">
+    <meta property="article:tag" content="Ai">
+    <meta property="article:tag" content="Claude Code">
+    <meta property="article:tag" content="Skill">
+    <meta property="article:tag" content="Development Tools">
+      <meta property="og:see_also" content="https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/">
+      <meta property="og:see_also" content="https://whitefirer.org/posts/2026/04/28/claude-code-plugins-guide/">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Claude Code Skills 深度解析：把经验写成可复用的知识模块">
+  <meta name="twitter:description" content="深入拆解 Claude Code 的 Skill 体系：从 Superpowers 的 TDD skill 源码级解剖到 CLAUDE.md 定制，从加载机制到设计原则。读完你会理解什么是好的 Skill，怎么写一个，以及为什么 Skill 是 AI 编程工具链的最后一块拼图。">
+<meta name="application-name" content="whitefirer[PG]">
+<meta name="apple-mobile-web-app-title" content="whitefirer[PG]"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/06/09/claude-code-skills-guide/" /><link rel="prev" href="https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Claude Code Skills 深度解析：把经验写成可复用的知识模块",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/whitefirer.org\/posts\/2026\/06\/09\/claude-code-skills-guide\/"
+        },"genre": "posts","keywords": "tech, ai, claude code, skill, development tools","wordcount":  7970 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/06\/09\/claude-code-skills-guide\/","datePublished": "2026-06-09T21:43:00+08:00","dateModified": "2026-06-09T23:48:26+08:00","license": "2022©️whitefirer","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "whitefirer"
+            },"description": "深入拆解 Claude Code 的 Skill 体系：从 Superpowers 的 TDD skill 源码级解剖到 CLAUDE.md 定制，从加载机制到设计原则。读完你会理解什么是好的 Skill，怎么写一个，以及为什么 Skill 是 AI 编程工具链的最后一块拼图。"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="whitefirer[PG]">whitefirer[PG]</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/series/ai-zatan/"> AI 杂谈 </a><div class="menu-item has-dropdown">
+                            <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                            <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a></div>
+                        </div><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/2026/06/09/claude-code-skills-guide/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header>
+<script>
+(function() {
+    document.querySelectorAll('.has-dropdown .dropdown-toggle').forEach(function(toggle) {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var parent = this.closest('.has-dropdown');
+            parent.classList.toggle('open');
+        });
+    });
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.has-dropdown.open').forEach(function(d) {
+            d.classList.remove('open');
+        });
+    });
+})();
+</script><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="whitefirer[PG]">whitefirer[PG]</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/series/ai-zatan/" title="">AI 杂谈</a><div class="menu-item has-dropdown">
+                        <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                        <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a></div>
+                    </div><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/posts/2026/06/09/claude-code-skills-guide/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><div style="display:flex;align-items:baseline;gap:0">
+        <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">Claude Code Skills 深度解析：把经验写成可复用的知识模块</h1></div><h2 class="single-subtitle">插件给能力，Hooks 给自动化，Skill 给的是方法论——三层递进，打造 AI 编程的完整技术栈</h2><div class="post-series">
+                <a href="/series/claude-code-deep-dive/"><i class="fas fa-layer-group fa-fw" aria-hidden="true"></i>AI 编程·Claude Code</a>
+            </div><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-06-09">2026-06-09</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 7970 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 16 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#前言">前言</a></li>
+    <li><a href="#1-什么是-skill一个三层模型">1. 什么是 Skill？一个三层模型</a></li>
+    <li><a href="#2-superpowers-的-skill-体系">2. Superpowers 的 Skill 体系</a>
+      <ul>
+        <li><a href="#21-加载机制skill-是怎么活起来的">2.1 加载机制：Skill 是怎么&quot;活&quot;起来的</a></li>
+        <li><a href="#22-命令行入口skills-和-writing-skills">2.2 命令行入口：<code>/skills</code> 和 <code>/writing-skills</code></a></li>
+        <li><a href="#23-run-skill-generatoranthropic-官方的-skill-工厂">2.3 <code>/run-skill-generator</code>：Anthropic 官方的 Skill 工厂</a></li>
+        <li><a href="#24-skill-的物理形态">2.4 Skill 的物理形态</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-两种路径手写与蒸馏">3. 两种路径：手写与蒸馏</a>
+      <ul>
+        <li><a href="#31-路径一手写">3.1 路径一：手写</a></li>
+        <li><a href="#32-路径二蒸馏">3.2 路径二：蒸馏</a>
+          <ul>
+            <li><a href="#三种蒸馏原料">三种蒸馏原料</a></li>
+          </ul>
+        </li>
+        <li><a href="#33-两条路怎么选">3.3 两条路怎么选</a></li>
+        <li><a href="#34-蒸馏流程三步走">3.4 蒸馏流程三步走</a></li>
+        <li><a href="#35-什么时候该蒸馏">3.5 什么时候该蒸馏</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-claudemd-与-skill-的区别">4. CLAUDE.md 与 Skill 的区别</a></li>
+    <li><a href="#5-好的-skill-长什么样--五条设计原则">5. 好的 Skill 长什么样 —— 五条设计原则</a>
+      <ul>
+        <li><a href="#原则一铁律开头不留灰色地带">原则一：铁律开头，不留灰色地带</a></li>
+        <li><a href="#原则二反驳预判堵死借口">原则二：反驳预判，堵死借口</a></li>
+        <li><a href="#原则三结构化输出防止looks-good">原则三：结构化输出，防止&quot;looks good&quot;</a></li>
+        <li><a href="#原则四短于-80-行">原则四：短于 80 行</a></li>
+        <li><a href="#原则五验证闭环">原则五：验证闭环</a></li>
+      </ul>
+    </li>
+    <li><a href="#6-skill-的边界它解决不了什么">6. Skill 的边界：它解决不了什么</a></li>
+    <li><a href="#7-结语三层的完整图像">7. 结语：三层的完整图像</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><blockquote>
+<p>插件给能力，Hooks 给自动化，Skill 给的是方法论。三层递进，打造 AI 编程的完整技术栈。</p>
+</blockquote>
+<hr>
+<h2 id="前言">前言</h2>
+<p><a href="/posts/2026/04/28/claude-code-plugins-guide/" rel="">《Claude Code 插件完全指南》</a> 讲了&quot;用什么&quot;——四个插件一个 MCP，token 消耗直降 70-80%。
+<a href="/posts/2026/06/02/claude-code-hooks-guide/" rel="">《Claude Code Hooks 完全指南》</a> 讲了&quot;怎么自动化&quot;——九种 Hook 类型，十一个妙用场景，事件驱动一切。</p>
+<p>本文讲第三层：<strong>Skill——怎么把经验写成可复用的知识模块</strong>。</p>
+<p>插件是外挂装备，Hooks 是自动触发器，Skill 是方法论本身。把&quot;怎么做一个事&quot;的经验提炼成结构化指令，让 AI 在遇到同类任务时自动加载执行——这就是 Skill。</p>
+<hr>
+<h2 id="1-什么是-skill一个三层模型">1. 什么是 Skill？一个三层模型</h2>
+<p>把 AI 编程工具的能力想象成三层：</p>
+<p><svg id="three-layer-model" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 270" width="100%" style="max-width:680px;display:block;margin:1.2em auto"><defs><linearGradient id="sk" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#34d399"/></linearGradient><linearGradient id="hk" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#818cf8"/></linearGradient><linearGradient id="pl" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#fbbf24"/></linearGradient><filter id="sh"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.10"/></filter></defs><!-- Plugin/MCP --><g filter="url(#sh)"><rect x="40" y="196" width="600" height="64" rx="8" fill="#fff" stroke="#f59e0b" stroke-width="1.5"/><rect x="40" y="196" width="600" height="34" rx="8" fill="url(#pl)"/><rect x="40" y="222" width="600" height="8" fill="url(#pl)"/><circle cx="66" cy="213" r="11" fill="#fff" opacity="0.25"/><text x="66" y="218" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="system-ui,sans-serif">①</text><text x="86" y="218" fill="#fff" font-size="13" font-weight="700" font-family="system-ui,sans-serif">Plugin / MCP</text><text x="216" y="218" fill="rgba(255,255,255,0.75)" font-size="11" font-family="system-ui,sans-serif">能力边界 — 能做什么</text><text x="56" y="250" fill="#374151" font-size="12" font-family="system-ui,sans-serif">提供文件系统、终端、搜索等基础工具。没有这层，上面全是空谈。</text></g><line x1="340" y1="194" x2="340" y2="188" stroke="#d1d5db" stroke-width="1.5"/><polygon points="336,189 340,185 344,189" fill="#d1d5db"/><!-- Hooks --><g filter="url(#sh)"><rect x="40" y="120" width="600" height="64" rx="8" fill="#fff" stroke="#6366f1" stroke-width="1.5"/><rect x="40" y="120" width="600" height="34" rx="8" fill="url(#hk)"/><rect x="40" y="146" width="600" height="8" fill="url(#hk)"/><circle cx="66" cy="137" r="11" fill="#fff" opacity="0.25"/><text x="66" y="142" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="system-ui,sans-serif">②</text><text x="86" y="142" fill="#fff" font-size="13" font-weight="700" font-family="system-ui,sans-serif">Hooks</text><text x="168" y="142" fill="rgba(255,255,255,0.75)" font-size="11" font-family="system-ui,sans-serif">自动化 — 什么时候触发</text><text x="56" y="174" fill="#374151" font-size="12" font-family="system-ui,sans-serif">在正确的时间触发正确的事。但不告诉模型&quot;怎么做&quot;。</text></g><line x1="340" y1="118" x2="340" y2="112" stroke="#d1d5db" stroke-width="1.5"/><polygon points="336,113 340,109 344,113" fill="#d1d5db"/><!-- Skill --><g filter="url(#sh)"><rect x="40" y="28" width="600" height="78" rx="8" fill="#fff" stroke="#10b981" stroke-width="2"/><rect x="40" y="28" width="600" height="38" rx="8" fill="url(#sk)"/><rect x="40" y="58" width="600" height="8" fill="url(#sk)"/><circle cx="66" cy="47" r="12" fill="#fff" opacity="0.25"/><text x="66" y="52" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">③</text><text x="88" y="52" fill="#fff" font-size="14" font-weight="700" font-family="system-ui,sans-serif">Skill</text><text x="162" y="52" fill="rgba(255,255,255,0.8)" font-size="11" font-family="system-ui,sans-serif">方法论 — 怎么做</text><rect x="526" y="33" width="102" height="22" rx="11" fill="#fff" opacity="0.20"/><text x="577" y="48" text-anchor="middle" fill="#fff" font-size="10" font-weight="600" font-family="system-ui,sans-serif">本文主题</text><text x="56" y="92" fill="#374151" font-size="12" font-family="system-ui,sans-serif">定义一套规范：做 A 类任务时，先干啥、再干啥、<tspan font-weight="700" fill="#10b981">不能干啥</tspan>。这是行为编码。</text></g></svg></p>
+<p><strong>第一层是能力边界</strong>：没有文件系统，什么都白搭。插件和 MCP 负责这层。</p>
+<p><strong>第二层是自动化</strong>：Hooks 在正确的时间做正确的事。但不告诉模型&quot;怎么做&quot;。</p>
+<p><strong>第三层是方法论</strong>：Skill 定义一套规范——&ldquo;做 A 类任务时，先干啥、再干啥、不能干啥&rdquo;。这不是自动化，是<strong>行为编码</strong>。</p>
+<p>一个类比：</p>
+<table>
+<thead>
+<tr>
+<th>层</th>
+<th>类比</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Plugin/MCP</td>
+<td>给你一个工具箱</td>
+<td>read_file、terminal、写文件</td>
+</tr>
+<tr>
+<td>Hooks</td>
+<td>定时拿起工具</td>
+<td>&ldquo;改完代码自动格式化&rdquo;</td>
+</tr>
+<tr>
+<td>Skill</td>
+<td>说明书里的操作规范</td>
+<td>&ldquo;修 bug：先写复现测试，再定位根因，再修，再验证&rdquo;</td>
+</tr>
+</tbody>
+</table>
+<p>三层缺一不可。有工具箱没说明书，乱敲。有说明书没自动化，手忙脚乱。</p>
+<hr>
+<h2 id="2-superpowers-的-skill-体系">2. Superpowers 的 Skill 体系</h2>
+<p>Superpowers 插件提供了 15+ 个 Skill，覆盖完整开发流程：</p>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>Skill</th>
+<th>做什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>规划</td>
+<td>brainstorming</td>
+<td>苏格拉底式需求澄清</td>
+</tr>
+<tr>
+<td></td>
+<td>writing-plans</td>
+<td>把需求拆成 2-5 分钟小任务</td>
+</tr>
+<tr>
+<td>实现</td>
+<td>test-driven-development</td>
+<td>强制 RED-GREEN-REFACTOR</td>
+</tr>
+<tr>
+<td></td>
+<td>executing-plans</td>
+<td>按计划批量执行</td>
+</tr>
+<tr>
+<td></td>
+<td>subagent-driven-development</td>
+<td>子 agent 并行开发</td>
+</tr>
+<tr>
+<td>审查</td>
+<td>requesting-code-review</td>
+<td>对照计划审查</td>
+</tr>
+<tr>
+<td></td>
+<td>receiving-code-review</td>
+<td>接收反馈</td>
+</tr>
+<tr>
+<td>收尾</td>
+<td>finishing-a-development-branch</td>
+<td>验证、合并、PR</td>
+</tr>
+</tbody>
+</table>
+<p>这些不是简单的提示词片段。每个 Skill 是一套完整的<strong>行为契约</strong>——定义了 Agent 在特定情境下必须遵守的规则、步骤和边界。</p>
+<h3 id="21-加载机制skill-是怎么活起来的">2.1 加载机制：Skill 是怎么&quot;活&quot;起来的</h3>
+<p>Superpowers 用了三个 Hook 来实现 Skill 的加载和生命周期管理：</p>
+<table>
+<thead>
+<tr>
+<th>Hook</th>
+<th>时机</th>
+<th>Skill 用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SessionStart</strong></td>
+<td>会话启动</td>
+<td>把所有 Skill 的名称和描述注入上下文</td>
+</tr>
+<tr>
+<td><strong>UserPromptSubmit</strong></td>
+<td>用户每次发消息</td>
+<td>检测意图，匹配对应 Skill</td>
+</tr>
+<tr>
+<td><strong>Stop</strong></td>
+<td>Agent 准备结束</td>
+<td>验证 Skill 要求的检查点是否完成</td>
+</tr>
+</tbody>
+</table>
+<p>关键在 <code>UserPromptSubmit</code>：用户说&quot;帮我修个 bug&quot;，Superpowers 检测到 <code>debug</code> 意图，自动加载 <code>systematic-debugging</code> Skill。用户不需要敲 <code>/debug</code>，不需要记 Skill 名。<strong>意图匹配 → 自动加载 → 强制执行</strong>。</p>
+<p>这和传统 IDE 的快捷键完全不同——不是&quot;你按哪个键我就做哪个事&quot;，而是&quot;你说了什么，我理解你要做什么，然后按正确的方式做&quot;。</p>
+<p><svg id="skill-lifecycle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 135" width="100%" style="max-width:680px;display:block;margin:1.2em auto"><defs><filter id="sh2"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/></filter></defs><g filter="url(#sh2)"><rect x="14" y="42" width="108" height="52" rx="8" fill="#9ca3af"/><text x="68" y="62" text-anchor="middle" fill="#fff" font-size="10" font-weight="700" font-family="system-ui,sans-serif">SessionStart</text><text x="68" y="80" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="10" font-family="system-ui,sans-serif">注册元信息</text></g><line x1="122" y1="68" x2="134" y2="68" stroke="#d1d5db" stroke-width="1.5"/><polygon points="130,64 137,68 130,72" fill="#d1d5db"/><g filter="url(#sh2)"><rect x="140" y="42" width="110" height="52" rx="8" fill="#6366f1"/><text x="195" y="62" text-anchor="middle" fill="#fff" font-size="9" font-weight="700" font-family="system-ui,sans-serif">UserPromptSubmit</text><text x="195" y="80" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="10" font-family="system-ui,sans-serif">意图匹配</text></g><line x1="250" y1="68" x2="262" y2="68" stroke="#d1d5db" stroke-width="1.5"/><polygon points="258,64 265,68 258,72" fill="#d1d5db"/><g filter="url(#sh2)"><rect x="268" y="42" width="108" height="52" rx="8" fill="#f59e0b"/><text x="322" y="62" text-anchor="middle" fill="#fff" font-size="10" font-weight="700" font-family="system-ui,sans-serif">加载 Skill</text><text x="322" y="80" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="10" font-family="system-ui,sans-serif">注入完整内容</text></g><line x1="376" y1="68" x2="388" y2="68" stroke="#d1d5db" stroke-width="1.5"/><polygon points="384,64 391,68 384,72" fill="#d1d5db"/><g filter="url(#sh2)"><rect x="394" y="42" width="108" height="52" rx="8" fill="#10b981"/><text x="448" y="62" text-anchor="middle" fill="#fff" font-size="10" font-weight="700" font-family="system-ui,sans-serif">执行规则</text><text x="448" y="80" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="10" font-family="system-ui,sans-serif">按 Skill 行事</text></g><line x1="502" y1="68" x2="514" y2="68" stroke="#d1d5db" stroke-width="1.5"/><polygon points="510,64 517,68 510,72" fill="#d1d5db"/><g filter="url(#sh2)"><rect x="520" y="42" width="108" height="52" rx="8" fill="#f43f5e"/><text x="574" y="62" text-anchor="middle" fill="#fff" font-size="10" font-weight="700" font-family="system-ui,sans-serif">Stop</text><text x="574" y="80" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="10" font-family="system-ui,sans-serif">验证闭环</text></g><rect x="30" y="108" width="580" height="22" rx="6" fill="#f3f4f6"/><text x="320" y="123" text-anchor="middle" fill="#6b7280" font-size="10" font-family="system-ui,sans-serif">Hook 事件驱动链：注册 → 匹配 → 加载 → 执行 → 验证，缺一环 Skill 就不完整</text></svg></p>
+<h3 id="22-命令行入口skills-和-writing-skills">2.2 命令行入口：<code>/skills</code> 和 <code>/writing-skills</code></h3>
+<p>Superpowers 不只是被动匹配意图加载 Skill，它还给用户提供了显式的命令行控制：</p>
+<p><strong><code>/skills</code></strong> — 列出所有可用 Skill。Agent 会回复一个清单，标注每个 Skill 的用途和适用场景。刚装完 Superpowers 不知道它有什么能力？敲 <code>/skills</code>。</p>
+<p><strong><code>/writing-skills</code></strong> — 创建新 Skill 的最佳实践指南。当你告诉 Claude Code &ldquo;帮我写一个 Skill 做 X&rdquo;，Superpowers 会加载这个指南，确保写出来的 Skill 符合规范——铁律开头、反驳预判、验证闭环。相当于 Skill 的 Skill。</p>
+<h3 id="23-run-skill-generatoranthropic-官方的-skill-工厂">2.3 <code>/run-skill-generator</code>：Anthropic 官方的 Skill 工厂</h3>
+<p>除了 Superpowers 提供的方法论指南，Claude Code 还内置了 <code>/run-skill-generator</code>——Anthropic 官方维护的 Skill 创建器（开源仓库 <code>github.com/anthropics/skills</code>，位于 <code>skill-creator/</code> 目录）。</p>
+<p>它不是一个简单的&quot;你说需求我生成&quot;机器人，而是一个结构化的 Skill 开发流程向导：</p>
+<p><strong>核心流程</strong>：<code>明确目标 → 编写草稿 → 定义测试 → 评估结果 → 迭代优化</code>。每一轮都有量化的品质评估，不是生成就完事。</p>
+<p><strong>结构化管理</strong>：自动生成标准 Skill 目录结构——<code>SKILL.md</code> 主文件 + <code>scripts/</code> 脚本 + <code>references/</code> 参考文档 + <code>assets/</code> 模板资源。</p>
+<p><strong>智能优化</strong>：能分析 Skill 的触发失败案例，自动重写 <code>description</code> 字段，提升被正确激活的概率。这是它最特别的功能——Skill 写完不是死的，它会学习、会进化。</p>
+<p><strong>原理基础</strong>：底层依赖渐进式披露（Progressive Disclosure）——Claude 平时只加载 Skill 的名称和简介，仅在判断需要时完整加载。和 2.1 节的三 Hook 加载机制完全一致。</p>
+<h3 id="24-skill-的物理形态">2.4 Skill 的物理形态</h3>
+<p>一个 Skill 就是一个 Markdown 文件。以 TDD Skill 为例，它的结构长这样：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># Test-Driven Development (TDD)
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## Overview
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>Write the test first. Watch it fail. Write minimal code to pass.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## When to Use
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>Always: New features, bug fixes, refactoring
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## The Iron Law
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Red-Green-Refactor Cycle
+</span></span></span><span class="line"><span class="cl"><span class="gu">### RED — Write Failing Test
+</span></span></span><span class="line"><span class="cl"><span class="gu">### Verify RED — Watch It Fail
+</span></span></span><span class="line"><span class="cl"><span class="gu">### GREEN — Minimal Code
+</span></span></span><span class="line"><span class="cl"><span class="gu">### Verify GREEN — Watch It Pass
+</span></span></span><span class="line"><span class="cl"><span class="gu">### REFACTOR — Clean Up
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## Why Order Matters
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>&#34;Tests after code pass immediately. Passing immediately proves nothing.&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Common Rationalizations
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>| Excuse | Reality |
+</span></span><span class="line"><span class="cl">| &#34;I&#39;ll test after&#34; | Tests passing immediately prove nothing |
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Red Flags
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>If you catch yourself doing any of these, delete the code:
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Code before test
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Test passes immediately on first run
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Rationalizing &#34;just this once&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Verification Checklist
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">- [ ]</span> Every new function has a test
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> Watched each test fail before implementing
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>注意几个关键设计：</p>
+<p><strong>1. 铁律在最前面</strong>。<code>NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST</code>——Agent 看到的第一条就是不可违背的规则。不是&quot;最好这样做&quot;，是&quot;不这样做就删代码重来&quot;。</p>
+<p><strong>2. 反驳预判</strong>。Skill 不只是告诉 Agent 怎么做，还预判了 Agent 可能会找什么借口。&ldquo;I&rsquo;ll test after&rdquo;、&ldquo;Too simple to test&rdquo;、&ldquo;TDD will slow me down&rdquo;——这些都是真实的人（和 AI）会出现的合理化借口。Skill 提前堵死了。</p>
+<p><strong>3. 红牌机制</strong>。<code>Red Flags</code> 章节列出&quot;这样做就等于没遵守规则&quot;的信号。Agent 可以对照自查：我是不是在找借口？</p>
+<p><strong>4. 检查清单</strong>。Skill 的最后是 Checklist——不是给用户看的，是给 Agent 自检的。每次任务结束前对照检查，没打勾就意味着没做完。</p>
+<p>这套设计哲学比 Skill 的内容本身更重要。它回答了：&ldquo;怎么让一个 LLM 可靠地按照你的方法做事？&rdquo;</p>
+<hr>
+<h2 id="3-两种路径手写与蒸馏">3. 两种路径：手写与蒸馏</h2>
+<p>上面拆解了 Skill 的结构。现在来真的：怎么产出你自己的 Skill？</p>
+<p>有两条路。</p>
+<h3 id="31-路径一手写">3.1 路径一：手写</h3>
+<p>你很清楚自己要什么规则——&ldquo;每次 review Python 代码，检查类型注解、异常处理、资源关闭&rdquo;。你对 Agent 可能偷懒的地方有预判。坐下来直接写，像前面的 TDD Skill 一样，铁律开头、反驳预判、红牌收尾。</p>
+<p>这条路适合：</p>
+<ul>
+<li>规则在你脑子里已经成型</li>
+<li>你想精确控制每个措辞、每个反驳、每个红牌</li>
+<li>不信任 AI 代笔——你比 AI 更清楚 Agent 会怎么偷懒</li>
+</ul>
+<p>你可以裸写，也可以借助 <code>/writing-skills</code>（Superpowers）或直接让 Claude Code 帮你生成——它们都会按规范帮你生成结构化的 Skill 文件。区别只是谁来驱动：<strong>手写是你驱动规则，AI 辅助是 AI 驱动格式</strong>。前者你写内容、AI 排版；后者你描述需求、AI 写全部。</p>
+<p><strong>来看一个手写的实际例子。</strong> 假设你要写一个 Python 代码审查 Skill。</p>
+<p>第一版，凭直觉写：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># Python Code Review
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl">Please review Python code carefully.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Check:
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Type hints
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Exception handling  
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Resource management
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Be thorough.
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>放进 <code>.claude/skills/</code>，试一下。结果：有时只检查类型忽略了异常处理，有时一句 &ldquo;looks good&rdquo; 糊弄过去。<strong>太软了。</strong> Agent 会偷懒。</p>
+<p>回头看 TDD Skill 的设计，第二版改成了硬约束：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># Python Code Review
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## When to Use
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>After every file modification. Before claiming work is done.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Mandatory Checks
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">### 1. Type Annotations — ALL public functions
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>For EVERY function with <span class="sb">`def f(x):`</span> signature, check:
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> Parameters have type annotations
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> Return type specified <span class="sb">`-&gt; Type`</span>
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> No <span class="sb">`Any`</span> (use <span class="sb">`object`</span> or generic)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">If ANY function lacks type hints, report it. Do NOT approve.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### 2. Exception Handling — ALL I/O
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>For EVERY <span class="sb">`open()`</span>, <span class="sb">`requests.`</span>, <span class="sb">`socket.`</span>, <span class="sb">`subprocess.`</span>:
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> Wrapped in try/except with specific exception types (not bare <span class="sb">`except:`</span>)
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> Exception is logged or re-raised with context
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> Resources cleaned up in <span class="sb">`with`</span> or <span class="sb">`finally`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### 3. Resource Management — ALL file/connection opens
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>For EVERY file handle, DB connection, network socket:
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> Uses <span class="sb">`with`</span> statement OR explicit <span class="sb">`.close()`</span> in <span class="sb">`finally`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Output Format
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">### Type Annotations: N/M checked, K issues
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> Line 42: missing return type on <span class="sb">`get_user()`</span>
+</span></span><span class="line"><span class="cl"><span class="gu">### Exception Handling: ok / issues
+</span></span></span><span class="line"><span class="cl"><span class="gu">### Resource Management: ok / issues
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>**Verdict:** PASS / NEEDS FIX
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Red Flags
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> &#34;Looks good overall&#34; → you didn&#39;t check line by line
+</span></span><span class="line"><span class="cl"><span class="k">-</span> &#34;Code is simple&#34; → simplicity doesn&#39;t excuse missing types
+</span></span><span class="line"><span class="cl"><span class="k">-</span> &#34;Existing code also lacks types&#34; → we&#39;re improving it now
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## After Review
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>If PASS: mark task complete. If NEEDS FIX: list specific changes required.
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>对比第一版和第二版：</p>
+<table>
+<thead>
+<tr>
+<th>第一版</th>
+<th>第二版</th>
+<th>改了啥</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&ldquo;Please review&rdquo;</td>
+<td>&ldquo;Mandatory Checks&rdquo;</td>
+<td>软请求 → 硬规则</td>
+</tr>
+<tr>
+<td>&ldquo;Check type hints&rdquo;</td>
+<td>&ldquo;For EVERY function, check annotations/return type/Any&rdquo;</td>
+<td>模糊 → 精确</td>
+</tr>
+<tr>
+<td>无输出规范</td>
+<td>固定报告模板</td>
+<td>Agent 没法用 &ldquo;looks good&rdquo; 糊弄</td>
+</tr>
+<tr>
+<td>无 Red Flags</td>
+<td>三条自检</td>
+<td>预判合理化借口</td>
+</tr>
+<tr>
+<td>无后续动作</td>
+<td>&ldquo;After Review&rdquo;</td>
+<td>定义完成标准</td>
+</tr>
+</tbody>
+</table>
+<p><strong>核心原则：Skill 不是建议，是约束。</strong> 手写的好处就在这里——你知道 Agent 哪句话是在偷懒，你能提前堵死。这是 AI 代笔做不到的精细度。</p>
+<h3 id="32-路径二蒸馏">3.2 路径二：蒸馏</h3>
+<p>另一条路更&quot;懒&quot;——</p>
+<p>Perl 之父 Larry Wall 说过，程序员有三种美德：</p>
+<blockquote>
+<p><strong>懒惰、急躁、傲慢。</strong></p>
+</blockquote>
+<p>排名第一的是懒惰。不是躺平——而是：</p>
+<blockquote>
+<p>&ldquo;懒惰会驱使你写省力的程序，让你宁愿花三小时自动化一件只需要十分钟的重复劳动。&rdquo;</p>
+</blockquote>
+<p>这听起来不理性。花三小时省十分钟？但 Larry Wall 比大多数人更早意识到：<strong>重复是效率的死敌，而懒惰是对重复最健康的反应。</strong></p>
+<p>你花三小时写一个自动化脚本，省下的不止十分钟——你省下了未来每一次重复的十分钟。一个月省五小时，一年省六十小时。</p>
+<p>Skill 就是这个逻辑。你花三十分钟让 Claude Code 把刚做完的一个项目的经验蒸馏成 Skill，下个项目遇到同类任务就不再重复试错。</p>
+<p>蒸馏路径的关键工具就是 Claude Code 本身。你向它描述需求，它读你的项目历史，然后生成结构化 Skill。不需要特殊命令——就用对话。</p>
+<h4 id="三种蒸馏原料">三种蒸馏原料</h4>
+<p>不是只蒸馏你自己。蒸馏有三种原料，对应三层经验：</p>
+<table>
+<thead>
+<tr>
+<th>原料</th>
+<th>蒸馏什么</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>蒸馏自己</strong></td>
+<td>你反复纠正 AI 的规则、你的判断偏好</td>
+<td>&ldquo;别在函数里 <code>SessionLocal()</code>，用 <code>Depends</code>&rdquo;</td>
+</tr>
+<tr>
+<td><strong>蒸馏 AI</strong></td>
+<td>AI 在项目中长出来的模式、试探出的边界</td>
+<td>AI 发现你总在路由最后加 <code>raise HTTPException</code>，自动归纳</td>
+</tr>
+<tr>
+<td><strong>蒸馏项目实践</strong></td>
+<td>具体项目的踩坑经验、技术选型理由</td>
+<td>&ldquo;这个库的 <code>batch_insert</code> 比 <code>add_all</code> 快 10 倍&rdquo;</td>
+</tr>
+</tbody>
+</table>
+<p>三种原料混在一起蒸，出来的 Skill 比你手写的更完整——因为手写只能覆盖你知道的东西，蒸馏能抓到你自己都没意识到的模式。</p>
+<p>举个例子：</p>
+<p>假设你刚用 Claude Code 做完一个 FastAPI 项目——写了十几个路由、几十个 pydantic model、一堆数据库迁移。过程中你发现：</p>
+<ul>
+<li>每次写路由，都要强调&quot;别忘了 dependency injection&quot;</li>
+<li>每次写 model，都要提醒&quot;字段加 Field(description=&hellip;)&quot;</li>
+<li>每次写 migration，都要检查&quot;alembic revision 有没有 &ndash;autogenerate&quot;</li>
+<li>每次写完改完，都要手动跑 <code>pytest -x --cov</code></li>
+</ul>
+<p>这些是你在这个项目里反复纠正 Claude Code 的东西。项目做完了，经验在你脑子里，但 Claude Code 不知道。</p>
+<p><strong>这时候你对 Claude Code 说</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">从这个项目中学到的 FastAPI 开发规范，帮我写成一个 Skill。
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Claude Code 读了你的 CLAUDE.md、git log、会话历史（如果你的 claude-mem 开着），然后生成一个 Skill：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># FastAPI Development
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## When to Use
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>Any task involving FastAPI route, model, or migration changes.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Mandatory Rules
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">### Routes
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">- [ ]</span> Use dependency injection: <span class="sb">`db: Session = Depends(get_db)`</span>
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> Return type annotated: <span class="sb">`-&gt; dict[str, Any]`</span>
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> HTTPException with detail message, not bare 500
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> Validate path parameters with <span class="sb">`Path(...)`</span> not raw int
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### Pydantic Models
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">- [ ]</span> Every field has <span class="sb">`Field(description=&#34;...&#34;)`</span>
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> Response model inherits from <span class="sb">`BaseModel`</span>, not dict
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> Use <span class="sb">`model_config = ConfigDict(from_attributes=True)`</span> for ORM
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### Database Migrations
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">- [ ]</span> Run <span class="sb">`alembic revision --autogenerate -m &#34;describe change&#34;`</span>
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> Check generated migration file for correctness
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> Run <span class="sb">`alembic upgrade head`</span> and verify
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### After Every Change
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">- [ ]</span> Run <span class="sb">`pytest -x --cov`</span> — ALL tests must pass
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> Run <span class="sb">`ruff check .`</span> — zero lint errors
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> If any fail, fix before claiming done
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Red Flags
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> &#34;Looks good&#34; without running tests → you didn&#39;t verify
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Skipping migration when model changed → schema will drift
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Raw <span class="sb">`dict`</span> response instead of pydantic model → bypasses validation
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Commit Convention
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>Use conventional commits: <span class="sb">`feat:`</span>, <span class="sb">`fix:`</span>, <span class="sb">`refactor:`</span>, <span class="sb">`test:`</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这不是你写的。<strong>是 Claude Code 从你的项目历史里提炼出来的</strong>。你纠正过它的模式、你强调过的规则、你重复过三遍以上的要求——全被蒸馏进了这个 Skill。</p>
+<h3 id="33-两条路怎么选">3.3 两条路怎么选</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>手写</th>
+<th>蒸馏</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>起点</strong></td>
+<td>脑子里有规则</td>
+<td>项目里有经验</td>
+</tr>
+<tr>
+<td><strong>优势</strong></td>
+<td>精确控制措辞，预判偷懒点</td>
+<td>从真实摩擦中提取，不漏</td>
+</tr>
+<tr>
+<td><strong>劣势</strong></td>
+<td>可能遗漏你没意识到的坑</td>
+<td>需要审查，AI 可能过拟合</td>
+</tr>
+<tr>
+<td><strong>适合场景</strong></td>
+<td>规范明确、你很清楚要什么</td>
+<td>做完项目后发现&quot;下次得记住这个&quot;</td>
+</tr>
+<tr>
+<td><strong>工具</strong></td>
+<td>裸写；也可让 Claude Code 辅助排版</td>
+<td>直接对话生成；<code>/writing-skills</code> 提供规范参考</td>
+</tr>
+</tbody>
+</table>
+<h3 id="34-蒸馏流程三步走">3.4 蒸馏流程三步走</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">项目完成
+</span></span><span class="line"><span class="cl">    ↓
+</span></span><span class="line"><span class="cl">① 复盘：告诉 Claude Code &#34;从这个项目中学到的规范，写成 Skill&#34;
+</span></span><span class="line"><span class="cl">    它读 CLAUDE.md + git log + 会话历史
+</span></span><span class="line"><span class="cl">    ↓
+</span></span><span class="line"><span class="cl">② 审查：删掉过拟合的规则（&#34;这个项目用 SQLite，但别把 SQLite 写进 Skill&#34;）
+</span></span><span class="line"><span class="cl">    保留跨项目通用的部分
+</span></span><span class="line"><span class="cl">    ↓
+</span></span><span class="line"><span class="cl">③ 复用：下个同类项目启动时，Skill 已自动加载
+</span></span><span class="line"><span class="cl">    不需要重新纠正 Claude Code
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>第一步是关键</strong>。很多人做完项目就关终端了。但最有价值的不是代码本身——代码可能下个项目用不上——而是<strong>你在这个项目里建立的协作模式</strong>。</p>
+<p>一个例子：你在 Cenacle 项目里反复纠正 Claude Code &ldquo;用 FastAPI 的 <code>Depends</code> 而不是在函数里 <code>SessionLocal()</code>&quot;。这个纠正本身不值一提——但你如果没把它蒸馏成 Skill，下个 FastAPI 项目 Claude Code 还会犯同样的错。你又得纠正一遍。</p>
+<p>蒸馏一次 = 未来所有项目自动正确。</p>
+<h3 id="35-什么时候该蒸馏">3.5 什么时候该蒸馏</h3>
+<p>不是每个项目都值得蒸馏。判断标准：</p>
+<ul>
+<li><strong>同类项目还会再做吗？</strong> → 蒸馏。比如 FastAPI 项目、Hugo 博客文章、ESP32 固件。</li>
+<li><strong>踩过三个以上的坑吗？</strong> → 蒸馏。纠正三次以上的模式 = Claude Code 的学习盲区，Skill 覆盖。</li>
+<li><strong>一次性脚本？</strong> → 不蒸馏。写完就扔的东西不值得。</li>
+</ul>
+<p>一个健康的节奏：<strong>每完成一个项目或阶段性里程碑，花 10 分钟做一次蒸馏</strong>。一个月后，你会有 5-10 个高质量 Skill，覆盖你 90% 的日常任务类型。每个新项目不再从零纠正 Claude Code——Skill 已经帮你纠正好了。</p>
+<p>这就是 Larry Wall 说的&quot;懒惰&rdquo;。<strong>宁愿花三十分钟蒸馏经验，也不在未来的每个项目里重复纠正同样的错。</strong></p>
+<hr>
+<h2 id="4-claudemd-与-skill-的区别">4. CLAUDE.md 与 Skill 的区别</h2>
+<p>很多人把 CLAUDE.md 当 Skill 用——在项目根目录写一堆规则。但两者有本质区别：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>CLAUDE.md</th>
+<th>Skill</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>作用域</strong></td>
+<td>项目级，常驻</td>
+<td>任务级，按需加载</td>
+</tr>
+<tr>
+<td><strong>加载时机</strong></td>
+<td>会话启动时</td>
+<td>意图匹配时</td>
+</tr>
+<tr>
+<td><strong>内容</strong></td>
+<td>项目背景、架构、约定</td>
+<td>任务方法论、步骤、检查点</td>
+</tr>
+<tr>
+<td><strong>大小</strong></td>
+<td>几十行到几百行</td>
+<td>几十行（越短越好）</td>
+</tr>
+<tr>
+<td><strong>目的</strong></td>
+<td>&ldquo;这个项目长这样&rdquo;</td>
+<td>&ldquo;这个任务这么做&rdquo;</td>
+</tr>
+</tbody>
+</table>
+<p><strong>CLAUDE.md 告诉你&quot;在哪&quot;</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># Project: Cenacle
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span><span class="k">-</span> Python + FastAPI + React
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 测试: pytest, 前端: npm test
+</span></span><span class="line"><span class="cl"><span class="k">-</span> DB: SQLAlchemy + SQLite
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 端口: 9100
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 部署: daemon.py 管理
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>Skill 告诉你&quot;怎么做&quot;</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># TDD
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>Write test first. Watch it fail. Write minimal code. Refactor.
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>什么时候用哪个？</strong></p>
+<ul>
+<li>让 Agent 理解<strong>项目是什么</strong> → CLAUDE.md</li>
+<li>让 Agent 理解<strong>任务该怎么做</strong> → Skill</li>
+<li>一个项目可以有一个 CLAUDE.md 和很多个 Skill</li>
+</ul>
+<p><strong>两者配合的例子</strong>：</p>
+<p>CLAUDE.md 告诉 Agent &ldquo;数据库用 SQLAlchemy ORM + SQLite，测试用 pytest&rdquo;。当一个 code-review Skill 被触发时，Agent 已经知道项目的技术栈，Skill 只需要关注审查规则本身。CLAUDE.md 提供上下文，Skill 提供方法论——<strong>各司其职，不重复不冲突</strong>。</p>
+<p><strong>Skill 也可以按项目配置。</strong> 放在项目目录 <code>.claude/skills/</code> 下的 Skill 只在进入该项目时加载，离开就不可见；放在 <code>~/.claude/skills/</code> 下的是全局 Skill，所有项目通用。比如 <code>sticks3-dev</code> 放 ESP32 项目里——写其他项目时它不会跳出来。CLAUME.md 描述&quot;这个项目是什么&quot;，项目 Skill 描述&quot;在这个项目里怎么做特定任务&quot;——两者天然一对。</p>
+<hr>
+<h2 id="5-好的-skill-长什么样--五条设计原则">5. 好的 Skill 长什么样 —— 五条设计原则</h2>
+<p>拆了几个 Skill，也写了一个，总结出五条规律：</p>
+<h3 id="原则一铁律开头不留灰色地带">原则一：铁律开头，不留灰色地带</h3>
+<p>Skill 的第一条内容必须是不可妥协的规则。</p>
+<p><strong>好</strong>：<code>NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST</code>
+<strong>差</strong>：<code>It's generally a good idea to write tests</code></p>
+<p>Agent 会试探边界。模糊的规则 = 不存在的规则。</p>
+<h3 id="原则二反驳预判堵死借口">原则二：反驳预判，堵死借口</h3>
+<p>最精彩的设计是预判 Agent 可能出现的合理化行为，然后提前否定。</p>
+<p>Agent 的典型借口：</p>
+<ul>
+<li>&ldquo;代码太简单不需要测试&rdquo; → Skill 里写 &ldquo;Simple code breaks. Test takes 30 seconds.&rdquo;</li>
+<li>&ldquo;我已经手工测过了&rdquo; → &ldquo;Manual = ad-hoc. No record, can&rsquo;t re-run.&rdquo;</li>
+<li>&ldquo;先写了代码再加测试也行&rdquo; → &ldquo;Tests passing immediately proves nothing.&rdquo;</li>
+</ul>
+<p>这不是在跟 Agent 抬杠，是在<strong>用经验堵死偷懒路径</strong>。</p>
+<h3 id="原则三结构化输出防止looks-good">原则三：结构化输出，防止&quot;looks good&quot;</h3>
+<p>Agent 最便宜的偷懒方式是给一个模糊的好评。强制它输出结构化报告——表格、清单、逐项打分——让它没法用一句&quot;looks good&quot;糊弄过去。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gu">## Code Review Report
+</span></span></span><span class="line"><span class="cl"><span class="gu">### Type Annotations: 3/5 checked, 2 issues
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> Line 42: missing return type
+</span></span><span class="line"><span class="cl"><span class="gu">### Verdict: NEEDS FIX (2 issues)
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>格式化的本质是<strong>防作弊</strong>。</p>
+<h3 id="原则四短于-80-行">原则四：短于 80 行</h3>
+<p>Skill 越长，Agent 越容易忽略关键信息。理想的 Skill 在 50-80 行之间——刚好覆盖所有规则，但不会多到被跳读。</p>
+<p>你可能会想&quot;我把所有细节都写进去总没错&quot;。但 LLM 的注意力是有限资源。80 行 Skill 里的每条规则都会被认真对待；200 行 Skill 的后半段大概率被忽略。</p>
+<p><strong>精简技巧</strong>：写完 Skill 后，逐行问&quot;删掉这行，Agent 还会犯错吗？&ldquo;不会就删。</p>
+<h3 id="原则五验证闭环">原则五：验证闭环</h3>
+<p>好的 Skill 自带验证机制。不是&quot;建议你这么做&rdquo;，而是&quot;不这么做就不能结束&quot;。</p>
+<p>Superpowers 用 Stop Hook 实现这个闭环：</p>
+<ul>
+<li>TDD Skill 要求每个函数有测试 → 检查 pytest 输出</li>
+<li>Code Review Skill 要求格式化输出报告 → 检查报告格式</li>
+<li>验证失败 → Hook 返回 <code>block</code> → Agent 被迫回去补</li>
+</ul>
+<p>Skill 定义标准，Hook 执行标准。Skill 写&quot;应该怎样&quot;，Hook 验证&quot;做了没有&quot;。</p>
+<hr>
+<h2 id="6-skill-的边界它解决不了什么">6. Skill 的边界：它解决不了什么</h2>
+<p>Skill 不是银弹。几个它解决不了的问题：</p>
+<p><strong>1. Skill 不能替代判断</strong></p>
+<p>Skill 说&quot;所有函数必须有类型注解&quot;，但 <code>__init__.py</code> 里的 <code>__all__ = [...]</code> 不需要注解。Agent 需要判断什么时候适用规则、什么时候不适用。Skill 提供的是框架，不是僵化的清单。</p>
+<p><strong>2. Skill 质量取决于写的人</strong></p>
+<p>Skill 本身是一段 prompt。写得差 = 效果差。一个模糊的 Skill 比没有 Skill 还糟——它给了 Agent 一个&quot;我在遵循规则&quot;的错觉。</p>
+<p><strong>3. Skill 有 token 成本，但它自己会赚回来</strong></p>
+<p>Skill 不是常驻上下文的。SessionStart 只注入每个 Skill 的名称和描述（约 20-30 token），让 Agent 知道有哪些可用。完整的 Skill 内容只在意图匹配或用户主动调用时才加载——没触发的 Skill 不占上下文。</p>
+<p>一个 80 行的 Skill 大约 500-800 token。每次触发加载一次，平时不耗。</p>
+<p>但这是笔划算的买卖——没有 Skill 的时候，Agent 用错误的方法做完任务，你得花好几轮对话纠正它。一轮&quot;你这不对&quot;→&ldquo;哦我改&rdquo;→&ldquo;还不对&rdquo;→&ldquo;再改&quot;的拉扯，轻松烧掉 3000-5000 token。一个 Skill 加载只要 800 token，却能一上来就走对路，省掉的不只是 token——还有你的时间和耐心。</p>
+<p>判断值不值很简单：<strong>Skill 省下的 token &gt; Skill 自身的 token × 触发次数</strong>。如果 800 token 的 Skill 每次帮你省两轮纠错（~6000 token），触发一次就回本，后面全是净赚。</p>
+<p>但如果 Skill 设计得臃肿——200 行、塞满边缘情况、堆砌八百年不触发一次的规则——加载成本就会超过收益。精简是第一生产力。写完 Skill 后删掉一半字，再删一半，剩下的才是真的。</p>
+<hr>
+<h2 id="7-结语三层的完整图像">7. 结语：三层的完整图像</h2>
+<p>回过头来看这个系列的三篇文章：</p>
+<table>
+<thead>
+<tr>
+<th>篇</th>
+<th>主题</th>
+<th>核心问题</th>
+<th>核心答案</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>一</td>
+<td>插件</td>
+<td>能做什么？</td>
+<td>装备——压缩输出、记忆复用、语义搜索</td>
+</tr>
+<tr>
+<td>二</td>
+<td>Hooks</td>
+<td>什么时候做？</td>
+<td>触发器——事件驱动，自动执行</td>
+</tr>
+<tr>
+<td>三</td>
+<td>Skill</td>
+<td>怎么做？</td>
+<td>方法论——行为编码，经验模块化</td>
+</tr>
+</tbody>
+</table>
+<p>装完插件，配好 Hooks，写好 Skill——Claude Code 从&quot;终端里的 AI 助手&quot;变成了&quot;会按照你的方法论做事的工程搭档&rdquo;。</p>
+<p>但这里有一个更深的问题：<strong>如果你已经有一整套插件 + Hooks + Skills，这和&quot;你自己的 Agent 框架&quot;的差别在哪？</strong></p>
+<p>实际上，差别已经很小了。Superpowers 的 Skill 加载机制（意图匹配 + 自动注入），配合 Hooks 的事件驱动，本质上就是一个 Agent 框架的雏形。你只是在别人的平台上跑自己的规则。</p>
+<p>下一站或许是 Hermes Agent——Nous Research 开源的 Agent 框架，自带持久记忆和自动 Skill 进化。你把 Claude Code 当执行引擎，Hermes 当任务编排者，一个分析需求拆解任务，一个写代码跑测试。从&quot;在别人平台上写插件&quot;到&quot;编排自己的 Agent 团队&quot;。但那是另一个故事了。</p>
+<p><em>感谢阅读。</em></p>
+<div class="post-series-nav">
+                <em>本文是「<a href="/series/claude-code-deep-dive/">AI 编程·Claude Code</a>」系列第 3 篇，共 3 篇。上一篇：<a href="/posts/2026/06/02/claude-code-hooks-guide/">Claude Code Hooks 完全指南：事件驱动的 AI 编程自动化</a>。</em>
+            </div></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2026-06-09</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/2026/06/09/claude-code-skills-guide/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/06/09/claude-code-skills-guide/" data-title="Claude Code Skills 深度解析：把经验写成可复用的知识模块" data-hashtags="tech,ai,claude code,skill,development tools"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/06/09/claude-code-skills-guide/" data-hashtag="tech"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/06/09/claude-code-skills-guide/" data-title="Claude Code Skills 深度解析：把经验写成可复用的知识模块"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/06/09/claude-code-skills-guide/" data-title="Claude Code Skills 深度解析：把经验写成可复用的知识模块"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/06/09/claude-code-skills-guide/" data-title="Claude Code Skills 深度解析：把经验写成可复用的知识模块"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/tech/">技术</a>,&nbsp;<a href="/tags/ai/">Ai</a>,&nbsp;<a href="/tags/claude-code/">Claude Code</a>,&nbsp;<a href="/tags/skill/">Skill</a>,&nbsp;<a href="/tags/development-tools/">Development Tools</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2026/06/02/claude-code-hooks-guide/" class="prev" rel="prev" title="Claude Code Hooks 完全指南：事件驱动的 AI 编程自动化"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Claude Code Hooks 完全指南：事件驱动的 AI 编程自动化</a></div>
+
+</div>
+<div id="comments"><div id="waline" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://waline.js.org/">Waline</a>.
+            </noscript><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.131.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/waline/waline.min.css"><script type="text/javascript" src="/lib/waline/waline.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config=Object.assign(window.config||{},{"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Comments","categoryId":"DIC_kwDOH2gmzc4CQ_fM","darkTheme":"dark","emitMetadata":"0","inputPosition":"bottom","lang":"zh-CN","lazyLoading":true,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"whitefirer/whitefirer.github.io","repoId":"R_kgDOH2gmzQ"},"waline":{"dark":"auto","el":"#waline","lang":"zh-CN","pageSize":10,"requiredMeta":["nick","mail"],"serverURL":"https://comment.whitefirer.org"}},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}});</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">!function(){function svgToPng(svg,cb){var c=svg.cloneNode(!0),d=new XMLSerializer().serializeToString(c),img=new Image(),cv=document.createElement('canvas'),w=c.viewBox.animVal.width||c.getBoundingClientRect().width||400,h=c.viewBox.animVal.height||c.getBoundingClientRect().height||300,s=2;cv.width=w*s,cv.height=h*s;var ctx=cv.getContext('2d'),b=new Blob([d],{type:'image/svg+xml;charset=utf-8'}),u=URL.createObjectURL(b);img.onload=function(){ctx.fillStyle='#fff',ctx.fillRect(0,0,cv.width,cv.height),ctx.drawImage(img,0,0,cv.width,cv.height),URL.revokeObjectURL(u),cv.toBlob(function(blob){var a=document.createElement('a');a.href=URL.createObjectURL(blob);var id=svg.id||'diagram';a.download=id+'.png',a.click(),URL.revokeObjectURL(a.href),cb&&cb()})},img.src=u}function addSaveBtn(svg){if(svg.closest('.mermaid-stage,.mermaid-fs-overlay,.mermaid-wrapper,.mermaid-toolbar,.svg-diagram-wrap'))return;var wrap=document.createElement('div');wrap.className='svg-diagram-wrap';var d=svg.style.display||'block',w=svg.style.width||svg.getAttribute('width')||'100%',mw=svg.style.maxWidth||'',m=svg.style.margin||'';wrap.style.cssText='position:relative;display:'+d+';width:'+w+';'+(mw?'max-width:'+mw+';':'')+(m?'margin:'+m+';':'')+'line-height:0';svg.style.display='block';svg.style.width='100%';svg.style.maxWidth='';svg.style.margin='0';svg.parentNode.insertBefore(wrap,svg);wrap.appendChild(svg);var bar=document.createElement('div');bar.style.cssText='text-align:right;padding-top:6px';var btn=document.createElement('button');btn.className='svg-save-btn',btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span style="vertical-align:middle;font-size:12px">保存图片</span>',btn.style.cssText='background:none;border:1px solid transparent;border-radius:4px;padding:2px 6px;cursor:pointer;color:#b0b7c3;font-family:system-ui,sans-serif;line-height:1';bar.appendChild(btn);wrap.appendChild(bar);btn.onmouseenter=function(){btn.style.color='#6366f1';btn.style.borderColor='#e5e7eb'};btn.onmouseleave=function(){btn.style.color='#b0b7c3';btn.style.borderColor='transparent'};btn.onclick=function(e){e.stopPropagation();var orig=btn.innerHTML;btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span style="vertical-align:middle;font-size:12px">导出中...</span>';btn.disabled=!0;svgToPng(svg,function(){btn.innerHTML=orig;btn.disabled=!1})}}function initSvgButtons(){document.querySelectorAll('.content svg').forEach(function(svg){addSaveBtn(svg)})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initSvgButtons);else initSvgButtons()}()</script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-70Q8REKE17', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-70Q8REKE17" async></script></body>
+</html>
