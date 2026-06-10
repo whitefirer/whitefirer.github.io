@@ -169,11 +169,11 @@ need 是这些体验的浓缩。自驱力是 need 遇到不甘心之后的燃烧
 
 **参考来源**
 
-- 刘梓瑜《丧尸清道夫》：[36氪](https://www.36kr.com/p/3813482781662726) · [澎湃新闻](https://m.thepaper.cn/newsDetail_forward_33163717) · [知乎](https://zhuanlan.zhihu.com/p/2040389329252573665)
+- 刘梓瑜《丧尸清道夫》：[B站原片](https://www.bilibili.com/video/BV1FFRQB2Eqw/) · [36氪](https://www.36kr.com/p/3813482781662726) · [澎湃新闻](https://m.thepaper.cn/newsDetail_forward_33163717)
 - AI 漫剧素人案例：[澎湃新闻·他们想靠AI短剧换个活法](https://m.thepaper.cn/newsDetail_forward_33303786) · [中国青年网·宁波00后AI漫剧](https://user.youth.cn/article/abk)
 - 一人公司失败案例：[钛媒体·跟风一人公司忙了半年0收入](https://www.tmtpost.com/8015840.html)
 - 钉钉 ONE /《置身钉内》：[新浪新闻](https://news.sina.cn/2026-06-10/detail-iniaxeit4482436.d.html) · [腾讯新闻](https://news.qq.com/rain/a/20260610A080T900)
-- 瑞幸 AI 开放平台：[太平洋电脑网](https://news.pconline.com.cn/2170/21700463.html) · [经济参考报](http://jjckb.xinhuanet.com/20260603/171283e70c44494ab9ff31e069379208/c.html)
+- 瑞幸 AI 开放平台：[open.luckincoffee.com](https://open.luckincoffee.com/cli) · [太平洋电脑网](https://news.pconline.com.cn/2170/21700463.html) · [经济参考报](http://jjckb.xinhuanet.com/20260603/171283e70c44494ab9ff31e069379208/c.html)
 - 百度 All in AI 复盘：[艾瑞咨询](https://column.iresearch.cn/b/202603/1025869.shtml) · [虎嗅](https://www.huxiu.com/article/4854023.html)
 - 李开复 / 零一万物：[OFweek](https://www.ofweek.com/ai/2026-06/ART-201712-8420-30689082.html) · [虎嗅](https://w.geekpark.net/news/365351)
 - 王小川 / 百川智能：同上
