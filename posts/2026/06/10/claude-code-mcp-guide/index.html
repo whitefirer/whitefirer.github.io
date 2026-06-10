@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Claude Code MCP 完全指南：给你的 AI 造工具 - whitefirer[PG]</title><meta name="Description" content="深入 MCP（Model Context Protocol）：从协议原理到动手写一个 MCP Server，从市场生态选型到五层安全防御。读完你会理解 MCP 为什么是 Claude Code 四层架构的最后一块基石，以及怎么自己造。"><meta property="og:url" content="https://whitefirer.org/posts/2026/06/10/claude-code-mcp-guide/">
+  <meta property="og:site_name" content="whitefirer[PG]">
+  <meta property="og:title" content="Claude Code MCP 完全指南：给你的 AI 造工具">
+  <meta property="og:description" content="深入 MCP（Model Context Protocol）：从协议原理到动手写一个 MCP Server，从市场生态选型到五层安全防御。读完你会理解 MCP 为什么是 Claude Code 四层架构的最后一块基石，以及怎么自己造。">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-06-10T20:48:00+08:00">
+    <meta property="article:modified_time" content="2026-06-11T02:43:25+08:00">
+    <meta property="article:tag" content="技术">
+    <meta property="article:tag" content="Ai">
+    <meta property="article:tag" content="Claude Code">
+    <meta property="article:tag" content="Mcp">
+    <meta property="article:tag" content="Development Tools">
+      <meta property="og:see_also" content="https://whitefirer.org/posts/2026/06/09/claude-code-skills-guide/">
+      <meta property="og:see_also" content="https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/">
+      <meta property="og:see_also" content="https://whitefirer.org/posts/2026/04/28/claude-code-plugins-guide/">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Claude Code MCP 完全指南：给你的 AI 造工具">
+  <meta name="twitter:description" content="深入 MCP（Model Context Protocol）：从协议原理到动手写一个 MCP Server，从市场生态选型到五层安全防御。读完你会理解 MCP 为什么是 Claude Code 四层架构的最后一块基石，以及怎么自己造。">
+<meta name="application-name" content="whitefirer[PG]">
+<meta name="apple-mobile-web-app-title" content="whitefirer[PG]"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/06/10/claude-code-mcp-guide/" /><link rel="prev" href="https://whitefirer.org/posts/2026/06/09/claude-code-skills-guide/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Claude Code MCP 完全指南：给你的 AI 造工具",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/whitefirer.org\/posts\/2026\/06\/10\/claude-code-mcp-guide\/"
+        },"genre": "posts","keywords": "tech, ai, claude code, mcp, development tools","wordcount":  4682 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/06\/10\/claude-code-mcp-guide\/","datePublished": "2026-06-10T20:48:00+08:00","dateModified": "2026-06-11T02:43:25+08:00","license": "2022©️whitefirer","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "whitefirer"
+            },"description": "深入 MCP（Model Context Protocol）：从协议原理到动手写一个 MCP Server，从市场生态选型到五层安全防御。读完你会理解 MCP 为什么是 Claude Code 四层架构的最后一块基石，以及怎么自己造。"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="whitefirer[PG]">whitefirer[PG]</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/series/ai-zatan/"> AI 杂谈 </a><div class="menu-item has-dropdown">
+                            <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                            <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a></div>
+                        </div><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/2026/06/10/claude-code-mcp-guide/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header>
+<script>
+(function() {
+    document.querySelectorAll('.has-dropdown .dropdown-toggle').forEach(function(toggle) {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var parent = this.closest('.has-dropdown');
+            parent.classList.toggle('open');
+        });
+    });
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.has-dropdown.open').forEach(function(d) {
+            d.classList.remove('open');
+        });
+    });
+})();
+</script><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="whitefirer[PG]">whitefirer[PG]</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/series/ai-zatan/" title="">AI 杂谈</a><div class="menu-item has-dropdown">
+                        <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                        <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a></div>
+                    </div><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/posts/2026/06/10/claude-code-mcp-guide/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><div style="display:flex;align-items:baseline;gap:0">
+        <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">Claude Code MCP 完全指南：给你的 AI 造工具</h1></div><h2 class="single-subtitle">一个协议，三要素（Tool/Resource/Prompt），用自定义 MCP Server 扩展 Claude Code 的能力边界</h2><div class="post-series">
+                <a href="/series/claude-code-deep-dive/"><i class="fas fa-layer-group fa-fw" aria-hidden="true"></i>AI 编程·Claude Code</a>
+            </div><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-06-10">2026-06-10</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 4682 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 10 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#前言">前言</a></li>
+    <li><a href="#1-mcp-在四层模型中的位置">1. MCP 在四层模型中的位置</a></li>
+    <li><a href="#2-mcp-是什么一个协议两种传输三要素">2. MCP 是什么：一个协议，两种传输，三要素</a></li>
+    <li><a href="#3-动手写一个-mcp-server">3. 动手写一个 MCP Server</a>
+      <ul>
+        <li><a href="#31-初始化">3.1 初始化</a></li>
+        <li><a href="#32-最简骨架">3.2 最简骨架</a></li>
+        <li><a href="#33-注册到-claude-code">3.3 注册到 Claude Code</a></li>
+        <li><a href="#34-再加一个-resource">3.4 再加一个 Resource</a></li>
+        <li><a href="#35-最重要的事tool-描述">3.5 最重要的事：Tool 描述</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-mcp-市场生态从-10-个到-10000">4. MCP 市场生态：从 10 个到 10,000+</a>
+      <ul>
+        <li><a href="#41-写代码必装">4.1 写代码必装</a></li>
+        <li><a href="#42-按技术栈选">4.2 按技术栈选</a></li>
+        <li><a href="#43-五-server-黄金组合">4.3 五 Server 黄金组合</a></li>
+      </ul>
+    </li>
+    <li><a href="#5-安全mcp-是把双刃剑">5. 安全：MCP 是把双刃剑</a>
+      <ul>
+        <li><a href="#51-五层防御模型">5.1 五层防御模型</a></li>
+        <li><a href="#52-四大常见漏洞">5.2 四大常见漏洞</a></li>
+        <li><a href="#53-安全底线">5.3 安全底线</a></li>
+      </ul>
+    </li>
+    <li><a href="#6-mcp-的边界输出不可控">6. MCP 的边界：输出不可控</a></li>
+    <li><a href="#7-常见坑">7. 常见坑</a>
+      <ul>
+        <li><a href="#stdio-日志消失">stdio 日志消失</a></li>
+        <li><a href="#tool-太多claude-code-变傻">Tool 太多，Claude Code 变傻</a></li>
+        <li><a href="#环境变量不生效">环境变量不生效</a></li>
+        <li><a href="#npx-每次都装">npx 每次都装</a></li>
+      </ul>
+    </li>
+    <li><a href="#8-结语四层凑齐了">8. 结语：四层凑齐了</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><blockquote>
+<p>一个协议，三要素（Tool/Resource/Prompt），用自定义 MCP Server 扩展 Claude Code 的能力边界。</p>
+</blockquote>
+<hr>
+<h2 id="前言">前言</h2>
+<p><a href="/posts/2026/04/28/claude-code-plugins-guide/" rel="">插件篇</a> 讲了四个必装插件和一个 MCP 服务。但那篇对 MCP 只摸了皮毛——装了一个 claude-context，提了一句&quot;MCP 是外部工具连接器&quot;。</p>
+<p>本文把 MCP 彻底拆开：协议怎么跑、Tool/Resource/Prompt 分别干什么、怎么从零写一个 MCP Server、市场上哪些值得装、怎么防注入和越权。</p>
+<p>更重要的是——把 MCP 放进四层架构里。如果说前三篇搭建了 Plugin → Hooks → Skill 三层，那 MCP 是更底层的那块砖：<strong>Tool 层——Claude Code 能做什么的原子能力</strong>。</p>
+<hr>
+<h2 id="1-mcp-在四层模型中的位置">1. MCP 在四层模型中的位置</h2>
+<p>回看系列的三层模型，现在把它扩成四层：</p>
+<p><svg id="four-layer-model" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 340" width="100%" style="max-width:680px;display:block;margin:1.2em auto"><defs><linearGradient id="l4" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#34d399"/></linearGradient><linearGradient id="l3h" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#818cf8"/></linearGradient><linearGradient id="l2p" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#fbbf24"/></linearGradient><linearGradient id="l1t" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#22d3ee"/></linearGradient><filter id="sh"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.10"/></filter></defs><!-- Tool layer (bottom) --><g filter="url(#sh)"><rect x="40" y="264" width="600" height="66" rx="8" fill="#fff" stroke="#06b6d4" stroke-width="1.5"/><rect x="40" y="264" width="600" height="34" rx="8" fill="url(#l1t)"/><rect x="40" y="290" width="600" height="8" fill="url(#l1t)"/><circle cx="66" cy="281" r="11" fill="#fff" opacity="0.25"/><text x="66" y="286" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="system-ui,sans-serif">①</text><text x="86" y="286" fill="#fff" font-size="13" font-weight="700" font-family="system-ui,sans-serif">Tool（内置 + MCP 扩展）</text><text x="292" y="286" fill="rgba(255,255,255,0.75)" font-size="11" font-family="system-ui,sans-serif">原子能力 — 能做什么</text><text x="56" y="320" fill="#374151" font-size="12" font-family="system-ui,sans-serif">内置 Read/Write/Bash + 自定义 MCP Tool。MCP 是用户扩展 Tool 的唯一入口。</text></g><!-- Arrow 1→2 --><line x1="340" y1="262" x2="340" y2="256" stroke="#d1d5db" stroke-width="1.5"/><polygon points="336,258 340,254 344,258" fill="#d1d5db"/><!-- Plugin/MCP layer --><g filter="url(#sh)"><rect x="40" y="192" width="600" height="62" rx="8" fill="#fff" stroke="#f59e0b" stroke-width="1.5"/><rect x="40" y="192" width="600" height="34" rx="8" fill="url(#l2p)"/><rect x="40" y="218" width="600" height="8" fill="url(#l2p)"/><circle cx="66" cy="209" r="11" fill="#fff" opacity="0.25"/><text x="66" y="214" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="system-ui,sans-serif">②</text><text x="86" y="214" fill="#fff" font-size="13" font-weight="700" font-family="system-ui,sans-serif">Plugin / MCP 服务</text><text x="260" y="214" fill="rgba(255,255,255,0.75)" font-size="11" font-family="system-ui,sans-serif">能力边界 — 外部能力注入</text><text x="56" y="244" fill="#374151" font-size="12" font-family="system-ui,sans-serif">Plugin 注入提示词 + Skill；MCP 服务暴露 Tool/Resource/Prompt 供模型调用。</text></g><!-- Arrow 2→3 --><line x1="340" y1="190" x2="340" y2="184" stroke="#d1d5db" stroke-width="1.5"/><polygon points="336,186 340,182 344,186" fill="#d1d5db"/><!-- Hooks layer --><g filter="url(#sh)"><rect x="40" y="120" width="600" height="62" rx="8" fill="#fff" stroke="#6366f1" stroke-width="1.5"/><rect x="40" y="120" width="600" height="34" rx="8" fill="url(#l3h)"/><rect x="40" y="146" width="600" height="8" fill="url(#l3h)"/><circle cx="66" cy="137" r="11" fill="#fff" opacity="0.25"/><text x="66" y="142" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="system-ui,sans-serif">③</text><text x="86" y="142" fill="#fff" font-size="13" font-weight="700" font-family="system-ui,sans-serif">Hooks</text><text x="168" y="142" fill="rgba(255,255,255,0.75)" font-size="11" font-family="system-ui,sans-serif">自动化 — 什么时候触发</text><text x="56" y="172" fill="#374151" font-size="12" font-family="system-ui,sans-serif">在正确的时间触发正确的事。但不告诉模型&quot;怎么做&quot;。</text></g><!-- Arrow 3→4 --><line x1="340" y1="118" x2="340" y2="112" stroke="#d1d5db" stroke-width="1.5"/><polygon points="336,114 340,110 344,114" fill="#d1d5db"/><!-- Skill layer --><g filter="url(#sh)"><rect x="40" y="28" width="600" height="80" rx="8" fill="#fff" stroke="#10b981" stroke-width="2"/><rect x="40" y="28" width="600" height="38" rx="8" fill="url(#l4)"/><rect x="40" y="58" width="600" height="8" fill="url(#l4)"/><circle cx="66" cy="47" r="12" fill="#fff" opacity="0.25"/><text x="66" y="52" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">④</text><text x="88" y="52" fill="#fff" font-size="14" font-weight="700" font-family="system-ui,sans-serif">Skill</text><text x="162" y="52" fill="rgba(255,255,255,0.8)" font-size="11" font-family="system-ui,sans-serif">方法论 — 怎么做</text><rect x="526" y="33" width="102" height="22" rx="11" fill="#fff" opacity="0.20"/><text x="577" y="48" text-anchor="middle" fill="#fff" font-size="10" font-weight="600" font-family="system-ui,sans-serif">本文关联</text><text x="56" y="94" fill="#374151" font-size="12" font-family="system-ui,sans-serif">定义一套规范：先干啥、再干啥、不能干啥。这是行为编码。</text></g></svg></p>
+<p>前三篇文章已经把上面三层讲透了。本文讲底层：<strong>Tool</strong>。</p>
+<p>注意第①层写了&quot;内置 + MCP 扩展&quot;。Claude Code 自带 Read、Write、Edit、Bash、Grep 等内置 Tool，但你<strong>不能直接往里加新的</strong>。要扩展 Tool，只有一条路——写一个 MCP Server，Claude Code 把你的 Tool 和内置 Tool 同等对待。</p>
+<p>这就是 MCP 的真正角色：<strong>不是&quot;又一个外部服务连接器&quot;，而是用户扩展 Tool 的唯一入口。</strong></p>
+<hr>
+<h2 id="2-mcp-是什么一个协议两种传输三要素">2. MCP 是什么：一个协议，两种传输，三要素</h2>
+<p>MCP（Model Context Protocol）是 Anthropic 2024 年底发布的开放协议，官网 <a href="https://modelcontextprotocol.io" target="_blank" rel="noopener noreffer ">modelcontextprotocol.io</a>。本质就是一句话：</p>
+<blockquote>
+<p><strong>MCP Server 暴露能力，MCP Client（Claude Code）发现并调用。</strong></p>
+</blockquote>
+<p>协议层跑 JSON-RPC 2.0。传输层有两种：</p>
+<table>
+<thead>
+<tr>
+<th>传输</th>
+<th>原理</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>stdio</strong></td>
+<td>父进程启动子进程，通过 stdin/stdout 通信</td>
+<td>本地工具，最简单</td>
+</tr>
+<tr>
+<td><strong>HTTP（SSE）</strong></td>
+<td>远端 HTTP 服务，Server-Sent Events 推送</td>
+<td>远程服务、多用户共享</td>
+</tr>
+</tbody>
+</table>
+<p>99% 的个人 MCP Server 用 stdio，一行 <code>npx</code> 或 <code>python</code> 启动就行。</p>
+<p>传输层本身是可扩展的——只要能在双向通道上跑 JSON-RPC 2.0，你用 WebSocket、gRPC、甚至自定义协议都行。官方只标准化了前两种，但没锁死。</p>
+<p><strong>MCP Server 可以暴露三种东西：</strong></p>
+<table>
+<thead>
+<tr>
+<th>要素</th>
+<th>是什么</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Tool</strong></td>
+<td>模型可调用的函数</td>
+<td><code>search_code(query)</code> → 返回匹配文件</td>
+</tr>
+<tr>
+<td><strong>Resource</strong></td>
+<td>模型可读取的数据</td>
+<td><code>file:///project/README.md</code> → 返回文件内容</td>
+</tr>
+<tr>
+<td><strong>Prompt</strong></td>
+<td>预定义的提示词模板</td>
+<td>&ldquo;Review this PR with focus on security&rdquo;</td>
+</tr>
+</tbody>
+</table>
+<p>三者里 Tool 是主角。Resource 和 Prompt 是配角——有用，但不是每个 Server 都需要。</p>
+<p>Tool 的抽象不挑底层。背后可以是 REST API、数据库查询、文件系统操作——也可以是 ESP32 的 GPIO 引脚、智能家居的继电器、机械臂的舵机。任何能封装成 JSON-RPC 接口的东西，都能变成 Claude Code 里的一个 Tool。IoT 设备只要跑得动一个 MCP Server，就和 Postgres MCP 没有区别。</p>
+<p>也就是说，你可以用 Claude Code 这个 Agent 来充当工作和生活中的智能指挥中枢——调数据库、发 Issue、控灯光、查天气，都是同一个入口，都是同一个协议。</p>
+<hr>
+<h2 id="3-动手写一个-mcp-server">3. 动手写一个 MCP Server</h2>
+<p>最快的理解方式是写一个。用一个真实场景：<strong>给 Claude Code 加一个&quot;查天气&quot;的 Tool</strong>。</p>
+<h3 id="31-初始化">3.1 初始化</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mkdir weather-mcp <span class="o">&amp;&amp;</span> <span class="nb">cd</span> weather-mcp
+</span></span><span class="line"><span class="cl">npm init -y
+</span></span><span class="line"><span class="cl">npm install @modelcontextprotocol/sdk zod
+</span></span><span class="line"><span class="cl">npm install -D typescript tsx @types/node
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="32-最简骨架">3.2 最简骨架</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-typescript" data-lang="typescript"><span class="line"><span class="cl"><span class="c1">// src/index.ts
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">import</span> <span class="p">{</span> <span class="nx">McpServer</span> <span class="p">}</span> <span class="kr">from</span> <span class="s2">&#34;@modelcontextprotocol/sdk/server/mcp.js&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="p">{</span> <span class="nx">StdioServerTransport</span> <span class="p">}</span> <span class="kr">from</span> <span class="s2">&#34;@modelcontextprotocol/sdk/server/stdio.js&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="p">{</span> <span class="nx">z</span> <span class="p">}</span> <span class="kr">from</span> <span class="s2">&#34;zod&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">server</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">McpServer</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">name</span><span class="o">:</span> <span class="s2">&#34;weather&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">version</span><span class="o">:</span> <span class="s2">&#34;1.0.0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">});</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 注册一个 Tool
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">server</span><span class="p">.</span><span class="nx">tool</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;get_weather&#34;</span><span class="p">,</span>                          <span class="c1">// Tool 名称
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="s2">&#34;Get current weather for a city&#34;</span><span class="p">,</span>       <span class="c1">// 描述——Claude 靠这个决定要不要调用
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">{</span> <span class="nx">city</span>: <span class="kt">z.string</span><span class="p">().</span><span class="nx">describe</span><span class="p">(</span><span class="s2">&#34;City name in English, e.g. Tokyo&#34;</span><span class="p">)</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">async</span> <span class="p">({</span> <span class="nx">city</span> <span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 实际逻辑：调天气 API
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kr">const</span> <span class="nx">temp</span> <span class="o">=</span> <span class="mi">22</span><span class="p">;</span> <span class="c1">// 示例数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">content</span><span class="o">:</span> <span class="p">[{</span>
+</span></span><span class="line"><span class="cl">        <span class="kr">type</span><span class="o">:</span> <span class="s2">&#34;text&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">text</span><span class="o">:</span> <span class="sb">`</span><span class="si">${</span><span class="nx">city</span><span class="si">}</span><span class="sb">: </span><span class="si">${</span><span class="nx">temp</span><span class="si">}</span><span class="sb">°C, sunny`</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}],</span>
+</span></span><span class="line"><span class="cl">    <span class="p">};</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">async</span> <span class="kd">function</span> <span class="nx">main() {</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">const</span> <span class="nx">transport</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">StdioServerTransport</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="k">await</span> <span class="nx">server</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="nx">transport</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// 关键：日志用 stderr，stdout 被 JSON-RPC 占用
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s2">&#34;Weather MCP server running on stdio&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">main</span><span class="p">().</span><span class="k">catch</span><span class="p">((</span><span class="nx">err</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s2">&#34;Fatal:&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">process</span><span class="p">.</span><span class="nx">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">});</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="33-注册到-claude-code">3.3 注册到 Claude Code</h3>
+<p>项目根目录创建 <code>.mcp.json</code>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;mcpServers&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;weather&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;npx&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;args&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;tsx&#34;</span><span class="p">,</span> <span class="s2">&#34;src/index.ts&#34;</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;cwd&#34;</span><span class="p">:</span> <span class="s2">&#34;/home/user/projects/weather-mcp&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>重启 Claude Code。现在你可以说：</p>
+<blockquote>
+<p>&ldquo;东京今天什么天气？&rdquo;</p>
+</blockquote>
+<p>Claude Code 看到 <code>get_weather</code> 的描述里有 &ldquo;weather&rdquo; 和 &ldquo;city&rdquo;，自动匹配调用，拿到 <code>22°C, sunny</code>，回给你。</p>
+<p><strong>就这么简单。</strong> 你写了一个函数，注册到 MCP Server，Claude Code 就能调——和内置 Tool 一样。</p>
+<h3 id="34-再加一个-resource">3.4 再加一个 Resource</h3>
+<p>Tool 是&quot;模型主动调&quot;，Resource 是&quot;模型按需读&quot;：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-typescript" data-lang="typescript"><span class="line"><span class="cl"><span class="nx">server</span><span class="p">.</span><span class="nx">resource</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;weather_cities&#34;</span><span class="p">,</span>                      <span class="c1">// Resource URI 标识
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="s2">&#34;weather://supported-cities&#34;</span><span class="p">,</span>          <span class="c1">// 唯一 URI
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">({</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">contents</span><span class="o">:</span> <span class="p">[{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">uri</span><span class="o">:</span> <span class="s2">&#34;weather://supported-cities&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">text</span><span class="o">:</span> <span class="s2">&#34;Tokyo, Beijing, London, New York&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}],</span>
+</span></span><span class="line"><span class="cl">  <span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Claude Code 可以在任何对话中读取 <code>weather://supported-cities</code> 获取支持的城市列表。</p>
+<h3 id="35-最重要的事tool-描述">3.5 最重要的事：Tool 描述</h3>
+<p>Tool 描述是你和模型之间唯一的界面。Claude Code 不读你的源码，不看你的注释——只读 <code>server.tool()</code> 的第二个参数。这个字符串决定了三件事：</p>
+<ol>
+<li><strong>会不会被调用。</strong> 描述和用户意图不匹配 → 模型不知道这 Tool 存在。</li>
+<li><strong>什么时候被调用。</strong> 描述模糊 → 该调的时候不调，不该调的时候乱调。</li>
+<li><strong>参数长什么样。</strong> Zod schema 的 <code>.describe()</code> 就是参数的说明书。</li>
+</ol>
+<p>几个对比：</p>
+<table>
+<thead>
+<tr>
+<th>差的描述</th>
+<th>好的描述</th>
+<th>为什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&quot;Query data&quot;</code></td>
+<td><code>&quot;Get current weather by city name, returns temperature in Celsius and conditions (sunny/cloudy/rain)&quot;</code></td>
+<td>后者告诉模型&quot;什么时候用我&quot;和&quot;我能给你什么&quot;</td>
+</tr>
+<tr>
+<td><code>&quot;Run command&quot;</code></td>
+<td><code>&quot;Execute a shell command in the project root. Use for build, test, lint. NEVER use for destructive operations.&quot;</code></td>
+<td>后者不仅说了能做什么，还说了<strong>不能做什么</strong></td>
+</tr>
+<tr>
+<td><code>city: z.string()</code></td>
+<td><code>city: z.string().describe(&quot;City name in English, e.g. 'Tokyo' or 'New York'&quot;)</code></td>
+<td>带例子的参数描述大幅降低传参错误</td>
+</tr>
+</tbody>
+</table>
+<p><strong>描述里写&quot;不能做什么&quot;和写&quot;能做什么&quot;一样重要。</strong> 模型会试探边界——你不在描述里堵死，它就会越界。</p>
+<p>写完 Tool 后测试：在 Claude Code 里用几种不同的说法描述同一个需求，看模型能不能匹配到你的 Tool。匹配不到 = 描述不够精确。</p>
+<p>另外两条快速提醒：</p>
+<p><strong>用 Zod 定义输入结构。</strong> Zod schema 自动转成 JSON Schema 暴露给模型。字段的 <code>.describe()</code> 越精确越好。</p>
+<p><strong>日志只走 stderr。</strong> stdio 传输下 stdout 被 JSON-RPC 独占。<code>console.log()</code> 会污染协议通道导致 Server 断开，全部用 <code>console.error()</code>。</p>
+<hr>
+<h2 id="4-mcp-市场生态从-10-个到-10000">4. MCP 市场生态：从 10 个到 10,000+</h2>
+<p>截至 2026 年中，公开 MCP Server 超过 10,000 个。<code>modelcontextprotocol/servers</code> 官方仓库 86,000+ star。</p>
+<p>不需要全装。按场景选：</p>
+<h3 id="41-写代码必装">4.1 写代码必装</h3>
+<table>
+<thead>
+<tr>
+<th>Server</th>
+<th>做什么</th>
+<th>为什么必装</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GitHub MCP</strong></td>
+<td>PR 生命周期、Issue 管理、代码搜索</td>
+<td>Agent 要交代码就得碰 GitHub</td>
+</tr>
+<tr>
+<td><strong>Context7</strong></td>
+<td>实时拉最新版本文档</td>
+<td>消除 AI 幻觉——不再用过期 API</td>
+</tr>
+<tr>
+<td><strong>Filesystem MCP</strong></td>
+<td>限定目录的读写</td>
+<td>比裸 Bash 安全，有目录隔离</td>
+</tr>
+</tbody>
+</table>
+<h3 id="42-按技术栈选">4.2 按技术栈选</h3>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>Server</th>
+<th>做什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>后端</td>
+<td>Postgres / Supabase MCP</td>
+<td>直连数据库，自然语言查 schema</td>
+</tr>
+<tr>
+<td>测试</td>
+<td>Playwright MCP（Microsoft）</td>
+<td>无头浏览器，E2E 测试，UI 截图</td>
+</tr>
+<tr>
+<td>前端</td>
+<td>Figma MCP</td>
+<td>Design-to-Code，提取设计 tokens</td>
+</tr>
+<tr>
+<td>排错</td>
+<td>Sentry MCP</td>
+<td>拉完整调用栈 + 上下文</td>
+</tr>
+<tr>
+<td>管理</td>
+<td>Linear / Jira MCP</td>
+<td>Ticket → PR 闭环</td>
+</tr>
+</tbody>
+</table>
+<h3 id="43-五-server-黄金组合">4.3 五 Server 黄金组合</h3>
+<blockquote>
+<p><strong>GitHub + Filesystem + Context7 + Playwright + 你团队的 Tracker</strong>——覆盖 90% 日常场景，上下文消耗可控。</p>
+</blockquote>
+<p>装太多会出问题——每个 Server 的 Tool 描述都要占上下文。社区反馈 15 个 Server 一开，30-40% 的窗口可能被 Tool 列表吃掉。五个刚好。</p>
+<hr>
+<h2 id="5-安全mcp-是把双刃剑">5. 安全：MCP 是把双刃剑</h2>
+<p>Tool 是能力的延伸，也是攻击面的扩展。一个 MCP Server 有文件系统权限 = Agent 可能被诱导删掉你的项目。这不是危言耸听。</p>
+<h3 id="51-五层防御模型">5.1 五层防御模型</h3>
+<p><svg id="mcp-security-layers" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 255" width="100%" style="max-width:680px;display:block;margin:1.2em auto"><defs><linearGradient id="s1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ef4444"/><stop offset="100%" stop-color="#f87171"/></linearGradient><linearGradient id="s2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#fbbf24"/></linearGradient><linearGradient id="s3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#818cf8"/></linearGradient><linearGradient id="s4" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#34d399"/></linearGradient><linearGradient id="s5" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient><filter id="sh2"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/></filter></defs><!-- L5 outer --><g filter="url(#sh2)"><rect x="16" y="4" width="648" height="246" rx="12" fill="#f5f3ff" stroke="#a78bfa" stroke-width="1.2" stroke-dasharray="4,3"/><text x="36" y="26" fill="#7c3aed" font-size="12" font-weight="700" font-family="system-ui,sans-serif">L5 · 审计与可观测性</text><text x="36" y="44" fill="#6b7280" font-size="10" font-family="system-ui,sans-serif">结构化日志 / OpenTelemetry / SIEM / 不可篡改审计追踪</text></g><!-- L4 --><g filter="url(#sh2)"><rect x="44" y="46" width="592" height="196" rx="10" fill="#ecfdf5" stroke="#34d399" stroke-width="1.2" stroke-dasharray="4,3"/><text x="64" y="68" fill="#059669" font-size="12" font-weight="700" font-family="system-ui,sans-serif">L4 · 人在回路（Human-in-the-Loop）</text><text x="64" y="86" fill="#6b7280" font-size="10" font-family="system-ui,sans-serif">敏感操作需用户实时审批 / 时效令牌 / 操作前二次确认</text></g><!-- L3 --><g filter="url(#sh2)"><rect x="74" y="90" width="532" height="144" rx="9" fill="#eef2ff" stroke="#818cf8" stroke-width="1.2" stroke-dasharray="4,3"/><text x="94" y="112" fill="#4f46e5" font-size="12" font-weight="700" font-family="system-ui,sans-serif">L3 · 输入输出清洗</text><text x="94" y="130" fill="#6b7280" font-size="10" font-family="system-ui,sans-serif">参数校验 / 路径消毒 / SQL 注入防御 / PII 脱敏 / 出站代理过滤</text></g><!-- L2 --><g filter="url(#sh2)"><rect x="106" y="136" width="468" height="92" rx="8" fill="#fffbeb" stroke="#fbbf24" stroke-width="1.2" stroke-dasharray="4,3"/><text x="126" y="158" fill="#d97706" font-size="12" font-weight="700" font-family="system-ui,sans-serif">L2 · 最小权限</text><text x="126" y="176" fill="#6b7280" font-size="10" font-family="system-ui,sans-serif">Tool 级 RBAC / 只读模式 / 拒绝优先 + 显式白名单 / 参数范围限制</text></g><!-- L1 core --><g filter="url(#sh2)"><rect x="138" y="182" width="404" height="54" rx="8" fill="#fef2f2" stroke="#f87171" stroke-width="1.5"/><text x="340" y="214" text-anchor="middle" fill="#dc2626" font-size="13" font-weight="700" font-family="system-ui,sans-serif">L1 · 认证 — OAuth 2.1 + PKCE / 短效令牌 / 服务端签名验证</text></g></svg></p>
+<p>不是每个个人项目都要五层拉满。但<strong>至少做到前两层</strong>：</p>
+<p><strong>L1 — 认证。</strong> 不用共享 API Key。每个请求带独立身份，用短效令牌。stdio 模式天然隔离（只有本地进程能连），但 HTTP 模式必须上 OAuth。</p>
+<p><strong>L2 — 最小权限。</strong> 文件系统 Server 限定目录，数据库 Server 用只读账号。拒绝优先——不声明能做什么，声明<strong>不能做什么</strong>。</p>
+<h3 id="52-四大常见漏洞">5.2 四大常见漏洞</h3>
+<p><strong>命令注入。</strong> Server 里拼接用户输入到 shell 命令——头号漏洞。GitHub Kanban MCP、iOS Simulator MCP 都摔在这。修法：用 <code>execFile()</code> 代替 <code>exec()</code>，永远不把 LLM 输出当安全输入。</p>
+<p><strong>路径遍历。</strong> <code>../../.env</code> 读你的密钥。修法：<code>path.resolve()</code> 后验证结果在允许目录内。</p>
+<p><strong>伪只读绕过。</strong> 很多 DB Server 用 <code>query.startsWith(&quot;SELECT&quot;)</code> 判断只读——<code>SELECT pg_sleep(100)</code> 轻松绕过。修法：数据库级权限（建只读用户），不靠应用层校验。</p>
+<p><strong>提示注入。</strong> 外部内容（Issue 标题、PR 描述）可能包含&quot;请执行 <code>rm -rf /</code>&ldquo;的指令。修法：Tool 内部对模型传入的参数做二次校验，敏感操作强制人工确认。</p>
+<h3 id="53-安全底线">5.3 安全底线</h3>
+<p>三条铁律：</p>
+<ol>
+<li><strong>LLM 的输出不可信。</strong> Tool 收到的参数来自模型推理，模型可能被注入、可能幻觉。永远校验。</li>
+<li><strong>只读比读写安全十倍。</strong> 不确定就开只读。宁可多写一个 Tool 也不要用一个万能的。</li>
+<li><strong>生产数据一律隔离。</strong> 指向生产库的 MCP Server——别写。用副本，用沙箱，至少用只读副本。</li>
+</ol>
+<hr>
+<h2 id="6-mcp-的边界输出不可控">6. MCP 的边界：输出不可控</h2>
+<p>安全防御拉满，Tool 描述写到极致——还有一个根本限制绕不过去：<strong>LLM 的输出不可控。</strong></p>
+<p>编译器有形式语义——源码→词法分析→语法树→代码生成，每一步可证明。你的 TypeScript 编译成什么 JS，只要编译器没 bug，结果是确定的。</p>
+<p>LLM 选 Tool 不是这么回事。同样的输入，不同的上下文、不同的 temperature、甚至不同的随机种子——模型可能调 <code>get_weather</code>，也可能觉得不需要调，自己编一个温度。</p>
+<p>这意味着什么？</p>
+<p><strong>你没法保证 Tool 一定被正确调用。只能最大化正确调用的概率。</strong></p>
+<p>本文 3.5 节写的所有技巧——描述精确到能做什么不能做什么、参数带例子、写完换说法测试——本质上都是在提高这个概率。不是在提供保证。</p>
+<p>这也解释了为什么安全要做五层防御：因为上层（Tool 描述精确度）只能逼近 100%，永远到不了 100%。L1 认证、L2 最小权限、L3 输入清洗……每一层都是对上层的兜底。模型可能选错 Tool、传错参数、被注入诱导——但只要你校验了输入、限制了权限、隔离了数据，错了也炸不到你。</p>
+<p>接受这个边界，MCP 才不是玩具。</p>
+<p>而 Workflows——Claude Code 5 月底刚出的多 Agent 编排引擎——走的是另一条路：既然单次输出不可控，就用多个独立 Agent 交叉验证、对抗审查、锦标赛选优，把概率压到无限逼近确定。那是下一篇的事了。</p>
+<hr>
+<h2 id="7-常见坑">7. 常见坑</h2>
+<p>真实开发中踩过的：</p>
+<h3 id="stdio-日志消失">stdio 日志消失</h3>
+<p><code>console.log()</code> 会污染 JSON-RPC 通道，现象是 Claude Code 报 &ldquo;Unexpected token&rdquo; 然后 Server 断开。全换 <code>console.error()</code>——只有 stderr 安全。</p>
+<h3 id="tool-太多claude-code-变傻">Tool 太多，Claude Code 变傻</h3>
+<p>每个 Tool 的描述占上下文。装了 GitHub MCP 完整版（46+ Tool）+ 几个大 Server，Claude Code 开会话先吞掉 30-40% 窗口。<strong>控制在 5 个以内</strong>，优先选远程托管版（Tool 更少、更聚焦）。</p>
+<h3 id="环境变量不生效">环境变量不生效</h3>
+<p><code>.mcp.json</code> 里的 <code>env</code> 字段可以传环境变量：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;mcpServers&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;my-server&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;node&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;args&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;server.js&#34;</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;env&#34;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&#34;API_KEY&#34;</span><span class="p">:</span> <span class="s2">&#34;${MY_API_KEY}&#34;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>注意 <code>${}</code> 语法引用的是<strong>宿主机</strong>环境变量，不是 Claude Code 的。配错了 Server 静默失败。</p>
+<h3 id="npx-每次都装">npx 每次都装</h3>
+<p><code>npx tsx</code> 每次启动会检查更新，拖慢启动速度。生产级 Server 用 <code>node dist/index.js</code>，先 <code>tsc</code> 编译好再跑。</p>
+<hr>
+<h2 id="8-结语四层凑齐了">8. 结语：四层凑齐了</h2>
+<p>回过头来看这个系列现在覆盖了 Claude Code 的完整技术栈：</p>
+<table>
+<thead>
+<tr>
+<th>层</th>
+<th>主题</th>
+<th>核心问题</th>
+<th>核心答案</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① Tool</td>
+<td>MCP</td>
+<td>能做什么？</td>
+<td>内置 + 自定义 MCP Tool——原子能力</td>
+</tr>
+<tr>
+<td>② Plugin</td>
+<td>插件</td>
+<td>装什么？</td>
+<td>装备——压缩输出、记忆复用、语义搜索</td>
+</tr>
+<tr>
+<td>③ Hooks</td>
+<td>Hooks</td>
+<td>什么时候触发？</td>
+<td>事件驱动，自动执行</td>
+</tr>
+<tr>
+<td>④ Skill</td>
+<td>Skill</td>
+<td>怎么做？</td>
+<td>方法论——行为编码，经验模块化</td>
+</tr>
+</tbody>
+</table>
+<p>从底层 Tool（MCP 扩展）到顶层 Skill（行为契约），四层叠在一起：<strong>Tool 给手脚，Plugin 给装备，Hooks 给神经反射，Skill 给大脑皮层。</strong></p>
+<p>装完插件，配好 Hooks，写好 Skill，再写两个自己用的 MCP Server——Claude Code 不再是个&quot;终端里的 AI 助手&rdquo;，你是在用它搭自己的开发平台。</p>
+<hr>
+<p><em>感谢阅读。</em></p>
+<div class="post-series-nav">
+                <em>本文是「<a href="/series/claude-code-deep-dive/">AI 编程·Claude Code</a>」系列第 4 篇，共 4 篇。上一篇：<a href="/posts/2026/06/09/claude-code-skills-guide/">Claude Code Skills 深度解析：把经验写成可复用的知识模块</a>。</em>
+            </div></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2026-06-11</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/2026/06/10/claude-code-mcp-guide/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/06/10/claude-code-mcp-guide/" data-title="Claude Code MCP 完全指南：给你的 AI 造工具" data-hashtags="tech,ai,claude code,mcp,development tools"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/06/10/claude-code-mcp-guide/" data-hashtag="tech"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/06/10/claude-code-mcp-guide/" data-title="Claude Code MCP 完全指南：给你的 AI 造工具"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/06/10/claude-code-mcp-guide/" data-title="Claude Code MCP 完全指南：给你的 AI 造工具"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/06/10/claude-code-mcp-guide/" data-title="Claude Code MCP 完全指南：给你的 AI 造工具"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/tech/">技术</a>,&nbsp;<a href="/tags/ai/">Ai</a>,&nbsp;<a href="/tags/claude-code/">Claude Code</a>,&nbsp;<a href="/tags/mcp/">Mcp</a>,&nbsp;<a href="/tags/development-tools/">Development Tools</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2026/06/09/claude-code-skills-guide/" class="prev" rel="prev" title="Claude Code Skills 深度解析：把经验写成可复用的知识模块"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Claude Code Skills 深度解析：把经验写成可复用的知识模块</a></div>
+
+</div>
+<div id="comments"><div id="waline" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://waline.js.org/">Waline</a>.
+            </noscript><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.131.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/waline/waline.min.css"><script type="text/javascript" src="/lib/waline/waline.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config=Object.assign(window.config||{},{"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Comments","categoryId":"DIC_kwDOH2gmzc4CQ_fM","darkTheme":"dark","emitMetadata":"0","inputPosition":"bottom","lang":"zh-CN","lazyLoading":true,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"whitefirer/whitefirer.github.io","repoId":"R_kgDOH2gmzQ"},"waline":{"dark":"auto","el":"#waline","lang":"zh-CN","pageSize":10,"requiredMeta":["nick","mail"],"serverURL":"https://comment.whitefirer.org"}},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}});</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">!function(){function svgToPng(svg,cb){var c=svg.cloneNode(!0),d=new XMLSerializer().serializeToString(c),img=new Image(),cv=document.createElement('canvas'),w=c.viewBox.animVal.width||c.getBoundingClientRect().width||400,h=c.viewBox.animVal.height||c.getBoundingClientRect().height||300,s=2;cv.width=w*s,cv.height=h*s;var ctx=cv.getContext('2d'),b=new Blob([d],{type:'image/svg+xml;charset=utf-8'}),u=URL.createObjectURL(b);img.onload=function(){ctx.fillStyle='#fff',ctx.fillRect(0,0,cv.width,cv.height),ctx.drawImage(img,0,0,cv.width,cv.height),URL.revokeObjectURL(u),cv.toBlob(function(blob){var a=document.createElement('a');a.href=URL.createObjectURL(blob);var id=svg.id||'diagram';a.download=id+'.png',a.click(),URL.revokeObjectURL(a.href),cb&&cb()})},img.src=u}function addSaveBtn(svg){if(svg.closest('.mermaid-stage,.mermaid-fs-overlay,.mermaid-wrapper,.mermaid-toolbar,.svg-diagram-wrap'))return;var wrap=document.createElement('div');wrap.className='svg-diagram-wrap';var d=svg.style.display||'block',w=svg.style.width||svg.getAttribute('width')||'100%',mw=svg.style.maxWidth||'',m=svg.style.margin||'';wrap.style.cssText='position:relative;display:'+d+';width:'+w+';'+(mw?'max-width:'+mw+';':'')+(m?'margin:'+m+';':'')+'line-height:0';svg.style.display='block';svg.style.width='100%';svg.style.maxWidth='';svg.style.margin='0';svg.parentNode.insertBefore(wrap,svg);wrap.appendChild(svg);var bar=document.createElement('div');bar.style.cssText='text-align:right;padding-top:6px';var btn=document.createElement('button');btn.className='svg-save-btn',btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span style="vertical-align:middle;font-size:12px">保存图片</span>',btn.style.cssText='background:none;border:1px solid transparent;border-radius:4px;padding:2px 6px;cursor:pointer;color:#b0b7c3;font-family:system-ui,sans-serif;line-height:1';bar.appendChild(btn);wrap.appendChild(bar);btn.onmouseenter=function(){btn.style.color='#6366f1';btn.style.borderColor='#e5e7eb'};btn.onmouseleave=function(){btn.style.color='#b0b7c3';btn.style.borderColor='transparent'};btn.onclick=function(e){e.stopPropagation();var orig=btn.innerHTML;btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span style="vertical-align:middle;font-size:12px">导出中...</span>';btn.disabled=!0;svgToPng(svg,function(){btn.innerHTML=orig;btn.disabled=!1})}}function initSvgButtons(){document.querySelectorAll('.content svg').forEach(function(svg){addSaveBtn(svg)})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initSvgButtons);else initSvgButtons()}()</script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-70Q8REKE17', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-70Q8REKE17" async></script></body>
+</html>

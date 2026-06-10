@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Mcp - 标签 - whitefirer[PG]</title>
+        <link>https://whitefirer.org/tags/mcp/</link>
+        <description>Mcp - 标签 - whitefirer[PG]</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Wed, 10 Jun 2026 20:48:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/mcp/" rel="self" type="application/rss+xml" /><item>
+    <title>Claude Code MCP 完全指南：给你的 AI 造工具</title>
+    <link>https://whitefirer.org/posts/2026/06/10/claude-code-mcp-guide/</link>
+    <pubDate>Wed, 10 Jun 2026 20:48:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/06/10/claude-code-mcp-guide/</guid>
+    <description><![CDATA[一个协议，三要素（Tool/Resource/Prompt），用自定义 MCP Server 扩展 Claude Code 的能力边界。 前言 插件篇 讲了四个必装插件和一个 MCP 服务。但那篇]]></description>
+</item>
+</channel>
+</rss>

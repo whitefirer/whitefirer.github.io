@@ -5,6 +5,14 @@
         <description>技术 - 分类 - whitefirer[PG]</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
             <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><atom:link href="https://whitefirer.org/categories/tech/" rel="self" type="application/rss+xml" /><item>
+    <title>Claude Code MCP 完全指南：给你的 AI 造工具</title>
+    <link>https://whitefirer.org/posts/2026/06/10/claude-code-mcp-guide/</link>
+    <pubDate>Wed, 10 Jun 2026 20:48:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/06/10/claude-code-mcp-guide/</guid>
+    <description><![CDATA[一个协议，三要素（Tool/Resource/Prompt），用自定义 MCP Server 扩展 Claude Code 的能力边界。 前言 插件篇 讲了四个必装插件和一个 MCP 服务。但那篇]]></description>
+</item>
+<item>
     <title>Claude Code Skills 深度解析：把经验写成可复用的知识模块</title>
     <link>https://whitefirer.org/posts/2026/06/09/claude-code-skills-guide/</link>
     <pubDate>Tue, 09 Jun 2026 21:43:00 &#43;0800</pubDate>
@@ -19,6 +27,14 @@
     <author>whitefirer</author>
     <guid>https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/</guid>
     <description><![CDATA[九种 Hook 类型 + 十一个秒用场景，把 Claude Code 从工具变成搭档。 前言 之前写了《Claude Code 插件完全指南》，介绍四个插件和一个 MCP 服务。那是&quot;用什]]></description>
+</item>
+<item>
+    <title>Need Is All You Need</title>
+    <link>https://whitefirer.org/posts/2026/05/13/need-is-all-you-need/</link>
+    <pubDate>Wed, 13 May 2026 22:17:43 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/05/13/need-is-all-you-need/</guid>
+    <description><![CDATA[2017 年，一篇论文的标题震动了 AI 圈。五个单词，没一个多余：Attention Is All You Need。 当时没人知道，这句话会改写整个行业的底层架构。Tra]]></description>
 </item>
 <item>
     <title>AI 能做事，不能扛事</title>
@@ -67,22 +83,6 @@
     <author>whitefirer</author>
     <guid>https://whitefirer.org/posts/2023/04/07/how-to-run-python-in-the-web-terminal/</guid>
     <description><![CDATA[细心的朋友可能已经发现我在首页终端上加上了Now you can use the Python directly in this console!这句话，是的，现在python命令已经加入了首页终端中！目前]]></description>
-</item>
-<item>
-    <title>Polaris2Istio的实现和说明</title>
-    <link>https://whitefirer.org/posts/2022/08/30/polaris2istio/</link>
-    <pubDate>Tue, 30 Aug 2022 10:33:20 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/posts/2022/08/30/polaris2istio/</guid>
-    <description><![CDATA[背景 如融合、扩展Service Mesh文中所述，为了让第三方服务发现的服务能够接入到Istio服务网格当中，我设计开放一个名为Polaris]]></description>
-</item>
-<item>
-    <title>融合、扩展Service Mesh</title>
-    <link>https://whitefirer.org/posts/2022/08/29/extension-and-expansion-of-service-mesh/</link>
-    <pubDate>Mon, 29 Aug 2022 17:10:46 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/posts/2022/08/29/extension-and-expansion-of-service-mesh/</guid>
-    <description><![CDATA[导语 没有最完美的架构，只有最合适的架构。 背景 很多时候服务网格在业务难以落地，往往是因为有历史包袱或者特殊需求，反而没有新设计的项目接入服务网]]></description>
 </item>
 </channel>
 </rss>

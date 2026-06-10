@@ -5,6 +5,14 @@
         <description>AI 编程·Claude Code - series - whitefirer[PG]</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
             <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><atom:link href="https://whitefirer.org/series/claude-code-deep-dive/" rel="self" type="application/rss+xml" /><item>
+    <title>Claude Code MCP 完全指南：给你的 AI 造工具</title>
+    <link>https://whitefirer.org/posts/2026/06/10/claude-code-mcp-guide/</link>
+    <pubDate>Wed, 10 Jun 2026 20:48:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/06/10/claude-code-mcp-guide/</guid>
+    <description><![CDATA[一个协议，三要素（Tool/Resource/Prompt），用自定义 MCP Server 扩展 Claude Code 的能力边界。 前言 插件篇 讲了四个必装插件和一个 MCP 服务。但那篇]]></description>
+</item>
+<item>
     <title>Claude Code Skills 深度解析：把经验写成可复用的知识模块</title>
     <link>https://whitefirer.org/posts/2026/06/09/claude-code-skills-guide/</link>
     <pubDate>Tue, 09 Jun 2026 21:43:00 &#43;0800</pubDate>
