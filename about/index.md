@@ -10,8 +10,6 @@
 [![Envoy](https://img.shields.io/badge/-Envoy-5f5f5f?style=flat&logo=consul&logoColor=ffffff&labelColor=d04fab)](https://github.com/envoyproxy)
 [![Consul](https://img.shields.io/badge/-Consul-5f5f5f?style=flat&logo=consul&logoColor=ffffff&labelColor=ce4875)](https://github.com/hashicorp/consul)
 [![GNU](https://img.shields.io/badge/-GNU-5f5f5f?style=flat&logo=gnu&logoColor=000000&labelColor=ffffff)]()
-[![eBPF](https://img.shields.io/badge/-eBPF-5f5f5f?style=flat&logo=ebpf&logoColor=ffffff&labelColor=e41e2b)](https://ebpf.io/)
-[![MCP](https://img.shields.io/badge/-MCP-5f5f5f?style=flat&logo=openai&logoColor=ffffff&labelColor=10a37f)](https://modelcontextprotocol.io/)
 [![QQ](https://img.shields.io/badge/-Tencent-5f5f5f?style=flat&logo=tencentqq&logoColor=000000&labelColor=ffffff)](https://www.tencent.com/)
 
 ### 个人简介
@@ -99,6 +97,16 @@
 [![Docker](https://img.shields.io/badge/-Docker-5f5f5f?style=flat&logo=docker&logoColor=ffffff&labelColor=0078D6)](https://github.com/docker)
 ![Slack](https://img.shields.io/badge/-Slack-5f5f5f?style=flat&logo=slack&logoColor=ffffff&labelColor=0078D6)
 ![Sentry](https://img.shields.io/badge/-Sentry-5f5f5f?style=flat&logo=sentry&logoColor=351c3d&labelColor=ffffff)
+[![eBPF](https://img.shields.io/badge/-eBPF-5f5f5f?style=flat&logo=ebpf&logoColor=ffffff&labelColor=e41e2b)](https://ebpf.io/)
+
+#### AI 工程化
+[![Claude](https://img.shields.io/badge/-Claude-5f5f5f?style=flat&logo=anthropic&logoColor=ffffff&labelColor=d97706)](https://claude.ai/)
+[![ChatGPT](https://img.shields.io/badge/-ChatGPT-5f5f5f?style=flat&logo=openai&logoColor=000000&labelColor=74aa9c)](https://chat.openai.com/)
+[![DeepSeek](https://img.shields.io/badge/-DeepSeek-5f5f5f?style=flat&logo=deepseek&logoColor=ffffff&labelColor=4d6bfe)](https://deepseek.com/)
+[![Hermes](https://img.shields.io/badge/-Hermes-5f5f5f?style=flat&logo=nousresearch&logoColor=ffffff&labelColor=8b5cf6)](https://nousresearch.com/)
+[![MCP](https://img.shields.io/badge/-MCP-5f5f5f?style=flat&logo=openai&logoColor=ffffff&labelColor=10a37f)](https://modelcontextprotocol.io/)
+[![Hugging Face](https://img.shields.io/badge/-HuggingFace-5f5f5f?style=flat&logo=huggingface&logoColor=ffffff&labelColor=ffbd45)](https://huggingface.co/)
+[![Cursor](https://img.shields.io/badge/-Cursor-5f5f5f?style=flat&logo=cursor&logoColor=000000&labelColor=ffffff)](https://cursor.sh/)
 
 #### 休闲平台  
 ![Steam](https://img.shields.io/badge/-Steam-5f5f5f?style=flat&logo=steam&labelColor=213a61)
