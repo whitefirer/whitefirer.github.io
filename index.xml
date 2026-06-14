@@ -39,6 +39,14 @@
     <description><![CDATA[九种 Hook 类型 + 十一个秒用场景，把 Claude Code 从工具变成搭档。 前言 之前写了《Claude Code 插件完全指南》，介绍四个插件和一个 MCP 服务。那是&quot;用什]]></description>
 </item>
 <item>
+    <title>从云原生转型到AI转型，什么值得借鉴？什么需要摒弃？</title>
+    <link>https://whitefirer.org/posts/2026/05/25/cloud-native-to-ai-transformation/</link>
+    <pubDate>Mon, 25 May 2026 17:30:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/05/25/cloud-native-to-ai-transformation/</guid>
+    <description><![CDATA[1895 年，Panhard &amp; Levassor 造出第一批量产汽车1。不是在工厂从零设计的——他们把 Daimler 内燃机绑在传统马车的木头底盘下面。驭手座位还在，铁包木轮没换，]]></description>
+</item>
+<item>
     <title>Need Is All You Need</title>
     <link>https://whitefirer.org/posts/2026/05/13/need-is-all-you-need/</link>
     <pubDate>Wed, 13 May 2026 22:17:43 &#43;0800</pubDate>
@@ -77,14 +85,6 @@
     <author>whitefirer</author>
     <guid>https://whitefirer.org/posts/2026/04/28/claude-code-plugins-guide/</guid>
     <description><![CDATA[四个必装插件 + 一个 MCP 服务，让 AI 编码助手从&quot;能用&quot;变成&quot;好用&quot;。 前言 Claude Code 是 Anthropic 推出的终端原生 AI 编码助手。]]></description>
-</item>
-<item>
-    <title>也谈谈 AI 编程</title>
-    <link>https://whitefirer.org/posts/2026/04/13/ai-programming-thoughts/</link>
-    <pubDate>Mon, 13 Apr 2026 22:17:43 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/posts/2026/04/13/ai-programming-thoughts/</guid>
-    <description><![CDATA[使用 AI 编程已经有一段时间了，从最初的代码补全，到辅助编程，再到完全由 AI 生成代码——体验和感受都和以往大不相同。 从恐惧到接纳 起初，我还会调侃 AI]]></description>
 </item>
 </channel>
 </rss>
