@@ -10,16 +10,18 @@
 [![Envoy](https://img.shields.io/badge/-Envoy-5f5f5f?style=flat&logo=consul&logoColor=ffffff&labelColor=d04fab)](https://github.com/envoyproxy)
 [![Consul](https://img.shields.io/badge/-Consul-5f5f5f?style=flat&logo=consul&logoColor=ffffff&labelColor=ce4875)](https://github.com/hashicorp/consul)
 [![GNU](https://img.shields.io/badge/-GNU-5f5f5f?style=flat&logo=gnu&logoColor=000000&labelColor=ffffff)]()
+[![eBPF](https://img.shields.io/badge/-eBPF-5f5f5f?style=flat&logo=ebpf&logoColor=ffffff&labelColor=e41e2b)](https://ebpf.io/)
+[![MCP](https://img.shields.io/badge/-MCP-5f5f5f?style=flat&logo=openai&logoColor=ffffff&labelColor=10a37f)](https://modelcontextprotocol.io/)
 [![QQ](https://img.shields.io/badge/-Tencent-5f5f5f?style=flat&logo=tencentqq&logoColor=000000&labelColor=ffffff)](https://www.tencent.com/)
 
 ### 个人简介
 
 - 姓名：**王诚强**
 - 昵称：whitefirer、mortywang、strcat、一只流浪猫
-- 🔭 我正在 *`腾讯`* 工作，研究并开发基础架构、云原生、服务网格，同时是[Aeraki-Mesh](https://github.com/aeraki-mesh/aeraki)的Maitainer；
-- 🌱 我正在努力学习以成为**优秀**的 *`云原生开发者`*、 *`基础架构工程师`*、 *`架构师`*、*`技术管理者`*；
-- 👯 我热衷为伟大的项目积极做出贡献，或者说想创造伟大的项目；
-- 💬 可以与我一起探讨 *`云原生`* 、 *`架构设计`*、乃至一切 *`有趣的技术`* 😄；
+- 🔭 曾在 *`腾讯`* 工作，现独立研发，深耕 *`云原生`* 和 *`AI 工程化`*——Agent 编排、全链路 RCA、服务网格，[Aeraki-Mesh](https://github.com/aeraki-mesh/aeraki) Maintainer；
+- 🌱 从裸机到容器到 Agent，经历三次范式迁移，每次都在团队里扮演推动者；
+- 👯 热衷为伟大的项目做出贡献，或者说想创造伟大的项目；
+- 💬 可以与我一起探讨 *`云原生`*、*`AI 工程化`*、*`架构设计`*、乃至一切 *`有趣的技术`* 😄；
 - ⚡ 显而易见: 我是一名 **GEEK**；
 - 联系方式：[发邮件给我](mailto:whitefirer@gmail.com) 或者以下方式↓  
 [![Gmail](https://img.shields.io/badge/-whitefirer@gmail.com-ea4335?style=flat&logo=Gmail&logoColor=ffffff)](mailto:whitefirer@gmail.com)
