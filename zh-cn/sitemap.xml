@@ -2,8 +2,8 @@
     xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     ><url>
-            <loc>https://whitefirer.org/tags/ai/</loc><lastmod>2026-06-14T23:39:07&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/categories/</loc><lastmod>2026-06-14T23:39:07&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://whitefirer.org/tags/ai/</loc><lastmod>2026-06-14T23:50:32&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/categories/</loc><lastmod>2026-06-14T23:50:32&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://whitefirer.org/en/categories/"
@@ -16,7 +16,7 @@
             <loc>https://whitefirer.org/posts/2026/06/14/claude-code-workflows-guide/</loc><lastmod>2026-06-14T23:11:59&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/tags/multi-agent/</loc><lastmod>2026-06-14T23:11:59&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/tags/orchestration/</loc><lastmod>2026-06-14T23:11:59&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/posts/</loc><lastmod>2026-06-14T23:39:07&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://whitefirer.org/posts/</loc><lastmod>2026-06-14T23:50:32&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://whitefirer.org/en/posts/"
@@ -25,7 +25,7 @@
                     hreflang="zh-cn"
                     href="https://whitefirer.org/posts/"
                     /></url><url>
-            <loc>https://whitefirer.org/series/</loc><lastmod>2026-06-14T23:39:07&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://whitefirer.org/series/</loc><lastmod>2026-06-14T23:50:32&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://whitefirer.org/en/series/"
@@ -34,7 +34,7 @@
                     hreflang="zh-cn"
                     href="https://whitefirer.org/series/"
                     /></url><url>
-            <loc>https://whitefirer.org/tags/</loc><lastmod>2026-06-14T23:39:07&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://whitefirer.org/tags/</loc><lastmod>2026-06-14T23:50:32&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://whitefirer.org/en/tags/"
@@ -43,7 +43,7 @@
                     hreflang="zh-cn"
                     href="https://whitefirer.org/tags/"
                     /></url><url>
-            <loc>https://whitefirer.org/</loc><lastmod>2026-06-14T23:39:07&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://whitefirer.org/</loc><lastmod>2026-06-14T23:50:32&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://whitefirer.org/en/"
@@ -63,8 +63,8 @@
             <loc>https://whitefirer.org/tags/hooks/</loc><lastmod>2026-06-09T23:48:26&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/tags/creativity/</loc><lastmod>2026-06-11T20:14:15&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/posts/2026/05/13/need-is-all-you-need/</loc><lastmod>2026-06-11T20:14:15&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/tags/thoughts/</loc><lastmod>2026-06-14T23:39:07&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/posts/2026/05/10/ai-trust-meaning/</loc><lastmod>2026-06-14T23:39:07&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/tags/thoughts/</loc><lastmod>2026-06-14T23:50:32&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/posts/2026/05/10/ai-trust-meaning/</loc><lastmod>2026-06-14T23:50:32&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/posts/2026/05/09/ai-wont-ask-first-question/</loc><lastmod>2026-06-11T03:08:59&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/tags/cost-optimization/</loc><lastmod>2026-05-08T04:45:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://whitefirer.org/tags/deepseek/</loc><lastmod>2026-05-08T04:45:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
