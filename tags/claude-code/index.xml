@@ -4,7 +4,15 @@
         <link>https://whitefirer.org/tags/claude-code/</link>
         <description>Claude Code - 标签 - whitefirer[PG]</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Wed, 10 Jun 2026 20:48:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/claude-code/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sun, 14 Jun 2026 21:00:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/claude-code/" rel="self" type="application/rss+xml" /><item>
+    <title>Claude Code Workflows 完全指南：多智能体编排让 AI 团队自己干活</title>
+    <link>https://whitefirer.org/posts/2026/06/14/claude-code-workflows-guide/</link>
+    <pubDate>Sun, 14 Jun 2026 21:00:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/06/14/claude-code-workflows-guide/</guid>
+    <description><![CDATA[三大原语搭团队，四种模式定协作——你不是在写 Workflow 脚本，你是在设计 AI 团队的架构。 前言 MCP 那篇结尾留了一句话：&ldquo;既然单次输出不可控，就用]]></description>
+</item>
+<item>
     <title>Claude Code MCP 完全指南：给你的 AI 造工具</title>
     <link>https://whitefirer.org/posts/2026/06/10/claude-code-mcp-guide/</link>
     <pubDate>Wed, 10 Jun 2026 20:48:00 &#43;0800</pubDate>

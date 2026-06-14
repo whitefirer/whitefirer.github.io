@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Claude Code Workflows 完全指南：多智能体编排让 AI 团队自己干活 - whitefirer[PG]</title><meta name="Description" content="深入 Claude Code 的 Workflow 多智能体编排系统：agent()/parallel()/pipeline() 三大原语如何构建 AI 团队，对抗验证、循环稳定、评审团、ultracode 四种模式如何实现可靠协作。Workflow 脚本是 Claude 生成的——你要学的是编排模型，不是脚本语法。"><meta property="og:url" content="https://whitefirer.org/posts/2026/06/14/claude-code-workflows-guide/">
+  <meta property="og:site_name" content="whitefirer[PG]">
+  <meta property="og:title" content="Claude Code Workflows 完全指南：多智能体编排让 AI 团队自己干活">
+  <meta property="og:description" content="深入 Claude Code 的 Workflow 多智能体编排系统：agent()/parallel()/pipeline() 三大原语如何构建 AI 团队，对抗验证、循环稳定、评审团、ultracode 四种模式如何实现可靠协作。Workflow 脚本是 Claude 生成的——你要学的是编排模型，不是脚本语法。">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-06-14T21:00:00+08:00">
+    <meta property="article:modified_time" content="2026-06-14T23:11:59+08:00">
+    <meta property="article:tag" content="技术">
+    <meta property="article:tag" content="Ai">
+    <meta property="article:tag" content="Claude Code">
+    <meta property="article:tag" content="Workflow">
+    <meta property="article:tag" content="Multi-Agent">
+    <meta property="article:tag" content="Orchestration">
+      <meta property="og:see_also" content="https://whitefirer.org/posts/2026/06/10/claude-code-mcp-guide/">
+      <meta property="og:see_also" content="https://whitefirer.org/posts/2026/06/09/claude-code-skills-guide/">
+      <meta property="og:see_also" content="https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/">
+      <meta property="og:see_also" content="https://whitefirer.org/posts/2026/04/28/claude-code-plugins-guide/">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Claude Code Workflows 完全指南：多智能体编排让 AI 团队自己干活">
+  <meta name="twitter:description" content="深入 Claude Code 的 Workflow 多智能体编排系统：agent()/parallel()/pipeline() 三大原语如何构建 AI 团队，对抗验证、循环稳定、评审团、ultracode 四种模式如何实现可靠协作。Workflow 脚本是 Claude 生成的——你要学的是编排模型，不是脚本语法。">
+<meta name="application-name" content="whitefirer[PG]">
+<meta name="apple-mobile-web-app-title" content="whitefirer[PG]"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/06/14/claude-code-workflows-guide/" /><link rel="prev" href="https://whitefirer.org/posts/2026/06/10/claude-code-mcp-guide/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Claude Code Workflows 完全指南：多智能体编排让 AI 团队自己干活",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/whitefirer.org\/posts\/2026\/06\/14\/claude-code-workflows-guide\/"
+        },"genre": "posts","keywords": "tech, ai, claude code, workflow, multi-agent, orchestration","wordcount":  8396 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/06\/14\/claude-code-workflows-guide\/","datePublished": "2026-06-14T21:00:00+08:00","dateModified": "2026-06-14T23:11:59+08:00","license": "2022©️whitefirer","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "whitefirer"
+            },"description": "深入 Claude Code 的 Workflow 多智能体编排系统：agent()/parallel()/pipeline() 三大原语如何构建 AI 团队，对抗验证、循环稳定、评审团、ultracode 四种模式如何实现可靠协作。Workflow 脚本是 Claude 生成的——你要学的是编排模型，不是脚本语法。"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="whitefirer[PG]">whitefirer[PG]</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/series/ai-zatan/"> AI 杂谈 </a><div class="menu-item has-dropdown">
+                            <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                            <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a></div>
+                        </div><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/2026/06/14/claude-code-workflows-guide/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header>
+<script>
+(function() {
+    document.querySelectorAll('.has-dropdown .dropdown-toggle').forEach(function(toggle) {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var parent = this.closest('.has-dropdown');
+            parent.classList.toggle('open');
+        });
+    });
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.has-dropdown.open').forEach(function(d) {
+            d.classList.remove('open');
+        });
+    });
+})();
+</script><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="whitefirer[PG]">whitefirer[PG]</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/series/ai-zatan/" title="">AI 杂谈</a><div class="menu-item has-dropdown">
+                        <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                        <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a></div>
+                    </div><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/posts/2026/06/14/claude-code-workflows-guide/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><div style="display:flex;align-items:baseline;gap:0">
+        <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">Claude Code Workflows 完全指南：多智能体编排让 AI 团队自己干活</h1></div><h2 class="single-subtitle">三大原语、四种模式——理解 Workflow 编排模型，指挥 AI 团队自己协作</h2><div class="post-series">
+                <a href="/series/claude-code-deep-dive/"><i class="fas fa-layer-group fa-fw" aria-hidden="true"></i>AI 编程·Claude Code</a>
+            </div><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-06-14">2026-06-14</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 8396 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 17 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#前言">前言</a></li>
+    <li><a href="#1-第五层跨五层的质变">1. 第五层：跨五层的质变</a></li>
+    <li><a href="#2-三大原语只有三种指令的编程语言">2. 三大原语：只有三种指令的编程语言</a></li>
+    <li><a href="#3-pipeline-vs-barrier流水线与同步点">3. Pipeline vs Barrier：流水线与同步点</a>
+      <ul>
+        <li><a href="#pipeline流水线默认">Pipeline（流水线，默认）</a></li>
+        <li><a href="#barrier同步点">Barrier（同步点）</a></li>
+        <li><a href="#怎么选">怎么选</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-模式一对抗验证">4. 模式一：对抗验证</a></li>
+    <li><a href="#5-模式二循环直到稳定">5. 模式二：循环直到稳定</a>
+      <ul>
+        <li><a href="#loop-until-dry">Loop-until-dry</a></li>
+        <li><a href="#loop-until-budget">Loop-until-budget</a></li>
+        <li><a href="#两种变体对比">两种变体对比</a></li>
+      </ul>
+    </li>
+    <li><a href="#6-模式三评审团">6. 模式三：评审团</a>
+      <ul>
+        <li><a href="#n3-为什么是黄金比例">N=3 为什么是黄金比例</a></li>
+        <li><a href="#judge-的角色设计">Judge 的角色设计</a></li>
+      </ul>
+    </li>
+    <li><a href="#7-ultracode两种触发方式别搞混">7. ultracode：两种触发方式，别搞混</a>
+      <ul>
+        <li><a href="#effort-ultracode会话级开关"><code>/effort ultracode</code>：会话级开关</a></li>
+        <li><a href="#prompt-里写-ultracode单次触发">Prompt 里写 &ldquo;ultracode&rdquo;：单次触发</a></li>
+        <li><a href="#两种方式对比">两种方式对比</a></li>
+        <li><a href="#最常踩的坑">最常踩的坑</a></li>
+        <li><a href="#什么时候值得开">什么时候值得开</a></li>
+      </ul>
+    </li>
+    <li><a href="#8-即开即用的提示词">8. 即开即用的提示词</a>
+      <ul>
+        <li><a href="#代码审查流水线对抗验证">代码审查流水线（对抗验证）</a></li>
+        <li><a href="#设计方案比选评审团">设计方案比选（评审团）</a></li>
+        <li><a href="#重构到满意为止循环直到稳定">重构到满意为止（循环直到稳定）</a></li>
+        <li><a href="#安全审计">安全审计</a></li>
+      </ul>
+    </li>
+    <li><a href="#9-三层级对比sub-agentworkflow单-agent-多轮">9. 三层级对比：Sub-agent、Workflow、单 Agent 多轮</a>
+      <ul>
+        <li><a href="#选择准则">选择准则</a></li>
+      </ul>
+    </li>
+    <li><a href="#10-沙箱约束确定性不是限制是-feature">10. 沙箱约束：确定性不是限制，是 feature</a></li>
+    <li><a href="#11-恢复与缓存改最后一步不用重跑前面全部">11. 恢复与缓存：改最后一步不用重跑前面全部</a>
+      <ul>
+        <li><a href="#断点续传">断点续传</a></li>
+        <li><a href="#缓存命中">缓存命中</a></li>
+        <li><a href="#实际影响">实际影响</a></li>
+      </ul>
+    </li>
+    <li><a href="#12-结语从操作者到架构师">12. 结语：从操作者到架构师</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><blockquote>
+<p>三大原语搭团队，四种模式定协作——你不是在写 Workflow 脚本，你是在设计 AI 团队的架构。</p>
+</blockquote>
+<hr>
+<h2 id="前言">前言</h2>
+<p>MCP 那篇结尾留了一句话：&ldquo;既然单次输出不可控，就用多个独立 Agent 交叉验证、对抗审查、锦标赛选优，把概率压到无限逼近确定。那是下一篇的事了。&rdquo;</p>
+<p>这篇就是了。</p>
+<p>系列前四篇构建了单 Agent 的能力栈：Tool 给手脚，Plugin 给装备，Hooks 给神经反射，Skill 给大脑皮层。但有一个根本局限始终没打破——<strong>一个模型，一次输出，一个视角，没有内部验证机制。</strong></p>
+<p>你让 Claude 审查自己写的代码？它会倾向于说&quot;looks good&quot;。你让它找自己设计中的漏洞？它和你一样——对自己的作品有盲区。这是 LLM 的结构性缺陷，不是 prompt 能解决的。</p>
+<p>Workflow 的解法不是做一个更好的 Agent，而是<strong>让多个 Agent 互相审查</strong>。一个写，一个挑刺；三个独立设计方案，架构师选最优。从&quot;做一个好 Agent&quot;变成&quot;设计一个好团队&quot;。</p>
+<p><strong>而且，最重要的一点——Workflow 脚本是 Claude 生成的，不是你手写的。</strong> 你在前四篇学会了怎么配 Claude Code、怎么扩展它、怎么定制它的行为。到了 Workflow，角色变了：Claude 是脚本作者，你是架构师。你的工作不是写 <code>agent()</code> 和 <code>pipeline()</code> 代码，而是理解这三种原语能搭出什么结构，然后把任务描述清楚，让 Claude 生成对的 Workflow。</p>
+<p>读完你会知道：</p>
+<ul>
+<li>agent() / parallel() / pipeline() 三种原语各自的定位和组合方式</li>
+<li>Pipeline vs Barrier 的核心区别，以及为什么默认选 Pipeline</li>
+<li>四种经典编排模式：对抗验证、循环稳定、评审团、ultracode</li>
+<li>什么时候用 Workflow，什么时候用 Sub-agent，什么时候单 Agent 足够</li>
+<li>沙箱约束为什么不是限制而是 feature</li>
+</ul>
+<p>五篇文章走完，你从&quot;Claude Code 用户&quot;变成&quot;AI 开发团队架构师&quot;。</p>
+<blockquote>
+<p>Workflow 是 2026 年 5 月下旬随 Claude Code v2.1.154 推出的功能，目前仍在快速迭代。本文基于当前版本——核心概念（三大原语、Barrier/Pipeline、对抗验证）不大可能变，但具体 API 和限制可能调整。</p>
+</blockquote>
+<hr>
+<h2 id="1-第五层跨五层的质变">1. 第五层：跨五层的质变</h2>
+<p>先看一下目前系列覆盖的完整技术栈：</p>
+<figure><svg id="five-layer-model" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 410" width="100%" style="max-width:680px;display:block;margin:1.2em auto"><defs><linearGradient id="l5w" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f43f5e"/><stop offset="100%" stop-color="#fb7185"/></linearGradient><linearGradient id="l4" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#34d399"/></linearGradient><linearGradient id="l3h" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#818cf8"/></linearGradient><linearGradient id="l2p" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#fbbf24"/></linearGradient><linearGradient id="l1t" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#22d3ee"/></linearGradient><filter id="sh"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.10"/></filter></defs><!-- Workflow layer (top, new) --><g filter="url(#sh)"><rect x="40" y="12" width="600" height="68" rx="8" fill="#fff" stroke="#f43f5e" stroke-width="2"/><rect x="40" y="12" width="600" height="38" rx="8" fill="url(#l5w)"/><rect x="40" y="42" width="600" height="8" fill="url(#l5w)"/><circle cx="66" cy="31" r="12" fill="#fff" opacity="0.25"/><text x="66" y="36" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">⑤</text><text x="88" y="36" fill="#fff" font-size="14" font-weight="700" font-family="system-ui,sans-serif">Workflow</text><text x="192" y="36" fill="rgba(255,255,255,0.8)" font-size="11" font-family="system-ui,sans-serif">多智能体编排 — 谁来做？</text><rect x="526" y="17" width="102" height="22" rx="11" fill="#fff" opacity="0.20"/><text x="577" y="32" text-anchor="middle" fill="#fff" font-size="10" font-weight="600" font-family="system-ui,sans-serif">本文主题</text><text x="56" y="68" fill="#374151" font-size="12" font-family="system-ui,sans-serif">编排多个 Agent 协作：谁负责哪一块、谁审谁的代码、遇到分歧怎么裁决。</text></g><!-- Dashed lines from Workflow to Agent instances --><line x1="180" y1="80" x2="140" y2="102" stroke="#f43f5e" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/><line x1="350" y1="80" x2="350" y2="102" stroke="#f43f5e" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/><line x1="520" y1="80" x2="560" y2="102" stroke="#f43f5e" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/><!-- Agent instance 1 --><rect x="90" y="104" width="100" height="22" rx="5" fill="#fff1f2" stroke="#f43f5e" stroke-width="0.8" opacity="0.7"/><text x="140" y="119" text-anchor="middle" fill="#be123c" font-size="9" font-weight="600" font-family="system-ui,sans-serif">Agent A</text><!-- Agent instance 2 --><rect x="300" y="104" width="100" height="22" rx="5" fill="#fff1f2" stroke="#f43f5e" stroke-width="0.8" opacity="0.7"/><text x="350" y="119" text-anchor="middle" fill="#be123c" font-size="9" font-weight="600" font-family="system-ui,sans-serif">Agent B</text><!-- Agent instance 3 --><rect x="510" y="104" width="100" height="22" rx="5" fill="#fff1f2" stroke="#f43f5e" stroke-width="0.8" opacity="0.7"/><text x="560" y="119" text-anchor="middle" fill="#be123c" font-size="9" font-weight="600" font-family="system-ui,sans-serif">Agent C</text><!-- Arrow 5→4 --><line x1="340" y1="128" x2="340" y2="146" stroke="#d1d5db" stroke-width="1.5"/><polygon points="336,142 340,146 344,142" fill="#d1d5db"/><!-- Skill layer --><g filter="url(#sh)"><rect x="40" y="148" width="600" height="54" rx="8" fill="#fff" stroke="#10b981" stroke-width="1.5"/><rect x="40" y="148" width="600" height="28" rx="8" fill="url(#l4)"/><rect x="40" y="170" width="600" height="6" fill="url(#l4)"/><circle cx="66" cy="162" r="10" fill="#fff" opacity="0.25"/><text x="66" y="166" text-anchor="middle" fill="#fff" font-size="10" font-weight="700" font-family="system-ui,sans-serif">④</text><text x="84" y="166" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">Skill</text><text x="146" y="166" fill="rgba(255,255,255,0.75)" font-size="10" font-family="system-ui,sans-serif">方法论 — 怎么做</text><text x="56" y="194" fill="#374151" font-size="11" font-family="system-ui,sans-serif">定义一套规范：先干啥、再干啥、不能干啥。这是行为编码。</text></g><!-- Arrow 4→3 --><line x1="340" y1="202" x2="340" y2="208" stroke="#d1d5db" stroke-width="1.5"/><polygon points="336,207 340,211 344,207" fill="#d1d5db"/><!-- Hooks layer --><g filter="url(#sh)"><rect x="40" y="212" width="600" height="54" rx="8" fill="#fff" stroke="#6366f1" stroke-width="1.5"/><rect x="40" y="212" width="600" height="28" rx="8" fill="url(#l3h)"/><rect x="40" y="234" width="600" height="6" fill="url(#l3h)"/><circle cx="66" cy="226" r="10" fill="#fff" opacity="0.25"/><text x="66" y="230" text-anchor="middle" fill="#fff" font-size="10" font-weight="700" font-family="system-ui,sans-serif">③</text><text x="84" y="230" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">Hooks</text><text x="154" y="230" fill="rgba(255,255,255,0.75)" font-size="10" font-family="system-ui,sans-serif">自动化 — 什么时候触发</text><text x="56" y="258" fill="#374151" font-size="11" font-family="system-ui,sans-serif">在正确的时间触发正确的事。但不告诉模型"怎么做"。</text></g><!-- Arrow 3→2 --><line x1="340" y1="266" x2="340" y2="272" stroke="#d1d5db" stroke-width="1.5"/><polygon points="336,271 340,275 344,271" fill="#d1d5db"/><!-- Plugin/MCP layer --><g filter="url(#sh)"><rect x="40" y="276" width="600" height="54" rx="8" fill="#fff" stroke="#f59e0b" stroke-width="1.5"/><rect x="40" y="276" width="600" height="28" rx="8" fill="url(#l2p)"/><rect x="40" y="298" width="600" height="6" fill="url(#l2p)"/><circle cx="66" cy="290" r="10" fill="#fff" opacity="0.25"/><text x="66" y="294" text-anchor="middle" fill="#fff" font-size="10" font-weight="700" font-family="system-ui,sans-serif">②</text><text x="84" y="294" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">Plugin / MCP 服务</text><text x="228" y="294" fill="rgba(255,255,255,0.75)" font-size="10" font-family="system-ui,sans-serif">能力边界 — 能做什么</text><text x="56" y="322" fill="#374151" font-size="11" font-family="system-ui,sans-serif">Plugin 注入提示词 + Skill；MCP 暴露 Tool/Resource/Prompt 供模型调用。</text></g><!-- Arrow 2→1 --><line x1="340" y1="330" x2="340" y2="336" stroke="#d1d5db" stroke-width="1.5"/><polygon points="336,335 340,339 344,335" fill="#d1d5db"/><!-- Tool layer (bottom) --><g filter="url(#sh)"><rect x="40" y="340" width="600" height="54" rx="8" fill="#fff" stroke="#06b6d4" stroke-width="1.5"/><rect x="40" y="340" width="600" height="28" rx="8" fill="url(#l1t)"/><rect x="40" y="362" width="600" height="6" fill="url(#l1t)"/><circle cx="66" cy="354" r="10" fill="#fff" opacity="0.25"/><text x="66" y="358" text-anchor="middle" fill="#fff" font-size="10" font-weight="700" font-family="system-ui,sans-serif">①</text><text x="84" y="358" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">Tool（内置 + MCP 扩展）</text><text x="266" y="358" fill="rgba(255,255,255,0.75)" font-size="10" font-family="system-ui,sans-serif">原子能力 — 能做什么</text><text x="56" y="386" fill="#374151" font-size="11" font-family="system-ui,sans-serif">内置 Read/Write/Bash + 自定义 MCP Tool。MCP 是用户扩展 Tool 的唯一入口。</text></g></svg>
+<figcaption class="image-caption">图 1：Claude Code 五层技术栈</figcaption>
+</figure>
+<p>前四层有一个共同前提：<strong>一个 Agent</strong>。所有的 Tool、Plugin、Hooks、Skill 都装在同一个 Agent 身上——它在你的终端里，你问一句，它答一句。</p>
+<p>Workflow 打破了这个前提。</p>
+<p>它不是在增强单个 Agent，而是让 Claude 生成了一个<strong>编排脚本</strong>，脚本里定义了多个 Agent 各自的任务、通信方式、同步节点。每个 Agent 实例都有自己能用的完整能力栈——Tool、Plugin、Hooks、Skill 一样不少。但它们身份不同、指令不同、目标不同。</p>
+<p>所以 Workflow 不是单纯的&quot;第五层&quot;。它更接近&quot;跨五层&quot;——它不是在已有四层上再加一层新能力，而是<strong>让前四层在同一时刻拥有多个独立副本，并为每个副本赋予不同的角色和任务</strong>。</p>
+<p>这带来的质变是：前四层回答的一直是&quot;能做什么&quot;&ldquo;装什么&quot;&ldquo;什么时候触发&quot;&ldquo;怎么做&rdquo;。Workflow 回答的是**&ldquo;谁来做&rdquo;**——多个 AI 分工协作，你不是在操作一个 AI，你是在管理一个 AI 团队。</p>
+<hr>
+<h2 id="2-三大原语只有三种指令的编程语言">2. 三大原语：只有三种指令的编程语言</h2>
+<p>Claude 生成 Workflow 脚本的时候，用的是一门只有三种指令的语言。理解这三种指令就等于理解了所有 Workflow 的底层逻辑。</p>
+<table>
+<thead>
+<tr>
+<th>原语</th>
+<th>做什么</th>
+<th>类比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>agent(prompt, opts?)</code></td>
+<td>定义一个 Agent：角色名 + 任务指令 + 期望输出格式</td>
+<td>给一个工程师派活</td>
+</tr>
+<tr>
+<td><code>parallel(thunks[])</code></td>
+<td>多个 Agent 同时开工，全部完成后继续</td>
+<td>团队并行做不同模块，最后汇总</td>
+</tr>
+<tr>
+<td><code>pipeline(items, stage1, stage2, ...)</code></td>
+<td>每个 item 依次流过多个 stage，item 间不互相等待</td>
+<td>流水线：需求 → 设计 → 编码 → 测试</td>
+</tr>
+</tbody>
+</table>
+<p>三种原语自由组合，就能表达所有编排模式。这很像 Unix 的&quot;一切皆文件&rdquo;——概念简单到一句话说完，但能搭出整个操作系统。</p>
+<p>脚本长什么样？看一眼就够了，不用记住：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kr">export</span> <span class="kr">const</span> <span class="nx">meta</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;code-review&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Multi-agent code review with adversarial verification&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">phases</span><span class="o">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="s1">&#39;Review&#39;</span><span class="p">,</span> <span class="nx">detail</span><span class="o">:</span> <span class="s1">&#39;Find issues in changed files&#39;</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="s1">&#39;Verify&#39;</span><span class="p">,</span> <span class="nx">detail</span><span class="o">:</span> <span class="s1">&#39;Adversarially verify each finding&#39;</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="p">],</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">phase</span><span class="p">(</span><span class="s1">&#39;Review&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">findings</span> <span class="o">=</span> <span class="kr">await</span> <span class="nx">pipeline</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">changedFiles</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">file</span> <span class="p">=&gt;</span> <span class="nx">agent</span><span class="p">(</span><span class="sb">`Review </span><span class="si">${</span><span class="nx">file</span><span class="si">}</span><span class="sb"> for bugs, security issues, and style violations.`</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span> <span class="nx">schema</span><span class="o">:</span> <span class="nx">FINDINGS_SCHEMA</span> <span class="p">}),</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">review</span> <span class="p">=&gt;</span> <span class="nx">parallel</span><span class="p">(</span><span class="nx">review</span><span class="p">.</span><span class="nx">findings</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">f</span> <span class="p">=&gt;</span> <span class="p">()</span> <span class="p">=&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">agent</span><span class="p">(</span><span class="sb">`Try to refute: </span><span class="si">${</span><span class="nx">f</span><span class="p">.</span><span class="nx">title</span><span class="si">}</span><span class="sb">`</span><span class="p">,</span> <span class="p">{</span> <span class="nx">phase</span><span class="o">:</span> <span class="s1">&#39;Verify&#39;</span><span class="p">,</span> <span class="nx">schema</span><span class="o">:</span> <span class="nx">VERDICT_SCHEMA</span> <span class="p">})</span>
+</span></span><span class="line"><span class="cl">      <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">v</span> <span class="p">=&gt;</span> <span class="p">({</span> <span class="p">...</span><span class="nx">f</span><span class="p">,</span> <span class="nx">verdict</span><span class="o">:</span> <span class="nx">v</span> <span class="p">}))</span>
+</span></span><span class="line"><span class="cl">  <span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>重申一遍：这个脚本是 Claude 写的，不是你写的。</strong> 你只需要看得懂三个词——<code>agent</code>、<code>parallel</code>、<code>pipeline</code>——就知道 Claude 生成了什么结构。就像你看得懂 <code>if</code> / <code>for</code> / <code>function</code> 就算不会写 JavaScript。</p>
+<p>关键在于：你能不能用这三种原语去描述你想要的团队结构。比如&quot;让三个 Agent 独立审查这份代码，然后一个 Agent 对比结果&rdquo;——这句话本身就是 <code>parallel + agent</code> 的口语化表达。</p>
+<hr>
+<h2 id="3-pipeline-vs-barrier流水线与同步点">3. Pipeline vs Barrier：流水线与同步点</h2>
+<p>这是 Workflow 设计中最核心的一个抉择。理解对了，任务描述就对了；理解错了，生成的 Workflow 会慢得离谱。</p>
+<h3 id="pipeline流水线默认">Pipeline（流水线，默认）</h3>
+<p>每个 item 独立流经所有阶段。Item A 进入 stage 3 时，Item B 才刚进 stage 1。互不等待。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">文件A: [分析] → [审查] → [修复]
+</span></span><span class="line"><span class="cl">文件B:          [分析] → [审查] → [修复]
+</span></span><span class="line"><span class="cl">文件C:                   [分析] → [审查] → [修复]
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>适合</strong>：任务有天然的线性依赖。先分析再审查再修复——每一步依赖上一步的输出，但不同文件之间没有依赖。这是绝大多数编程任务的形态，所以 Pipeline 是 Workflow 的默认选择。</p>
+<h3 id="barrier同步点">Barrier（同步点）</h3>
+<p>所有 Agent 并发执行，但必须全部完成后才能进入下一阶段。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">阶段1: [Agent A] [Agent B] [Agent C]  ← 同时跑
+</span></span><span class="line"><span class="cl">              ↓ 全部完成 ↓
+</span></span><span class="line"><span class="cl">阶段2:       [汇总/裁决]
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>适合</strong>：需要汇集所有结果才能做下一步判断。&ldquo;三个 Agent 独立设计方案，架构师选最优&rdquo;——架构师必须三个方案都拿到了才能选。</p>
+<h3 id="怎么选">怎么选</h3>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>Pipeline</th>
+<th>Barrier</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>执行方式</td>
+<td>各 item 独立流经阶段</td>
+<td>阶段内并发，阶段间同步</td>
+</tr>
+<tr>
+<td>快慢</td>
+<td>不互相等待——快</td>
+<td>等最慢的那个——慢</td>
+</tr>
+<tr>
+<td>错误影响</td>
+<td>单 item 失败不影响其他</td>
+<td>单 Agent 失败不阻塞其他 Agent</td>
+</tr>
+<tr>
+<td>适合场景</td>
+<td>审查流水线、数据处理</td>
+<td>方案比选、汇总分析</td>
+</tr>
+<tr>
+<td>默认选择</td>
+<td>✅ Workflow 默认</td>
+<td>需显式指定</td>
+</tr>
+</tbody>
+</table>
+<p>怎么跟 Claude 说：</p>
+<ul>
+<li>&ldquo;逐个审查每个文件的代码质量，发现问题直接修复&rdquo; → Claude 生成 <strong>Pipeline</strong></li>
+<li>&ldquo;让三个 Agent 分别设计数据库 Schema，然后数据库专家选最佳方案&rdquo; → Claude 生成 <strong>Barrier + Judge</strong></li>
+</ul>
+<p>你不需要在 prompt 里用&quot;pipeline&quot;或&quot;barrier&quot;这两个词。你只需要描述<strong>item 之间有没有依赖关系</strong>。没有依赖 → Pipeline；有依赖（需要汇总） → Barrier。</p>
+<hr>
+<h2 id="4-模式一对抗验证">4. 模式一：对抗验证</h2>
+<p>这是 MCP 文章结尾预告的核心模式：&ldquo;用多个独立 Agent 交叉验证、对抗审查，把概率压到无限逼近确定。&rdquo;</p>
+<figure><svg id="adversarial-verification" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 265" width="100%" style="max-width:600px;display:block;margin:1.2em auto"><defs><filter id="sh2"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/></filter><marker id="arrowBlue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#3b82f6"/></marker><marker id="arrowRed" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#ef4444"/></marker><marker id="arrowGreen" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#10b981"/></marker><marker id="arrowGray" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#9ca3af"/></marker></defs><!-- Task --><g filter="url(#sh2)"><rect x="230" y="10" width="140" height="34" rx="8" fill="#f3f4f6"/><text x="300" y="32" text-anchor="middle" fill="#374151" font-size="13" font-weight="700" font-family="system-ui,sans-serif">Task</text></g><line x1="300" y1="44" x2="300" y2="66" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#arrowGray)"/><!-- Generator Agent --><g filter="url(#sh2)"><rect x="170" y="70" width="260" height="46" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/><rect x="170" y="70" width="260" height="22" rx="8" fill="#3b82f6"/><rect x="170" y="84" width="260" height="8" fill="#3b82f6"/><text x="300" y="86" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">Generator Agent（生成者）</text><text x="300" y="106" text-anchor="middle" fill="#374151" font-size="10" font-family="system-ui,sans-serif">"写出最好的代码"</text></g><!-- Arrow to Reviewer --><line x1="300" y1="116" x2="300" y2="144" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrowBlue)"/><text x="320" y="134" fill="#6b7280" font-size="9" font-family="system-ui,sans-serif">draft</text><!-- Reviewer Agent --><g filter="url(#sh2)"><rect x="170" y="148" width="260" height="46" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/><rect x="170" y="148" width="260" height="22" rx="8" fill="#ef4444"/><rect x="170" y="162" width="260" height="8" fill="#ef4444"/><text x="300" y="164" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">Reviewer Agent（审查者）</text><text x="300" y="184" text-anchor="middle" fill="#374151" font-size="10" font-family="system-ui,sans-serif">"找出所有问题，不准说 looks good"</text></g><!-- Loop back (not pass) --><path d="M 430 194 L 480 194 L 480 93 L 434 93" fill="none" stroke="#ef4444" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#arrowRed)"/><text x="494" y="148" fill="#ef4444" font-size="9" font-family="system-ui,sans-serif">not pass → revise</text><!-- Pass arrow --><line x1="300" y1="194" x2="300" y2="220" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrowGreen)"/><text x="320" y="212" fill="#10b981" font-size="9" font-weight="600" font-family="system-ui,sans-serif">pass</text><!-- Approved --><g filter="url(#sh2)"><rect x="242" y="224" width="116" height="28" rx="14" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/><text x="300" y="243" text-anchor="middle" fill="#059669" font-size="12" font-weight="700" font-family="system-ui,sans-serif">✓ Approved</text></g></svg>
+<figcaption class="image-caption">图 2：对抗验证流程 — Generator 与 Reviewer 角色对立，循环直到通过</figcaption>
+</figure>
+<p>结构很简单：一个 Agent 负责生成，另一个 Agent 负责挑刺。挑刺不通过 → 生成者修改 → 再次审查 → 循环直到通过。</p>
+<p>核心机制是<strong>角色对立</strong>。Generator 被指示&quot;写出最好的代码&quot;，Reviewer 被指示&quot;找出所有问题&quot;。两个 Agent 的目标不一致——正是这种张力产生了质量。Generator 的自我偏好偏见（对自己的输出过于自信）被 Reviewer 的无情挑战压制。</p>
+<p>这和单 Agent 自审有本质区别：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>单 Agent 自审</th>
+<th>对抗验证</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>审查视角</td>
+<td>同一模型审视自己的输出</td>
+<td>独立 Agent，独立上下文，独立指令</td>
+</tr>
+<tr>
+<td>心理包袱</td>
+<td>&ldquo;这是我写的&rdquo;——倾向于放水</td>
+<td>&ldquo;我只管找茬&rdquo;——没有包袱</td>
+</tr>
+<tr>
+<td>典型表现</td>
+<td>&ldquo;Looks good, no issues found&rdquo;</td>
+<td>&ldquo;Line 42: potential race condition&hellip;&rdquo;</td>
+</tr>
+<tr>
+<td>Bug 检出率</td>
+<td>~60%（见啥都顺眼）</td>
+<td>~90%+（见啥都不顺眼）</td>
+</tr>
+</tbody>
+</table>
+<p>在实际 Workflow 中，这个模式通常是 Pipeline 的一个 stage：所有文件逐一经过 Generator 生成代码，然后每个生成结果进入 Reviewer 审查。不通过的文件回到 Generator 修改，通过的文件进入下一阶段。</p>
+<p>如何向 Claude 描述：&ldquo;先让一个 Agent 写实现，再让另一个 Agent 审查它的代码。审查者不准说没问题——必须找到至少一个问题。审查不通过就让写的人改，循环直到审查通过。&rdquo;</p>
+<hr>
+<h2 id="5-模式二循环直到稳定">5. 模式二：循环直到稳定</h2>
+<p>有些任务没有&quot;一次就够&quot;的终点。重构、优化、润色——你希望 Agent 持续改进，直到&quot;没什么可改的了&quot;。</p>
+<h3 id="loop-until-dry">Loop-until-dry</h3>
+<p>Agent 反复处理同一素材，每次输出改进建议，直到它自己说出&quot;没有新的修改建议了&quot;。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">Iteration 1: 发现 5 处可优化 → 修改
+</span></span><span class="line"><span class="cl">Iteration 2: 发现 2 处可优化 → 修改
+</span></span><span class="line"><span class="cl">Iteration 3: 0 处 → dry → 停止
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>适合</strong>：有明确终点的任务——重构到满意为止、代码风格统一、文档润色。</p>
+<p><strong>风险</strong>：Agent 可能永远不说&quot;done&quot;。需要设置最大迭代次数作为逃生门。标准做法是 <code>maxIterations=5</code>——过了五轮不管它说不说 dry 都停。</p>
+<h3 id="loop-until-budget">Loop-until-budget</h3>
+<p>用外部约束代替 Agent 自己的判断。预算可以是 token 数、步数、时间。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">预算: 50,000 tokens
+</span></span><span class="line"><span class="cl">Iteration 1: 探索方案 A, B → 消耗 8,000 tokens
+</span></span><span class="line"><span class="cl">Iteration 2: 深入方案 B → 消耗 12,000 tokens
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">预算耗尽 → 停止，输出当前最佳
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>适合</strong>：开放探索性任务——&ldquo;花不超过 X token 找到最好的方案&rdquo;。不需要 Agent 自己判断&quot;够好了没有&quot;。</p>
+<h3 id="两种变体对比">两种变体对比</h3>
+<table>
+<thead>
+<tr>
+<th>变体</th>
+<th>停止条件</th>
+<th>适用场景</th>
+<th>风险</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Loop-until-dry</td>
+<td>Agent 自检无变化</td>
+<td>重构、优化、文档润色</td>
+<td>可能无限循环（需 max 逃生门）</td>
+</tr>
+<tr>
+<td>Loop-until-budget</td>
+<td>Token/步数达到上限</td>
+<td>探索性分析、方案对比</td>
+<td>可能在关键突破前停止</td>
+</tr>
+</tbody>
+</table>
+<p>如何向 Claude 描述：&ldquo;反复审查这个模块的代码质量，每轮发现的问题全部修复后再来一轮，直到审查者挑不出新问题为止。最多五轮。&rdquo;</p>
+<p>这本质上是一个 Pipeline 自环——Agent 的输出回到自身或同角色 Agent，直到满足停止条件。</p>
+<hr>
+<h2 id="6-模式三评审团">6. 模式三：评审团</h2>
+<p>对抗验证是 1v1（一个写一个审），评审团是 N+1（N 个独立产生方案，1 个裁判选最优）。</p>
+<figure><svg id="judge-panel" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 310" width="100%" style="max-width:600px;display:block;margin:1.2em auto"><defs><filter id="sh2"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/></filter><marker id="arrowGray" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#9ca3af"/></marker><marker id="arrowRose" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#f43f5e"/></marker></defs><!-- Task --><g filter="url(#sh2)"><rect x="230" y="10" width="140" height="30" rx="8" fill="#f3f4f6"/><text x="300" y="30" text-anchor="middle" fill="#374151" font-size="13" font-weight="700" font-family="system-ui,sans-serif">Task</text></g><!-- Fan-out lines --><line x1="260" y1="40" x2="120" y2="68" stroke="#9ca3af" stroke-width="1.2" marker-end="url(#arrowGray)"/><line x1="300" y1="40" x2="300" y2="68" stroke="#9ca3af" stroke-width="1.2" marker-end="url(#arrowGray)"/><line x1="340" y1="40" x2="480" y2="68" stroke="#9ca3af" stroke-width="1.2" marker-end="url(#arrowGray)"/><!-- Agent 1 --><g filter="url(#sh2)"><rect x="40" y="72" width="160" height="70" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.2"/><rect x="40" y="72" width="160" height="22" rx="8" fill="#3b82f6"/><rect x="40" y="86" width="160" height="8" fill="#3b82f6"/><text x="120" y="88" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="system-ui,sans-serif">Agent A</text><text x="120" y="112" text-anchor="middle" fill="#374151" font-size="10" font-family="system-ui,sans-serif">方案一：MVP 优先</text><rect x="55" y="120" width="130" height="20" rx="5" fill="#f3f4f6"/><text x="120" y="134" text-anchor="middle" fill="#6b7280" font-size="9" font-family="system-ui,sans-serif">Solution A</text></g><!-- Agent 2 --><g filter="url(#sh2)"><rect x="220" y="72" width="160" height="70" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="1.2"/><rect x="220" y="72" width="160" height="22" rx="8" fill="#ef4444"/><rect x="220" y="86" width="160" height="8" fill="#ef4444"/><text x="300" y="88" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="system-ui,sans-serif">Agent B</text><text x="300" y="112" text-anchor="middle" fill="#374151" font-size="10" font-family="system-ui,sans-serif">方案二：风险优先</text><rect x="235" y="120" width="130" height="20" rx="5" fill="#f3f4f6"/><text x="300" y="134" text-anchor="middle" fill="#6b7280" font-size="9" font-family="system-ui,sans-serif">Solution B</text></g><!-- Agent 3 --><g filter="url(#sh2)"><rect x="400" y="72" width="160" height="70" rx="8" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="1.2"/><rect x="400" y="72" width="160" height="22" rx="8" fill="#8b5cf6"/><rect x="400" y="86" width="160" height="8" fill="#8b5cf6"/><text x="480" y="88" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="system-ui,sans-serif">Agent C</text><text x="480" y="112" text-anchor="middle" fill="#374151" font-size="10" font-family="system-ui,sans-serif">方案三：用户优先</text><rect x="415" y="120" width="130" height="20" rx="5" fill="#f3f4f6"/><text x="480" y="134" text-anchor="middle" fill="#6b7280" font-size="9" font-family="system-ui,sans-serif">Solution C</text></g><!-- Converge to Judge --><line x1="120" y1="142" x2="200" y2="200" stroke="#9ca3af" stroke-width="1" marker-end="url(#arrowGray)"/><line x1="300" y1="142" x2="300" y2="200" stroke="#9ca3af" stroke-width="1" marker-end="url(#arrowGray)"/><line x1="480" y1="142" x2="400" y2="200" stroke="#9ca3af" stroke-width="1" marker-end="url(#arrowGray)"/><!-- Judge Agent --><g filter="url(#sh2)"><rect x="200" y="204" width="200" height="46" rx="8" fill="#fff1f2" stroke="#f43f5e" stroke-width="1.5"/><rect x="200" y="204" width="200" height="22" rx="8" fill="#f43f5e"/><rect x="200" y="218" width="200" height="8" fill="#f43f5e"/><text x="300" y="220" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">Judge Agent（裁判）</text><text x="300" y="240" text-anchor="middle" fill="#374151" font-size="10" font-family="system-ui,sans-serif">选出最佳或融合优点</text></g><!-- Best Solution --><g filter="url(#sh2)"><rect x="230" y="268" width="140" height="26" rx="6" fill="#fefce8" stroke="#eab308" stroke-width="1.2"/><text x="300" y="286" text-anchor="middle" fill="#a16207" font-size="11" font-weight="700" font-family="system-ui,sans-serif">★ Best Solution</text></g><line x1="300" y1="250" x2="300" y2="268" stroke="#f43f5e" stroke-width="1.2" marker-end="url(#arrowRose)"/></svg>
+<figcaption class="image-caption">图 3：评审团流程 — 三个 Agent 独立设计方案，Judge 选最优</figcaption>
+</figure>
+<p>与对抗验证的区别：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>对抗验证</th>
+<th>评审团</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Agent 关系</td>
+<td>1 Generator + 1 Reviewer 循环</td>
+<td>N 个独立 Agent + 1 Judge</td>
+</tr>
+<tr>
+<td>核心机制</td>
+<td>角色对立，挑刺-修改循环</td>
+<td>独立产生，裁判选优</td>
+</tr>
+<tr>
+<td>适合</td>
+<td>有明确对错标准的任务（代码质量、安全检查）</td>
+<td>有多个可行方案的任务（架构设计、算法选择）</td>
+</tr>
+<tr>
+<td>Agent 规模</td>
+<td>固定 2 个</td>
+<td>N=3 黄金比例</td>
+</tr>
+</tbody>
+</table>
+<h3 id="n3-为什么是黄金比例">N=3 为什么是黄金比例</h3>
+<p>N=2 不够。两个方案对比容易变成二选一，裁判没有足够的多样性去发现&quot;第三种可能&quot;。N=4 或更多，边际收益递减——每多一个 Agent 消耗同等 token，但第四个方案提供的新视角远少于第三个。N=3 是多样性和成本的折中最优解。</p>
+<h3 id="judge-的角色设计">Judge 的角色设计</h3>
+<p>Judge 的指令不是&quot;找出错误&quot;（那是对抗验证的 Reviewer）。Judge 的指令是&quot;评估所有方案，选择最优或融合优点&quot;。Judge 需要有明确的评估标准，否则会退化成随机选择。</p>
+<p>标准应该写在任务描述里，比如：&ldquo;以可维护性为第一优先级，性能为第二优先级，代码简洁度为第三优先级，评估三个方案的优劣。&rdquo;</p>
+<p>如何向 Claude 描述：&ldquo;让三个 Agent 独立设计这个模块的 API，分别从 MVP 优先、性能优先、扩展性优先三个角度出发。然后一个架构师 Agent 评估三个方案，选出最佳或融合优点。&rdquo;</p>
+<hr>
+<h2 id="7-ultracode两种触发方式别搞混">7. ultracode：两种触发方式，别搞混</h2>
+<p>&ldquo;ultracode&rdquo; 这个词在 Claude Code 里有两种完全不同的用法。搞混会浪费大量 token。</p>
+<h3 id="effort-ultracode会话级开关"><code>/effort ultracode</code>：会话级开关</h3>
+<p>这是一个 slash command。执行后做两件事：</p>
+<ol>
+<li>把整个会话的推理深度设为 <code>xhigh</code>（每条消息 8x token）</li>
+<li>授予 Claude Code 自动编排 Workflow 的权限——Claude 自行判断哪些任务需要多 Agent 并行</li>
+</ol>
+<p><strong>作用范围：整个会话</strong>。设完之后你说的每一句话，哪怕&quot;帮我看看这个变量名好不好&quot;，都在 xhigh 推理深度下运行。而且 Claude 会在任何它认为&quot;值得&quot;的任务上自动启动 Workflow。</p>
+<p><strong>用完必须降回来</strong>——<code>/effort high</code> 或 <code>/effort medium</code>。忘了降？后面每条随便聊天的消息都在烧 8x token。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">/effort ultracode    ← 开始高强度会话
+</span></span><span class="line"><span class="cl">... 跑完核心任务 ...
+</span></span><span class="line"><span class="cl">/effort high         ← 降回来！别忘
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>适合：整个会话都是重型任务——大规模重构、安全审计、从头实现一个功能。</p>
+<h3 id="prompt-里写-ultracode单次触发">Prompt 里写 &ldquo;ultracode&rdquo;：单次触发</h3>
+<p>在消息文本中提到 &ldquo;ultracode&rdquo;（比如&quot;用 ultracode 跑这个任务&quot;），只触发<strong>这一次</strong> Workflow 编排。会话的默认 effort 不变。下一条消息回到正常推理深度。</p>
+<p>适合：日常开发中偶尔碰到一个复杂任务——其他都在 medium 下跑，就这一个需要多 Agent 并行。</p>
+<h3 id="两种方式对比">两种方式对比</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>/effort ultracode</code></th>
+<th>prompt 里写 &ldquo;ultracode&rdquo;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>作用范围</td>
+<td>整个会话</td>
+<td>单次请求</td>
+</tr>
+<tr>
+<td>推理深度</td>
+<td>xhigh 永久生效</td>
+<td>不改会话 effort</td>
+</tr>
+<tr>
+<td>Workflow 触发</td>
+<td>Claude 自动判定所有任务</td>
+<td>仅当前任务</td>
+</tr>
+<tr>
+<td>Token 影响</td>
+<td>每条消息 8x，直到改回去</td>
+<td>只那一次 Workflow 8x</td>
+</tr>
+<tr>
+<td>恢复方式</td>
+<td>需要手动 <code>/effort high</code></td>
+<td>自动恢复</td>
+</tr>
+</tbody>
+</table>
+<h3 id="最常踩的坑">最常踩的坑</h3>
+<blockquote>
+<p>用 <code>/effort ultracode</code> 跑完一个任务，忘了降回来。后面聊了半小时天，每条消息都在 8x 模式下。月底账单翻倍。</p>
+</blockquote>
+<p><strong>记住</strong>：如果你只需要一个任务上高强度，在 prompt 里提 &ldquo;ultracode&rdquo;，不要动 <code>/effort</code>。只有整个会话都需要深推理时才用 slash command。</p>
+<h3 id="什么时候值得开">什么时候值得开</h3>
+<ul>
+<li><strong>安全审计</strong>：审计 Agent 在沙箱里跑，不会有副作用。xhigh 让每个审查 Agent 更仔细地找漏洞</li>
+<li><strong>生产部署前的最终检查</strong>：推理深度直接关联遗漏率</li>
+<li><strong>架构决策</strong>：几个方案各自的利弊，xhigh 让每个方案的生成更深入、Judge 的评估更全面</li>
+</ul>
+<p>什么时候不值得：日常 CRUD、简单 bug 修复、探索性任务。Token 8x，但任务不需要这么深推理。</p>
+<hr>
+<h2 id="8-即开即用的提示词">8. 即开即用的提示词</h2>
+<p>下面四个 prompt，直接复制到 Claude Code 里就能跑。每个都对应前文讲的一种模式。建议先用小范围试（挑一个模块、一个文件），跑通了再扩大。</p>
+<h3 id="代码审查流水线对抗验证">代码审查流水线（对抗验证）</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ultracode：审查 {模块路径} 的代码质量。先让一个 Agent 逐文件分析潜在的 bug、
+</span></span><span class="line"><span class="cl">安全隐患、性能问题和风格违规。然后让另一个 Agent 对抗性审查每一个发现——
+</span></span><span class="line"><span class="cl">尝试反驳、找误报。只保留两个 Agent 都认可的问题，按严重程度排序输出。
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="设计方案比选评审团">设计方案比选（评审团）</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ultracode：设计 {功能名} 的实现方案。让三个 Agent 分别从以下角度独立设计：
+</span></span><span class="line"><span class="cl">1) 最快实现 MVP  2) 最优性能  3) 最好扩展性。
+</span></span><span class="line"><span class="cl">然后让一个架构师 Agent 评估三个方案，选出最佳或融合优点。评估标准：
+</span></span><span class="line"><span class="cl">可维护性第一，性能第二，实现复杂度第三。
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="重构到满意为止循环直到稳定">重构到满意为止（循环直到稳定）</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ultracode：重构 {文件路径}，提升可读性和可维护性，不改变外部行为。
+</span></span><span class="line"><span class="cl">每次重构后让审查 Agent 检查代码质量并提出改进建议，继续修改直到审查者
+</span></span><span class="line"><span class="cl">挑不出新问题。最多 5 轮。
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="安全审计">安全审计</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ultracode：对 {模块/服务} 做安全审计。让多个 Agent 分别从以下维度独立审查：
+</span></span><span class="line"><span class="cl">1) 认证和授权  2) 输入验证和注入防御  3) 数据泄露风险  4) 依赖漏洞。
+</span></span><span class="line"><span class="cl">每个 Agent 只关注自己维度，最后汇总所有发现，按 CVSS 式严重度排列。
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>四个 prompt 的模式可以直接套到你的项目上。核心就一句话——<strong>描述角色分工，而不是写脚本</strong>。</p>
+<hr>
+<h2 id="9-三层级对比sub-agentworkflow单-agent-多轮">9. 三层级对比：Sub-agent、Workflow、单 Agent 多轮</h2>
+<p>Claude Code 提供了三个层级的多 Agent 协作能力。理解各自定位，才不会用错。</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>Sub-agent</th>
+<th>Workflow</th>
+<th>单 Agent 多轮</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Agent 数量</td>
+<td>1 + 临时子任务</td>
+<td>N（显式编排）</td>
+<td>1</td>
+</tr>
+<tr>
+<td>编排方式</td>
+<td>父 Agent 动态分派</td>
+<td>Pipeline/Barrier 脚本</td>
+<td>你手动引导</td>
+</tr>
+<tr>
+<td>上下文隔离</td>
+<td>父子隔离，共享文件系统</td>
+<td>完全沙箱隔离</td>
+<td>无隔离</td>
+</tr>
+<tr>
+<td>失败恢复</td>
+<td>无（重头来）</td>
+<td>断点续传</td>
+<td>无（从头来）</td>
+</tr>
+<tr>
+<td>确定性</td>
+<td>无保证</td>
+<td>Pipeline 保证执行顺序</td>
+<td>无保证</td>
+</tr>
+<tr>
+<td>适合</td>
+<td>大任务内的子任务拆分</td>
+<td>可重复的多步流程</td>
+<td>探索、对话、需求不明确</td>
+</tr>
+</tbody>
+</table>
+<h3 id="选择准则">选择准则</h3>
+<ul>
+<li><strong>任务明确、可重复、需要多次执行？</strong> → Workflow。比如：每次 PR 都要经过的审查流水线。</li>
+<li><strong>一次性的大任务，需要拆成小块并行？</strong> → Sub-agent。比如：分析整个代码库中所有使用了某 Pattern 的文件。</li>
+<li><strong>你还不知道到底要什么？</strong> → 单 Agent 多轮。先聊清楚，自然聊出 Sub-agent 或 Workflow 的需求再切。</li>
+</ul>
+<p>一个实用的判断法：<strong>如果让你用文字写下这个流程，你能写多清楚？</strong> 写得很清楚 → Workflow。大概清楚但有模糊地带 → Sub-agent。写不清楚，需要边做边想 → 单 Agent 多轮。</p>
+<hr>
+<h2 id="10-沙箱约束确定性不是限制是-feature">10. 沙箱约束：确定性不是限制，是 feature</h2>
+<p>Workflow 中的 Agent 在一个受限的沙箱里运行。理解这些约束为什么存在，比记住&quot;什么不能做&quot;更重要。</p>
+<table>
+<thead>
+<tr>
+<th>可以做</th>
+<th>不能做</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>推理、分析、规划</td>
+<td>直接读写文件</td>
+</tr>
+<tr>
+<td>生成代码/文本/JSON</td>
+<td>执行 shell 命令</td>
+</tr>
+<tr>
+<td>调用 MCP Tool（权限内）</td>
+<td><code>Date.now()</code> / <code>Math.random()</code></td>
+</tr>
+<tr>
+<td>产生结构化输出</td>
+<td>修改文件系统</td>
+</tr>
+<tr>
+<td>与其他 Agent 通信（通过 Workflow 数据流）</td>
+<td>启动子进程</td>
+</tr>
+</tbody>
+</table>
+<p>这些约束不是随意加的。每一条都服务于一个核心目标：<strong>确定性</strong>。</p>
+<p>同一个 Workflow，同样的输入，同样的 Agent 配置 → 同样的输出。这是断点续传和缓存的前提：如果第 3 步的输入和第 2 次执行的第 3 步输入完全一样，直接返回缓存结果，不重新执行。</p>
+<p>没有这个确定性，断点续传不可靠（重放可能走不同的路径），缓存无效（&ldquo;相同输入&quot;无法定义），调试不可复现（你永远不知道上次是怎么跑出来的）。</p>
+<p>所以 Workflow 中的 Agent 角色是&quot;思考者&rdquo;，不是&quot;行动者&quot;——它们产生内容（分析、方案、代码、审查意见），Workflow 引擎负责把内容落地到文件系统。这个分工是刻意的：思考应该是确定性的，行动才需要与外部世界交互。</p>
+<p>还有一层隐性约束：所有 Agent 跑的是同一个 Claude 模型。角色的差异靠 prompt 制造——Generator 被指示&quot;写出最好的代码&quot;，Reviewer 被指示&quot;找出所有问题&quot;——但它们底层的推理能力是一样的。这和你可能在 LangChain 或 AutoGen 里见过的&quot;给 Agent A 用 GPT-4o、Agent B 用 Opus&quot;不一样。Workflow 的&quot;多 Agent&quot;更准确地说，是同一模型的<strong>多视角副本</strong>。这也解释了为什么对抗验证有效：正因为两个视角能力同级，才能互相挑刺。如果 Reviewer 明显比 Generator 强，对抗就变成了碾压，不是挑战。</p>
+<p>一条实用的理解：<strong>沙箱约束让 Workflow 像一个纯函数——相同输入，相同输出。纯函数好测试、好缓存、好调试、好信任。</strong></p>
+<hr>
+<h2 id="11-恢复与缓存改最后一步不用重跑前面全部">11. 恢复与缓存：改最后一步不用重跑前面全部</h2>
+<p>Workflow 的两个工程特性，让你的迭代速度从&quot;全部重来&quot;变成&quot;原地继续&quot;。</p>
+<h3 id="断点续传">断点续传</h3>
+<p>Workflow 每一步的完成状态都被记录。如果某一步失败——Agent 超时、输出格式错误、MCP Tool 调用失败——从失败那一步重新执行。前面的结果全部保留。</p>
+<p>这意味着一个 5 步 pipeline 在第 4 步崩了，你改了第 4 步的指令，不用重跑 1-3 步。</p>
+<h3 id="缓存命中">缓存命中</h3>
+<p>如果 pipeline 中某一步的输入、Agent 配置、Prompt 与之前某次执行完全相同，直接返回缓存结果。对调试和迭代速度影响巨大——你修改第 5 步的 Judge 评估标准，前面 4 步 0 token 消耗，瞬间返回。</p>
+<p>什么情况缓存会失效：Agent 调用了 MCP Tool（外部系统状态可能变了）、输出中包含非确定性因素、改了 Agent 的 model 参数。</p>
+<h3 id="实际影响">实际影响</h3>
+<p>&ldquo;试试看&quot;的成本从&quot;全部重来&quot;降到了&quot;只改最后一步&rdquo;。这种迭代速度让你可以：</p>
+<ul>
+<li>反复微调 Judge 的评估标准，看不同标准下的选择差异</li>
+<li>调整 Reviewer 的严格程度，而不重跑 Generator</li>
+<li>修改 Pipeline 最后一阶段的输出格式，前面的质量工作不浪费</li>
+</ul>
+<hr>
+<h2 id="12-结语从操作者到架构师">12. 结语：从操作者到架构师</h2>
+<p>系列写了五篇，从 Tool 到 Workflow：</p>
+<table>
+<thead>
+<tr>
+<th>层</th>
+<th>主题</th>
+<th>核心问题</th>
+<th>核心答案</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① Tool</td>
+<td>MCP</td>
+<td>能做什么？</td>
+<td>内置 + 自定义 MCP Tool——原子能力</td>
+</tr>
+<tr>
+<td>② Plugin</td>
+<td>插件</td>
+<td>装什么？</td>
+<td>装备——压缩输出、记忆复用、语义搜索</td>
+</tr>
+<tr>
+<td>③ Hooks</td>
+<td>Hooks</td>
+<td>什么时候触发？</td>
+<td>事件驱动，自动执行</td>
+</tr>
+<tr>
+<td>④ Skill</td>
+<td>Skill</td>
+<td>怎么做？</td>
+<td>方法论——行为编码，经验模块化</td>
+</tr>
+<tr>
+<td>⑤ Orchestration</td>
+<td>Workflows</td>
+<td>谁来做？</td>
+<td>多智能体编排——AI 团队协作</td>
+</tr>
+</tbody>
+</table>
+<p>五层不是五个独立的能力，而是递进的依赖链：没有 Tool 就没有 Plugin 要扩展的东西，没有 Plugin 就没有 Hooks 的触发点，没有 Hooks 就没有 Skill 的自动化执行条件，没有 Skill 就没有 Workflow 中每个 Agent 的标准化行为。</p>
+<p>更重要的是，这条链改变了你和 Claude Code 的关系：</p>
+<ul>
+<li>写前两篇（Plugin / MCP）时，你是 <strong>配置者</strong>——装什么、配什么</li>
+<li>写中间两篇（Hooks / Skill）时，你是 <strong>设计者</strong>——设计触发条件和行为规范</li>
+<li>写这篇时，你是 <strong>架构师</strong>——设计团队结构、通信方式、质量保证机制</li>
+</ul>
+<p>每一步都在把你从操作者变成架构师。</p>
+<p>Workflow 是当前你能触及的顶层——但 AI 工具的发展不会停在这里。Workflow 依赖 Claude Code 运行时，不能在外部系统自动触发。未来可能出现更完整的多 Agent 框架，但 Workflow 的核心概念——Agent 分工、角色对立、Barrier/Pipeline 编排——会是所有后续框架的基石。</p>
+<p>你不再是一个人在终端里跟 AI 对话。你在管理一支 AI 团队。</p>
+<hr>
+<p><em>感谢阅读。</em></p>
+<div class="post-series-nav">
+                <em>本文是「<a href="/series/claude-code-deep-dive/">AI 编程·Claude Code</a>」系列第 5 篇，共 5 篇。上一篇：<a href="/posts/2026/06/10/claude-code-mcp-guide/">Claude Code MCP 完全指南：给你的 AI 造工具</a>。</em>
+            </div></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2026-06-14</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/2026/06/14/claude-code-workflows-guide/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/06/14/claude-code-workflows-guide/" data-title="Claude Code Workflows 完全指南：多智能体编排让 AI 团队自己干活" data-hashtags="tech,ai,claude code,workflow,multi-agent,orchestration"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/06/14/claude-code-workflows-guide/" data-hashtag="tech"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/06/14/claude-code-workflows-guide/" data-title="Claude Code Workflows 完全指南：多智能体编排让 AI 团队自己干活"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/06/14/claude-code-workflows-guide/" data-title="Claude Code Workflows 完全指南：多智能体编排让 AI 团队自己干活"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/06/14/claude-code-workflows-guide/" data-title="Claude Code Workflows 完全指南：多智能体编排让 AI 团队自己干活"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/tech/">技术</a>,&nbsp;<a href="/tags/ai/">Ai</a>,&nbsp;<a href="/tags/claude-code/">Claude Code</a>,&nbsp;<a href="/tags/workflow/">Workflow</a>,&nbsp;<a href="/tags/multi-agent/">Multi-Agent</a>,&nbsp;<a href="/tags/orchestration/">Orchestration</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2026/06/10/claude-code-mcp-guide/" class="prev" rel="prev" title="Claude Code MCP 完全指南：给你的 AI 造工具"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Claude Code MCP 完全指南：给你的 AI 造工具</a></div>
+
+</div>
+<div id="comments"><div id="waline" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://waline.js.org/">Waline</a>.
+            </noscript><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.131.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/waline/waline.min.css"><script type="text/javascript" src="/lib/waline/waline.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config=Object.assign(window.config||{},{"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Comments","categoryId":"DIC_kwDOH2gmzc4CQ_fM","darkTheme":"dark","emitMetadata":"0","inputPosition":"bottom","lang":"zh-CN","lazyLoading":true,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"whitefirer/whitefirer.github.io","repoId":"R_kgDOH2gmzQ"},"waline":{"dark":"auto","el":"#waline","lang":"zh-CN","pageSize":10,"requiredMeta":["nick","mail"],"serverURL":"https://comment.whitefirer.org"}},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}});</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">!function(){function svgToPng(svg,cb){var c=svg.cloneNode(!0),d=new XMLSerializer().serializeToString(c),img=new Image(),cv=document.createElement('canvas'),w=c.viewBox.animVal.width||c.getBoundingClientRect().width||400,h=c.viewBox.animVal.height||c.getBoundingClientRect().height||300,s=2;cv.width=w*s,cv.height=h*s;var ctx=cv.getContext('2d'),b=new Blob([d],{type:'image/svg+xml;charset=utf-8'}),u=URL.createObjectURL(b);img.onload=function(){ctx.fillStyle='#fff',ctx.fillRect(0,0,cv.width,cv.height),ctx.drawImage(img,0,0,cv.width,cv.height),URL.revokeObjectURL(u),cv.toBlob(function(blob){var a=document.createElement('a');a.href=URL.createObjectURL(blob);var id=svg.id||'diagram';a.download=id+'.png',a.click(),URL.revokeObjectURL(a.href),cb&&cb()})},img.src=u}function addSaveBtn(svg){if(svg.closest('.mermaid-stage,.mermaid-fs-overlay,.mermaid-wrapper,.mermaid-toolbar,.svg-diagram-wrap'))return;var wrap=document.createElement('div');wrap.className='svg-diagram-wrap';var d=svg.style.display||'block',w=svg.style.width||svg.getAttribute('width')||'100%',mw=svg.style.maxWidth||'',m=svg.style.margin||'';wrap.style.cssText='position:relative;display:'+d+';width:'+w+';'+(mw?'max-width:'+mw+';':'')+(m?'margin:'+m+';':'')+'line-height:0';svg.style.display='block';svg.style.width='100%';svg.style.maxWidth='';svg.style.margin='0';svg.parentNode.insertBefore(wrap,svg);wrap.appendChild(svg);var bar=document.createElement('div');bar.style.cssText='text-align:right;padding-top:6px';var btn=document.createElement('button');btn.className='svg-save-btn',btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span style="vertical-align:middle;font-size:12px">保存图片</span>',btn.style.cssText='background:none;border:1px solid transparent;border-radius:4px;padding:2px 6px;cursor:pointer;color:#b0b7c3;font-family:system-ui,sans-serif;line-height:1';bar.appendChild(btn);wrap.appendChild(bar);btn.onmouseenter=function(){btn.style.color='#6366f1';btn.style.borderColor='#e5e7eb'};btn.onmouseleave=function(){btn.style.color='#b0b7c3';btn.style.borderColor='transparent'};btn.onclick=function(e){e.stopPropagation();var orig=btn.innerHTML;btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span style="vertical-align:middle;font-size:12px">导出中...</span>';btn.disabled=!0;svgToPng(svg,function(){btn.innerHTML=orig;btn.disabled=!1})}}function initSvgButtons(){document.querySelectorAll('.content svg').forEach(function(svg){addSaveBtn(svg)})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initSvgButtons);else initSvgButtons()}()</script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-70Q8REKE17', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-70Q8REKE17" async></script></body>
+</html>
