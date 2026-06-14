@@ -37,6 +37,14 @@
     <description><![CDATA[九种 Hook 类型 + 十一个秒用场景，把 Claude Code 从工具变成搭档。 前言 之前写了《Claude Code 插件完全指南》，介绍四个插件和一个 MCP 服务。那是&quot;用什]]></description>
 </item>
 <item>
+    <title>Sidecarless 之后：eBPF &#43; AI，服务网格的下一站</title>
+    <link>https://whitefirer.org/posts/2026/05/15/ebpf-ai-service-mesh/</link>
+    <pubDate>Fri, 15 May 2026 23:17:43 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/05/15/ebpf-ai-service-mesh/</guid>
+    <description><![CDATA[服务网格走过了两个阶段。第一个阶段是 Sidecar——每个 Pod 挂一个 Envoy，接管流量，上报指标。做得漂亮，但代价不小。第二个阶段是 Side]]></description>
+</item>
+<item>
     <title>Prompt Caching 深度解析：插件 &#43; 缓存 = 98% 费用节省</title>
     <link>https://whitefirer.org/posts/2026/05/03/prompt-caching-deepseek/</link>
     <pubDate>Sun, 03 May 2026 22:15:00 &#43;0800</pubDate>
@@ -75,14 +83,6 @@
     <author>whitefirer</author>
     <guid>https://whitefirer.org/posts/2022/08/29/extension-and-expansion-of-service-mesh/</guid>
     <description><![CDATA[导语 没有最完美的架构，只有最合适的架构。 背景 很多时候服务网格在业务难以落地，往往是因为有历史包袱或者特殊需求，反而没有新设计的项目接入服务网]]></description>
-</item>
-<item>
-    <title>高效终端命令行工具</title>
-    <link>https://whitefirer.org/posts/2022/08/29/efficient-command-line-tools/</link>
-    <pubDate>Mon, 29 Aug 2022 15:41:16 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/posts/2022/08/29/efficient-command-line-tools/</guid>
-    <description><![CDATA[导语 工欲善其事，必先利其器。 作为技术人员，一个高效的工作环境尤为重要。下面分享下我的终端命令行下的环境和工具配置。 zsh&amp;oh-my-zsh 安装 参考：https:/]]></description>
 </item>
 </channel>
 </rss>

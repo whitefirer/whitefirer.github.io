@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Sidecarless 之后：eBPF &#43; AI，服务网格的下一站 - whitefirer[PG]</title><meta name="Description" content="Sidecar 太重，Ambient 还不够。eBPF 把可观测性推到内核态，AI 帮你解读海量内核数据——两者结合，可能重新定义服务网格的智能运维。"><meta property="og:url" content="https://whitefirer.org/posts/2026/05/15/ebpf-ai-service-mesh/">
+  <meta property="og:site_name" content="whitefirer[PG]">
+  <meta property="og:title" content="Sidecarless 之后：eBPF &#43; AI，服务网格的下一站">
+  <meta property="og:description" content="Sidecar 太重，Ambient 还不够。eBPF 把可观测性推到内核态，AI 帮你解读海量内核数据——两者结合，可能重新定义服务网格的智能运维。">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-05-15T23:17:43+08:00">
+    <meta property="article:modified_time" content="2026-06-15T07:05:11+08:00">
+    <meta property="article:tag" content="技术">
+    <meta property="article:tag" content="Ebpf">
+    <meta property="article:tag" content="服务网格">
+    <meta property="article:tag" content="Ai">
+    <meta property="article:tag" content="Observability">
+      <meta property="og:see_also" content="https://whitefirer.org/posts/2022/08/30/polaris2istio/">
+      <meta property="og:see_also" content="https://whitefirer.org/posts/2022/08/29/extension-and-expansion-of-service-mesh/">
+      <meta property="og:see_also" content="https://whitefirer.org/posts/2021/04/13/building-a-distributed-pressure-testing-system-based-on-kubernetes/">
+      <meta property="og:see_also" content="https://whitefirer.org/posts/2020/09/11/the-evolution-and-practice-of-tenclass-infrastructure/">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Sidecarless 之后：eBPF &#43; AI，服务网格的下一站">
+  <meta name="twitter:description" content="Sidecar 太重，Ambient 还不够。eBPF 把可观测性推到内核态，AI 帮你解读海量内核数据——两者结合，可能重新定义服务网格的智能运维。">
+<meta name="application-name" content="whitefirer[PG]">
+<meta name="apple-mobile-web-app-title" content="whitefirer[PG]"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/05/15/ebpf-ai-service-mesh/" /><link rel="prev" href="https://whitefirer.org/posts/2026/05/13/need-is-all-you-need/" /><link rel="next" href="https://whitefirer.org/posts/2026/05/25/cloud-native-to-ai-transformation/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Sidecarless 之后：eBPF + AI，服务网格的下一站",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/whitefirer.org\/posts\/2026\/05\/15\/ebpf-ai-service-mesh\/"
+        },"genre": "posts","keywords": "tech, ebpf, service-mesh, ai, observability","wordcount":  2147 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/05\/15\/ebpf-ai-service-mesh\/","datePublished": "2026-05-15T23:17:43+08:00","dateModified": "2026-06-15T07:05:11+08:00","license": "2022©️whitefirer","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "whitefirer"
+            },"description": "Sidecar 太重，Ambient 还不够。eBPF 把可观测性推到内核态，AI 帮你解读海量内核数据——两者结合，可能重新定义服务网格的智能运维。"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="whitefirer[PG]">whitefirer[PG]</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/series/ai-zatan/"> AI 杂谈 </a><div class="menu-item has-dropdown">
+                            <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                            <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a></div>
+                        </div><a class="menu-item" href="/series/%e5%9f%ba%e7%a1%80%e6%9e%b6%e6%9e%84/"> 基础架构 </a><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/2026/05/15/ebpf-ai-service-mesh/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header>
+<script>
+(function() {
+    document.querySelectorAll('.has-dropdown .dropdown-toggle').forEach(function(toggle) {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var parent = this.closest('.has-dropdown');
+            parent.classList.toggle('open');
+        });
+    });
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.has-dropdown.open').forEach(function(d) {
+            d.classList.remove('open');
+        });
+    });
+})();
+</script><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="whitefirer[PG]">whitefirer[PG]</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/series/ai-zatan/" title="">AI 杂谈</a><div class="menu-item has-dropdown">
+                        <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                        <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a></div>
+                    </div><a class="menu-item" href="/series/%e5%9f%ba%e7%a1%80%e6%9e%b6%e6%9e%84/" title="">基础架构</a><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/posts/2026/05/15/ebpf-ai-service-mesh/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><div style="display:flex;align-items:baseline;gap:0">
+        <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">Sidecarless 之后：eBPF + AI，服务网格的下一站</h1></div><h2 class="single-subtitle">内核可观测 &#43; 大模型——为什么下一代服务网格不会只是 Istio 2.0</h2><div class="post-series">
+                <a href="/series/%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/"><i class="fas fa-layer-group fa-fw" aria-hidden="true"></i>基础架构</a>
+            </div><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-05-15">2026-05-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 2147 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 5 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#sidecar-的账还没算完">Sidecar 的账，还没算完</a></li>
+    <li><a href="#ebpf-改变的不是数据量是数据的深度">eBPF 改变的不是数据量，是数据的深度</a></li>
+    <li><a href="#ai-不是替代可观测是帮你读可观测">AI 不是替代可观测，是帮你读可观测</a></li>
+    <li><a href="#从-sidecarless-到-operatorless">从 Sidecarless 到 Operatorless</a></li>
+    <li><a href="#现实路还没修好">现实：路还没修好</a></li>
+    <li><a href="#为什么值得做">为什么值得做</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>服务网格走过了两个阶段。第一个阶段是 Sidecar——每个 Pod 挂一个 Envoy，接管流量，上报指标。做得漂亮，但代价不小。第二个阶段是 Sidecarless——Istio Ambient 把 L4 治理下沉到 ztunnel，Cilium 用 eBPF 替代 kube-proxy，试图把 Sidecar 的尾巴砍掉。</p>
+<p>但一个问题一直没变：<strong>可观测性数据越来越大，人能消化的没变多。</strong></p>
+<hr>
+<h2 id="sidecar-的账还没算完">Sidecar 的账，还没算完</h2>
+<p>Sidecar 模式被诟病最多的是资源开销。每个 Pod 跑一个 Envoy 代理，CPU 和内存线性增长。Ambient 和 Cilium 的回应是：把数据面逻辑尽可能压到内核态，消除每 Pod 代理的开销。</p>
+<p>这解决了<strong>计算成本</strong>的问题。但没解决<strong>认知成本</strong>的问题。</p>
+<p>一个中等规模的服务网格集群，每秒钟产生的追踪和指标数据量可以轻松超过人类运维的读取速度。就算节点上没有 Sidecar 了，数据量依然在。你用 Grafana 盯几个面板还行，但要在几千条 trace 里找到一根异常链路——你做不到，eBPF 也不行。</p>
+<hr>
+<h2 id="ebpf-改变的不是数据量是数据的深度">eBPF 改变的不是数据量，是数据的深度</h2>
+<p>eBPF 的杀手级能力不是&quot;快&quot;，是它能看到以前看不到的东西。</p>
+<p>Sidecar 代理只能看到 L7 的请求和响应。eBPF 能直接挂载到内核函数——系统调用、网络栈、文件 I/O、进程调度。它不仅知道&quot;这个请求延迟 200ms&quot;，还知道这 200ms 里有多少花在 CPU 等待上、有多少卡在磁盘 I/O 上、有多少是因为内核调度把进程踢出去了。</p>
+<p>这些信息 Sidecar 永远拿不到，因为代理跑在用户态，看不到内核态在干什么。eBPF 把可观测性的天花板从&quot;应用层&quot;推到了&quot;系统层&quot;。</p>
+<p>但也带来了一个新问题：<strong>数据的维度翻了不止一倍。</strong></p>
+<p>以前你看的是 request latency、error rate、throughput。现在你还要看 syscall distribution、kernel stack trace、CPU runqueue latency、page cache hit ratio——每个维度都可能藏着一个性能异常的根因，但人根本不可能同时盯这么多维度。</p>
+<hr>
+<h2 id="ai-不是替代可观测是帮你读可观测">AI 不是替代可观测，是帮你读可观测</h2>
+<p>这正是大模型能接手的部分。</p>
+<p>传统 APM 用阈值告警——延迟超过 500ms 就报警。阈值的问题是：你提前不知道正常值是多少。凌晨三点的 CPU 飙 20% 可能是定时任务，上午十点飙 15% 可能是翻车前兆。阈值猜不到，人能猜，但人一天不会看二十四小时面板。</p>
+<p>大模型能。把 eBPF 采集的内核级数据流——系统调用分布、内核栈采样、TCP 重传率、调度延迟——喂给大模型，让它做两件事：</p>
+<ol>
+<li>
+<p><strong>异常模式发现。</strong> 不靠固定阈值。大模型在某段时间序列上训练出&quot;正常&quot;的统计分布，偏离就标记。eBPF 数据维度多，AI 的强项恰好是多维模式的归纳。</p>
+</li>
+<li>
+<p><strong>根因推理。</strong> 这是传统 APM 完全做不到的。报警告诉你&quot;延迟涨了&quot;，AI 能告诉你&quot;因为某 Pod 的 cgroup 被 throttle 了——看，这 30 秒 CPU quota 用尽，对应那段时间的请求全在等调度。&ldquo;这种跨层的因果链：L7 延迟异常 → L4 TCP 重传升高 → L1 CPU 调度饥饿——只有 eBPF 能同时抓到这三层数据，只有 AI 能把它们串成一条线。</p>
+</li>
+</ol>
+<hr>
+<h2 id="从-sidecarless-到-operatorless">从 Sidecarless 到 Operatorless</h2>
+<p>如果你接受&quot;AI 能读 eBPF 数据&quot;这个前提，接下来的推演是自然的：AI 不仅能诊断，还能决策。</p>
+<p>一个自治循环大概是这样的：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">eBPF 采集：系统调用、网络栈、调度延迟
+</span></span><span class="line"><span class="cl">       ↓
+</span></span><span class="line"><span class="cl">大模型分析：异常模式发现 + 根因推理
+</span></span><span class="line"><span class="cl">       ↓
+</span></span><span class="line"><span class="cl">策略决策：限流？切换上游？回滚版本？
+</span></span><span class="line"><span class="cl">       ↓
+</span></span><span class="line"><span class="cl">执行：通过 eBPF 或 Envoy xDS 下发策略
+</span></span><span class="line"><span class="cl">       ↓
+</span></span><span class="line"><span class="cl">eBPF 验证：策略生效？指标恢复正常？
+</span></span><span class="line"><span class="cl">       ↓
+</span></span><span class="line"><span class="cl">反馈回大模型，持续学习
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Cilium 已经在用 eBPF 做 L3/L4 的策略执行了。Istio Ambient 的 ztunnel 也是类似的方向。但如果把&quot;决策&quot;从控制面抽出来交给大模型，就变成了——你不再需要运维手动设置限流阈值、不再需要人工判断什么时候切流量、不再需要凌晨三点爬起来盯着面板等第二个告警。</p>
+<p><strong>从 Sidecarless（没有 Sidecar）到 Operatorless（不需要人值班）。</strong> 这个跳跃比 Ambient 到 Sidecar 更大。</p>
+<hr>
+<h2 id="现实路还没修好">现实：路还没修好</h2>
+<p>说实话，现在还到不了这一步。几个硬问题摆着：</p>
+<p><strong>eBPF 的探针还不稳定。</strong> 内核版本差异、BTF 兼容性、CO-RE 的覆盖范围——这些在实验室里能跑，生产环境一堆边缘 case。挂载一个 kprobe 导致内核 panic 不是没发生过。</p>
+<p><strong>大模型的实时性不够。</strong> eBPF 数据流是毫秒级的，大模型推理是秒级的。中间需要一层流式聚合和摘要，不然 AI 还没读完最新数据，故障已经扩散了。</p>
+<p><strong>决策的可解释性。</strong> 让 AI 直接改网络策略是危险的。至少需要一层人在回路——AI 推荐，人审批，再执行。这个审批窗口可能成为瓶颈。</p>
+<p>但这些是工程问题，不是原理问题。方向已经清晰了——数据往下沉（eBPF），决策往上升（AI），人从操作者变成审批者。</p>
+<hr>
+<h2 id="为什么值得做">为什么值得做</h2>
+<p>回到服务网格本身。Istio 做了七年，核心架构没怎么变——控制面 Istiod 下发配置，数据面 Envoy 执行策略。Ambient 把 L4 下沉了，但你和服务网格的交互方式没变：写 YAML，看面板，调阈值。</p>
+<p>eBPF + AI 有可能改变这个范式。你不再写限流规则——你告诉 AI&quot;这个服务要保证 99.9% 的 SLO&rdquo;，AI 自己调参数。你不再盯着 Grafana——AI 把异常提炼成一句话：&ldquo;订单服务延迟升高，根因是支付网关连接池耗尽，建议扩容支付网关。&rdquo;</p>
+<p>这和你当年推服务网格时做的事是同一个方向：<strong>把人的重复决策变成自动化的系统决策。</strong> 只不过当时的工具是 Sidecar 和 Istiod，现在的工具是 eBPF 和 LLM。</p>
+<p>内核在变，模型在变，方向没变。</p>
+<div class="post-series-nav">
+                <em>本文是「<a href="/series/%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/">基础架构</a>」系列第 1 篇，共 0 篇。</em>
+            </div></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2026-06-15</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/2026/05/15/ebpf-ai-service-mesh/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/05/15/ebpf-ai-service-mesh/" data-title="Sidecarless 之后：eBPF &#43; AI，服务网格的下一站" data-hashtags="tech,ebpf,service-mesh,ai,observability"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/05/15/ebpf-ai-service-mesh/" data-hashtag="tech"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/05/15/ebpf-ai-service-mesh/" data-title="Sidecarless 之后：eBPF &#43; AI，服务网格的下一站"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/05/15/ebpf-ai-service-mesh/" data-title="Sidecarless 之后：eBPF &#43; AI，服务网格的下一站"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/05/15/ebpf-ai-service-mesh/" data-title="Sidecarless 之后：eBPF &#43; AI，服务网格的下一站"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/tech/">技术</a>,&nbsp;<a href="/tags/ebpf/">Ebpf</a>,&nbsp;<a href="/tags/service-mesh/">服务网格</a>,&nbsp;<a href="/tags/ai/">Ai</a>,&nbsp;<a href="/tags/observability/">Observability</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2026/05/13/need-is-all-you-need/" class="prev" rel="prev" title="Need Is All You Need"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Need Is All You Need</a>
+            <a href="/posts/2026/05/25/cloud-native-to-ai-transformation/" class="next" rel="next" title="从云原生转型到AI转型，什么值得借鉴？什么需要摒弃？">从云原生转型到AI转型，什么值得借鉴？什么需要摒弃？<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+
+</div>
+<div id="comments"><div id="waline" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://waline.js.org/">Waline</a>.
+            </noscript><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.131.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/waline/waline.min.css"><script type="text/javascript" src="/lib/waline/waline.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config=Object.assign(window.config||{},{"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Comments","categoryId":"DIC_kwDOH2gmzc4CQ_fM","darkTheme":"dark","emitMetadata":"0","inputPosition":"bottom","lang":"zh-CN","lazyLoading":true,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"whitefirer/whitefirer.github.io","repoId":"R_kgDOH2gmzQ"},"waline":{"dark":"auto","el":"#waline","lang":"zh-CN","pageSize":10,"requiredMeta":["nick","mail"],"serverURL":"https://comment.whitefirer.org"}},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}});</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">!function(){function svgToPng(svg,cb){var c=svg.cloneNode(!0),d=new XMLSerializer().serializeToString(c),img=new Image(),cv=document.createElement('canvas'),w=c.viewBox.animVal.width||c.getBoundingClientRect().width||400,h=c.viewBox.animVal.height||c.getBoundingClientRect().height||300,s=2;cv.width=w*s,cv.height=h*s;var ctx=cv.getContext('2d'),b=new Blob([d],{type:'image/svg+xml;charset=utf-8'}),u=URL.createObjectURL(b);img.onload=function(){ctx.fillStyle='#fff',ctx.fillRect(0,0,cv.width,cv.height),ctx.drawImage(img,0,0,cv.width,cv.height),URL.revokeObjectURL(u),cv.toBlob(function(blob){var a=document.createElement('a');a.href=URL.createObjectURL(blob);var id=svg.id||'diagram';a.download=id+'.png',a.click(),URL.revokeObjectURL(a.href),cb&&cb()})},img.src=u}function addSaveBtn(svg){if(svg.closest('.mermaid-stage,.mermaid-fs-overlay,.mermaid-wrapper,.mermaid-toolbar,.svg-diagram-wrap'))return;var wrap=document.createElement('div');wrap.className='svg-diagram-wrap';var d=svg.style.display||'block',w=svg.style.width||svg.getAttribute('width')||'100%',mw=svg.style.maxWidth||'',m=svg.style.margin||'';wrap.style.cssText='position:relative;display:'+d+';width:'+w+';'+(mw?'max-width:'+mw+';':'')+(m?'margin:'+m+';':'')+'line-height:0';svg.style.display='block';svg.style.width='100%';svg.style.maxWidth='';svg.style.margin='0';svg.parentNode.insertBefore(wrap,svg);wrap.appendChild(svg);var bar=document.createElement('div');bar.style.cssText='text-align:right;padding-top:6px';var btn=document.createElement('button');btn.className='svg-save-btn',btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span style="vertical-align:middle;font-size:12px">保存图片</span>',btn.style.cssText='background:none;border:1px solid transparent;border-radius:4px;padding:2px 6px;cursor:pointer;color:#b0b7c3;font-family:system-ui,sans-serif;line-height:1';bar.appendChild(btn);wrap.appendChild(bar);btn.onmouseenter=function(){btn.style.color='#6366f1';btn.style.borderColor='#e5e7eb'};btn.onmouseleave=function(){btn.style.color='#b0b7c3';btn.style.borderColor='transparent'};btn.onclick=function(e){e.stopPropagation();var orig=btn.innerHTML;btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span style="vertical-align:middle;font-size:12px">导出中...</span>';btn.disabled=!0;svgToPng(svg,function(){btn.innerHTML=orig;btn.disabled=!1})}}function initSvgButtons(){document.querySelectorAll('.content svg').forEach(function(svg){addSaveBtn(svg)})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initSvgButtons);else initSvgButtons()}()</script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-70Q8REKE17', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-70Q8REKE17" async></script></body>
+</html>

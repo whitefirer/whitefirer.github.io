@@ -47,6 +47,14 @@
     <description><![CDATA[1895 年，Panhard &amp; Levassor 造出第一批量产汽车1。不是在工厂从零设计的——他们把 Daimler 内燃机绑在传统马车的木头底盘下面。驭手座位还在，铁包木轮没换，]]></description>
 </item>
 <item>
+    <title>Sidecarless 之后：eBPF &#43; AI，服务网格的下一站</title>
+    <link>https://whitefirer.org/posts/2026/05/15/ebpf-ai-service-mesh/</link>
+    <pubDate>Fri, 15 May 2026 23:17:43 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/05/15/ebpf-ai-service-mesh/</guid>
+    <description><![CDATA[服务网格走过了两个阶段。第一个阶段是 Sidecar——每个 Pod 挂一个 Envoy，接管流量，上报指标。做得漂亮，但代价不小。第二个阶段是 Side]]></description>
+</item>
+<item>
     <title>Need Is All You Need</title>
     <link>https://whitefirer.org/posts/2026/05/13/need-is-all-you-need/</link>
     <pubDate>Wed, 13 May 2026 22:17:43 &#43;0800</pubDate>
@@ -77,14 +85,6 @@
     <author>whitefirer</author>
     <guid>https://whitefirer.org/posts/2026/05/03/prompt-caching-deepseek/</guid>
     <description><![CDATA[402 轮编码会话，从 ¥113 ($16.36) 压到 ¥1.89 ($0.27)。插件砍 token 量，缓存砍 token 单价。 两层省钱机制 很多人把省钱都归功于 Prompt Caching。实际上有]]></description>
-</item>
-<item>
-    <title>Claude Code 插件完全指南：省钱、省 Token、提升开发效率</title>
-    <link>https://whitefirer.org/posts/2026/04/28/claude-code-plugins-guide/</link>
-    <pubDate>Tue, 28 Apr 2026 21:30:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/posts/2026/04/28/claude-code-plugins-guide/</guid>
-    <description><![CDATA[四个必装插件 + 一个 MCP 服务，让 AI 编码助手从&quot;能用&quot;变成&quot;好用&quot;。 前言 Claude Code 是 Anthropic 推出的终端原生 AI 编码助手。]]></description>
 </item>
 </channel>
 </rss>
