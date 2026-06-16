@@ -1,8 +1,8 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>Workflow - 标签 - whitefirer[PG]</title>
+        <title>Workflow - 标签 - 赛博闲谭-whitefirer</title>
         <link>https://whitefirer.org/tags/workflow/</link>
-        <description>Workflow - 标签 - whitefirer[PG]</description>
+        <description>Workflow - 标签 - 赛博闲谭-whitefirer</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
             <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sun, 14 Jun 2026 21:00:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/workflow/" rel="self" type="application/rss+xml" /><item>
     <title>Claude Code Workflows 完全指南：多智能体编排让 AI 团队自己干活</title>

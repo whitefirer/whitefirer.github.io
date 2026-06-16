@@ -1,8 +1,8 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>Development Tools - 标签 - whitefirer[PG]</title>
+        <title>Development Tools - 标签 - 赛博闲谭-whitefirer</title>
         <link>https://whitefirer.org/tags/development-tools/</link>
-        <description>Development Tools - 标签 - whitefirer[PG]</description>
+        <description>Development Tools - 标签 - 赛博闲谭-whitefirer</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
             <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Wed, 10 Jun 2026 20:48:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/development-tools/" rel="self" type="application/rss+xml" /><item>
     <title>Claude Code MCP 完全指南：给你的 AI 造工具</title>

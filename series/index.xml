@@ -1,8 +1,8 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>Series - series - whitefirer[PG]</title>
+        <title>Series - series - 赛博闲谭-whitefirer</title>
         <link>https://whitefirer.org/series/</link>
-        <description>Series - series - whitefirer[PG]</description>
+        <description>Series - series - 赛博闲谭-whitefirer</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
             <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sun, 14 Jun 2026 21:00:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/series/" rel="self" type="application/rss+xml" /><item>
     <title>基础架构</title>

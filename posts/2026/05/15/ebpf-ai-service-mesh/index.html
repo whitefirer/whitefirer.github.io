@@ -4,8 +4,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <title>Sidecarless 之后：eBPF &#43; AI，服务网格的下一站 - whitefirer[PG]</title><meta name="Description" content="Sidecar 太重，Ambient 还不够。eBPF 把可观测性推到内核态，AI 帮你解读海量内核数据——两者结合，可能重新定义服务网格的智能运维。"><meta property="og:url" content="https://whitefirer.org/posts/2026/05/15/ebpf-ai-service-mesh/">
-  <meta property="og:site_name" content="whitefirer[PG]">
+        <title>Sidecarless 之后：eBPF &#43; AI，服务网格的下一站 - 赛博闲谭-whitefirer</title><meta name="Description" content="Sidecar 太重，Ambient 还不够。eBPF 把可观测性推到内核态，AI 帮你解读海量内核数据——两者结合，可能重新定义服务网格的智能运维。"><meta property="og:url" content="https://whitefirer.org/posts/2026/05/15/ebpf-ai-service-mesh/">
+  <meta property="og:site_name" content="赛博闲谭-whitefirer">
   <meta property="og:title" content="Sidecarless 之后：eBPF &#43; AI，服务网格的下一站">
   <meta property="og:description" content="Sidecar 太重，Ambient 还不够。eBPF 把可观测性推到内核态，AI 帮你解读海量内核数据——两者结合，可能重新定义服务网格的智能运维。">
   <meta property="og:locale" content="zh_CN">
@@ -26,8 +26,8 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Sidecarless 之后：eBPF &#43; AI，服务网格的下一站">
   <meta name="twitter:description" content="Sidecar 太重，Ambient 还不够。eBPF 把可观测性推到内核态，AI 帮你解读海量内核数据——两者结合，可能重新定义服务网格的智能运维。">
-<meta name="application-name" content="whitefirer[PG]">
-<meta name="apple-mobile-web-app-title" content="whitefirer[PG]"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+<meta name="application-name" content="赛博闲谭-whitefirer">
+<meta name="apple-mobile-web-app-title" content="赛博闲谭-whitefirer"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/05/15/ebpf-ai-service-mesh/" /><link rel="prev" href="https://whitefirer.org/posts/2026/05/13/need-is-all-you-need/" /><link rel="next" href="https://whitefirer.org/posts/2026/05/25/cloud-native-to-ai-transformation/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -54,7 +54,7 @@
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
         <div class="header-title">
-            <a href="/" title="whitefirer[PG]">whitefirer[PG]</a>
+            <a href="/" title="赛博闲谭-whitefirer">赛博闲谭-whitefirer</a>
         </div>
         <div class="menu">
             <div class="menu-inner"><a class="menu-item" href="/series/ai-zatan/"> AI 杂谈 </a><div class="menu-item has-dropdown">
@@ -100,7 +100,7 @@
     <div class="header-container">
         <div class="header-wrapper">
             <div class="header-title">
-                <a href="/" title="whitefirer[PG]">whitefirer[PG]</a>
+                <a href="/" title="赛博闲谭-whitefirer">赛博闲谭-whitefirer</a>
             </div>
             <div class="menu-toggle" id="menu-toggle-mobile">
                 <span></span><span></span><span></span>
@@ -147,7 +147,8 @@
             </div><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
             <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-05-15">2026-05-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 2147 字&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 5 分钟&nbsp;</div>
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 5 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/05/15/ebpf-ai-service-mesh.svg" alt="" aria-hidden="true" loading="eager"
+     style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none"></div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
                     <span>目录</span>
@@ -273,7 +274,7 @@
             </noscript></div></article></div>
             </main><footer class="footer">
         <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.131.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
-                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span></div>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span><img src="https://hits.sh/whitefirer.org.svg" alt="" aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;clip:rect(0 0 0 0);pointer-events:none"></div>
         </div>
     </footer></div>
 

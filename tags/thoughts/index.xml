@@ -1,8 +1,8 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>Thoughts - 标签 - whitefirer[PG]</title>
+        <title>Thoughts - 标签 - 赛博闲谭-whitefirer</title>
         <link>https://whitefirer.org/tags/thoughts/</link>
-        <description>Thoughts - 标签 - whitefirer[PG]</description>
+        <description>Thoughts - 标签 - 赛博闲谭-whitefirer</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
             <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Mon, 25 May 2026 17:30:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/thoughts/" rel="self" type="application/rss+xml" /><item>
     <title>从云原生转型到AI转型，什么值得借鉴？什么需要摒弃？</title>

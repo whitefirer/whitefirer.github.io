@@ -1,8 +1,8 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>Categories - Categories - whitefirer[PG]</title>
+        <title>Categories - Categories - 赛博闲谭-whitefirer</title>
         <link>https://whitefirer.org/en/categories/</link>
-        <description>Categories - Categories - whitefirer[PG]</description>
+        <description>Categories - Categories - 赛博闲谭-whitefirer</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
             <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><atom:link href="https://whitefirer.org/en/categories/" rel="self" type="application/rss+xml" /></channel>
 </rss>

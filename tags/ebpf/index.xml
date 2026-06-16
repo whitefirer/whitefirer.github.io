@@ -1,8 +1,8 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>Ebpf - 标签 - whitefirer[PG]</title>
+        <title>Ebpf - 标签 - 赛博闲谭-whitefirer</title>
         <link>https://whitefirer.org/tags/ebpf/</link>
-        <description>Ebpf - 标签 - whitefirer[PG]</description>
+        <description>Ebpf - 标签 - 赛博闲谭-whitefirer</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
             <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Fri, 15 May 2026 23:17:43 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/ebpf/" rel="self" type="application/rss+xml" /><item>
     <title>Sidecarless 之后：eBPF &#43; AI，服务网格的下一站</title>

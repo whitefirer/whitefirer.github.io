@@ -1,8 +1,8 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>Plugin - 标签 - whitefirer[PG]</title>
+        <title>Plugin - 标签 - 赛博闲谭-whitefirer</title>
         <link>https://whitefirer.org/tags/plugin/</link>
-        <description>Plugin - 标签 - whitefirer[PG]</description>
+        <description>Plugin - 标签 - 赛博闲谭-whitefirer</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
             <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Tue, 28 Apr 2026 21:30:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/plugin/" rel="self" type="application/rss+xml" /><item>
     <title>Claude Code 插件完全指南：省钱、省 Token、提升开发效率</title>

@@ -1,8 +1,8 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>Istio - 标签 - whitefirer[PG]</title>
+        <title>Istio - 标签 - 赛博闲谭-whitefirer</title>
         <link>https://whitefirer.org/tags/istio/</link>
-        <description>Istio - 标签 - whitefirer[PG]</description>
+        <description>Istio - 标签 - 赛博闲谭-whitefirer</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
             <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Tue, 30 Aug 2022 10:33:20 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/istio/" rel="self" type="application/rss+xml" /><item>
     <title>Polaris2Istio的实现和说明</title>
