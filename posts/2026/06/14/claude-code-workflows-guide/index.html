@@ -12,7 +12,7 @@
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
     <meta property="article:published_time" content="2026-06-14T21:00:00+08:00">
-    <meta property="article:modified_time" content="2026-06-14T23:11:59+08:00">
+    <meta property="article:modified_time" content="2026-06-16T21:04:18+08:00">
     <meta property="article:tag" content="技术">
     <meta property="article:tag" content="Ai">
     <meta property="article:tag" content="Claude Code">
@@ -41,8 +41,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/whitefirer.org\/posts\/2026\/06\/14\/claude-code-workflows-guide\/"
-        },"genre": "posts","keywords": "tech, ai, claude code, workflow, multi-agent, orchestration","wordcount":  8396 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2026\/06\/14\/claude-code-workflows-guide\/","datePublished": "2026-06-14T21:00:00+08:00","dateModified": "2026-06-14T23:11:59+08:00","license": "2022©️whitefirer","publisher": {
+        },"genre": "posts","keywords": "tech, ai, claude code, workflow, multi-agent, orchestration","wordcount":  8780 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/06\/14\/claude-code-workflows-guide\/","datePublished": "2026-06-14T21:00:00+08:00","dateModified": "2026-06-16T21:04:18+08:00","license": "2022©️whitefirer","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -147,8 +147,8 @@
                 <a href="/series/claude-code-deep-dive/"><i class="fas fa-layer-group fa-fw" aria-hidden="true"></i>AI 编程·Claude Code</a>
             </div><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-06-14">2026-06-14</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 8396 字&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 17 分钟&nbsp;</div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-06-14">2026-06-14</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 8780 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 18 分钟&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
                     <span>目录</span>
@@ -186,6 +186,7 @@
         <li><a href="#prompt-里写-ultracode单次触发">Prompt 里写 &ldquo;ultracode&rdquo;：单次触发</a></li>
         <li><a href="#两种方式对比">两种方式对比</a></li>
         <li><a href="#最常踩的坑">最常踩的坑</a></li>
+        <li><a href="#token-预算给-ultracode-设上限">Token 预算：给 ultracode 设上限</a></li>
         <li><a href="#什么时候值得开">什么时候值得开</a></li>
       </ul>
     </li>
@@ -620,6 +621,46 @@
 <p>用 <code>/effort ultracode</code> 跑完一个任务，忘了降回来。后面聊了半小时天，每条消息都在 8x 模式下。月底账单翻倍。</p>
 </blockquote>
 <p><strong>记住</strong>：如果你只需要一个任务上高强度，在 prompt 里提 &ldquo;ultracode&rdquo;，不要动 <code>/effort</code>。只有整个会话都需要深推理时才用 slash command。</p>
+<h3 id="token-预算给-ultracode-设上限">Token 预算：给 ultracode 设上限</h3>
+<p>ultracode 本身不限制消耗——你让它跑，它就跑到底。控制成本靠 <strong>budget 机制</strong>。</p>
+<p>在 prompt 里加 <code>+500k</code>（或任意数字），Workflow 脚本里就能拿到三个全局变量：</p>
+<ul>
+<li><code>budget.total</code> — 你设的 token 上限，没设则为 <code>null</code></li>
+<li><code>budget.spent()</code> — 当前已消耗的 token 数</li>
+<li><code>budget.remaining()</code> — 剩余可用 token。没设预算时返回 <code>Infinity</code></li>
+</ul>
+<p>典型的 loop-until-budget 写法：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">bugs</span> <span class="o">=</span> <span class="p">[]</span>
+</span></span><span class="line"><span class="cl"><span class="k">while</span> <span class="p">(</span><span class="nx">budget</span><span class="p">.</span><span class="nx">total</span> <span class="o">&amp;&amp;</span> <span class="nx">budget</span><span class="p">.</span><span class="nx">remaining</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">50_000</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">const</span> <span class="nx">result</span> <span class="o">=</span> <span class="kr">await</span> <span class="nx">agent</span><span class="p">(</span><span class="s2">&#34;逐文件审查安全漏洞&#34;</span><span class="p">,</span> <span class="p">{</span><span class="nx">schema</span><span class="o">:</span> <span class="nx">BUGS</span><span class="p">})</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">bugs</span><span class="p">.</span><span class="nx">push</span><span class="p">(...</span><span class="nx">result</span><span class="p">.</span><span class="nx">bugs</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>两个关键点：</p>
+<ol>
+<li><strong><code>budget.total</code> 判空</strong>——你没在 prompt 里加 <code>+N</code>，它是 <code>null</code>，不进循环。不加判空，<code>remaining()</code> 返回 <code>Infinity</code>，循环永不终止。</li>
+<li><strong><code>50_000</code> 预留余量</strong>——确保最后一次 <code>agent()</code> 有足够 token 跑完。余量太小，可能在生成中途被硬截断。</li>
+</ol>
+<p>所以 ultracode 的完整使用姿势：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ultracode：审查当前项目的安全漏洞 +200k
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>推理深度</strong>（ultracode 开）和<strong>消费上限</strong>（+200k 设）——两条线，各管各的。ultracode 让 Agent 更仔细，budget 让它别超支。</p>
 <h3 id="什么时候值得开">什么时候值得开</h3>
 <ul>
 <li><strong>安全审计</strong>：审计 Agent 在沙箱里跑，不会有副作用。xhigh 让每个审查 Agent 更仔细地找漏洞</li>
@@ -861,7 +902,7 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2026-06-14</span>
+                <span>更新于 2026-06-16</span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>

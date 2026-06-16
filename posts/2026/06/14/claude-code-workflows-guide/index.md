@@ -289,6 +289,39 @@ Judge 的指令不是"找出错误"（那是对抗验证的 Reviewer）。Judge 
 
 **记住**：如果你只需要一个任务上高强度，在 prompt 里提 "ultracode"，不要动 `/effort`。只有整个会话都需要深推理时才用 slash command。
 
+### Token 预算：给 ultracode 设上限
+
+ultracode 本身不限制消耗——你让它跑，它就跑到底。控制成本靠 **budget 机制**。
+
+在 prompt 里加 `+500k`（或任意数字），Workflow 脚本里就能拿到三个全局变量：
+
+- `budget.total` — 你设的 token 上限，没设则为 `null`
+- `budget.spent()` — 当前已消耗的 token 数
+- `budget.remaining()` — 剩余可用 token。没设预算时返回 `Infinity`
+
+典型的 loop-until-budget 写法：
+
+```js
+const bugs = []
+while (budget.total && budget.remaining() > 50_000) {
+  const result = await agent("逐文件审查安全漏洞", {schema: BUGS})
+  bugs.push(...result.bugs)
+}
+```
+
+两个关键点：
+
+1. **`budget.total` 判空**——你没在 prompt 里加 `+N`，它是 `null`，不进循环。不加判空，`remaining()` 返回 `Infinity`，循环永不终止。
+2. **`50_000` 预留余量**——确保最后一次 `agent()` 有足够 token 跑完。余量太小，可能在生成中途被硬截断。
+
+所以 ultracode 的完整使用姿势：
+
+```
+ultracode：审查当前项目的安全漏洞 +200k
+```
+
+**推理深度**（ultracode 开）和**消费上限**（+200k 设）——两条线，各管各的。ultracode 让 Agent 更仔细，budget 让它别超支。
+
 ### 什么时候值得开
 
 - **安全审计**：审计 Agent 在沙箱里跑，不会有副作用。xhigh 让每个审查 Agent 更仔细地找漏洞
