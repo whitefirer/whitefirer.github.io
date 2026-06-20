@@ -53,9 +53,9 @@
                     hreflang="zh-cn"
                     href="https://whitefirer.org/"
                     /></url><url>
-            <loc>https://whitefirer.org/posts/2026/06/10/claude-code-mcp-guide/</loc><lastmod>2026-06-11T02:43:25&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/tags/development-tools/</loc><lastmod>2026-06-11T02:43:25&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/tags/mcp/</loc><lastmod>2026-06-11T02:43:25&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/posts/2026/06/10/claude-code-mcp-guide/</loc><lastmod>2026-06-11T02:43:25&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url><url>
+            <loc>https://whitefirer.org/tags/development-tools/</loc><lastmod>2026-06-11T02:43:25&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url><url>
+            <loc>https://whitefirer.org/tags/mcp/</loc><lastmod>2026-06-11T02:43:25&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url><url>
             <loc>https://whitefirer.org/posts/2026/06/09/claude-code-skills-guide/</loc><lastmod>2026-06-09T23:48:26&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url><url>
             <loc>https://whitefirer.org/tags/skill/</loc><lastmod>2026-06-09T23:48:26&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url><url>
             <loc>https://whitefirer.org/tags/automation/</loc><lastmod>2026-06-09T23:48:26&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url><url>
@@ -68,10 +68,10 @@
             <loc>https://whitefirer.org/tags/observability/</loc><lastmod>2026-06-15T07:05:11&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/posts/2026/05/15/ebpf-ai-service-mesh/</loc><lastmod>2026-06-15T07:05:11&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/series/%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/</loc><lastmod>2026-06-15T07:05:11&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/tags/creativity/</loc><lastmod>2026-06-11T20:14:15&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/posts/2026/05/13/need-is-all-you-need/</loc><lastmod>2026-06-11T20:14:15&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/tags/creativity/</loc><lastmod>2026-06-11T20:14:15&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url><url>
+            <loc>https://whitefirer.org/posts/2026/05/13/need-is-all-you-need/</loc><lastmod>2026-06-11T20:14:15&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url><url>
             <loc>https://whitefirer.org/posts/2026/05/10/ai-trust-meaning/</loc><lastmod>2026-06-14T23:50:32&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/posts/2026/05/09/ai-wont-ask-first-question/</loc><lastmod>2026-06-11T03:08:59&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/posts/2026/05/09/ai-wont-ask-first-question/</loc><lastmod>2026-06-11T03:08:59&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url><url>
             <loc>https://whitefirer.org/tags/cost-optimization/</loc><lastmod>2026-05-08T04:45:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://whitefirer.org/tags/deepseek/</loc><lastmod>2026-05-08T04:45:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://whitefirer.org/tags/prompt-caching/</loc><lastmod>2026-05-08T04:45:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
