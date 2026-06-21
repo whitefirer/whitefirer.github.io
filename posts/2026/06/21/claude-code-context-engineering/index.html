@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Claude Code Context Engineering 深度解析：把 token 花在刀刃上 - 赛博闲谭-whitefirer</title><meta name="Description" content="深入 Claude Code 的上下文管理机制：token 预算规划、缓存命中策略、PreCompact 状态抢救、渐进式披露设计、上下文防污染。不是教你怎么省 token——是教你怎么把 token 花出最大价值。"><meta property="og:url" content="https://whitefirer.org/posts/2026/06/21/claude-code-context-engineering/">
+  <meta property="og:site_name" content="赛博闲谭-whitefirer">
+  <meta property="og:title" content="Claude Code Context Engineering 深度解析：把 token 花在刀刃上">
+  <meta property="og:description" content="深入 Claude Code 的上下文管理机制：token 预算规划、缓存命中策略、PreCompact 状态抢救、渐进式披露设计、上下文防污染。不是教你怎么省 token——是教你怎么把 token 花出最大价值。">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-06-21T21:04:00+08:00">
+    <meta property="article:modified_time" content="2026-06-22T01:52:36+08:00">
+    <meta property="article:tag" content="技术">
+    <meta property="article:tag" content="Ai">
+    <meta property="article:tag" content="Claude Code">
+    <meta property="article:tag" content="Context Engineering">
+    <meta property="article:tag" content="Token Budget">
+    <meta property="article:tag" content="Prompt Caching">
+      <meta property="og:see_also" content="https://whitefirer.org/posts/2026/06/14/claude-code-workflows-guide/">
+      <meta property="og:see_also" content="https://whitefirer.org/posts/2026/06/10/claude-code-mcp-guide/">
+      <meta property="og:see_also" content="https://whitefirer.org/posts/2026/06/09/claude-code-skills-guide/">
+      <meta property="og:see_also" content="https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/">
+      <meta property="og:see_also" content="https://whitefirer.org/posts/2026/04/28/claude-code-plugins-guide/">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Claude Code Context Engineering 深度解析：把 token 花在刀刃上">
+  <meta name="twitter:description" content="深入 Claude Code 的上下文管理机制：token 预算规划、缓存命中策略、PreCompact 状态抢救、渐进式披露设计、上下文防污染。不是教你怎么省 token——是教你怎么把 token 花出最大价值。">
+<meta name="application-name" content="赛博闲谭-whitefirer">
+<meta name="apple-mobile-web-app-title" content="赛博闲谭-whitefirer"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/06/21/claude-code-context-engineering/" /><link rel="prev" href="https://whitefirer.org/posts/2026/06/14/claude-code-workflows-guide/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta property="og:title" content="Claude Code Context Engineering 深度解析：把 token 花在刀刃上 - 赛博闲谭-whitefirer" />
+<meta property="og:description" content="深入 Claude Code 的上下文管理机制：token 预算规划、缓存命中策略、PreCompact 状态抢救、渐进式披露设计、上下文防污染。不是教你怎么省 token——是教你怎么把 token 花出最大价值。" />
+<meta property="og:image" content="https://whitefirer.org/og-default.png" />
+<meta property="og:url" content="https://whitefirer.org/posts/2026/06/21/claude-code-context-engineering/" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="赛博闲谭-whitefirer" /><meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Claude Code Context Engineering 深度解析：把 token 花在刀刃上 - 赛博闲谭-whitefirer" />
+<meta name="twitter:description" content="深入 Claude Code 的上下文管理机制：token 预算规划、缓存命中策略、PreCompact 状态抢救、渐进式披露设计、上下文防污染。不是教你怎么省 token——是教你怎么把 token 花出最大价值。" />
+<meta name="twitter:image" content="https://whitefirer.org/og-default.png" /><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Claude Code Context Engineering 深度解析：把 token 花在刀刃上",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/whitefirer.org\/posts\/2026\/06\/21\/claude-code-context-engineering\/"
+        },"genre": "posts","keywords": "tech, ai, claude code, context engineering, token budget, prompt caching","wordcount":  8933 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/06\/21\/claude-code-context-engineering\/","datePublished": "2026-06-21T21:04:00+08:00","dateModified": "2026-06-22T01:52:36+08:00","license": "2022©️whitefirer","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "whitefirer"
+            },"description": "深入 Claude Code 的上下文管理机制：token 预算规划、缓存命中策略、PreCompact 状态抢救、渐进式披露设计、上下文防污染。不是教你怎么省 token——是教你怎么把 token 花出最大价值。"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="赛博闲谭-whitefirer">赛博闲谭-whitefirer</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/series/ai-zatan/"> AI 杂谈 </a><div class="menu-item has-dropdown">
+                            <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                            <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a></div>
+                        </div><a class="menu-item" href="/series/%e5%9f%ba%e7%a1%80%e6%9e%b6%e6%9e%84/"> 基础架构 </a><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/2026/06/21/claude-code-context-engineering/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header>
+<script>
+(function() {
+    document.querySelectorAll('.has-dropdown .dropdown-toggle').forEach(function(toggle) {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var parent = this.closest('.has-dropdown');
+            parent.classList.toggle('open');
+        });
+    });
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.has-dropdown.open').forEach(function(d) {
+            d.classList.remove('open');
+        });
+    });
+})();
+</script><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="赛博闲谭-whitefirer">赛博闲谭-whitefirer</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/series/ai-zatan/" title="">AI 杂谈</a><div class="menu-item has-dropdown">
+                        <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                        <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a></div>
+                    </div><a class="menu-item" href="/series/%e5%9f%ba%e7%a1%80%e6%9e%b6%e6%9e%84/" title="">基础架构</a><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/posts/2026/06/21/claude-code-context-engineering/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><div id="reading-progress"></div>
+    <article class="page single"><div style="display:flex;align-items:baseline;gap:0">
+        <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">Claude Code Context Engineering 深度解析：把 token 花在刀刃上</h1></div><h2 class="single-subtitle">窗口有限，注意力更有限——把每一段上下文都变成有效信息</h2><div class="post-series">
+                <a href="/series/claude-code-deep-dive/"><i class="fas fa-layer-group fa-fw" aria-hidden="true"></i>AI 编程·Claude Code</a>
+            </div><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-06-21">2026-06-21</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 8933 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 18 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/06/21/claude-code-context-engineering.svg" alt="" aria-hidden="true" loading="eager"
+     style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none"></div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#前言">前言</a></li>
+    <li><a href="#1-什么是上下文工程">1. 什么是上下文工程</a></li>
+    <li><a href="#2-token-预算你的钱花在哪了">2. Token 预算：你的钱花在哪了</a>
+      <ul>
+        <li><a href="#21-预算从哪来">2.1 预算从哪来</a></li>
+        <li><a href="#22-设置预算帽">2.2 设置预算帽</a></li>
+        <li><a href="#23-最大的-token-黑洞">2.3 最大的 token 黑洞</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-缓存你不该重复付费的东西">3. 缓存：你不该重复付费的东西</a>
+      <ul>
+        <li><a href="#31-提示词缓存怎么工作">3.1 提示词缓存怎么工作</a></li>
+        <li><a href="#32-最大化缓存命中率">3.2 最大化缓存命中率</a></li>
+        <li><a href="#33-检查你的缓存命中率">3.3 检查你的缓存命中率</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-precompact上下文压缩前的最后一秒">4. PreCompact：上下文压缩前的最后一秒</a>
+      <ul>
+        <li><a href="#41-压缩时会发生什么">4.1 压缩时会发生什么</a></li>
+        <li><a href="#42-precompact-hook你的保险丝">4.2 PreCompact Hook：你的保险丝</a></li>
+        <li><a href="#43-但真正的解药是-posttooluse-持续追踪">4.3 但真正的解药是 PostToolUse 持续追踪</a></li>
+        <li><a href="#44-手动压缩的智慧">4.4 手动压缩的智慧</a></li>
+      </ul>
+    </li>
+    <li><a href="#5-claudemd你的上下文锚点">5. CLAUDE.md：你的上下文锚点</a>
+      <ul>
+        <li><a href="#51-好的-claudemd-长什么样">5.1 好的 CLAUDE.md 长什么样</a></li>
+        <li><a href="#52-全局-claudemd-vs-项目-claudemd">5.2 全局 CLAUDE.md vs 项目 CLAUDE.md</a></li>
+      </ul>
+    </li>
+    <li><a href="#6-上下文防污染什么不该进上下文">6. 上下文防污染：什么不该进上下文</a>
+      <ul>
+        <li><a href="#61-六类上下文污染物">6.1 六类上下文污染物</a></li>
+        <li><a href="#62-方案-a-失败的代价">6.2 方案 A 失败的代价</a></li>
+        <li><a href="#63-让-subagent-替你试错">6.3 让 subagent 替你试错</a></li>
+        <li><a href="#64-对话不是聊天记录">6.4 对话不是聊天记录</a></li>
+      </ul>
+    </li>
+    <li><a href="#7-token-成本实战数据">7. Token 成本实战数据</a>
+      <ul>
+        <li><a href="#71-四条策略的实际收益">7.1 四条策略的实际收益</a></li>
+        <li><a href="#72-一个典型-session-的-token-流向">7.2 一个典型 session 的 token 流向</a></li>
+      </ul>
+    </li>
+    <li><a href="#8-组装上下文工程的推荐配置">8. 组装：上下文工程的推荐配置</a>
+      <ul>
+        <li><a href="#第一级立即可做不改任何代码">第一级：立即可做（不改任何代码）</a></li>
+        <li><a href="#第二级加-hook30-分钟配置">第二级：加 Hook（30 分钟配置）</a></li>
+        <li><a href="#第三级体系化长期迭代">第三级：体系化（长期迭代）</a></li>
+        <li><a href="#配置模板">配置模板</a></li>
+      </ul>
+    </li>
+    <li><a href="#9-上下文工程的元原则">9. 上下文工程的元原则</a>
+      <ul>
+        <li><a href="#原则一信息密度--信息量">原则一：信息密度 &gt; 信息量</a></li>
+        <li><a href="#原则二上下文的生命周期决定它的策略">原则二：上下文的生命周期决定它的策略</a></li>
+        <li><a href="#原则三压缩不是丢失是折叠">原则三：压缩不是丢失——是折叠</a></li>
+        <li><a href="#原则四预算帽是反馈信号不是限制">原则四：预算帽是反馈信号，不是限制</a></li>
+      </ul>
+    </li>
+    <li><a href="#结语">结语</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><blockquote>
+<p>窗口有限，注意力更有限——上下文工程不是省 token，是把每一段上下文都变成有效信息。</p>
+</blockquote>
+<hr>
+<h2 id="前言">前言</h2>
+<p><a href="/posts/2026/04/28/claude-code-plugins-guide/" rel="">插件篇</a> 讲了能力边界，<a href="/posts/2026/06/02/claude-code-hooks-guide/" rel="">Hooks 篇</a> 讲了自动化触发，<a href="/posts/2026/06/09/claude-code-skills-guide/" rel="">Skills 篇</a> 讲了方法论的模块化，<a href="/posts/2026/06/14/claude-code-workflows-guide/" rel="">Workflows 篇</a> 讲了多 Agent 编排，<a href="/posts/2026/06/10/claude-code-mcp-guide/" rel="">MCP 篇</a> 讲了工具层的自由扩展。</p>
+<p>五篇文章搭完了 Claude Code 的完整技术栈。但有一个问题贯穿所有层，却一直没被单独拿出来讲——</p>
+<p><strong>上下文。</strong></p>
+<p>你的 CLAUDE.md 写满了规则，但每条规则都在吃掉 Agent 的注意力预算。你的 Skill 设计精良，但加载时机不对就是废的。你的 Workflow 编排完美，但上下文在你不注意的时候已经被压缩了。</p>
+<p>上下文是所有功能的地基。地基没打好，上面盖什么都歪。</p>
+<p>本文解决这个问题：<strong>上下文怎么管，token 怎么花，才能让 Claude Code 在长任务中不漂移、不遗忘、不乱来。</strong></p>
+<hr>
+<h2 id="1-什么是上下文工程">1. 什么是上下文工程</h2>
+<p>传统软件工程管的是代码。上下文工程管的是<strong>喂给 LLM 的每一段文本</strong>。</p>
+<p>把 Claude Code 的上下文想象成一个只有一平米的工作台。东西往上堆，满了就得扔——但扔什么、留什么，全靠你。</p>
+<p>上下文工程在做的：什么东西值得放在这台上、什么不配放、满了之后扔哪个留哪个。</p>
+<p>它由四个要素构成：</p>
+<table>
+<thead>
+<tr>
+<th>要素</th>
+<th>问题</th>
+<th>管不好会怎样</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Token 预算</strong></td>
+<td>花多少、花在哪</td>
+<td>任务跑到一半预算烧光，Agent 被迫降智</td>
+</tr>
+<tr>
+<td><strong>缓存策略</strong></td>
+<td>什么常驻、什么按需</td>
+<td>每轮重复加载相同内容，token 被浪费</td>
+</tr>
+<tr>
+<td><strong>压缩韧性</strong></td>
+<td>上下文被截断时怎么办</td>
+<td>关键任务信息丢失，Agent 迷失方向</td>
+</tr>
+<tr>
+<td><strong>信息密度</strong></td>
+<td>每一段上下文值不值</td>
+<td>啰嗦的 CLAUDE.md 吃掉注意力，真正重要的被淹没</td>
+</tr>
+</tbody>
+</table>
+<p>四个要素互相牵扯。省 token 不等于上下文工程——把 CLAUDE.md 删到一行，token 是省了，但 Agent 什么都不知道。反过来，把 CLAUDE.md 写成 500 行也没用——Agent 读后半段的时候已经忘了前半段。</p>
+<figure>
+<svg id="context-four-elements" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 340" width="100%" style="max-width:680px;display:block;margin:1.2em auto"><defs><linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#818cf8"/></linearGradient><linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#34d399"/></linearGradient><linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#fbbf24"/></linearGradient><linearGradient id="bg4" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f43f5e"/><stop offset="100%" stop-color="#fb7185"/></linearGradient><filter id="sh"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.10"/></filter></defs><!-- Desk background --><rect x="30" y="14" width="620" height="312" rx="12" fill="#fafbfc" stroke="#e5e7eb" stroke-width="1.5"/><!-- Title bar --><rect x="30" y="14" width="620" height="42" rx="12" fill="url(#bg1)"/><rect x="30" y="44" width="620" height="12" fill="url(#bg1)"/><text x="340" y="42" text-anchor="middle" fill="#fff" font-size="15" font-weight="700" font-family="system-ui,sans-serif">上下文工程 — 四个要素</text><!-- Divided desk metaphor --><line x1="340" y1="68" x2="340" y2="310" stroke="#e5e7eb" stroke-width="1.5" stroke-dasharray="6,4"/><line x1="30" y1="195" x2="650" y2="195" stroke="#e5e7eb" stroke-width="1.5" stroke-dasharray="6,4"/><!-- Top-Left: Token Budget --><g filter="url(#sh)"><rect x="46" y="78" width="278" height="100" rx="8" fill="#fff" stroke="#6366f1" stroke-width="1.5"/><rect x="46" y="78" width="278" height="28" rx="8" fill="url(#bg1)"/><rect x="46" y="98" width="278" height="8" fill="url(#bg1)"/><text x="185" y="97" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">① Token 预算</text><text x="60" y="130" fill="#374151" font-size="11" font-family="system-ui,sans-serif">花多少、花在哪</text><text x="60" y="150" fill="#6b7280" font-size="10" font-family="system-ui,sans-serif">设预算帽 → 监控流向 → 果断 /clear</text></g><!-- Top-Right: Cache Strategy --><g filter="url(#sh)"><rect x="356" y="78" width="278" height="100" rx="8" fill="#fff" stroke="#10b981" stroke-width="1.5"/><rect x="356" y="78" width="278" height="28" rx="8" fill="url(#bg2)"/><rect x="356" y="98" width="278" height="8" fill="url(#bg2)"/><text x="495" y="97" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">② 缓存策略</text><text x="370" y="130" fill="#374151" font-size="11" font-family="system-ui,sans-serif">什么常驻、什么按需</text><text x="370" y="150" fill="#6b7280" font-size="10" font-family="system-ui,sans-serif">前缀稳定 → CLAUDE.md 吃缓存 → 动态内容走 Hook</text></g><!-- Bottom-Left: Compression Resilience --><g filter="url(#sh)"><rect x="46" y="205" width="278" height="100" rx="8" fill="#fff" stroke="#f59e0b" stroke-width="1.5"/><rect x="46" y="205" width="278" height="28" rx="8" fill="url(#bg3)"/><rect x="46" y="225" width="278" height="8" fill="url(#bg3)"/><text x="185" y="224" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">③ 压缩韧性</text><text x="60" y="257" fill="#374151" font-size="11" font-family="system-ui,sans-serif">上下文截断时怎么办</text><text x="60" y="272" fill="#6b7280" font-size="10" font-family="system-ui,sans-serif">PostToolUse 追踪 → PreCompact 拍快照</text><text x="60" y="285" fill="#6b7280" font-size="10" font-family="system-ui,sans-serif">→ SessionStart 跨 session 恢复</text></g><!-- Bottom-Right: Information Density --><g filter="url(#sh)"><rect x="356" y="205" width="278" height="100" rx="8" fill="#fff" stroke="#f43f5e" stroke-width="1.5"/><rect x="356" y="205" width="278" height="28" rx="8" fill="url(#bg4)"/><rect x="356" y="225" width="278" height="8" fill="url(#bg4)"/><text x="495" y="224" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">④ 信息密度</text><text x="370" y="257" fill="#374151" font-size="11" font-family="system-ui,sans-serif">每段上下文值不值</text><text x="370" y="277" fill="#6b7280" font-size="9" font-family="system-ui,sans-serif">删掉 Agent 自己能发现的东西 → 密度翻倍</text></g></svg>
+<figcaption class="image-caption">图 1：上下文工程的四个要素 — 预算、缓存、韧性、密度两两互为支撑</figcaption>
+</figure>
+<p>上下文工程的目标：让 Agent 每一轮都恰好拿着它需要的信息，不多，不少。</p>
+<hr>
+<h2 id="2-token-预算你的钱花在哪了">2. Token 预算：你的钱花在哪了</h2>
+<h3 id="21-预算从哪来">2.1 预算从哪来</h3>
+<p>Claude Code 的 token 消耗分三块：</p>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>占比（典型会话）</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>系统提示词</strong></td>
+<td>5-10%</td>
+<td>Claude Code 内置的系统 prompt、工具定义</td>
+</tr>
+<tr>
+<td><strong>项目上下文</strong></td>
+<td>10-30%</td>
+<td>CLAUDE.md、Skill 内容、Hook 注入的额外信息</td>
+</tr>
+<tr>
+<td><strong>对话历史</strong></td>
+<td>40-70%</td>
+<td>你和 Claude 的每一轮对话、每一个工具调用结果</td>
+</tr>
+</tbody>
+</table>
+<p>对话历史是最大的消耗源。每敲一次回车，前面所有对话都重新发给模型（缓存部分除外）。</p>
+<h3 id="22-设置预算帽">2.2 设置预算帽</h3>
+<p>Claude Code 支持 <code>/status</code> 查看当前 session 的 token 消耗。但更主动的做法是设置预算上限：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 启动时限制总 token 消耗</span>
+</span></span><span class="line"><span class="cl">claude --max-turns <span class="m">30</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 或者在会话中动态设置</span>
+</span></span><span class="line"><span class="cl">/budget 200k
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>预算帽不会阻止 Claude 工作——它会在接近上限时自动启用更小的模型或触发上下文压缩。但如果你没设预算，它会一直烧到窗口极限。</p>
+<p><strong>一个经验值</strong>：日常开发任务 100k-200k token 足够。深度重构或长文档编写可能需要 300k-500k。超过 500k 还没做完的任务，应该拆成多个 session。</p>
+<h3 id="23-最大的-token-黑洞">2.3 最大的 token 黑洞</h3>
+<p>看一个真实例子。下面这个对话结构你肯定见过：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">你: 帮我写个 API 接口
+</span></span><span class="line"><span class="cl">Claude: 好的，我来写...（生成代码）
+</span></span><span class="line"><span class="cl">你: 这个字段改成 required
+</span></span><span class="line"><span class="cl">Claude: 好的，修改...（改一行）
+</span></span><span class="line"><span class="cl">你: 不对，返回格式用 camelCase
+</span></span><span class="line"><span class="cl">Claude: 好的，调整...（改序列化配置）
+</span></span><span class="line"><span class="cl">你: 顺便加个分页
+</span></span><span class="line"><span class="cl">Claude: 好的...（又生成一堆代码）
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>四轮对话，前三轮的代码生成结果全在上下文里——每一轮都被重新发送。而这四轮的实际有效信息只有三条指令，加在一起不到 100 字。</p>
+<p><strong>每一条留在上下文里的无效信息，都在挤占有效信息的空间。</strong></p>
+<p>解决办法不是少说话，而是学会两个操作：</p>
+<ul>
+<li><strong><code>/clear</code></strong> — 清空对话历史，保留 CLAUDE.md 和 Skill。适合&quot;这个子任务做完了，开始下一个&quot;的节点。</li>
+<li><strong><code>/compact</code></strong> — 手动触发上下文压缩，让 Claude Code 把历史总结成摘要，释放窗口空间。</li>
+</ul>
+<p><strong>节奏感</strong>：完成一个独立子任务 → <code>/clear</code> 或自然分段。不要让一个 session 跨越太多不相关的任务。</p>
+<hr>
+<h2 id="3-缓存你不该重复付费的东西">3. 缓存：你不该重复付费的东西</h2>
+<h3 id="31-提示词缓存怎么工作">3.1 提示词缓存怎么工作</h3>
+<p>Anthropic API 的提示词缓存机制：如果一段文本在前一次请求中出现过，后续请求中相同的部分会被缓存——<strong>缓存命中的 token，费用打一折。</strong></p>
+<p>但缓存有前提条件：</p>
+<ol>
+<li><strong>前缀匹配</strong>：缓存从对话的最开头计算，相同的连续前缀才能命中。中间插入新内容，后续部分缓存失效。</li>
+<li><strong>最小长度</strong>：缓存块至少 1024 token（Claude Opus/Sonnet）或 2048 token（Claude Haiku）。</li>
+<li><strong>TTL</strong>：缓存有 5 分钟生命周期，每次命中续期。</li>
+</ol>
+<p>这对 Claude Code 意味着什么？</p>
+<p><strong>CLAUDE.md 和 Skill 内容天然适合缓存</strong>——它们在会话启动时加载，每次都出现在上下文的最前面，构成缓存前缀。只要你不在 CLAUDE.md 前面插入东西，这部分就一直命中缓存。</p>
+<p><strong>对话历史不适合缓存</strong>——每轮对话都在增长，前缀没变但后面一直在追加。新追加的部分每次都是冷 token。</p>
+<h3 id="32-最大化缓存命中率">3.2 最大化缓存命中率</h3>
+<p>几条硬规则：</p>
+<p><strong>规则一：CLAUDE.md 放最前面，不要在前面塞东西。</strong></p>
+<p>SessionStart Hook 注入的内容会追加到 CLAUDE.md 之后——这部分也会被缓存，因为它在对话开始时就存在，且位于前缀区域。但 UserPromptSubmit 每次注入的内容位置靠后，缓存不了——所以只注入真正需要实时更新的东西（比如 git status）。</p>
+<p><strong>规则二：不要再 CLAUDE.md 里写会频繁变动的内容。</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="c">&lt;!-- 差：每次都改，缓存失效 --&gt;</span>
+</span></span><span class="line"><span class="cl">当前分支: feature/add-login  ← 换分支就改
+</span></span><span class="line"><span class="cl">最后部署: 2026-06-21 20:00   ← 每次部署都改
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">&lt;!-- 好：不变的内容放 CLAUDE.md，变的内容用 Hook 注入 --&gt;</span>
+</span></span><span class="line"><span class="cl">本项目使用 Python 3.12 + FastAPI
+</span></span><span class="line"><span class="cl">数据库用 PostgreSQL，ORM 用 SQLAlchemy
+</span></span><span class="line"><span class="cl">测试框架 pytest，必须用 async test
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>变的内容放进 UserPromptSubmit Hook 动态注入（参见 Hooks 篇场景六），不变的留在 CLAUDE.md 吃缓存。</p>
+<p><strong>规则三：Skill 内容尽量精简。</strong></p>
+<p>一个 80 行的 Skill 约 500-800 token。如果你的 15 个 Skill 每个 200 行，光元信息就占 10k+ token——而且是每次会话启动都加载的。虽然完整内容只在触发时加载，SessionStart 注入的名称和描述也会累积。</p>
+<p>Skill 的 token 成本分析在 Skills 篇第 6 节已经算过了——触发一次就回本。但你不应该因为&quot;它会回本&quot;就放任 Skill 膨胀。</p>
+<h3 id="33-检查你的缓存命中率">3.3 检查你的缓存命中率</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 在 Claude Code 会话中</span>
+</span></span><span class="line"><span class="cl">/status
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>关注 <code>cache_read_tokens</code> 和 <code>cache_creation_tokens</code> 的比例。理想状态：cache_read 远大于 cache_creation。如果每次请求 cache_creation 都很高，说明你的上下文前缀在频繁变动——检查是不是有什么在 CLAUDE.md 前面插入了动态内容。</p>
+<hr>
+<h2 id="4-precompact上下文压缩前的最后一秒">4. PreCompact：上下文压缩前的最后一秒</h2>
+<h3 id="41-压缩时会发生什么">4.1 压缩时会发生什么</h3>
+<p>当对话历史接近窗口上限，Claude Code 会触发自动压缩（Auto-Compact）。压缩逻辑：把历史对话总结成摘要，丢弃原始细节，用摘要替代。</p>
+<p>这是个黑盒。你不知道哪些信息会被保留、哪些会被丢弃。Claude Code 自己决定&quot;什么重要&quot;——但它的判断不总是对的。</p>
+<p>你正在追踪一个 bug，定位到第 42 行，原因是指针偏移错了 4 字节。压缩后，摘要可能是&quot;正在修一个内存相关的 bug&quot;——具体到哪一行、偏移多少，丢了。</p>
+<h3 id="42-precompact-hook你的保险丝">4.2 PreCompact Hook：你的保险丝</h3>
+<p>Hooks 篇的场景七提了 PreCompact Hook，但没展开它在上下文工程中的战略地位。这里补全。</p>
+<p>PreCompact Hook 在压缩触发前执行。它拿到的 JSON 包含当前会话的元信息。你可以在这里做一件事：<strong>把关键状态写到一个恢复文件里。</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># pre_compact_save.py — PreCompact，matcher: &#34;&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 不只是存 session_id 和时间戳——存任务状态</span>
+</span></span><span class="line"><span class="cl"><span class="n">state</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;session_id&#34;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;session_id&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;current_task&#34;</span><span class="p">:</span> <span class="s2">&#34;&#34;</span><span class="p">,</span>  <span class="c1"># 从对话中提取——见下文</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;last_file_edited&#34;</span><span class="p">:</span> <span class="s2">&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;last_command&#34;</span><span class="p">:</span> <span class="s2">&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;known_issues&#34;</span><span class="p">:</span> <span class="p">[],</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;next_steps&#34;</span><span class="p">:</span> <span class="p">[],</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 从最近的操作中重建上下文</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># PostToolUse Hook 可以持续更新这个文件</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># PreCompact 只是标记一个快照</span>
+</span></span><span class="line"><span class="cl"><span class="n">state</span><span class="p">[</span><span class="s2">&#34;compacted_at&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;timestamp&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">backup_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&#34;~/.claude/session-state.json&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">backup_path</span><span class="p">,</span> <span class="s2">&#34;w&#34;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="43-但真正的解药是-posttooluse-持续追踪">4.3 但真正的解药是 PostToolUse 持续追踪</h3>
+<p>PreCompact Hook 只知道&quot;压缩要发生了&quot;——但不知道当前任务的完整状态。它像一个火灾报警器，能响，但不知道火在哪。</p>
+<p>更有效的做法是配合 PostToolUse Hook 持续追踪任务进度：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># task_tracker.py — PostToolUse，matcher: Write|Edit|Bash</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl"><span class="n">tool</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;tool_name&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">inp</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;tool_input&#34;</span><span class="p">,</span> <span class="p">{})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">STATE_FILE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&#34;~/.claude/task-state.json&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 读取已有状态</span>
+</span></span><span class="line"><span class="cl"><span class="n">state</span> <span class="o">=</span> <span class="p">{}</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">STATE_FILE</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">STATE_FILE</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">state</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 更新状态</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="n">tool</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&#34;Write&#34;</span><span class="p">,</span> <span class="s2">&#34;Edit&#34;</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">state</span><span class="p">[</span><span class="s2">&#34;last_file_edited&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;file_path&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">state</span><span class="p">[</span><span class="s2">&#34;last_edit_time&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;timestamp&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">elif</span> <span class="n">tool</span> <span class="o">==</span> <span class="s2">&#34;Bash&#34;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cmd</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;command&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">exit_code</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;exit_code&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">state</span><span class="p">[</span><span class="s2">&#34;last_command&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cmd</span><span class="p">[:</span><span class="mi">200</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="n">state</span><span class="p">[</span><span class="s2">&#34;last_exit_code&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="n">exit_code</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># 追踪已知问题（命令失败）</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">exit_code</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">issues</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;known_issues&#34;</span><span class="p">,</span> <span class="p">[])</span>
+</span></span><span class="line"><span class="cl">        <span class="n">issues</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;command&#34;</span><span class="p">:</span> <span class="n">cmd</span><span class="p">[:</span><span class="mi">120</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;exit_code&#34;</span><span class="p">:</span> <span class="n">exit_code</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;time&#34;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;timestamp&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="p">})</span>
+</span></span><span class="line"><span class="cl">        <span class="n">state</span><span class="p">[</span><span class="s2">&#34;known_issues&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="n">issues</span><span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">:]</span>  <span class="c1"># 只保留最近 10 条</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">STATE_FILE</span><span class="p">,</span> <span class="s2">&#34;w&#34;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>现在 PreCompact 保存的快照就有意义了——里面有最近编辑的文件、最近运行的命令、已知的未解决问题。压缩后，SessionStart Hook 可以把这个文件读回来，注入到新上下文中：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># session_start_restore.py — SessionStart，matcher: &#34;&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">STATE_FILE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&#34;~/.claude/task-state.json&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">STATE_FILE</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">STATE_FILE</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">state</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">issues</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;known_issues&#34;</span><span class="p">,</span> <span class="p">[])</span>
+</span></span><span class="line"><span class="cl"><span class="n">last_file</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;last_file_edited&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">context</span> <span class="o">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="n">issues</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">context</span> <span class="o">+=</span> <span class="s2">&#34;⚠️ 此前未解决的问题:</span><span class="se">\n</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">issues</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">:]:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">context</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&#34;- [</span><span class="si">{</span><span class="n">i</span><span class="p">[</span><span class="s1">&#39;exit_code&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">i</span><span class="p">[</span><span class="s1">&#39;command&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="n">last_file</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">context</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&#34;📝 最后编辑的文件: </span><span class="si">{</span><span class="n">last_file</span><span class="si">}</span><span class="se">\n</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="n">context</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;hookSpecificOutput&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;hookEventName&#34;</span><span class="p">:</span> <span class="s2">&#34;SessionStart&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;additionalContext&#34;</span><span class="p">:</span> <span class="s2">&#34;=== 从上个会话恢复的上下文 ===</span><span class="se">\n</span><span class="s2">&#34;</span> <span class="o">+</span> <span class="n">context</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>这条链路长这样</strong>：</p>
+<figure>
+<div class="mermaid" id="id-1">flowchart LR
+    A[&#34;PostToolUse Hook&lt;br/&gt;持续追踪&#34;] --&gt;|&#34;更新 task-state.json&lt;br/&gt;last_file·known_issues&#34;| B[&#34;PreCompact Hook&lt;br/&gt;压缩前拍快照&#34;]
+    B --&gt;|&#34;写入 session-state.json&lt;br/&gt;标记未解问题&#34;| C[&#34;SessionStart Hook&lt;br/&gt;下次启动恢复&#34;]
+    C --&gt;|&#34;注入 additionalContext&lt;br/&gt;&#39;上次修到哪了？&#39;&#34;| D[&#34;Claude Code&lt;br/&gt;继续干活&#34;]
+
+    style A fill:#6366f1,color:#fff
+    style B fill:#f59e0b,color:#fff
+    style C fill:#10b981,color:#fff
+    style D fill:#f3f4f6,color:#374151</div>
+<script>window.config=window.config||{};window.config.data=window.config.data||{};window.config.data['id-1']=document.getElementById('id-1').textContent.trim();</script>
+<figcaption class="image-caption">图 2：PreCompact 恢复链路 — 三条 Hook 串联实现跨 session 状态恢复</figcaption>
+</figure>
+<p>三条 Hook 配合，<strong>把上下文从&quot;只能活在一个窗口里&quot;变成了&quot;可以跨 session 存活&quot;。</strong></p>
+<h3 id="44-手动压缩的智慧">4.4 手动压缩的智慧</h3>
+<p>自动压缩是被动的。更高阶的玩法是<strong>主动压缩</strong>——在任务自然节点手动 <code>/compact</code>：</p>
+<ul>
+<li>刚完成一个子任务，准备开始下一个 → <code>/compact</code></li>
+<li>刚修完 bug，准备写测试 → <code>/compact</code></li>
+<li>刚读完一堆文件，准备开始写代码 → <code>/compact</code></li>
+</ul>
+<p>手动压缩让你控制&quot;什么时候把历史折叠成摘要&quot;。比自动压缩更可控——你选择在自然节点压缩，而不是等窗口爆了让系统替你选。</p>
+<hr>
+<h2 id="5-claudemd你的上下文锚点">5. CLAUDE.md：你的上下文锚点</h2>
+<h3 id="51-好的-claudemd-长什么样">5.1 好的 CLAUDE.md 长什么样</h3>
+<p>一个常见的误区：把 CLAUDE.md 写成项目文档。塞满安装步骤、目录结构、API 端点列表。</p>
+<p>CLAUDE.md 不是给人看的文档，是给 Agent 的<strong>上下文锚点</strong>。它的作用是让 Agent 在对话开始时就理解&quot;我在哪，我能用什么，有什么坑&quot;。</p>
+<p>好的 CLAUDE.md 遵循三条规则：</p>
+<p><strong>一、只写 Agent 自己发现不了的东西。</strong></p>
+<p>Agent 能通过 <code>ls</code> 和 <code>grep</code> 发现项目结构——不用写。Agent 发现不了的是你的偏好、隐藏约定、已知的坑。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="c">&lt;!-- 差：Agent 自己 ls 一下就能看到 --&gt;</span>
+</span></span><span class="line"><span class="cl">项目结构:
+</span></span><span class="line"><span class="cl"><span class="k">-</span> src/: 源代码
+</span></span><span class="line"><span class="cl"><span class="k">-</span> tests/: 测试代码
+</span></span><span class="line"><span class="cl"><span class="k">-</span> docs/: 文档
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">&lt;!-- 好：Agent 发现不了的东西 --&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 别碰 scripts/deploy.sh，那个脚本线上环境专用，本地跑会炸
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 测试用 pytest -x --cov，别用 python -m unittest
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 端口 9100 是 prod，9101 是 dev——别搞混
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>二、禁止项放在前面。</strong></p>
+<p>Agent 读到 CLAUDE.md 的第一段话，印象最深。把绝对不能做的事放最前面：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># 铁律
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span><span class="k">-</span> NEVER git push 未经我确认
+</span></span><span class="line"><span class="cl"><span class="k">-</span> NEVER 修改 .env 或任何 secrets 文件
+</span></span><span class="line"><span class="cl"><span class="k">-</span> NEVER 在没有 failing test 的情况下写 production code
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这和 Skill 的&quot;铁律开头&quot;原则一致——模糊的规则 = 不存在的规则。</p>
+<p><strong>三、少于 200 行。</strong></p>
+<p>CLAUME.md 越长，Agent 越容易跳读。一个测试：删掉一行，Agent 还会犯对应的错吗？不会就删。会就留。</p>
+<h3 id="52-全局-claudemd-vs-项目-claudemd">5.2 全局 CLAUDE.md vs 项目 CLAUDE.md</h3>
+<p><code>~/.claude/CLAUDE.md</code> 是全局的——所有项目共享。放跨项目通用的规则：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># 全局偏好（~/.claude/CLAUDE.md）
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span><span class="k">-</span> 所有 commit message 用英文，用 conventional commits 格式
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 用中文回复我（对话），用英文写 commit
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 优先用 pytest，没有就 unittest，再没有就裸 script 验证
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><code>.claude/CLAUDE.md</code>（或项目根目录 <code>CLAUDE.md</code>）是项目级的——放这个项目特有的规则。</p>
+<p><strong>分层的本质</strong>：全局文件管&quot;我的偏好&quot;，项目文件管&quot;这个项目的约定&quot;。不要让全局文件里出现项目特定的路径和端口号——你在另一个项目里打开 Claude Code，这些信息就是噪声。</p>
+<hr>
+<h2 id="6-上下文防污染什么不该进上下文">6. 上下文防污染：什么不该进上下文</h2>
+<p>上下文工程有一半的功夫在<strong>决定什么不放进去。</strong></p>
+<h3 id="61-六类上下文污染物">6.1 六类上下文污染物</h3>
+<table>
+<thead>
+<tr>
+<th>污染物</th>
+<th>为什么毒</th>
+<th>怎么防</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>冗余工具输出</strong></td>
+<td><code>ls</code> 列出 100 个文件，你只需要 3 个</td>
+<td>用 <code>head</code>/<code>grep</code>/通配符缩小输出</td>
+</tr>
+<tr>
+<td><strong>未编辑文件内容</strong></td>
+<td>Read 了一个 500 行的文件，只改了 2 行</td>
+<td>改完就 <code>/compact</code>，扔掉原始内容</td>
+</tr>
+<tr>
+<td><strong>调试日志堆砌</strong></td>
+<td>跑测试的输出有 2000 行，失败的就 3 个 test</td>
+<td>用 <code>pytest -x --tb=short</code>，别 dump 完整日志</td>
+</tr>
+<tr>
+<td><strong>失败的尝试</strong></td>
+<td>&ldquo;试试方案 A&rdquo; → 失败 → &ldquo;试试 B&rdquo; → 失败 → &ldquo;试试 C&rdquo;</td>
+<td>方案 A 失败就 <code>/clear</code> 重新描述需求</td>
+</tr>
+<tr>
+<td><strong>跨任务的残留</strong></td>
+<td>在同一个 session 里先后做了登录模块 + 支付模块</td>
+<td>模块切换时 <code>/clear</code></td>
+</tr>
+<tr>
+<td><strong>空洞的礼貌用语</strong></td>
+<td>&ldquo;谢谢你&rdquo; &ldquo;不客气&rdquo; &ldquo;做得很好&rdquo;</td>
+<td>该夸夸，但知道每一句都占 token</td>
+</tr>
+</tbody>
+</table>
+<h3 id="62-方案-a-失败的代价">6.2 方案 A 失败的代价</h3>
+<p>这是最隐蔽的污染源。你描述一个需求，Claude 给出方案 A，你试了发现不行，告诉它&quot;不对，因为 X&quot;，Claude 给出方案 B。来来回回，方案 A 和 B 的完整代码都在上下文里。</p>
+<p>到第三轮，Claude 看到的上下文是这样的：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[你的需求]
+</span></span><span class="line"><span class="cl">[方案 A 的完整代码——失败的]
+</span></span><span class="line"><span class="cl">[你说&#34;不对&#34;]
+</span></span><span class="line"><span class="cl">[方案 B 的完整代码——还是不对]
+</span></span><span class="line"><span class="cl">[你说&#34;再改&#34;]
+</span></span><span class="line"><span class="cl">[你现在要方案 C]
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>方案 A 和 B 的代码对方案 C 没有任何帮助——但它们占据了上下文窗口的 60%。更糟的是，它们可能干扰 Claude 的判断——&ldquo;用户之前否定了用 decorator 的方式，我不能再用 decorator&rdquo;——但实际上你否定的是方案 A 的具体实现，不是 decorator 这个技术。</p>
+<p><strong>正确的做法</strong>：方案失败，立即 <code>/clear</code>，重新描述需求。如果失败的方案里有值得保留的教训，用一句话总结放进新需求描述里：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-mysql" data-lang="mysql"><span class="line"><span class="cl"><span class="err">上次用</span><span class="w"> </span><span class="n">SQLAlchemy</span><span class="w"> </span><span class="err">的</span><span class="w"> </span><span class="o">`</span><span class="n">joinedload</span><span class="o">`</span><span class="w"> </span><span class="err">导致</span><span class="w"> </span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="w"> </span><span class="err">查询，这次请用</span><span class="w"> </span><span class="o">`</span><span class="n">selectinload</span><span class="o">`</span><span class="err">。</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>一句话替代 200 行失败代码。<strong>信息密度从 0.5% 提升到 100%。</strong></p>
+<h3 id="63-让-subagent-替你试错">6.3 让 subagent 替你试错</h3>
+<p>上面是事后清理。更好的做法是从一开始就别让试错过程进主上下文。</p>
+<p>Claude Code 的 agent/subagent 机制（Workflows 篇详细讲过）有个天然优势：<strong>每个 agent 有独立的上下文窗口。</strong> 你在 agent 内部不管怎么折腾——试方案 A 不行换 B 不行换 C——这些中间垃圾全留在 agent 自己的窗口里，返回给父 session 的只有最终结果。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 差：在主 session 里反复试，每一轮都在上下文里堆着</span>
+</span></span><span class="line"><span class="cl">你: 帮我写个 FastAPI 路由
+</span></span><span class="line"><span class="cl">Claude: ...400 行代码...
+</span></span><span class="line"><span class="cl">你: 不对，这个中间件不对
+</span></span><span class="line"><span class="cl">Claude: ...改 <span class="m">300</span> 行...
+</span></span><span class="line"><span class="cl">你: 还是换回装饰器吧
+</span></span><span class="line"><span class="cl">Claude: ...又改 <span class="m">500</span> 行...
+</span></span><span class="line"><span class="cl"><span class="c1"># 上下文里堆了 1200+ 行无效代码</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 好：直接让 Claude Code 派一个 agent 独立完成</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 写清楚要求和约束，agent 内部怎么试错都行，主 session 只收结果</span>
+</span></span><span class="line"><span class="cl">你: 用 agent 写一个 FastAPI CRUD 路由，装饰器模式，pydantic 验证。
+</span></span><span class="line"><span class="cl">     要求：跑通 pytest，别在主 session 里一步步改。
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Claude Code 会自动调用 Agent 工具，启动一个独立 agent。这个 agent 有自己的上下文窗口，在里面写代码、跑测试、改 bug——所有中间过程都在它自己的窗口里。返回给你的时候只有最终的代码和测试结果。</p>
+<p>这个技巧的核心：<strong>试错成本不应该由主 session 承担。</strong> 凡是需要多轮试错才能敲定的子任务，一律丢给 subagent。你的主上下文始终保持整洁，子 agent 的上下文窗口爆了也无所谓——它完成任务就销毁了。</p>
+<p>和 <code>/clear</code> 的区别：<code>/clear</code> 是事后清理，会丢掉前面所有上下文包括有用的部分。Subagent 是事前隔离，父 session 的状态完整保留，只接收子任务的最终产物。</p>
+<h3 id="64-对话不是聊天记录">6.4 对话不是聊天记录</h3>
+<p>很多人把和 Claude Code 的对话当成聊天——&ldquo;做得不错&rdquo;、&ldquo;谢谢&rdquo;、&ldquo;接下来&hellip;&quot;。每个词都在消耗 token。不意味着你要对 Claude 冷漠，但你要意识到：</p>
+<p><strong>每一次敲回车，前面的所有内容都会被重新发送。</strong></p>
+<p>一个 100 轮对话的 session，即使每轮只有 50 token 的&quot;聊天&quot;内容，累积也占了 5000 token——够写一个完整的 Skill 了。</p>
+<hr>
+<h2 id="7-token-成本实战数据">7. Token 成本实战数据</h2>
+<h3 id="71-四条策略的实际收益">7.1 四条策略的实际收益</h3>
+<p>以下是同一个任务（FastAPI CRUD 模块开发）在四条策略下的成本对比：</p>
+<table>
+<thead>
+<tr>
+<th>策略</th>
+<th>输入 token</th>
+<th>输出 token</th>
+<th>对话轮次</th>
+<th>总费用(约)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>无优化</td>
+<td>285,000</td>
+<td>18,000</td>
+<td>42</td>
+<td>$4.38</td>
+</tr>
+<tr>
+<td>+ CLAUDE.md 精简约 40%</td>
+<td>215,000</td>
+<td>16,000</td>
+<td>35</td>
+<td>$3.24</td>
+</tr>
+<tr>
+<td>+ <code>/clear</code> 在子任务间</td>
+<td>168,000</td>
+<td>14,000</td>
+<td>28</td>
+<td>$2.50</td>
+</tr>
+<tr>
+<td>+ 手动 <code>/compact</code></td>
+<td>132,000</td>
+<td>12,000</td>
+<td>24</td>
+<td>$1.96</td>
+</tr>
+</tbody>
+</table>
+<p>最终策略比无优化省了 55% 的 token。</p>
+<p>省下的不只是钱。轮次从 42 降到 24——这意味着你做同一个任务，时间缩短了将近一半。因为每轮对话 Claude 都在更干净的上下文里工作，给出的方案更准，不需要反复纠正。</p>
+<h3 id="72-一个典型-session-的-token-流向">7.2 一个典型 session 的 token 流向</h3>
+<p>用 <code>/status</code> 抓了一个真实 session 的数据：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Session tokens: 187,432
+</span></span><span class="line"><span class="cl">├── System prompt: 8,200 (4.4%)
+</span></span><span class="line"><span class="cl">├── CLAUDE.md + Skills 元信息: 12,800 (6.8%)
+</span></span><span class="line"><span class="cl">├── 对话历史（缓存命中）: 98,500 (52.5%)
+</span></span><span class="line"><span class="cl">├── 对话历史（冷 token）: 55,200 (29.5%)
+</span></span><span class="line"><span class="cl">├── 工具输出: 10,500 (5.6%)
+</span></span><span class="line"><span class="cl">└── Hook 注入: 2,232 (1.2%)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>几个值得注意的点：</p>
+<p><strong>缓存命中占了一半以上。</strong> 说明 CLAUDE.md 和早期对话的前缀缓存生效了。如果没有缓存，这个 session 的费用会翻倍。</p>
+<p><strong>对话历史（冷）占了近三分之一。</strong> 这是每轮新增的对话和工具调用结果。这部分优化空间最大——减少无效轮次、缩小工具输出。</p>
+<p><strong>Hook 注入只占 1.2%。</strong> 说明用 Hook 注入动态信息（git status 等）的成本很低——不用担心 Hook 会吃掉大量 token。</p>
+<hr>
+<h2 id="8-组装上下文工程的推荐配置">8. 组装：上下文工程的推荐配置</h2>
+<p>把前面讲的组装成可操作的配置。分三级，逐级递进。</p>
+<h3 id="第一级立即可做不改任何代码">第一级：立即可做（不改任何代码）</h3>
+<ol>
+<li><strong>精简约 CLAUDE.md</strong> — 删掉 Agent 自己能发现的信息，铁律放前面，控制在 200 行以内</li>
+<li><strong>养成 <code>/clear</code> 习惯</strong> — 子任务完成就清，不跨模块混用 session</li>
+<li><strong>控制工具输出</strong> — <code>ls</code> 加通配符，<code>grep</code> 加 <code>head</code>，测试用 <code>-x --tb=short</code></li>
+<li><strong>手动 <code>/compact</code></strong> — 在自然节点主动压缩，不在窗口爆了被动等</li>
+</ol>
+<h3 id="第二级加-hook30-分钟配置">第二级：加 Hook（30 分钟配置）</h3>
+<ol start="5">
+<li><strong>PostToolUse 追踪任务状态</strong> — 持续记录编辑了哪个文件、哪个命令失败了（4.3 节脚本）</li>
+<li><strong>PreCompact 保存快照</strong> — 压缩前把状态写到恢复文件（4.2 节脚本）</li>
+<li><strong>SessionStart 恢复上下文</strong> — 新 session 启动时恢复上次的任务状态（4.3 节脚本）</li>
+</ol>
+<h3 id="第三级体系化长期迭代">第三级：体系化（长期迭代）</h3>
+<ol start="8">
+<li><strong>UserPromptSubmit 注入 git 状态</strong> — Hooks 篇场景六，每次对话自动带当前分支和未提交变更</li>
+<li><strong>Skill 定期审查</strong> — 删掉八百年触发一次的 Skill，精简保留的 Skill 到 80 行以下</li>
+<li><strong>建立项目模板</strong> — 把 CLAUDE.md + Skills + Hooks 配置做成模板，新项目直接复制</li>
+</ol>
+<h3 id="配置模板">配置模板</h3>
+<p>把这些全配好之后，你的 <code>.claude/settings.json</code> 长这样：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;PostToolUse&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;matcher&#34;</span><span class="p">:</span> <span class="s2">&#34;Write|Edit|Bash&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">[{</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;command&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;python3 ~/.claude/hooks/task-tracker.py&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}]</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">],</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;PreCompact&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;matcher&#34;</span><span class="p">:</span> <span class="s2">&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">[{</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;command&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;python3 ~/.claude/hooks/save-context.py&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}]</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">],</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;SessionStart&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;matcher&#34;</span><span class="p">:</span> <span class="s2">&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">[{</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;command&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;python3 ~/.claude/hooks/restore-context.py&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}]</span>
+</span></span><span class="line"><span class="cl">      <span class="p">},</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;matcher&#34;</span><span class="p">:</span> <span class="s2">&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">[{</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;command&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;python3 ~/.claude/hooks/inject-git-status.py&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}]</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>三条 Hook，三个脚本文件，一次配置永久生效。</p>
+<hr>
+<h2 id="9-上下文工程的元原则">9. 上下文工程的元原则</h2>
+<p>前面八节讲了具体的&quot;术&rdquo;。最后一节讲&quot;道&quot;——几条约定了整个上下文工程方向的元原则。</p>
+<h3 id="原则一信息密度--信息量">原则一：信息密度 &gt; 信息量</h3>
+<p>不是&quot;给 Agent 越多信息越好&quot;。是&quot;给 Agent 的信息里，有用的部分越多越好。&quot;</p>
+<p>1000 token 的 CLAUDE.md，如果里面 800 token 是 Agent 自己能 <code>ls</code> 出来的目录结构，信息密度只有 20%。删到 200 token，全是 Agent 自己发现不了的东西，信息密度 100%。</p>
+<p><strong>信息密度 = 有效信息 ÷ 总信息。追求密度，不追求总量。</strong></p>
+<h3 id="原则二上下文的生命周期决定它的策略">原则二：上下文的生命周期决定它的策略</h3>
+<p>不是所有上下文都应该一直活着。上下文有三种生命周期：</p>
+<table>
+<thead>
+<tr>
+<th>生命周期</th>
+<th>内容</th>
+<th>策略</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>永久</strong>（会话级别）</td>
+<td>CLAUDE.md、Skill 名称和描述</td>
+<td>常驻，吃缓存</td>
+</tr>
+<tr>
+<td><strong>任务级别</strong></td>
+<td>Skill 完整内容、当前任务的上下文</td>
+<td>按需加载，任务结束释放</td>
+</tr>
+<tr>
+<td><strong>轮次级</strong></td>
+<td>工具调用结果、错误信息</td>
+<td>用完即弃，靠 <code>/compact</code> 回收</td>
+</tr>
+</tbody>
+</table>
+<p>把每种内容放到正确的生命周期里，是上下文工程的核心决策。</p>
+<figure>
+<svg id="token-lifecycle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 280" width="100%" style="max-width:680px;display:block;margin:1.2em auto"><defs><linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#34d399"/></linearGradient><linearGradient id="lg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#818cf8"/></linearGradient><linearGradient id="lg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#fbbf24"/></linearGradient><linearGradient id="lg4" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#9ca3af"/><stop offset="100%" stop-color="#d1d5db"/></linearGradient><filter id="sh2"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/></filter></defs><!-- Layer 1: Permanent --><g filter="url(#sh2)"><rect x="40" y="20" width="600" height="56" rx="8" fill="#fff" stroke="#10b981" stroke-width="1.5"/><rect x="40" y="20" width="600" height="30" rx="8" fill="url(#lg1)"/><rect x="40" y="42" width="600" height="8" fill="url(#lg1)"/><circle cx="66" cy="35" r="11" fill="#fff" opacity="0.2"/><text x="66" y="40" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="system-ui,sans-serif">①</text><text x="86" y="40" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">永久 · 会话级</text><text x="220" y="40" fill="rgba(255,255,255,0.8)" font-size="10" font-family="system-ui,sans-serif">CLAUDE.md · Skill 元信息 · 系统 prompt</text><text x="56" y="66" fill="#374151" font-size="11" font-family="system-ui,sans-serif">策略：常驻上下文的永久前缀 → 吃满提示词缓存，不变不动</text></g><!-- Layer 2: Task --><g filter="url(#sh2)"><rect x="40" y="100" width="600" height="56" rx="8" fill="#fff" stroke="#6366f1" stroke-width="1.5"/><rect x="40" y="100" width="600" height="30" rx="8" fill="url(#lg2)"/><rect x="40" y="122" width="600" height="8" fill="url(#lg2)"/><circle cx="66" cy="115" r="11" fill="#fff" opacity="0.2"/><text x="66" y="120" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="system-ui,sans-serif">②</text><text x="86" y="120" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">任务级</text><text x="170" y="120" fill="rgba(255,255,255,0.8)" font-size="10" font-family="system-ui,sans-serif">Skill 完整内容 · 当前任务上下文 · Hook 注入的动态信息</text><text x="56" y="146" fill="#374151" font-size="11" font-family="system-ui,sans-serif">策略：意图匹配时按需加载 → 任务完成 /clear 释放</text></g><!-- Layer 3: Turn --><g filter="url(#sh2)"><rect x="40" y="180" width="600" height="56" rx="8" fill="#fff" stroke="#f59e0b" stroke-width="1.5"/><rect x="40" y="180" width="600" height="30" rx="8" fill="url(#lg3)"/><rect x="40" y="202" width="600" height="8" fill="url(#lg3)"/><circle cx="66" cy="195" r="11" fill="#fff" opacity="0.2"/><text x="66" y="200" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="system-ui,sans-serif">③</text><text x="86" y="200" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">轮次级</text><text x="170" y="200" fill="rgba(255,255,255,0.8)" font-size="10" font-family="system-ui,sans-serif">工具调用结果 · 错误信息 · 一次性对话</text><text x="56" y="226" fill="#374151" font-size="11" font-family="system-ui,sans-serif">策略：用完即弃 → 手动 /compact 折叠成摘要 → 回收窗口空间</text></g><!-- Arrow connections --><line x1="340" y1="76" x2="340" y2="98" stroke="#d1d5db" stroke-width="1.5"/><polygon points="336,94 340,100 344,94" fill="#d1d5db"/><line x1="340" y1="156" x2="340" y2="178" stroke="#d1d5db" stroke-width="1.5"/><polygon points="336,174 340,180 344,174" fill="#d1d5db"/><text x="510" y="258" text-anchor="end" fill="#6b7280" font-size="11" font-family="system-ui,sans-serif">↓ 越往下，生命周期越短</text></svg>
+<figcaption class="image-caption">图 3：上下文的三层生命周期 — 永久→任务→轮次，策略从常驻逐步升级到即抛</figcaption>
+</figure>
+<h3 id="原则三压缩不是丢失是折叠">原则三：压缩不是丢失——是折叠</h3>
+<p>很多人害怕 <code>/compact</code> 和 PreCompact——&ldquo;万一把重要信息压缩丢了怎么办？&rdquo;</p>
+<p>把压缩理解成&quot;丢失&quot;是错的。压缩是<strong>折叠</strong>——把 50 轮对话折叠成一段摘要，而不是直接删除。关键在于：你的折叠逻辑对不对？</p>
+<p>这就是为什么需要 4.3 节的 task-tracker——在压缩之外，你有一份额外的结构化记录。这份记录不依赖 Claude Code 的自动压缩逻辑，是你自己定义的&quot;什么信息必须保留&quot;。</p>
+<p><strong>压缩是 Claude Code 的事，但&quot;什么绝对不能丢&quot;是你的事。</strong></p>
+<h3 id="原则四预算帽是反馈信号不是限制">原则四：预算帽是反馈信号，不是限制</h3>
+<p>很多人把 <code>/budget</code> 当成&quot;限制 Claude 不要花太多钱&quot;。它的真正价值是<strong>反馈信号</strong>。</p>
+<p>设一个 200k 的预算帽，不是为了让 Claude 在 200k 时停掉——是为了让你看到&quot;这个任务跑了 150k 还没做完，是不是哪里不对？&quot;</p>
+<p>150k token 跑不完一个本应在 50k 完成的任务，说明：</p>
+<ul>
+<li>方案不对，在错误的路上来回试错</li>
+<li>上下文已经被污染，Agent 在做无效的来回纠正</li>
+<li>任务本身就该拆成多个 session</li>
+</ul>
+<p><strong>预算帽是仪表盘，不是刹车。</strong> 它是帮你感知&quot;上下文健康状况&quot;的工具。</p>
+<hr>
+<h2 id="结语">结语</h2>
+<p>这个系列写了六篇：</p>
+<table>
+<thead>
+<tr>
+<th>篇</th>
+<th>主题</th>
+<th>核心命题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>一</td>
+<td>插件</td>
+<td>能做什么？——装备</td>
+</tr>
+<tr>
+<td>二</td>
+<td>Hooks</td>
+<td>什么时候做？——触发器</td>
+</tr>
+<tr>
+<td>三</td>
+<td>Skill</td>
+<td>怎么做？——方法论</td>
+</tr>
+<tr>
+<td>四</td>
+<td>MCP</td>
+<td>用什么做？——工具层</td>
+</tr>
+<tr>
+<td>五</td>
+<td>Workflows</td>
+<td>谁来做？——编排</td>
+</tr>
+<tr>
+<td>六</td>
+<td>上下文工程</td>
+<td>怎么不跑偏？——地基</td>
+</tr>
+</tbody>
+</table>
+<p>前五篇是&quot;往上盖&quot;——一层一层叠加能力。这一篇是&quot;往下打&quot;——确保地基撑得住上面五层。</p>
+<p>插件装了，Hooks 配了，Skills 写了，MCP 挂了，Workflows 编排好了——但如果你的上下文是一团乱麻，Agent 在最关键的时刻忘记了最关键的约束，上面的一切都会失效。</p>
+<p><strong>上下文工程不是第六个功能——它是让前五个功能稳定运行的底层保障。</strong></p>
+<p>把它当成持续的工作。每做完一个项目审查一次 CLAUDE.md。每写一个新的 Skill 检查一次是否值得常驻上下文。每发现一个方案在来回试错时果断 <code>/clear</code> 重来。</p>
+<p>说到底，省的不只是 token，还有你宝贵的时间。</p>
+<p>写完这篇，我自己的上下文也快爆了。<code>/clear</code> 一下。</p>
+<p><em>感谢阅读。</em></p>
+<div class="post-series-nav">
+                <em>本文是「<a href="/series/claude-code-deep-dive/">AI 编程·Claude Code</a>」系列第 6 篇，共 6 篇。上一篇：<a href="/posts/2026/06/14/claude-code-workflows-guide/">Claude Code Workflows 完全指南：多智能体编排让 AI 团队自己干活</a>。</em>
+            </div></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2026-06-22</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/2026/06/21/claude-code-context-engineering/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/06/21/claude-code-context-engineering/" data-title="Claude Code Context Engineering 深度解析：把 token 花在刀刃上" data-hashtags="tech,ai,claude code,context engineering,token budget,prompt caching"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/06/21/claude-code-context-engineering/" data-hashtag="tech"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/06/21/claude-code-context-engineering/" data-title="Claude Code Context Engineering 深度解析：把 token 花在刀刃上"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/06/21/claude-code-context-engineering/" data-title="Claude Code Context Engineering 深度解析：把 token 花在刀刃上"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/06/21/claude-code-context-engineering/" data-title="Claude Code Context Engineering 深度解析：把 token 花在刀刃上"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微信" onclick="var d=document.getElementById('wechat-qr-fb056a8b72d87ddf65b21de8dc699dfd');d.style.display=d.style.display==='none'?'block':'none';return false"><i class="fab fa-weixin fa-fw" aria-hidden="true"></i></a>
+        <div id="wechat-qr-fb056a8b72d87ddf65b21de8dc699dfd" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:9999" onclick="this.style.display='none'">
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;padding:20px;border-radius:8px;text-align:center">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https%3a%2f%2fwhitefirer.org%2fposts%2f2026%2f06%2f21%2fclaude-code-context-engineering%2f" alt="微信扫一扫" style="display:block">
+                <p style="margin:10px 0 0;font-size:14px;color:#333">微信扫一扫 · 分享文章</p>
+            </div>
+        </div></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/tech/">技术</a>,&nbsp;<a href="/tags/ai/">Ai</a>,&nbsp;<a href="/tags/claude-code/">Claude Code</a>,&nbsp;<a href="/tags/context-engineering/">Context Engineering</a>,&nbsp;<a href="/tags/token-budget/">Token Budget</a>,&nbsp;<a href="/tags/prompt-caching/">Prompt Caching</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2026/06/14/claude-code-workflows-guide/" class="prev" rel="prev" title="Claude Code Workflows 完全指南：多智能体编排让 AI 团队自己干活"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Claude Code Workflows 完全指南：多智能体编排让 AI 团队自己干活</a></div>
+
+</div>
+<div id="comments"><div id="waline" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://waline.js.org/">Waline</a>.
+            </noscript><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article>
+<script>(function(){var b=document.getElementById('reading-progress');if(!b)return;function u(){var h=document.documentElement,s=h.scrollHeight-h.clientHeight,w=s>0?Math.min((h.scrollTop||document.body.scrollTop)/s*100,100):0;b.style.width=w+'%'}window.addEventListener('scroll',u,{passive:true});u()})();</script></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.131.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span><img src="https://hits.sh/whitefirer.org.svg" alt="" aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;clip:rect(0 0 0 0);pointer-events:none"></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/waline/waline.min.css"><script type="text/javascript" src="/lib/waline/waline.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config=Object.assign(window.config||{},{"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Comments","categoryId":"DIC_kwDOH2gmzc4CQ_fM","darkTheme":"dark","emitMetadata":"0","inputPosition":"bottom","lang":"zh-CN","lazyLoading":true,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"whitefirer/whitefirer.github.io","repoId":"R_kgDOH2gmzQ"},"waline":{"dark":"auto","el":"#waline","lang":"zh-CN","pageSize":10,"requiredMeta":["nick","mail"],"serverURL":"https://comment.whitefirer.org"}},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}});</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">!function(){function svgToPng(svg,cb){var c=svg.cloneNode(!0),d=new XMLSerializer().serializeToString(c),img=new Image(),cv=document.createElement('canvas'),w=c.viewBox.animVal.width||c.getBoundingClientRect().width||400,h=c.viewBox.animVal.height||c.getBoundingClientRect().height||300,s=2;cv.width=w*s,cv.height=h*s;var ctx=cv.getContext('2d'),b=new Blob([d],{type:'image/svg+xml;charset=utf-8'}),u=URL.createObjectURL(b);img.onload=function(){ctx.fillStyle='#fff',ctx.fillRect(0,0,cv.width,cv.height),ctx.drawImage(img,0,0,cv.width,cv.height),URL.revokeObjectURL(u),cv.toBlob(function(blob){var a=document.createElement('a');a.href=URL.createObjectURL(blob);var id=svg.id||'diagram';a.download=id+'.png',a.click(),URL.revokeObjectURL(a.href),cb&&cb()})},img.src=u}function addSaveBtn(svg){if(svg.closest('.mermaid-stage,.mermaid-fs-overlay,.mermaid-wrapper,.mermaid-toolbar,.svg-diagram-wrap'))return;var wrap=document.createElement('div');wrap.className='svg-diagram-wrap';var d=svg.style.display||'block',w=svg.style.width||svg.getAttribute('width')||'100%',mw=svg.style.maxWidth||'',m=svg.style.margin||'';wrap.style.cssText='position:relative;display:'+d+';width:'+w+';'+(mw?'max-width:'+mw+';':'')+(m?'margin:'+m+';':'')+'line-height:0';svg.style.display='block';svg.style.width='100%';svg.style.maxWidth='';svg.style.margin='0';svg.parentNode.insertBefore(wrap,svg);wrap.appendChild(svg);var bar=document.createElement('div');bar.style.cssText='text-align:right;padding-top:6px';var btn=document.createElement('button');btn.className='svg-save-btn',btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span style="vertical-align:middle;font-size:12px">保存图片</span>',btn.style.cssText='background:none;border:1px solid transparent;border-radius:4px;padding:2px 6px;cursor:pointer;color:#b0b7c3;font-family:system-ui,sans-serif;line-height:1';bar.appendChild(btn);wrap.appendChild(bar);btn.onmouseenter=function(){btn.style.color='#6366f1';btn.style.borderColor='#e5e7eb'};btn.onmouseleave=function(){btn.style.color='#b0b7c3';btn.style.borderColor='transparent'};btn.onclick=function(e){e.stopPropagation();var orig=btn.innerHTML;btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span style="vertical-align:middle;font-size:12px">导出中...</span>';btn.disabled=!0;svgToPng(svg,function(){btn.innerHTML=orig;btn.disabled=!1})}}function initSvgButtons(){document.querySelectorAll('.content svg').forEach(function(svg){addSaveBtn(svg)})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initSvgButtons);else initSvgButtons()}()</script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-70Q8REKE17', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-70Q8REKE17" async></script></body>
+</html>

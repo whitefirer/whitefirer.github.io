@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Token Budget - 标签 - 赛博闲谭-whitefirer</title>
+        <link>https://whitefirer.org/tags/token-budget/</link>
+        <description>Token Budget - 标签 - 赛博闲谭-whitefirer</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sun, 21 Jun 2026 21:04:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/token-budget/" rel="self" type="application/rss+xml" /><item>
+    <title>Claude Code Context Engineering 深度解析：把 token 花在刀刃上</title>
+    <link>https://whitefirer.org/posts/2026/06/21/claude-code-context-engineering/</link>
+    <pubDate>Sun, 21 Jun 2026 21:04:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/06/21/claude-code-context-engineering/</guid>
+    <description><![CDATA[窗口有限，注意力更有限——上下文工程不是省 token，是把每一段上下文都变成有效信息。 前言 插件篇 讲了能力边界，Hooks 篇 讲了自动化触发，S]]></description>
+</item>
+</channel>
+</rss>

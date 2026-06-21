@@ -4,7 +4,15 @@
         <link>https://whitefirer.org/tags/ai/</link>
         <description>Ai - 标签 - 赛博闲谭-whitefirer</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sun, 14 Jun 2026 21:00:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/ai/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sun, 21 Jun 2026 21:04:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/ai/" rel="self" type="application/rss+xml" /><item>
+    <title>Claude Code Context Engineering 深度解析：把 token 花在刀刃上</title>
+    <link>https://whitefirer.org/posts/2026/06/21/claude-code-context-engineering/</link>
+    <pubDate>Sun, 21 Jun 2026 21:04:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/06/21/claude-code-context-engineering/</guid>
+    <description><![CDATA[窗口有限，注意力更有限——上下文工程不是省 token，是把每一段上下文都变成有效信息。 前言 插件篇 讲了能力边界，Hooks 篇 讲了自动化触发，S]]></description>
+</item>
+<item>
     <title>Claude Code Workflows 完全指南：多智能体编排让 AI 团队自己干活</title>
     <link>https://whitefirer.org/posts/2026/06/14/claude-code-workflows-guide/</link>
     <pubDate>Sun, 14 Jun 2026 21:00:00 &#43;0800</pubDate>
@@ -75,14 +83,6 @@
     <author>whitefirer</author>
     <guid>https://whitefirer.org/posts/2026/05/09/ai-wont-ask-first-question/</guid>
     <description><![CDATA[假设现在是凌晨两点。你盯着屏幕上 AI 刚生成的几百行代码，功能跑通了，测试也绿了，但你心里清楚一件事——这段代码之所以存在，是因为你问了一个问题]]></description>
-</item>
-<item>
-    <title>Prompt Caching 深度解析：插件 &#43; 缓存 = 98% 费用节省</title>
-    <link>https://whitefirer.org/posts/2026/05/03/prompt-caching-deepseek/</link>
-    <pubDate>Sun, 03 May 2026 22:15:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/posts/2026/05/03/prompt-caching-deepseek/</guid>
-    <description><![CDATA[402 轮编码会话，从 ¥113 ($16.36) 压到 ¥1.89 ($0.27)。插件砍 token 量，缓存砍 token 单价。 两层省钱机制 很多人把省钱都归功于 Prompt Caching。实际上有]]></description>
 </item>
 </channel>
 </rss>
