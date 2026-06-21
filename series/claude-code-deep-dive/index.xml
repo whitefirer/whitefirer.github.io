@@ -10,7 +10,7 @@
     <pubDate>Sun, 21 Jun 2026 21:04:00 &#43;0800</pubDate>
     <author>whitefirer</author>
     <guid>https://whitefirer.org/posts/2026/06/21/claude-code-context-engineering/</guid>
-    <description><![CDATA[窗口有限，注意力更有限——上下文工程不是省 token，是把每一段上下文都变成有效信息。 前言 插件篇 讲了能力边界，Hooks 篇 讲了自动化触发，S]]></description>
+    <description><![CDATA[窗口有限，注意力更有限——上下文工程不只是省 token，更是把每一段上下文都变成有效信息。 前言 插件篇 讲了能力边界，Hooks 篇 讲了自动化触发]]></description>
 </item>
 <item>
     <title>Claude Code Workflows 完全指南：多智能体编排让 AI 团队自己干活</title>
