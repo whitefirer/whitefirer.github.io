@@ -12,7 +12,7 @@
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
     <meta property="article:published_time" content="2026-05-25T17:30:00+08:00">
-    <meta property="article:modified_time" content="2026-06-15T06:24:54+08:00">
+    <meta property="article:modified_time" content="2026-06-26T13:32:29+08:00">
     <meta property="article:tag" content="Ai">
     <meta property="article:tag" content="云原生">
     <meta property="article:tag" content="Transformation">
@@ -48,8 +48,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/whitefirer.org\/posts\/2026\/05\/25\/cloud-native-to-ai-transformation\/"
-        },"genre": "posts","keywords": "ai, cloud-native, transformation, thoughts","wordcount":  4725 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2026\/05\/25\/cloud-native-to-ai-transformation\/","datePublished": "2026-05-25T17:30:00+08:00","dateModified": "2026-06-15T06:24:54+08:00","license": "2022©️whitefirer","publisher": {
+        },"genre": "posts","keywords": "ai, cloud-native, transformation, thoughts","wordcount":  4744 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/05\/25\/cloud-native-to-ai-transformation\/","datePublished": "2026-05-25T17:30:00+08:00","dateModified": "2026-06-26T13:32:29+08:00","license": "2022©️whitefirer","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -155,7 +155,7 @@
                 <a href="/series/ai-zatan/"><i class="fas fa-layer-group fa-fw" aria-hidden="true"></i>AI 杂谈</a>
             </div><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-05-25">2026-05-25</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 4725 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-05-25">2026-05-25</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 4744 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 10 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/05/25/cloud-native-to-ai-transformation.svg" alt="" aria-hidden="true" loading="eager"
      style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none"></div>
         </div><div class="details toc" id="toc-static"  data-kept="">
@@ -184,24 +184,24 @@
 <p>转型的隐喻不在&quot;往马车上装发动机&quot;，而在那之后发生了什么。</p>
 <p><strong>旧马车</strong>是你现有的研发体系——流程、工具链、组织分工，全部为&quot;人写代码&quot;设计的。<strong>发动机</strong>是 AI 能力——大模型、Agent、自动化决策。往马车上装发动机能跑一阵子，Panhard &amp; Levassor 的马车就跑了——但木头车架扛不住长期振动，转向系统是给马设计的。你的老流程也一样：硬塞 AI 进去，初期有点效果，但评审机制、测试体系、SLO 定义全是给&quot;人写代码&quot;设计的，撑不久。</p>
 <p>我们得先<strong>造辆新车</strong>——建一个从零设计的 AI Native 试点，用新流程、新工具、新角色。跑通了，再把客人和货物一批批拉过去。同时<strong>修路</strong>——算力、电力、工具链。路不通，再好的车也跑不起来。</p>
-<p>我搞云原生转型时，从荔枝微课（即十方融海）到腾讯音乐，推过云原生、Devops等，也推过服务网格乃至扩展，和这画面一模一样。现在推 AI 转型，还是这画面。</p>
+<p>我搞云原生转型时，从荔枝微课（即十方融海）到腾讯音乐，推过云原生、Devops等，也推过服务网格乃至扩展，和这画面内核一样。现在推 AI 转型，还是熟悉的画面。</p>
 <hr>
 <h2 id="借鉴什么">借鉴什么</h2>
 <p>最近看了锅总一篇讲 AI 组织转型的文章<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>，他把传统研发团队一步步改成 AI Native 团队，分了十一步。读到一半我就笑了——这剧本我见过。同一条曲线，只不过我当年的关键词是容器、K8s、服务网格，他的是 Agent、Prompt、模型适配。</p>
 <p><strong>第一条，搞定人。</strong></p>
-<p>锅总从灌 CEO 焦虑开始。我当年接手荔枝微课基础架构时，不需要这一步——老板已经被事故搞到头大了，我一说想法就是拍即合。但不管从哪起步，后面一样：技术选型可以慢慢调，人的阻力不解决，全是死路。</p>
+<p>锅总从灌 CEO 焦虑开始。我当年接手荔枝微课基础架构时，也是想通过焦虑来说服他人，但老板已经被事故搞到头大了，我一说想法就一拍即合。但不管从哪起步，后面一样：技术选型可以慢慢调，人的阻力不解决，全是死路。</p>
 <p>云原生时代开发者的阻力是&quot;又要学 YAML？又要学容器？&ldquo;AI 时代的阻力更深——&ldquo;AI 写的代码我不敢用&rdquo;、&ldquo;我会不会被替代？&ldquo;锅总踩过一个坑：有人提示词写得不好，产物质量差，于是更不信任 AI，更不愿意用——恶性循环。他只能一对一纠偏，坐过去教。这和我当年一模一样，有人被 YAML 缩进搞疯一次就再也不想碰 K8s，你也得一对一陪着改。</p>
-<p>我还有个做法是往多里拉盟友。招进来的人要有相同的理念，从外部拉做推广的人做背书。管理层先上手体验，各种场合渲染&quot;以前三天部署现在半小时&rdquo;，但少提&quot;转型&quot;两个字——东西好用，大家自然就用了。</p>
+<p>我还有个做法是往多里拉盟友。招进来的人要有相同的理念，从外部拉做推广的人做背书。管理层先上手体验，各种场合渲染&quot;以前部署要准备三天现在几秒钟&rdquo;，但少提&quot;转型&quot;两个字——东西好用，大家自然就用了。</p>
 <p>搞过转型的人懂这个节奏：什么时候推，什么时候等，什么时候让数据说话。焦虑是正常的，关键不是消除焦虑，而是给出一条能走的路。</p>
 <p><strong>第二条，工具减负是转型的生命线。</strong></p>
 <p>当年我在荔枝微课自己做过一个功能强大的平台，但很多人的反馈并不好，后来听取意见和团队推了一个 CLI，可以让开发一键创建、切换或协调占用集群里的分支测试环境。不解决&quot;多人共用环境互相踩踏&quot;的问题，开发永远不会觉得云原生帮到了他们。工具的意义不只是功能多强，更是让开发者少操一份心，我们说的减少心智负担。</p>
 <p>AI 时代完全一样，而且工具链的缺口更大。我前段时间用 AI 对前公司的一个用于AI安全沙盒的开源项目 TenBox 贡献了几次提交，其中有一部分是windows端的，就发现 AI 对网页可以自动截图、操作元素，但对 Windows 窗口就不太行（当时不太行，后面马上就有 AI Agent 支持了）。理想状态是让 AI 通过 MCP 工具直接理解系统窗口、浏览器的渲染状态，不依赖截图——让 AI 掌控整个测试链路的感知和操作，人只做最终抽查验收。</p>
 <p>同样的困境换个形式出现。测试用例过度冗余——一个表单 100 个字段，AI 硬是生成 400 条用例，逻辑没毛病但根本测不过来。UI 不一致也没解决——AI 看不到页面，生成的界面和预期差很远。我们搭 Harness 干什么？标准化流程，降低门槛，让团队能协作——和我当初把强大的基础架构功能简化成 CLI 入口的理由一模一样。</p>
 <p><strong>第三条，布道师和教练，同一个角色。</strong></p>
-<p>推云原生必须有 Cloud Native、DevOps 布道师——懂技术、懂业务、能讲课、能答疑。锅总自称&quot;AI 教练&rdquo;，试点阶段全程参与但不介入具体开发，试点完了建三套培训体系，持续做、一直做。同一个角色：&ldquo;选试点、带人上手、沉淀最佳实践、解决&rsquo;我知道概念但不知道怎么落地&rsquo;&quot;。我当年推云原生就是每月一次技术分享，每次找一个落地案例。</p>
+<p>推云原生必须有 Cloud Native、DevOps 布道师之类的角色——懂技术、懂业务、能讲课、能答疑。锅总自称&quot;AI 教练&rdquo;，试点阶段全程参与但不介入具体开发，试点完了建三套培训体系，持续做、一直做。同一个角色：&ldquo;选试点、带人上手、沉淀最佳实践、解决&rsquo;我知道概念但不知道怎么落地&rsquo;&quot;。我当年推云原生就是每月一次技术分享，每次找一个落地案例。</p>
 <p>变的是技术栈，不变的是把一群人从&quot;我不懂&quot;带到&quot;我试试&quot;再带到&quot;我用得很顺手&rdquo;。</p>
 <p><strong>第四条，全链路思维可以平移。</strong></p>
-<p>云原生讲究全链路——监控、追踪、压测。服务网格，Sidecar 拦截流量、控制面下发策略，本质上都是在完整链路上做文章。现在我用 Harness 组织多 Agent 做全链路 RCA——把全链路的上下文塞给 AI，让它自己沿链路找根因。能做这件事不是因为我对 AI 有多熟，是云原生年代我就习惯这么想问题了。</p>
+<p>云原生讲究全链路——监控、追踪、压测。服务网格，Sidecar 拦截流量、控制面下发策略，本质上都是在完整链路上做文章。现在我用 Harness 组织多 Agent 做全链路 RCA——把全链路的上下文塞给 AI，让它自己沿链路找根因。能做这件事倒不是因为我对 AI 有多熟，而是云原生年代我就习惯这么思考问题了。</p>
 <p>其实当年就有 AIOps 的概念，理念完全正确，只是 AI 不够强。现在大模型能力够了，同一批人，同一个思路，换了更强的引擎。全链路不只是技术概念，也是组织概念——锅总的 5 人 FDE 小组端到端交付，和云原生的跨职能全栈小队如出一辙。</p>
 <p><strong>存量适配。</strong> 我在 腾讯音乐 做服务网格，不是从零搭建，是在已有发布系统、权限模型、网络策略上长出一层，还要适配内部专有协议。不能推倒重来，只能在老房子上加固，有时其实比从0开始更难。锅总的棕地项目试点就是 AI 转型版的存量适配——历史代码、历史数据、老文档对不上，你不是在白纸上画图。</p>
 <p><strong>第五条，持续演进，不是一次性项目。</strong></p>
@@ -234,7 +234,7 @@
 <hr>
 <p>回过头看，我当年在荔枝微课造了一辆云原生牌的新车——K8s 是底盘，自研平台是驾驶舱，服务网格是悬挂。现在搞 AI Native，我在造另一辆：Agent 编排是底盘，大模型是引擎，MCP Tool 是手脚，质量评估是仪表盘加刹车。</p>
 <p>两次造车，同一个人。工具变了，问的问题没变：这辆车能不能跑起来？路修到哪了？客人什么时候上车？</p>
-<p>锅总的十一步，我基本都走过，只不过那年走的是云原生的版本。现在再走一遍 AI 的版本——这次不再是给马车装发动机，而是造一辆新车。</p>
+<p>锅总的十一步，我基本都走过，只不过当年走的是云原生的版本。现在再走一遍 AI 的版本——这次不再是给马车装发动机，而是造一辆新车。</p>
 <hr>
 <p><strong>参考资料</strong></p>
 <div class="footnotes" role="doc-endnotes">
@@ -257,7 +257,7 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2026-06-15</span>
+                <span>更新于 2026-06-26</span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
