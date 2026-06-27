@@ -4,7 +4,15 @@
         <link>https://whitefirer.org/tags/ai/</link>
         <description>Ai - 标签 - 赛博闲谭-whitefirer</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sun, 21 Jun 2026 21:04:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/ai/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Thu, 25 Jun 2026 20:00:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/ai/" rel="self" type="application/rss+xml" /><item>
+    <title>Claude Fable 5 提示词完整逆向：从系统指令看 Anthropic 的 AI 工程哲学</title>
+    <link>https://whitefirer.org/posts/2026/06/25/claude-fable5-prompt-analysis/</link>
+    <pubDate>Thu, 25 Jun 2026 20:00:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/06/25/claude-fable5-prompt-analysis/</guid>
+    <description><![CDATA[120K 字符、30K token、55 个命名章节——一份提示词里藏着产品策略、安全架构和记忆系统的完整答案。 前言 2026 年 6 月 9 日，Anthropic 发布]]></description>
+</item>
+<item>
     <title>Claude Code Context Engineering 深度解析：把 token 花在刀刃上</title>
     <link>https://whitefirer.org/posts/2026/06/21/claude-code-context-engineering/</link>
     <pubDate>Sun, 21 Jun 2026 21:04:00 &#43;0800</pubDate>
@@ -75,14 +83,6 @@
     <author>whitefirer</author>
     <guid>https://whitefirer.org/posts/2026/05/10/ai-trust-meaning/</guid>
     <description><![CDATA[凌晨三点，屏幕是唯一的光源。搞砸、扛住、被原谅——AI 没经历过这些。 前两篇发出来后，一个读者给我私信留言，提了几个很实在的问题。 他公司的测试]]></description>
-</item>
-<item>
-    <title>AI 不会问第一个问题</title>
-    <link>https://whitefirer.org/posts/2026/05/09/ai-wont-ask-first-question/</link>
-    <pubDate>Sat, 09 May 2026 22:17:43 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/posts/2026/05/09/ai-wont-ask-first-question/</guid>
-    <description><![CDATA[假设现在是凌晨两点。你盯着屏幕上 AI 刚生成的几百行代码，功能跑通了，测试也绿了，但你心里清楚一件事——这段代码之所以存在，是因为你问了一个问题]]></description>
 </item>
 </channel>
 </rss>

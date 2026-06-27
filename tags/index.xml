@@ -4,12 +4,52 @@
         <link>https://whitefirer.org/tags/</link>
         <description>Tags - 标签 - 赛博闲谭-whitefirer</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sun, 21 Jun 2026 21:04:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Thu, 25 Jun 2026 20:00:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/" rel="self" type="application/rss+xml" /><item>
     <title>Ai</title>
     <link>https://whitefirer.org/tags/ai/</link>
-    <pubDate>Sun, 21 Jun 2026 21:04:00 &#43;0800</pubDate>
+    <pubDate>Thu, 25 Jun 2026 20:00:00 &#43;0800</pubDate>
     <author>whitefirer</author>
     <guid>https://whitefirer.org/tags/ai/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Claude</title>
+    <link>https://whitefirer.org/tags/claude/</link>
+    <pubDate>Thu, 25 Jun 2026 20:00:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/claude/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Fable5</title>
+    <link>https://whitefirer.org/tags/fable5/</link>
+    <pubDate>Thu, 25 Jun 2026 20:00:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/fable5/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Prompt Engineering</title>
+    <link>https://whitefirer.org/tags/prompt-engineering/</link>
+    <pubDate>Thu, 25 Jun 2026 20:00:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/prompt-engineering/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Security</title>
+    <link>https://whitefirer.org/tags/security/</link>
+    <pubDate>Thu, 25 Jun 2026 20:00:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/security/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>System Prompt</title>
+    <link>https://whitefirer.org/tags/system-prompt/</link>
+    <pubDate>Thu, 25 Jun 2026 20:00:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/system-prompt/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
@@ -42,46 +82,6 @@
     <pubDate>Sun, 21 Jun 2026 21:04:00 &#43;0800</pubDate>
     <author>whitefirer</author>
     <guid>https://whitefirer.org/tags/token-budget/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Multi-Agent</title>
-    <link>https://whitefirer.org/tags/multi-agent/</link>
-    <pubDate>Sun, 14 Jun 2026 21:00:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/multi-agent/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Orchestration</title>
-    <link>https://whitefirer.org/tags/orchestration/</link>
-    <pubDate>Sun, 14 Jun 2026 21:00:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/orchestration/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Workflow</title>
-    <link>https://whitefirer.org/tags/workflow/</link>
-    <pubDate>Sun, 14 Jun 2026 21:00:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/workflow/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Development Tools</title>
-    <link>https://whitefirer.org/tags/development-tools/</link>
-    <pubDate>Wed, 10 Jun 2026 20:48:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/development-tools/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Mcp</title>
-    <link>https://whitefirer.org/tags/mcp/</link>
-    <pubDate>Wed, 10 Jun 2026 20:48:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/mcp/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>

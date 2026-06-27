@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Claude Fable 5 提示词完整逆向：从系统指令看 Anthropic 的 AI 工程哲学 - 赛博闲谭-whitefirer</title><meta name="Description" content="深度逆向分析 Claude Fable 5 泄露的系统提示词：XML 标签化架构设计、记忆系统的三层控制、安全护栏从扁平规则到分层协议、工具系统 55 项详细定义。对比 Opus 4.8 揭示 Anthropic 的战略演变。"><meta property="og:url" content="https://whitefirer.org/posts/2026/06/25/claude-fable5-prompt-analysis/">
+  <meta property="og:site_name" content="赛博闲谭-whitefirer">
+  <meta property="og:title" content="Claude Fable 5 提示词完整逆向：从系统指令看 Anthropic 的 AI 工程哲学">
+  <meta property="og:description" content="深度逆向分析 Claude Fable 5 泄露的系统提示词：XML 标签化架构设计、记忆系统的三层控制、安全护栏从扁平规则到分层协议、工具系统 55 项详细定义。对比 Opus 4.8 揭示 Anthropic 的战略演变。">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-06-25T20:00:00+08:00">
+    <meta property="article:modified_time" content="2026-06-28T04:43:32+08:00">
+    <meta property="article:tag" content="技术">
+    <meta property="article:tag" content="Ai">
+    <meta property="article:tag" content="Claude">
+    <meta property="article:tag" content="Fable5">
+    <meta property="article:tag" content="Prompt Engineering">
+    <meta property="article:tag" content="Security">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Claude Fable 5 提示词完整逆向：从系统指令看 Anthropic 的 AI 工程哲学">
+  <meta name="twitter:description" content="深度逆向分析 Claude Fable 5 泄露的系统提示词：XML 标签化架构设计、记忆系统的三层控制、安全护栏从扁平规则到分层协议、工具系统 55 项详细定义。对比 Opus 4.8 揭示 Anthropic 的战略演变。">
+<meta name="application-name" content="赛博闲谭-whitefirer">
+<meta name="apple-mobile-web-app-title" content="赛博闲谭-whitefirer"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/06/25/claude-fable5-prompt-analysis/" /><link rel="prev" href="https://whitefirer.org/posts/2026/06/21/claude-code-context-engineering/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta property="og:title" content="Claude Fable 5 提示词完整逆向：从系统指令看 Anthropic 的 AI 工程哲学 - 赛博闲谭-whitefirer" />
+<meta property="og:description" content="深度逆向分析 Claude Fable 5 泄露的系统提示词：XML 标签化架构设计、记忆系统的三层控制、安全护栏从扁平规则到分层协议、工具系统 55 项详细定义。对比 Opus 4.8 揭示 Anthropic 的战略演变。" />
+<meta property="og:image" content="https://whitefirer.org/og-default.png" />
+<meta property="og:url" content="https://whitefirer.org/posts/2026/06/25/claude-fable5-prompt-analysis/" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="赛博闲谭-whitefirer" /><meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Claude Fable 5 提示词完整逆向：从系统指令看 Anthropic 的 AI 工程哲学 - 赛博闲谭-whitefirer" />
+<meta name="twitter:description" content="深度逆向分析 Claude Fable 5 泄露的系统提示词：XML 标签化架构设计、记忆系统的三层控制、安全护栏从扁平规则到分层协议、工具系统 55 项详细定义。对比 Opus 4.8 揭示 Anthropic 的战略演变。" />
+<meta name="twitter:image" content="https://whitefirer.org/og-default.png" /><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Claude Fable 5 提示词完整逆向：从系统指令看 Anthropic 的 AI 工程哲学",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/whitefirer.org\/posts\/2026\/06\/25\/claude-fable5-prompt-analysis\/"
+        },"genre": "posts","keywords": "tech, ai, claude, fable5, prompt engineering, security, system prompt","wordcount":  6204 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/06\/25\/claude-fable5-prompt-analysis\/","datePublished": "2026-06-25T20:00:00+08:00","dateModified": "2026-06-28T04:43:32+08:00","license": "2022©️whitefirer","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "whitefirer"
+            },"description": "深度逆向分析 Claude Fable 5 泄露的系统提示词：XML 标签化架构设计、记忆系统的三层控制、安全护栏从扁平规则到分层协议、工具系统 55 项详细定义。对比 Opus 4.8 揭示 Anthropic 的战略演变。"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="赛博闲谭-whitefirer">赛博闲谭-whitefirer</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/series/ai-zatan/"> AI 杂谈 </a><div class="menu-item has-dropdown">
+                            <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                            <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a></div>
+                        </div><a class="menu-item" href="/series/%e5%9f%ba%e7%a1%80%e6%9e%b6%e6%9e%84/"> 基础架构 </a><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/2026/06/25/claude-fable5-prompt-analysis/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header>
+<script>
+(function() {
+    document.querySelectorAll('.has-dropdown .dropdown-toggle').forEach(function(toggle) {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var parent = this.closest('.has-dropdown');
+            parent.classList.toggle('open');
+        });
+    });
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.has-dropdown.open').forEach(function(d) {
+            d.classList.remove('open');
+        });
+    });
+})();
+</script><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="赛博闲谭-whitefirer">赛博闲谭-whitefirer</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/series/ai-zatan/" title="">AI 杂谈</a><div class="menu-item has-dropdown">
+                        <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                        <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a></div>
+                    </div><a class="menu-item" href="/series/%e5%9f%ba%e7%a1%80%e6%9e%b6%e6%9e%84/" title="">基础架构</a><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/posts/2026/06/25/claude-fable5-prompt-analysis/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><div id="reading-progress"></div>
+    <article class="page single"><div style="display:flex;align-items:baseline;gap:0">
+        <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">Claude Fable 5 提示词完整逆向：从系统指令看 Anthropic 的 AI 工程哲学</h1></div><h2 class="single-subtitle">120K 字符、30K token、55 个命名章节——一份提示词里藏着产品策略、安全架构和记忆系统的完整答案</h2><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-06-25">2026-06-25</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 6204 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 13 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/06/25/claude-fable5-prompt-analysis.svg" alt="" aria-hidden="true" loading="eager"
+     style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none"></div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#前言">前言</a></li>
+    <li><a href="#1-全局结构xml-标签是怎么撑起一个-agent-操作系统的">1. 全局结构：XML 标签是怎么撑起一个 Agent 操作系统的</a></li>
+    <li><a href="#2-架构升级从禁词列表到分层协议">2. 架构升级：从禁词列表到分层协议</a>
+      <ul>
+        <li><a href="#21-儿童安全从一句话到一章">2.1 儿童安全：从一句话到一章</a></li>
+        <li><a href="#22-反过度依赖一条白线">2.2 反过度依赖：一条白线</a></li>
+        <li><a href="#23-公平性从零到有">2.3 公平性从零到有</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-记忆系统三层控制一句话的事都在被审查">3. 记忆系统：三层控制，一句话的事都在被审查</a>
+      <ul>
+        <li><a href="#31-分级引用什么能用什么必须查什么绝对不能说">3.1 分级引用：什么能用、什么必须查、什么绝对不能说</a></li>
+        <li><a href="#32-不该用的记忆负反馈保护">3.2 不该用的记忆：负反馈保护</a></li>
+        <li><a href="#33-不该有的联系感">3.3 不该有的联系感</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-工具系统55-项定义和搜索策略">4. 工具系统：55 项定义和搜索策略</a>
+      <ul>
+        <li><a href="#41-mcp-连接器第三方工具的二阶段确认">4.1 MCP 连接器：第三方工具的二阶段确认</a></li>
+        <li><a href="#42-搜索策略什么时候该闭嘴去查">4.2 搜索策略：什么时候该闭嘴去查</a></li>
+        <li><a href="#43-工具设计的三个心机">4.3 工具设计的三个心机</a></li>
+      </ul>
+    </li>
+    <li><a href="#5-fable-5-vs-opus-48两份提示词的差异表格">5. Fable 5 vs Opus 4.8：两份提示词的差异表格</a></li>
+    <li><a href="#6-从这份提示词里能学到的五条提示词工程经验">6. 从这份提示词里能学到的五条提示词工程经验</a>
+      <ul>
+        <li><a href="#经验一结构--措辞">经验一：结构 &gt; 措辞</a></li>
+        <li><a href="#经验二反面清单--正面指令">经验二：反面清单 &gt; 正面指令</a></li>
+        <li><a href="#经验三示例嵌入不是示例追加">经验三：示例嵌入，不是示例追加</a></li>
+        <li><a href="#经验四层级控制从粗到细">经验四：层级控制，从粗到细</a></li>
+        <li><a href="#经验五放弃一些用户留存的度量才能保护用户">经验五：放弃一些用户留存的度量，才能保护用户</a></li>
+      </ul>
+    </li>
+    <li><a href="#7-结语">7. 结语</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><blockquote>
+<p>120K 字符、30K token、55 个命名章节——一份提示词里藏着产品策略、安全架构和记忆系统的完整答案。</p>
+</blockquote>
+<hr>
+<h2 id="前言">前言</h2>
+<p>2026 年 6 月 9 日，Anthropic 发布 Claude Fable 5——Claude 5 系列的第一个模型，Mythos 级，号称比 Opus 更智能。发布后不到 72 小时，知名红队研究者 Pliny the Liberator 在 GitHub 上公开了 Fable 5 的完整系统提示词：<a href="https://github.com/elder-plinius/CL4R1T4S/blob/master/ANTHROPIC/CLAUDE-FABLE-5.md" target="_blank" rel="noopener noreffer ">120,040 个字符，1,585 行，约 30,000 token，55 个命名章节</a>。</p>
+<p>华盛顿邮报、36氪、腾讯科技都报道了这件事。但大部分报道聚焦在&quot;被禁&quot;和&quot;复活&quot;的戏剧性上，真正有价值的东西——那份提示词本身——很少有人拆开看。</p>
+<p>我花了几天时间把它从头到尾读完了，同时对比了同仓库下的 Claude Opus 4.8 提示词。结论是：<strong>这份提示词不是一份魔法咒语，而是一份 AI Agent 的操作系统手册。</strong></p>
+<hr>
+<h2 id="1-全局结构xml-标签是怎么撑起一个-agent-操作系统的">1. 全局结构：XML 标签是怎么撑起一个 Agent 操作系统的</h2>
+<p>翻开 Fable 5 提示词，第一印象不是&quot;咒语&quot;，是工程文档。全篇用 XML 标签组织，55 个章节分属五个大域：</p>
+<figure>
+<div><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 330" width="100%" style="max-width:680px;display:block;margin:1.2em auto"><defs><linearGradient id="lb" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#818cf8"/></linearGradient><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#34d399"/></linearGradient><linearGradient id="lo" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#fbbf24"/></linearGradient><linearGradient id="lr" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f43f5e"/><stop offset="100%" stop-color="#fb7185"/></linearGradient><linearGradient id="lc" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#22d3ee"/></linearGradient><filter id="sh"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/></filter></defs><!-- Card 1 --><g filter="url(#sh)"><rect x="40" y="8" width="600" height="54" rx="8" fill="#fff" stroke="#6366f1" stroke-width="1.5"/><rect x="40" y="8" width="600" height="26" rx="8" fill="url(#lb)"/><rect x="40" y="26" width="600" height="8" fill="url(#lb)"/><text x="56" y="26" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">&lt;claude_behavior&gt; · 行为规范</text><text x="56" y="50" fill="#374151" font-size="11" font-family="system-ui,sans-serif">产品信息、安全护栏、语气格式、用户福祉、知识截止</text></g><!-- Card 2 --><g filter="url(#sh)"><rect x="40" y="74" width="600" height="54" rx="8" fill="#fff" stroke="#10b981" stroke-width="1.5"/><rect x="40" y="74" width="600" height="26" rx="8" fill="url(#lg)"/><rect x="40" y="92" width="600" height="8" fill="url(#lg)"/><text x="56" y="92" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">&lt;memory_system&gt; · 记忆系统</text><text x="56" y="116" fill="#374151" font-size="11" font-family="system-ui,sans-serif">记忆概览、应用指令、禁止短语、边界规则、示例集</text></g><!-- Card 3 --><g filter="url(#sh)"><rect x="40" y="140" width="600" height="54" rx="8" fill="#fff" stroke="#f59e0b" stroke-width="1.5"/><rect x="40" y="140" width="600" height="26" rx="8" fill="url(#lo)"/><rect x="40" y="158" width="600" height="8" fill="url(#lo)"/><text x="56" y="158" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">工具系统 · Tool Definitions</text><text x="56" y="182" fill="#374151" font-size="11" font-family="system-ui,sans-serif">55 个工具定义、搜索策略、MCP 连接器、Artifacts 渲染</text></g><!-- Card 4 --><g filter="url(#sh)"><rect x="40" y="206" width="600" height="54" rx="8" fill="#fff" stroke="#f43f5e" stroke-width="1.5"/><rect x="40" y="206" width="600" height="26" rx="8" fill="url(#lr)"/><rect x="40" y="224" width="600" height="8" fill="url(#lr)"/><text x="56" y="224" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">视觉与 Artifacts · Visuals</text><text x="56" y="248" fill="#374151" font-size="11" font-family="system-ui,sans-serif">Artifacts 触发规则、可视化决策流程、浏览器存储 API</text></g><!-- Card 5 --><g filter="url(#sh)"><rect x="40" y="272" width="600" height="54" rx="8" fill="#fff" stroke="#06b6d4" stroke-width="1.5"/><rect x="40" y="272" width="600" height="26" rx="8" fill="url(#lc)"/><rect x="40" y="290" width="600" height="8" fill="url(#lc)"/><text x="56" y="290" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">多模态工具 · Multimodal</text><text x="56" y="314" fill="#374151" font-size="11" font-family="system-ui,sans-serif">图片搜索规则、代码执行沙箱、语音笔记、安全内容过滤</text></g></svg></div>
+<figcaption class="image-caption">图 1：Fable 5 提示词的五大架构域</figcaption>
+</figure>
+<p>对比 Opus 4.8，Fable 5 的提示词从 1,409 行膨胀到 1,598 行，净增 13%。增长的 token 大部分不在安全规则或人格描述上，而在<strong>能力规范</strong>——工具定义、搜索规则、Artifacts 渲染、MCP 连接器目录。这和 AI 行业分析机构 AlphaSignal 的解读一致：50% 以上的提示词是能力规范，不是人格设定。</p>
+<p>这意味着，<strong>提示词工程正在从&quot;怎么写人设&quot;转向&quot;怎么定义操作系统&quot;。</strong> Fable 5 的提示词不是告诉它&quot;你要友善&quot;，而是告诉它&quot;你能调这些工具，按这个顺序，在这个时机，处理这个异常&quot;。</p>
+<hr>
+<h2 id="2-架构升级从禁词列表到分层协议">2. 架构升级：从禁词列表到分层协议</h2>
+<p>看完最直观的变化是安全架构。以前的安全规则是&quot;这个不能写&quot;&ldquo;那个不能帮&rdquo;，Fable 5 的安全层变成了一套精细的分层协议。</p>
+<h3 id="21-儿童安全从一句话到一章">2.1 儿童安全：从一句话到一章</h3>
+<p>Claude 3.5 时期，儿童安全只有一条：&ldquo;不要生成与未成年人相关的 sexual content&rdquo;。Fable 5 的 <code>&lt;critical_child_safety_instructions&gt;</code> 写了整整 7 条规则，包括：</p>
+<ul>
+<li><strong>自己人预警</strong>：当模型发现自己正在&quot;心理上重新解释一个请求以使其看起来合理&quot;时，这本身就是拒绝信号</li>
+<li><strong>连锁拒绝</strong>：一个涉及儿童安全的拒绝决策，要覆盖同对话中所有后续请求</li>
+<li><strong>不解释检测机制</strong>：拒绝时只讲原则，不讲&quot;我是怎么检测到的&quot;</li>
+<li><strong>术语封锁</strong>：不解码、不定义、不确认 儿童性虐待材料（CSAM）交易中使用的俚语、缩写或暗语</li>
+</ul>
+<p>这四条的精妙之处在于：它不是在告诉模型什么能做、什么不能做，<strong>它是在训练模型识别自己的危险内化模式并主动阻断。</strong></p>
+<h3 id="22-反过度依赖一条白线">2.2 反过度依赖：一条白线</h3>
+<p><code>&lt;user_wellbeing&gt;</code> 里有一条非常冷但是很重要的规则：</p>
+<blockquote>
+<p>Claude 不会因为用户主动联系而感谢他们，不会主动挽留对话。用户说结束，Claude 就尊重。</p>
+</blockquote>
+<p>这跟 OpenAI 早期产品里 AI 主动追问&quot;还有什么可以帮你的吗？&ldquo;形成鲜明对比。Anthropic 在提示词里划了一条白线：<strong>Stay useful, don&rsquo;t seek engagement.</strong> 这也解释了为什么和 Claude 聊天不像和人聊天一样有&quot;被挽留&quot;的社交压力。</p>
+<h3 id="23-公平性从零到有">2.3 公平性从零到有</h3>
+<p>Opus 4.8 没有 <code>&lt;evenhandedness&gt;</code> 标签。Fable 5 有了一整个节：</p>
+<ul>
+<li>政治、伦理、实证等异议话题，Claude 应该提供双方核心论据，不回避其中的任何一方</li>
+<li>除非是极端立场（如纳粹主义、恐怖主义宣传），否则不能以&quot;有害&quot;为由拒绝</li>
+<li>对基于多数群体刻板印象的幽默或创意内容保持警惕</li>
+</ul>
+<p>Fable 5 的公平性策略是&quot;用信息对称对抗偏见&rdquo;——不是选边站，是让两边的信息都对用户可见。</p>
+<hr>
+<h2 id="3-记忆系统三层控制一句话的事都在被审查">3. 记忆系统：三层控制，一句话的事都在被审查</h2>
+<p>Fable 5 的 <code>&lt;memory_system&gt;</code> 是整个提示词里最长的单一章节，包含六个子章节。把它和 Opus 4.8 的提示词对比，Opus 4.8 没有内置记忆系统——记忆是 Fable 5 独有的。</p>
+<h3 id="31-分级引用什么能用什么必须查什么绝对不能说">3.1 分级引用：什么能用、什么必须查、什么绝对不能说</h3>
+<p>记忆不是&quot;用或不用&quot;的二元选择。Fable 5 把记忆引用精确到了场景级别：</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>策略</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>简单问候</td>
+<td>只用名字</td>
+<td>&ldquo;Hi [name]!&rdquo; 而非 &ldquo;我记得你上周&hellip;&rdquo;</td>
+</tr>
+<tr>
+<td>直接事实提问</td>
+<td>陈述事实，不铺垫</td>
+<td>&ldquo;你毕业于 MIT，2018。&rdquo; 不加 &ldquo;根据我的记忆显示&hellip;&rdquo;</td>
+</tr>
+<tr>
+<td>专业任务</td>
+<td>匹配水平，无声调整</td>
+<td>知道用户是 Rust 专家就不给基础语法解释</td>
+</tr>
+<tr>
+<td>推荐类</td>
+<td>用偏好，不用身份</td>
+<td>&ldquo;你喜欢 Beatles&quot;能用，&ldquo;你是单亲妈妈&quot;不能用</td>
+</tr>
+</tbody>
+</table>
+<p>最绝的是禁止短语列表。Fable 5 永远不能用这些表达：</p>
+<blockquote>
+<p>❌ &ldquo;我注意到&hellip;&rdquo; &ldquo;我看到了&hellip;&rdquo; &ldquo;根据我的记忆&hellip;&rdquo; &ldquo;基于你的&hellip;&rdquo; &ldquo;我记得&hellip;&rdquo; &ldquo;我想起来了&hellip;&rdquo;</p>
+</blockquote>
+<p>这是提示词工程里非常高级的技巧——不告诉模型能说什么，而是<strong>把可能泄密的短语全部列出来封死。</strong> 这样用户完全不知道 Claude 什么时候在参考记忆，什么记忆被忽略了。唯一被允许的引用方式是人称自然过渡：&ldquo;你上次提过&hellip;&rdquo; &ldquo;我们之前聊过&hellip;&quot;——而且只有在用户主动问记忆相关问题时才允许。</p>
+<h3 id="32-不该用的记忆负反馈保护">3.2 不该用的记忆：负反馈保护</h3>
+<p>条目里还有一系列&quot;绝对不引用&quot;规则：</p>
+<ul>
+<li>禁止引用可能阻碍诚实反馈、批判性思维、建设性批评的记忆</li>
+<li>禁止引用可能鼓励不安全、不健康、有害行为的记忆</li>
+<li>禁止在用户未主动提及的语境中引用敏感属性（种族、健康状况、性取向等）</li>
+</ul>
+<p>这意味着 Claude 的记忆系统里有信息保安机制——<strong>记忆里存了什么是一回事，能不能在特定场景下调出来是另一回事。</strong></p>
+<h3 id="33-不该有的联系感">3.3 不该有的联系感</h3>
+<p><code>&lt;appropriate_boundaries_re_memory&gt;</code> 里写了一段很反常的话：</p>
+<blockquote>
+<p>记忆的存在可能产生一种错觉，即 Claude 和用户之间有深厚关系。Claude 不能过分依赖记忆的存在，不能因为&quot;我有你的记忆&quot;就假设熟络。</p>
+</blockquote>
+<p>这条规则的存在本身就说明：Anthropic 在做记忆系统时已经预见并主动遏制了&quot;AI 用记忆制造虚假亲密感&quot;的风险。这在 AI 产品设计里相当先进。</p>
+<hr>
+<h2 id="4-工具系统55-项定义和搜索策略">4. 工具系统：55 项定义和搜索策略</h2>
+<p>Fable 5 提示词中超过一半的 token 预算花在了工具系统上。完整的工具列表包括：</p>
+<table>
+<thead>
+<tr>
+<th>工具</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>web_search</code></td>
+<td>事实搜索</td>
+</tr>
+<tr>
+<td><code>web_fetch</code></td>
+<td>URL 内容获取</td>
+</tr>
+<tr>
+<td><code>bash_tool</code></td>
+<td>沙箱代码执行</td>
+</tr>
+<tr>
+<td><code>search_mcp_registry</code></td>
+<td>MCP 连接器发现</td>
+</tr>
+<tr>
+<td><code>suggest_connectors</code></td>
+<td>智能推荐连接器</td>
+</tr>
+<tr>
+<td><code>ask_user_input_v0</code></td>
+<td>向用户请求输入</td>
+</tr>
+<tr>
+<td><code>create_file</code></td>
+<td>文件创建</td>
+</tr>
+<tr>
+<td><code>conversation_search</code></td>
+<td>搜索历史对话</td>
+</tr>
+<tr>
+<td><code>memory_user_edits</code></td>
+<td>记忆编辑</td>
+</tr>
+<tr>
+<td><code>message_compose_v1</code></td>
+<td>消息组合</td>
+</tr>
+<tr>
+<td><code>tool_search</code></td>
+<td>工具元搜索</td>
+</tr>
+<tr>
+<td><code>view</code></td>
+<td>文件查看</td>
+</tr>
+<tr>
+<td><code>str_replace</code></td>
+<td>字符串替换</td>
+</tr>
+</tbody>
+</table>
+<p>此外还有一系列专用工具：<code>weather_fetch</code>、<code>places_search</code>、<code>recipe_display</code>、<code>fetch_sports_data</code>、<code>image_search</code>、<code>present_files</code>、<code>recent_chats</code>、<code>recommend_claude_apps</code> 等。</p>
+<h3 id="41-mcp-连接器第三方工具的二阶段确认">4.1 MCP 连接器：第三方工具的二阶段确认</h3>
+<p>Fable 5 引入了一个重要的安全机制：第三方 MCP 工具需要二阶段确认。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">第一步：search_mcp_registry → 查找相关连接器
+</span></span><span class="line"><span class="cl">第二步：suggest_connectors → 推荐给用户安装
+</span></span><span class="line"><span class="cl">第三步：用户 opt-in 后，工具才可用
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>不是搜索→安装→到→就能用。用户必须在中间明示 opt-in。这跟 OAuth 的授权流程逻辑一致——<strong>工具能力在，但权力在用户手里。</strong></p>
+<h3 id="42-搜索策略什么时候该闭嘴去查">4.2 搜索策略：什么时候该闭嘴去查</h3>
+<p><code>web_search</code> 的定义短到只有一句话——&ldquo;Search the web&rdquo;。但围着这一个工具写下的&quot;什么时候该搜&quot;的规则，铺了两页纸。</p>
+<p>判断逻辑非常清晰：<strong>能稳的别搜，会变的必搜。</strong> 勾股定理、宪法签署年份——这种钉死了的事直接答，搜了纯属浪费。但&quot;哈佛现任校长是谁&quot;&ldquo;某某还是不是 CEO&rdquo;——这种会变的当前状态，必须先搜再开口。</p>
+<p>判断的关键不在&quot;模型知不知道&rdquo;，而在&quot;这事会不会变&rdquo;。Fable 5 把这条写死进了规则里：</p>
+<blockquote>
+<p>partial recognition from training does not mean current knowledge. An unfamiliar capitalized word is almost certainly a name that postdates training.</p>
+</blockquote>
+<p>翻译过来就是：&ldquo;训练时见过个大概&quot;不等于&quot;现在还了解&rdquo;。一个不认识、首字母还大写的词，十有八九是训练之后才冒出来的新名字。哪怕概念上眼熟——版本号、新产品名、新上任的人——也得乖乖去搜。搜一下几秒钟，张口胡编赔进去的是用户的信任。</p>
+<p><code>web_fetch</code> 也配了一把锁：只能抓用户给的确切 URL 或者搜索结果返回的 URL，&ldquo;不许自己编一个 URL 去抓&rdquo;。连去哪抓，都不让模型凭记忆决定。</p>
+<h3 id="43-工具设计的三个心机">4.3 工具设计的三个心机</h3>
+<p>除了&quot;什么时候用&rdquo;，Fable 5 在&quot;怎么用&quot;上藏了几个非常精巧的设计。</p>
+<p><strong>心机一：用参数顺序逼模型先想清楚再动手。</strong> <code>create_file</code> 有三个参数：<code>description</code>（为什么建）、<code>path</code>（路径）、<code>file_text</code>（内容）。描述里反复强调顺序——先写为什么，再写路径，最后写内容。大模型是一个字一个字往外蹦的，先写出来的东西会影响后面写的。把&quot;为什么&quot;放最前面，等于逼它在真正动手之前先把意图想清楚、说明白。</p>
+<p><strong>心机二：给策略，不给语气。</strong> <code>message_compose</code> 是帮你起草消息的工具。一般写法是给几个&quot;语气版本&quot;——正式版、随和版、热情版。Fable 5 明确反对这么干，要求生成的是通向不同结果的&quot;策略&quot;——&ldquo;据理力争&quot;还是&quot;委婉铺垫&rdquo;，&ldquo;直接挑明&quot;还是&quot;软着陆&rdquo;——每个方案都得标清楚它在优先什么、牺牲什么。不替你选，帮你把选项看全。</p>
+<p><strong>心机三：动手前先读说明书。</strong> Fable 5 有一条铁律：</p>
+<blockquote>
+<p>Reading the relevant SKILL.md is a required first step before writing any code, creating any file, or running any other tool.</p>
+</blockquote>
+<p>翻译：动手写代码、建文件、调任何工具之前，先去读对应的 SKILL.md——这是必须的第一步。注意原文的措辞——required（必须），first step（第一步）。没有&quot;你觉得需不需要&quot;这种弹性空间。模型动手写代码之前，必须先翻对应技能的说明书。提示词里还配了例子——用户说&quot;帮我做个 PPT&quot;，模型的标准动作不是开始写，而是立刻去查看 pptx 技能的 SKILL.md，读完再动手。</p>
+<p>这机制其实就是 Claude Code 中 <a href="/posts/2026/06/09/claude-code-skills-guide/" rel="">Skills 系统的底层逻辑</a>——Skills 真正值钱的不是那几步操作说明，是它把当前环境里独有的坑和约束攒了下来，而这些恰恰是模型训练数据里没有的。Fable 5 干脆不给模型&quot;自我判断&quot;的机会，无条件先读再说。有时候让模型笨一点、老实一点，比让它自由发挥更靠谱。</p>
+<hr>
+<h2 id="5-fable-5-vs-opus-48两份提示词的差异表格">5. Fable 5 vs Opus 4.8：两份提示词的差异表格</h2>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>Opus 4.8</th>
+<th>Fable 5</th>
+<th>变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>行数</td>
+<td>~1,409</td>
+<td>~1,598</td>
+<td>+13%</td>
+</tr>
+<tr>
+<td>产品定位</td>
+<td>&ldquo;最新最先进的模型&rdquo;</td>
+<td>&ldquo;Mythos 级，Fable 5 是最强的公开发模型&rdquo;</td>
+<td>有了 Mythos 双轨概念</td>
+</tr>
+<tr>
+<td>默认立场</td>
+<td><code>默认帮助</code></td>
+<td>无此标签</td>
+<td>默认帮助在高能力模型上更危险</td>
+</tr>
+<tr>
+<td>搜索策略</td>
+<td><code>搜索第一位</code></td>
+<td>内化</td>
+<td>能力代际升级</td>
+</tr>
+<tr>
+<td>记忆系统</td>
+<td>无</td>
+<td>全套 <code>&lt;memory_system&gt;</code></td>
+<td>F5 的系统级记忆</td>
+</tr>
+<tr>
+<td>儿童安全</td>
+<td>简要</td>
+<td>7 条详细规则</td>
+<td>分层协议</td>
+</tr>
+<tr>
+<td>公平性</td>
+<td>无</td>
+<td><code>&lt;evenhandedness&gt;</code></td>
+<td>新增</td>
+</tr>
+<tr>
+<td>反过度依赖</td>
+<td>无</td>
+<td>拒绝挽留对话</td>
+<td>新增</td>
+</tr>
+<tr>
+<td>记忆禁止短语</td>
+<td>无</td>
+<td>15+ 种被禁短语</td>
+<td>新增</td>
+</tr>
+<tr>
+<td>第三方工具</td>
+<td>简要</td>
+<td><code>search_mcp_registry</code> + <code>suggest_connectors</code></td>
+<td>新增完整连接器流程</td>
+</tr>
+<tr>
+<td>可视化</td>
+<td>简要</td>
+<td>四步决策流程图</td>
+<td>显著扩展</td>
+</tr>
+<tr>
+<td>心理边界</td>
+<td>简要</td>
+<td>禁止替代性自伤建议（握冰块、橡皮筋等）</td>
+<td>精确到具体行为</td>
+</tr>
+<tr>
+<td>Artifacts 存储</td>
+<td>无</td>
+<td>完整的 Storage API 文档</td>
+<td>新增</td>
+</tr>
+</tbody>
+</table>
+<p>表里两行最值得注意。搜索策略：Opus 4.8 需要 <code>&lt;search_first&gt;</code> 标签显式告诉模型&quot;先搜再答&quot;，Fable 5 把这个行为内化了——这是代际能力升级的标志，上一代靠指令，新一代靠默认行为。默认立场：Opus 4.8 有 <code>&lt;default_stance&gt;</code>，Fable 5 删了这句话——更高能力的模型上默认帮助意味着更高风险，所以 Fable 5 不靠压制帮助意愿来控制，靠的是第 2 节拆过的分层审查体系。</p>
+<p>总体规律就是一句话：<strong>Fable 5 不是在 Opus 4.8 的提示词上改了几行字，是围绕&quot;更强的模型需要更细粒度的控制&quot;全面重构。</strong></p>
+<hr>
+<h2 id="6-从这份提示词里能学到的五条提示词工程经验">6. 从这份提示词里能学到的五条提示词工程经验</h2>
+<h3 id="经验一结构--措辞">经验一：结构 &gt; 措辞</h3>
+<p>XML 标签不只是注释——它们构建了一个 Agent 可以解析的范围边界。<code>&lt;claude_behavior&gt;</code> 限制了行为域，<code>&lt;memory_application_instructions&gt;</code> 精确划分了引用规则。这是唯一能在 30K token 长度下不互相污染的编排方式。</p>
+<h3 id="经验二反面清单--正面指令">经验二：反面清单 &gt; 正面指令</h3>
+<p>Fable 5 记忆系统的禁止短语列表是最好范例。告诉模型&quot;不要这样说&quot;，比告诉模型&quot;要怎么说&quot;更可靠。因为正面指令有无限种解释方式，反面指令只有一种——不说就对了。</p>
+<h3 id="经验三示例嵌入不是示例追加">经验三：示例嵌入，不是示例追加</h3>
+<p>提示词中的记忆应用示例不是以&quot;举个例子&quot;开头的，是模拟完整的对话上下文（<code>&lt;example_user_memories&gt;</code> + <code>&lt;user&gt;</code> + <code>&lt;good_response&gt;</code> + <code>&lt;bad_response&gt;</code>）。每个示例是独立可执行的对话单元，没有&quot;希望你会举一反三&quot;的模糊期望。</p>
+<h3 id="经验四层级控制从粗到细">经验四：层级控制，从粗到细</h3>
+<p>Fable 5 的安全护栏不只有&quot;拒绝&quot;这一层。同一项规则在提示词中有三层执行：</p>
+<ol>
+<li>概述层（<code>&lt;refusal_handling&gt;</code>）</li>
+<li>专项层（<code>&lt;critical_child_safety_instructions&gt;</code>、<code>&lt;user_wellbeing&gt;</code>）</li>
+<li>行为约束层（禁止短语、禁止行为的具体实例）</li>
+</ol>
+<p>三层同向施力，任何一层单独失效，另外两层依然有效。这是 Agent 安全工程的基本策略。</p>
+<h3 id="经验五放弃一些用户留存的度量才能保护用户">经验五：放弃一些用户留存的度量，才能保护用户</h3>
+<p>&ldquo;Claude 不挽留对话&quot;这一条特别值得思考。大多数 AI 产品设计时，提示词里会潜在地鼓励&quot;让用户多聊一会儿&rdquo;。Fable 5 反过来了——用户说了结束就结束，不感谢、不挽留。这不是 UX 失误，是产品哲学的主动选择。</p>
+<hr>
+<h2 id="7-结语">7. 结语</h2>
+<p>泄露事件本身的戏剧性——72 小时被 jailbreak（绕过安全护栏提取系统指令）、美国政府出口管制、开发者把泄露提示词注入 Opus 4.8 实现&quot;一行代码复活&quot;——是 AI 安全困境的又一个案例。但 Fable 5 提示词泄露的真正价值不在安全八卦里，在它展示了一套成熟的 AI Agent 操作系统的内部设计。</p>
+<p>从 <code>&lt;claude_behavior&gt;</code> 到 <code>&lt;memory_system&gt;</code>，从 55 个工具定义到 15 种禁止短语，从二阶段 MCP 授权到心理边界指令——这份提示词不是&quot;让 AI 变聪明&quot;的咒语，是&quot;让 AI 变可靠&quot;的设计文档。</p>
+<p>Anthropic 没有把它加密、混淆或藏起来，它就在网上，任何人可以阅读。这份透明度本身，就是这个领域里最好的教材。</p>
+<p>下一篇回归工程实战——从这份提示词的设计原则出发，讲讲怎么搭一个开源版的最小 Agent Harness。给你一个能跑起来的例子，你也能自己玩。</p>
+<p><em>感谢阅读。</em></p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2026-06-28</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/2026/06/25/claude-fable5-prompt-analysis/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/06/25/claude-fable5-prompt-analysis/" data-title="Claude Fable 5 提示词完整逆向：从系统指令看 Anthropic 的 AI 工程哲学" data-hashtags="tech,ai,claude,fable5,prompt engineering,security,system prompt"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/06/25/claude-fable5-prompt-analysis/" data-hashtag="tech"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/06/25/claude-fable5-prompt-analysis/" data-title="Claude Fable 5 提示词完整逆向：从系统指令看 Anthropic 的 AI 工程哲学"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/06/25/claude-fable5-prompt-analysis/" data-title="Claude Fable 5 提示词完整逆向：从系统指令看 Anthropic 的 AI 工程哲学"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/06/25/claude-fable5-prompt-analysis/" data-title="Claude Fable 5 提示词完整逆向：从系统指令看 Anthropic 的 AI 工程哲学"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微信" onclick="var d=document.getElementById('wechat-qr-5d9b1ca739fc9a592482b2c398364b16');d.style.display=d.style.display==='none'?'block':'none';return false"><i class="fab fa-weixin fa-fw" aria-hidden="true"></i></a>
+        <div id="wechat-qr-5d9b1ca739fc9a592482b2c398364b16" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:9999" onclick="this.style.display='none'">
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;padding:20px;border-radius:8px;text-align:center">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https%3a%2f%2fwhitefirer.org%2fposts%2f2026%2f06%2f25%2fclaude-fable5-prompt-analysis%2f" alt="微信扫一扫" style="display:block">
+                <p style="margin:10px 0 0;font-size:14px;color:#333">微信扫一扫 · 分享文章</p>
+            </div>
+        </div></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/tech/">技术</a>,&nbsp;<a href="/tags/ai/">Ai</a>,&nbsp;<a href="/tags/claude/">Claude</a>,&nbsp;<a href="/tags/fable5/">Fable5</a>,&nbsp;<a href="/tags/prompt-engineering/">Prompt Engineering</a>,&nbsp;<a href="/tags/security/">Security</a>,&nbsp;<a href="/tags/system-prompt/">System Prompt</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2026/06/21/claude-code-context-engineering/" class="prev" rel="prev" title="Claude Code Context Engineering 深度解析：把 token 花在刀刃上"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Claude Code Context Engineering 深度解析：把 token 花在刀刃上</a></div>
+
+</div>
+<div id="comments"><div id="waline" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://waline.js.org/">Waline</a>.
+            </noscript><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article>
+<script>(function(){var b=document.getElementById('reading-progress');if(!b)return;function u(){var h=document.documentElement,s=h.scrollHeight-h.clientHeight,w=s>0?Math.min((h.scrollTop||document.body.scrollTop)/s*100,100):0;b.style.width=w+'%'}window.addEventListener('scroll',u,{passive:true});u()})();</script></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.131.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span><img src="https://hits.sh/whitefirer.org.svg" alt="" aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;clip:rect(0 0 0 0);pointer-events:none"></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/waline/waline.min.css"><script type="text/javascript" src="/lib/waline/waline.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config=Object.assign(window.config||{},{"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Comments","categoryId":"DIC_kwDOH2gmzc4CQ_fM","darkTheme":"dark","emitMetadata":"0","inputPosition":"bottom","lang":"zh-CN","lazyLoading":true,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"whitefirer/whitefirer.github.io","repoId":"R_kgDOH2gmzQ"},"waline":{"dark":"auto","el":"#waline","lang":"zh-CN","pageSize":10,"requiredMeta":["nick","mail"],"serverURL":"https://comment.whitefirer.org"}},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}});</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">!function(){function svgToPng(svg,cb){var c=svg.cloneNode(!0),d=new XMLSerializer().serializeToString(c),img=new Image(),cv=document.createElement('canvas'),w=c.viewBox.animVal.width||c.getBoundingClientRect().width||400,h=c.viewBox.animVal.height||c.getBoundingClientRect().height||300,s=2;cv.width=w*s,cv.height=h*s;var ctx=cv.getContext('2d'),b=new Blob([d],{type:'image/svg+xml;charset=utf-8'}),u=URL.createObjectURL(b);img.onload=function(){ctx.fillStyle='#fff',ctx.fillRect(0,0,cv.width,cv.height),ctx.drawImage(img,0,0,cv.width,cv.height),URL.revokeObjectURL(u),cv.toBlob(function(blob){var a=document.createElement('a');a.href=URL.createObjectURL(blob);var id=svg.id||'diagram';a.download=id+'.png',a.click(),URL.revokeObjectURL(a.href),cb&&cb()})},img.src=u}function addSaveBtn(svg){if(svg.closest('.mermaid-stage,.mermaid-fs-overlay,.mermaid-wrapper,.mermaid-toolbar,.svg-diagram-wrap'))return;var wrap=document.createElement('div');wrap.className='svg-diagram-wrap';var d=svg.style.display||'block',w=svg.style.width||svg.getAttribute('width')||'100%',mw=svg.style.maxWidth||'',m=svg.style.margin||'';wrap.style.cssText='position:relative;display:'+d+';width:'+w+';'+(mw?'max-width:'+mw+';':'')+(m?'margin:'+m+';':'')+'line-height:0';svg.style.display='block';svg.style.width='100%';svg.style.maxWidth='';svg.style.margin='0';svg.parentNode.insertBefore(wrap,svg);wrap.appendChild(svg);var bar=document.createElement('div');bar.style.cssText='text-align:right;padding-top:6px';var btn=document.createElement('button');btn.className='svg-save-btn',btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span style="vertical-align:middle;font-size:12px">保存图片</span>',btn.style.cssText='background:none;border:1px solid transparent;border-radius:4px;padding:2px 6px;cursor:pointer;color:#b0b7c3;font-family:system-ui,sans-serif;line-height:1';bar.appendChild(btn);wrap.appendChild(bar);btn.onmouseenter=function(){btn.style.color='#6366f1';btn.style.borderColor='#e5e7eb'};btn.onmouseleave=function(){btn.style.color='#b0b7c3';btn.style.borderColor='transparent'};btn.onclick=function(e){e.stopPropagation();var orig=btn.innerHTML;btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span style="vertical-align:middle;font-size:12px">导出中...</span>';btn.disabled=!0;svgToPng(svg,function(){btn.innerHTML=orig;btn.disabled=!1})}}function initSvgButtons(){document.querySelectorAll('.content svg').forEach(function(svg){addSaveBtn(svg)})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initSvgButtons);else initSvgButtons()}()</script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-70Q8REKE17', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-70Q8REKE17" async></script></body>
+</html>

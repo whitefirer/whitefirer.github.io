@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Prompt Engineering - 标签 - 赛博闲谭-whitefirer</title>
+        <link>https://whitefirer.org/tags/prompt-engineering/</link>
+        <description>Prompt Engineering - 标签 - 赛博闲谭-whitefirer</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Thu, 25 Jun 2026 20:00:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/prompt-engineering/" rel="self" type="application/rss+xml" /><item>
+    <title>Claude Fable 5 提示词完整逆向：从系统指令看 Anthropic 的 AI 工程哲学</title>
+    <link>https://whitefirer.org/posts/2026/06/25/claude-fable5-prompt-analysis/</link>
+    <pubDate>Thu, 25 Jun 2026 20:00:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/06/25/claude-fable5-prompt-analysis/</guid>
+    <description><![CDATA[120K 字符、30K token、55 个命名章节——一份提示词里藏着产品策略、安全架构和记忆系统的完整答案。 前言 2026 年 6 月 9 日，Anthropic 发布]]></description>
+</item>
+</channel>
+</rss>
