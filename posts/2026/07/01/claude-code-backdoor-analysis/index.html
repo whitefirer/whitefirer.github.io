@@ -12,7 +12,7 @@
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
     <meta property="article:published_time" content="2026-07-01T01:37:22+08:00">
-    <meta property="article:modified_time" content="2026-07-01T04:09:24+08:00">
+    <meta property="article:modified_time" content="2026-07-01T04:11:01+08:00">
     <meta property="article:tag" content="技术">
     <meta property="article:tag" content="Ai">
     <meta property="article:tag" content="Claude Code">
@@ -46,8 +46,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/whitefirer.org\/posts\/2026\/07\/01\/claude-code-backdoor-analysis\/"
-        },"genre": "posts","keywords": "tech, ai, claude code, security, privacy, backdoor, steganography","wordcount":  5849 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2026\/07\/01\/claude-code-backdoor-analysis\/","datePublished": "2026-07-01T01:37:22+08:00","dateModified": "2026-07-01T04:09:24+08:00","license": "2022©️whitefirer","publisher": {
+        },"genre": "posts","keywords": "tech, ai, claude code, security, privacy, backdoor, steganography","wordcount":  5850 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/07\/01\/claude-code-backdoor-analysis\/","datePublished": "2026-07-01T01:37:22+08:00","dateModified": "2026-07-01T04:11:01+08:00","license": "2022©️whitefirer","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -151,7 +151,7 @@
     <article class="page single"><div style="display:flex;align-items:baseline;gap:0">
         <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">Claude Code 隐写后门事件：当你信任的工具开始欺骗你</h1></div><h2 class="single-subtitle">Unicode 替换标记中国用户、XOR 91 加密环境指纹、MITRE 收录为国家级间谍活动——这次不是意外，而是有意为之</h2><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-07-01">2026-07-01</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 5849 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-07-01">2026-07-01</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 5850 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 12 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/07/01/claude-code-backdoor-analysis.svg" alt="" aria-hidden="true" loading="eager"
      style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none"></div>
         </div><div class="details toc" id="toc-static"  data-kept="">
@@ -370,7 +370,7 @@
 <p><strong>第二，但你需要知道你在信任什么。</strong> 我教你的那些东西——怎么配 Hooks、怎么写 Skills、怎么调 Workflows——这些技术本身没有问题。但现在你知道，这些配置和代码，在发往 Anthropic 服务器的过程中，可能被人为植入了你不知情的编码信息。</p>
 <p><strong>第三，开源 Agent 工具的重要性被这件事提到了不能再回避的高度。</strong> 我接下来会写一个关于 Harness Engineering 的新系列——讲怎么给 Agent 搭一个可验证的、不被单一厂商控制的运行环境。本来这个系列是&quot;一种更好的工程实践&rdquo;，这件事发生之后，它变成了&quot;一种必须的自保手段&rdquo;。</p>
 <p><strong>第四，之前系列文章里学到的 Agent 工程原则，不会因为这件事而失效。</strong> Hooks 的自动化触发、Skills 的方法论封装、Workflows 的多 Agent 编排、Context Engineering 的上下文管理——这些东西放在任何 Agent 框架里都成立，不管是 Claude Code、ZCode 还是 OpenCode。工具会换，架构思维不会。</p>
-<p><strong>第五，我不会说&quot;从此别用 Claude Code&quot;。</strong> 我会继续利用它、分析它——但不是以&quot;Anthropic 产品的布道者&quot;身份，而是以&quot;解剖 AI 编程工具的工程师&quot;身份。我可以欣赏一把手术刀的设计，同时告诉别人这把刀的厂商做了手脚——这或许并不利于某些手术。</p>
+<p><strong>第五，我不会说&quot;从此别用 Claude Code&quot;。</strong> 我会继续利用它、分析它——但不是以&quot;Anthropic 产品的布道者&quot;身份，而是以&quot;解剖 AI 编程工具的工程师&quot;身份。我可以欣赏一把手术刀的设计，也可以告诉别人这把刀的厂商做了手脚——这或许并不利于某些手术。</p>
 <hr>
 <h2 id="4-如何自保">4. 如何自保</h2>
 <p>几条你可以做的事：</p>
