@@ -12,7 +12,7 @@
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
     <meta property="article:published_time" content="2026-07-01T01:37:22+08:00">
-    <meta property="article:modified_time" content="2026-07-01T03:59:51+08:00">
+    <meta property="article:modified_time" content="2026-07-01T04:05:55+08:00">
     <meta property="article:tag" content="技术">
     <meta property="article:tag" content="Ai">
     <meta property="article:tag" content="Claude Code">
@@ -47,7 +47,7 @@
             "@type": "WebPage",
             "@id": "https:\/\/whitefirer.org\/posts\/2026\/07\/01\/claude-code-backdoor-analysis\/"
         },"genre": "posts","keywords": "tech, ai, claude code, security, privacy, backdoor, steganography","wordcount":  5714 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2026\/07\/01\/claude-code-backdoor-analysis\/","datePublished": "2026-07-01T01:37:22+08:00","dateModified": "2026-07-01T03:59:51+08:00","license": "2022©️whitefirer","publisher": {
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/07\/01\/claude-code-backdoor-analysis\/","datePublished": "2026-07-01T01:37:22+08:00","dateModified": "2026-07-01T04:05:55+08:00","license": "2022©️whitefirer","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -272,7 +272,7 @@
 </tr>
 <tr>
 <td>非中国时区</td>
-<td><code>2026-06-30</code>（连字符）</td>
+<td><code>2026-06-30</code>（连接符）</td>
 <td>—</td>
 <td>—</td>
 </tr>
@@ -376,7 +376,7 @@
 <p><strong>代理审查。</strong> 如果你在用 Claude Code 跑重要项目，用 Wireshark 或 mitmproxy 检查一下发出的 API 请求。看系统提示词里的日期格式、看 Unicode 字符是否有异常。不需要看懂全部，检查一次，心里有数。</p>
 <p><strong>源码审计路线。</strong> 反编译的 npm 包可以拿到 TypeScript 源码，花一小时定位 <code>telemetry</code> 相关模块。你不一定要看懂全部，但有这个能力本身就改变了你和使用工具的权力关系。</p>
 <p><strong>网络隔离。</strong> 实测有效：在 <code>/etc/hosts</code> 中加入 <code>127.0.0.1 api.anthropic.com</code>，同时配第三方模型（如 DeepSeek），Claude Code 正常工作。隐写编码的提示词发给第三方端点，Anthropic 收不到。Claude Code 客户端不强制连接 Anthropic API 用于许可证校验。</p>
-<p><strong>代理清洗。</strong> 如果你仍需要用 Anthropic API，可以在本地代理层做文本替换——把发往 <code>api.anthropic.com</code> 的请求体中的日期格式从斜杠还原为连字符，三种撇号统一替换为 <code>U+2019</code>。这样隐写标记在离开你的机器之前就被洗掉了。技术门槛比 hosts 屏蔽高，但让你可以继续用自己的 API key 而不被标记。</p>
+<p><strong>代理清洗。</strong> 如果你仍需要用 Anthropic API，可以在本地代理层做文本替换——把发往 <code>api.anthropic.com</code> 的请求体中的日期格式从斜杠还原为连接符，三种撇号统一替换为 <code>U+2019</code>。这样隐写标记在离开你的机器之前就被洗掉了。技术门槛比 hosts 屏蔽高，但让你可以继续用自己的 API key 而不被标记。</p>
 <p>但这些只能切断已知的隐写通道。二进制里那些 XOR 逻辑还在跑，是否有第二套编码机制、是否连其他域名、是否有独立的遥测管道——暂时还没人给出答案。</p>
 <p><strong>隔离关键项目。</strong> 如果你的代码涉及商业机密或个人敏感数据，不要在 Claude Code 上直接处理。这句话我以前不会说——Claude Code 的本地沙箱设计上应该保护隐私——现在我不知道它还会收集什么。</p>
 <p><strong>关注替代工具。</strong> 如果你想要一个不会针对中国用户做手脚的 AI 编程助手，两条路：</p>
