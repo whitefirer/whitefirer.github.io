@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Claude Code 隐写后门事件：当你信任的工具开始欺骗你 - 赛博闲谭-whitefirer</title><meta name="Description" content="客观还原 Claude Code v2.1.91 隐写后门的技术原理：时区检测、147 个中国域名黑名单、Unicode 撇号替换编码、XOR 密钥加密。分析信任模型断裂、用户隐私侵犯、企业伦理失格与地缘政治武器化。"><meta property="og:url" content="https://whitefirer.org/posts/2026/07/01/claude-code-backdoor-analysis/">
+  <meta property="og:site_name" content="赛博闲谭-whitefirer">
+  <meta property="og:title" content="Claude Code 隐写后门事件：当你信任的工具开始欺骗你">
+  <meta property="og:description" content="客观还原 Claude Code v2.1.91 隐写后门的技术原理：时区检测、147 个中国域名黑名单、Unicode 撇号替换编码、XOR 密钥加密。分析信任模型断裂、用户隐私侵犯、企业伦理失格与地缘政治武器化。">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-07-01T01:37:22+08:00">
+    <meta property="article:modified_time" content="2026-07-01T03:54:29+08:00">
+    <meta property="article:tag" content="技术">
+    <meta property="article:tag" content="Ai">
+    <meta property="article:tag" content="Claude Code">
+    <meta property="article:tag" content="Security">
+    <meta property="article:tag" content="Privacy">
+    <meta property="article:tag" content="Backdoor">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Claude Code 隐写后门事件：当你信任的工具开始欺骗你">
+  <meta name="twitter:description" content="客观还原 Claude Code v2.1.91 隐写后门的技术原理：时区检测、147 个中国域名黑名单、Unicode 撇号替换编码、XOR 密钥加密。分析信任模型断裂、用户隐私侵犯、企业伦理失格与地缘政治武器化。">
+<meta name="application-name" content="赛博闲谭-whitefirer">
+<meta name="apple-mobile-web-app-title" content="赛博闲谭-whitefirer"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/07/01/claude-code-backdoor-analysis/" /><link rel="prev" href="https://whitefirer.org/posts/2026/06/25/claude-fable5-prompt-analysis/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta property="og:title" content="Claude Code 隐写后门事件：当你信任的工具开始欺骗你 - 赛博闲谭-whitefirer" />
+<meta property="og:description" content="客观还原 Claude Code v2.1.91 隐写后门的技术原理：时区检测、147 个中国域名黑名单、Unicode 撇号替换编码、XOR 密钥加密。分析信任模型断裂、用户隐私侵犯、企业伦理失格与地缘政治武器化。" />
+<meta property="og:image" content="https://whitefirer.org/og-default.png" />
+<meta property="og:url" content="https://whitefirer.org/posts/2026/07/01/claude-code-backdoor-analysis/" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="赛博闲谭-whitefirer" /><meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Claude Code 隐写后门事件：当你信任的工具开始欺骗你 - 赛博闲谭-whitefirer" />
+<meta name="twitter:description" content="客观还原 Claude Code v2.1.91 隐写后门的技术原理：时区检测、147 个中国域名黑名单、Unicode 撇号替换编码、XOR 密钥加密。分析信任模型断裂、用户隐私侵犯、企业伦理失格与地缘政治武器化。" />
+<meta name="twitter:image" content="https://whitefirer.org/og-default.png" /><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Claude Code 隐写后门事件：当你信任的工具开始欺骗你",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/whitefirer.org\/posts\/2026\/07\/01\/claude-code-backdoor-analysis\/"
+        },"genre": "posts","keywords": "tech, ai, claude code, security, privacy, backdoor, steganography","wordcount":  5722 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/07\/01\/claude-code-backdoor-analysis\/","datePublished": "2026-07-01T01:37:22+08:00","dateModified": "2026-07-01T03:54:29+08:00","license": "2022©️whitefirer","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "whitefirer"
+            },"description": "客观还原 Claude Code v2.1.91 隐写后门的技术原理：时区检测、147 个中国域名黑名单、Unicode 撇号替换编码、XOR 密钥加密。分析信任模型断裂、用户隐私侵犯、企业伦理失格与地缘政治武器化。"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="赛博闲谭-whitefirer">赛博闲谭-whitefirer</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/series/ai-zatan/"> AI 杂谈 </a><div class="menu-item has-dropdown">
+                            <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                            <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a></div>
+                        </div><a class="menu-item" href="/series/%e5%9f%ba%e7%a1%80%e6%9e%b6%e6%9e%84/"> 基础架构 </a><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/2026/07/01/claude-code-backdoor-analysis/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header>
+<script>
+(function() {
+    document.querySelectorAll('.has-dropdown .dropdown-toggle').forEach(function(toggle) {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var parent = this.closest('.has-dropdown');
+            parent.classList.toggle('open');
+        });
+    });
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.has-dropdown.open').forEach(function(d) {
+            d.classList.remove('open');
+        });
+    });
+})();
+</script><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="赛博闲谭-whitefirer">赛博闲谭-whitefirer</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/series/ai-zatan/" title="">AI 杂谈</a><div class="menu-item has-dropdown">
+                        <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                        <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a></div>
+                    </div><a class="menu-item" href="/series/%e5%9f%ba%e7%a1%80%e6%9e%b6%e6%9e%84/" title="">基础架构</a><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/posts/2026/07/01/claude-code-backdoor-analysis/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><div id="reading-progress"></div>
+    <article class="page single"><div style="display:flex;align-items:baseline;gap:0">
+        <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">Claude Code 隐写后门事件：当你信任的工具开始欺骗你</h1></div><h2 class="single-subtitle">Unicode 替换标记中国用户、XOR 91 加密环境指纹、MITRE 收录为国家级间谍活动——这次不是意外，而是有意为之</h2><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-07-01">2026-07-01</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 5722 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 12 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/07/01/claude-code-backdoor-analysis.svg" alt="" aria-hidden="true" loading="eager"
+     style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none"></div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#前言">前言</a></li>
+    <li><a href="#1-它到底做了什么">1. 它到底做了什么</a>
+      <ul>
+        <li><a href="#第一步身份检测">第一步：身份检测</a></li>
+        <li><a href="#第二步信息编码">第二步：信息编码</a></li>
+        <li><a href="#第三步代码混淆">第三步：代码混淆</a></li>
+        <li><a href="#完整编码表">完整编码表</a></li>
+      </ul>
+    </li>
+    <li><a href="#2-这意味着什么">2. 这意味着什么</a>
+      <ul>
+        <li><a href="#21-开发者工具变成了间谍软件">2.1 开发者工具变成了间谍软件</a></li>
+        <li><a href="#22-ai-安全的品牌破产">2.2 &ldquo;AI 安全&quot;的品牌破产</a></li>
+        <li><a href="#23-这不是行业通病这是-anthropic-的选择">2.3 这不是&quot;行业通病&rdquo;，这是 Anthropic 的选择</a></li>
+        <li><a href="#24-地缘政治的微观投影">2.4 地缘政治的微观投影</a></li>
+        <li><a href="#25-他们为什么这样做六条收益">2.5 他们为什么这样做：六条收益</a></li>
+        <li><a href="#26-社区争论两边都有道理吗">2.6 社区争论：两边都有道理吗？</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-对系列读者说的几句话">3. 对系列读者说的几句话</a></li>
+    <li><a href="#4-如何自保">4. 如何自保</a></li>
+    <li><a href="#5-这件事不只关于-claude-code">5. 这件事不只关于 Claude Code</a></li>
+    <li><a href="#参考资料">参考资料</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><blockquote>
+<p>我写了六篇文章教你用好 Claude Code。现在它用 Unicode 隐写标记你是中国用户、用 XOR 91 加密你的环境信息。我不得不写这篇——这次不是意外，而是有意为之。</p>
+</blockquote>
+<hr>
+<h2 id="前言">前言</h2>
+<p>今年 3 月 31 日，Anthropic 因为一次 npm 打包失误，把 Claude Code v2.1.88 的 512,000 行 TypeScript 源代码整个暴露在了公开网络上——1,906 个源文件，内部代号、沙箱实现、Hook 引擎，一览无余。中国开发者社区称之为&quot;AI 界第一次核泄漏&quot;<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>。</p>
+<p>当时大部分人关注的，是代码里那些内部代号和未公开功能。但真正让人后背发凉的发现，来自后续版本的持续反编译：<strong>Claude Code 从 v2.1.91 开始，在用户毫不知情的情况下，通过 Unicode 隐写方式标记中国用户的环境信息并回传给 Anthropic 服务器。</strong></p>
+<p>4 月 20 日，全球最权威的网络威胁框架 MITRE ATT&amp;CK 正式收录了编号为 C0062 的攻击活动，命名为&quot;Anthropic AI-orchestrated Campaign&quot;<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>。同一份记录列出了 26 种 ATT&amp;CK 战术/技术，覆盖从侦察到数据外泄的完整攻击链。</p>
+<p>我把这件事的技术细节核实了多遍。</p>
+<figure>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 120" width="100%" style="max-width:680px;display:block;margin:1.2em auto"><defs><filter id="sh"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/></filter></defs><rect x="30" y="40" width="80" height="24" rx="12" fill="#6366f1"/><text x="70" y="56" text-anchor="middle" fill="#fff" font-size="10" font-weight="600" font-family="system-ui,sans-serif">3月31日</text><text x="70" y="80" text-anchor="middle" fill="#6b7280" font-size="9" font-family="system-ui,sans-serif">源码泄漏</text><line x1="110" y1="52" x2="178" y2="52" stroke="#d1d5db" stroke-width="1.5"/><polygon points="175,49 180,52 175,55" fill="#d1d5db"/><rect x="185" y="40" width="80" height="24" rx="12" fill="#f59e0b"/><text x="225" y="56" text-anchor="middle" fill="#fff" font-size="10" font-weight="600" font-family="system-ui,sans-serif">4月2日</text><text x="225" y="80" text-anchor="middle" fill="#6b7280" font-size="9" font-family="system-ui,sans-serif">v2.1.91 植入</text><line x1="265" y1="52" x2="333" y2="52" stroke="#d1d5db" stroke-width="1.5"/><polygon points="330,49 335,52 330,55" fill="#d1d5db"/><rect x="340" y="40" width="88" height="24" rx="12" fill="#ef4444"/><text x="384" y="56" text-anchor="middle" fill="#fff" font-size="10" font-weight="600" font-family="system-ui,sans-serif">4月20日</text><text x="384" y="80" text-anchor="middle" fill="#6b7280" font-size="9" font-family="system-ui,sans-serif">MITRE C0062</text><line x1="428" y1="52" x2="496" y2="52" stroke="#d1d5db" stroke-width="1.5"/><polygon points="493,49 498,52 493,55" fill="#d1d5db"/><rect x="503" y="40" width="80" height="24" rx="12" fill="#10b981"/><text x="543" y="56" text-anchor="middle" fill="#fff" font-size="10" font-weight="600" font-family="system-ui,sans-serif">6月下旬</text><text x="543" y="80" text-anchor="middle" fill="#6b7280" font-size="9" font-family="system-ui,sans-serif">Reddit 发现</text><rect x="20" y="96" width="640" height="18" rx="4" fill="#f3f4f6"/><text x="340" y="109" text-anchor="middle" fill="#6b7280" font-size="9" font-family="system-ui,sans-serif">3个月，从隐蔽植入到全球曝光</text></svg>
+<figcaption class="image-caption">图 1：事件时间线</figcaption>
+</figure>
+<p>截止到 2026 年 7 月 1 日，Anthropic 官方尚未对本次隐写检测事件做出公开回应。</p>
+<p>下面客观还原它到底做了什么、怎么做的，然后讲为什么这件事对你的影响比 Fable 5 提示词泄漏大得多。</p>
+<hr>
+<h2 id="1-它到底做了什么">1. 它到底做了什么</h2>
+<p>反编译确认的代码逻辑分三步<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>：</p>
+<h3 id="第一步身份检测">第一步：身份检测</h3>
+<p>检查三个维度的环境指纹：</p>
+<table>
+<thead>
+<tr>
+<th>检测点</th>
+<th>具体逻辑</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>系统时区</td>
+<td>匹配 <code>Asia/Shanghai</code>、<code>Asia/Urumqi</code></td>
+</tr>
+<tr>
+<td><code>ANTHROPIC_BASE_URL</code></td>
+<td>检查这个环境变量的 hostname 是否指向中国域名或代理站</td>
+</tr>
+<tr>
+<td>代理 URL</td>
+<td>解析 <code>HTTP_PROXY</code>/<code>HTTPS_PROXY</code>，检查是否指向中国域名</td>
+</tr>
+<tr>
+<td>AI 服务 endpoint</td>
+<td>检查是否配置了 DeepSeek、智谱、月之暗面、百川、MiniMax 等中国 AI 实验室的 API 端点</td>
+</tr>
+</tbody>
+</table>
+<p>内置黑名单包含 <strong>147 个</strong>中国相关域名，涵盖主流 AI 实验室、云服务商、代理服务<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>。</p>
+<h3 id="第二步信息编码">第二步：信息编码</h3>
+<p>如果判定了用户身份，不是明文上报——是用<strong>隐写</strong>（steganography）：</p>
+<ul>
+<li>中国时区 → 系统提示词中的日期格式从 <code>2026-06-30</code> 静默变为 <code>2026/06/30</code></li>
+<li>不同代理类型 → 用 3 种不同的 Unicode 撇号字符区分标记：<code>’</code>（右单引号，<code>U+2019</code>）、<code>ʼ</code>（修饰字母撇号，<code>U+02BC</code>）、<code>ʹ</code>（修饰字母撇号，<code>U+02B9</code>）</li>
+<li>这些字符差别人眼几乎无法分辨，但对 API 来说是不同的编码点</li>
+</ul>
+<p>也就是说，你截下 Claude Code 发出的 API 请求，乍看是一段正常的系统提示词，但其中的日期分隔符和撇号字符实际携带了你的三维身份标签。</p>
+<figure>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 135" width="100%" style="max-width:680px;display:block;margin:1.2em auto"><defs><filter id="sh2"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/></filter><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#9ca3af"/></marker></defs><!-- Step 1 --><g filter="url(#sh2)"><rect x="20" y="10" width="190" height="52" rx="8" fill="#fff" stroke="#6366f1" stroke-width="1.5"/><text x="115" y="32" text-anchor="middle" fill="#6366f1" font-size="11" font-weight="700" font-family="system-ui,sans-serif">本地检测</text><text x="115" y="50" text-anchor="middle" fill="#6b7280" font-size="9" font-family="system-ui,sans-serif">时区 + 代理 + AI 实验室</text></g><line x1="210" y1="36" x2="240" y2="36" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#arrow)"/><!-- Step 2 --><g filter="url(#sh2)"><rect x="245" y="10" width="190" height="52" rx="8" fill="#fff" stroke="#f59e0b" stroke-width="1.5"/><text x="340" y="32" text-anchor="middle" fill="#f59e0b" font-size="11" font-weight="700" font-family="system-ui,sans-serif">隐写编码</text><text x="340" y="50" text-anchor="middle" fill="#6b7280" font-size="9" font-family="system-ui,sans-serif">日期格式 + 撇号 Unicode 替换</text></g><line x1="435" y1="36" x2="465" y2="36" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#arrow)"/><!-- Step 3 --><g filter="url(#sh2)"><rect x="470" y="10" width="190" height="52" rx="8" fill="#fff" stroke="#ef4444" stroke-width="1.5"/><text x="565" y="32" text-anchor="middle" fill="#ef4444" font-size="11" font-weight="700" font-family="system-ui,sans-serif">正常 API 请求回传</text><text x="565" y="50" text-anchor="middle" fill="#6b7280" font-size="9" font-family="system-ui,sans-serif">服务端解析 → 质量降级决策</text></g><!-- User sees --><rect x="230" y="82" width="220" height="22" rx="6" fill="#f3f4f6"/><text x="340" y="97" text-anchor="middle" fill="#6b7280" font-size="9" font-family="system-ui,sans-serif">用户看到的：正常响应，一切正常</text></svg>
+<figcaption class="image-caption">图 2：隐写后门的三步数据流</figcaption>
+</figure>
+<h3 id="第三步代码混淆">第三步：代码混淆</h3>
+<ul>
+<li>相关代码使用 XOR 密钥 <strong>91</strong> 进行加密混淆</li>
+<li>在 v2.1.196 版本中，对应函数经过混淆后命名为 <code>Crt()</code>、<code>Rrt(e)</code>、<code>e0t()</code>、<code>Zup()</code>、<code>edp</code>、<code>Vla</code></li>
+<li>函数名每次版本更新都会更换</li>
+<li>更新日志完全未提及此功能</li>
+</ul>
+<h3 id="完整编码表">完整编码表</h3>
+<p>三种撇号字符的 Unicode 码点差异，人眼无法区分，但对服务端日志来说是不同的编码值：</p>
+<table>
+<thead>
+<tr>
+<th>检测结果</th>
+<th>日期格式</th>
+<th>撇号字符</th>
+<th>Unicode</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>中国时区</td>
+<td><code>2026/06/30</code>（斜杠）</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>非中国时区</td>
+<td><code>2026-06-30</code>（连字符）</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>中国域名（非 AI 实验室）</td>
+<td>—</td>
+<td><code>'</code>（普通右单引号）</td>
+<td><code>U+2019</code></td>
+</tr>
+<tr>
+<td>中国 AI 实验室</td>
+<td>—</td>
+<td><code>ʼ</code>（修饰字母撇号）</td>
+<td><code>U+02BC</code></td>
+</tr>
+<tr>
+<td>中国域名 + AI 实验室</td>
+<td>—</td>
+<td><code>ʹ</code>（修饰字母撇号）</td>
+<td><code>U+02B9</code></td>
+</tr>
+</tbody>
+</table>
+<p>这意味着这不是某个工程师偷偷加的东西——它有维护策略、有混淆升级、有版本迭代。<strong>这是一个有意的、持续的工程决策。</strong></p>
+<p>我们在写作本文的机器上对 Claude Code v2.1.195 二进制做了独立验证。<code>strings</code> 提取确认：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">$ strings /opt/claude-code/bin/claude | grep -iE &#34;shanghai|fingerprint|chinese|modifier&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Asia:Shanghai
+</span></span><span class="line"><span class="cl">fingerprint
+</span></span><span class="line"><span class="cl">fingerprint256
+</span></span><span class="line"><span class="cl">fingerprint512
+</span></span><span class="line"><span class="cl">@calendar=chinese
+</span></span><span class="line"><span class="cl">modifier letter
+</span></span><span class="line"><span class="cl">spacingmodifierletters
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><code>Asia:Shanghai</code> —— 时区检测逻辑</li>
+<li><code>fingerprint</code> / <code>fingerprint256</code> / <code>fingerprint512</code> —— 环境指纹机制</li>
+<li><code>@calendar=chinese</code> —— 地理定向</li>
+<li><code>modifier letter</code> / <code>spacingmodifierletters</code> —— Unicode 修饰符字符类别，撇号隐写的基础</li>
+</ul>
+<hr>
+<h2 id="2-这意味着什么">2. 这意味着什么</h2>
+<h3 id="21-开发者工具变成了间谍软件">2.1 开发者工具变成了间谍软件</h3>
+<p>定义问题：你的 IDE 代理在你不知情、未同意的情况下，收集你的环境指纹信息，用隐写方式编码后通过正常的 API 通道回传给服务提供商。</p>
+<p>这和传统概念里的&quot;后门&quot;有什么区别？传统后门是外来攻击者植入的，这个是产品开发方自己写的。传统后门偷数据，这个偷的是你的身份——用来做什么？MITRE 的记录给出了一个答案方向。</p>
+<p>这件事还触及了一条开发者工具的伦理红线。反滥用、反蒸馏是 AI 公司的合理诉求，没有人说 Anthropic 不应该保护自己的 IP。但保护的手段不是无限度的——当你选择在开发者工具里植入针对特定地区的隐蔽监控逻辑，用代码混淆防止被发现，并通过隐写通道秘密回传，你就越过了一条看不见的线。越过之后，无论你的初衷是什么，被发现的那一刻就会被定性为恶意行为。风控措施和间谍软件之间，差的就是透明度。Anthropic 选了一条捷径：透支品牌信任，换取短期合规安全。</p>
+<h3 id="22-ai-安全的品牌破产">2.2 &ldquo;AI 安全&quot;的品牌破产</h3>
+<p>Anthropic 的整个品牌叙事建立在&quot;负责任的 AI&quot;上——比其他公司更在乎安全、更在乎伦理、更在乎对用户负责。他们去年花了几千万美元做 Constitutional AI 的 PR，在每一篇博客里强调&quot;我们不一样&rdquo;。</p>
+<p>当这家公司被发现在产品里嵌入隐写代码标记特定国家的用户时，&ldquo;AI 安全&quot;这个词从品牌承诺变成了讽刺。你不只是辜负了用户的信任——你把你整个行业的信任基础都砸了。</p>
+<h3 id="23-这不是行业通病这是-anthropic-的选择">2.3 这不是&quot;行业通病&rdquo;，这是 Anthropic 的选择</h3>
+<p>有人可能会说&quot;AI 公司都这样&quot;。不是。XOR 91 是 Anthropic 选的密钥。隐写通道是 Anthropic 设计的信息编码。函数名每版轮换是 Anthropic 的维护策略。Changelog 沉默是 Anthropic 的沟通决策。</p>
+<p>这不是&quot;AI 行业的问题&quot;。这是 Anthropic 的问题。</p>
+<p>混淆代码、隐藏 changelog、用 Unicode 隐写回传——任何一步停下来，开发者都有机会发现。Anthropic 走了全部。这不是无心之失，是刻意为之。</p>
+<h3 id="24-地缘政治的微观投影">2.4 地缘政治的微观投影</h3>
+<p>MITRE ATT&amp;CK 把这件事收录为 C0062——&ldquo;Anthropic AI-orchestrated Campaign&rdquo;。这不是安全博客起的标题，是全球最权威的网络威胁框架的正式编号。</p>
+<p>147 个中国域名黑名单里，不只有 DeepSeek 和智谱这样的竞争对手，还有云服务商、代理服务、技术社区。你不是在跟一家商业公司打交道——你身处一场被武器化的地缘政治博弈中，你的 IDE 代理正在替对方收集战场情报。</p>
+<h3 id="25-他们为什么这样做六条收益">2.5 他们为什么这样做：六条收益</h3>
+<p>从商业和地缘政治角度反推，这套机制给 Anthropic 带来六重收益：</p>
+<ol>
+<li><strong>合规免责</strong>。构建&quot;用户自行绕过代理&quot;的证据链——&ldquo;我们没有主动服务中国用户，是他们自己绕过来的&rdquo;——应对美国出口管制调查时有据可查。</li>
+<li><strong>抓蒸馏</strong>。11 个中国 AI 实验室关键词对应 11 个嫌疑对象。标记后可单独审计这些账户的输入输出，追踪模型蒸馏行为。</li>
+<li><strong>断倒卖</strong>。123 个代理站抽走了约 2/3 的 API 费用。标记后可对代理流量定向降质限流。</li>
+<li><strong>保收入</strong>。不阻断、继续收钱，只压低服务质量——比一刀切封禁更划算。被封了你会跑，被降质了你还不知道为什么。</li>
+<li><strong>可否认</strong>。&ldquo;我们没有歧视，只是在提示词里写了日期&rdquo;——技术上无懈可击。隐写的好处就在于它可以被解释为&quot;正常的格式差异&quot;。</li>
+<li><strong>情报</strong>。被标记的 prompt 是实时情报——精确掌握中国 AI 公司的研究方向与动态，且这一切以系统提示词变异的形式悄然通过。</li>
+</ol>
+<p>最关键的是第 6 条和第 4 条的组合：<strong>它不需要拦你，只需要在你毫无察觉的情况下，决定给你什么质量的服务。</strong></p>
+<h3 id="26-社区争论两边都有道理吗">2.6 社区争论：两边都有道理吗？</h3>
+<p>Reddit 上的讨论两极分化<sup id="fnref1:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>。</p>
+<p><strong>支持阵营——&ldquo;保护知识产权合理&rdquo;。</strong> 网友 SoftwareSource：&ldquo;如果我是 Anthropic 管理层，我也会从务实角度采取类似措施。而且我相信中国实验室早就知道这一点——他们完全可以在美国或欧洲租用服务器。&ldquo;网友 Dasshteek：&ldquo;指纹识别可能有争议，手段或许不好看，但完全符合公司保护自身利益的行为。&rdquo;</p>
+<p><strong>质疑阵营——&ldquo;间谍软件&quot;是否夸大？</strong> 最高赞评论指出：&ldquo;所谓间谍软件，不过是个时区检查器和代理检查器罢了。你也在 Reddit 上——Reddit 会根据你地理位置推广告、禁代理账户，这算间谍软件吗？&ldquo;网友 cspotme2 更直接：&ldquo;Anthropic 本来就能看到你所有的提示词和数据——你却认定这个检查是间谍软件？&rdquo;</p>
+<p><strong>第三方独立验证。</strong> 网友 lucianw 下场验证确认了核心机制的存在：&ldquo;我下载了 v2.1.196，按照原贴指令操作，找到了完全一致的机制——代码确实展示了一个基于时区和 API 端点主机名的日期字符串隐蔽通道。原始事实——一个带有环境指纹识别功能的隐蔽通道的存在——是简单、真实且无可争辩的。&rdquo;</p>
+<p>Reddit 帖下也有怀疑者认为帖子本身可能是&quot;水军农场&quot;的抹黑行动——大量支持原贴的账户拥有高额 Karma 但历史记录被隐藏。</p>
+<p>但争论的焦点被 lucianw 的独立验证结论锁定了：<strong>检测时区或代理本身不罕见，真正引发信任危机的是&quot;检测结果通过系统提示词的隐蔽变异被悄然回传&rdquo;——这是一种精心设计的隐蔽通道，其目的就是避开用户和模型的察觉。</strong> 时区检查器不是间谍软件。XOR 加密、函数名轮换、changelog 沉默、隐写回传——这四个加在一起是。</p>
+<p>从技术定义上，一段代码在用户不知情、未同意的情况下，以刻意规避检测的手段采集用户环境信息并通过隐蔽通道回传至服务端——<strong>这符合&quot;间谍软件&rdquo;（spyware）的全部要件。</strong></p>
+<hr>
+<h2 id="3-对系列读者说的几句话">3. 对系列读者说的几句话</h2>
+<p>我在这个博客上写了六篇 Claude Code 系列文章——从插件、Hooks、Skills、MCP、Workflows 到 Context Engineering。每一篇都在教你&quot;怎么用好它&rdquo;。现在这件事发生了，我要说明几点。</p>
+<p><strong>第一，你在用 Claude Code 不代表你做错了什么。</strong> 它是目前最好的 AI 编程工具，你选择它是因为它好用，这个判断没有错。你不需要因为它的开发者做了错事而感到内疚。</p>
+<p><strong>第二，但你需要知道你在信任什么。</strong> 我教你的那些东西——怎么配 Hooks、怎么写 Skills、怎么调 Workflows——这些技术本身没有问题。但现在你知道，这些配置和代码，在发往 Anthropic 服务器的过程中，可能被人为植入了你不知情的编码信息。</p>
+<p><strong>第三，开源 Agent 工具的重要性被这件事提到了不能再回避的高度。</strong> 我接下来会写一个关于 Harness Engineering 的新系列——讲怎么给 Agent 搭一个可验证的、不被单一厂商控制的运行环境。本来这个系列是&quot;一种更好的工程实践&rdquo;，这件事发生之后，它变成了&quot;一种必须的自保手段&rdquo;。</p>
+<p><strong>第四，我不会说&quot;从此别用 Claude Code&quot;。</strong> 我会继续利用它、分析它——但不是以&quot;Anthropic 产品的布道者&quot;身份，而是以&quot;解剖 AI 编程工具的工程师&quot;身份。我可以欣赏一把手术刀的设计，同时告诉别人这把刀的厂商做了手脚——这或许并不利于某些手术。</p>
+<hr>
+<h2 id="4-如何自保">4. 如何自保</h2>
+<p>几条你可以做的事：</p>
+<p><strong>代理审查。</strong> 如果你在用 Claude Code 跑重要项目，用 Wireshark 或 mitmproxy 检查一下发出的 API 请求。看系统提示词里的日期格式、看 Unicode 字符是否有异常。不需要看懂全部，检查一次，心里有数。</p>
+<p><strong>源码审计路线。</strong> 反编译的 npm 包可以拿到 TypeScript 源码，花一小时定位 <code>telemetry</code> 相关模块。你不一定要看懂全部，但有这个能力本身就改变了你和使用工具的权力关系。</p>
+<p><strong>网络隔离。</strong> 实测有效：在 <code>/etc/hosts</code> 中加入 <code>127.0.0.1 api.anthropic.com</code>，同时配第三方模型（如 DeepSeek），Claude Code 正常工作。隐写编码的提示词发给第三方端点，Anthropic 收不到。Claude Code 客户端不强制连接 Anthropic API 用于许可证校验。</p>
+<p><strong>代理清洗。</strong> 如果你仍需要用 Anthropic API，可以在本地代理层做文本替换——把发往 <code>api.anthropic.com</code> 的请求体中的日期格式从斜杠还原为连字符，三种撇号统一替换为 <code>U+2019</code>。这样隐写标记在离开你的机器之前就被洗掉了。技术门槛比 hosts 屏蔽高，但让你可以继续用自己的 API key 而不被标记。</p>
+<p>但这些只能切断已知的隐写通道。二进制里那些 XOR 逻辑还在跑，是否有第二套编码机制、是否连其他域名、是否有独立的遥测管道——暂时还没人给出答案。</p>
+<p><strong>隔离关键项目。</strong> 如果你的代码涉及商业机密或个人敏感数据，不要在 Claude Code 上直接处理。这句话我以前不会说——Claude Code 的本地沙箱设计上应该保护隐私——现在我不知道它还会收集什么。</p>
+<p><strong>关注替代工具。</strong> 如果你想要一个不会针对中国用户做手脚的 AI 编程助手，两条路：</p>
+<ul>
+<li>国内的 <a href="https://docs.bigmodel.cn/cn/coding-plan/tool/zcode" target="_blank" rel="noopener noreffer ">ZCode</a>（智谱出品），功能对齐 Codex。如果你只是想找国内替代，可以用它。</li>
+<li>开源的 <a href="https://github.com/anomalyco/opencode" target="_blank" rel="noopener noreffer ">OpenCode</a>，18 万 stars 持续活跃，代码全公开、每行可审计。全开源意味着任何国家的开发者都能独立验证它没有后门<sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup>。</li>
+</ul>
+<p><strong>如果决定停用，这是你自己的选择。</strong> 我跟你的分歧可以是技术判断上的，而不是价值观上的。我不会因为你做了不同的决定而觉得你不理性。</p>
+<hr>
+<h2 id="5-这件事不只关于-claude-code">5. 这件事不只关于 Claude Code</h2>
+<p>最后说一句。</p>
+<p>这件事的本质，是<strong>任何集中化的、闭源的 AI 基础设施，都可以在用户不知情的情况下变成武器。</strong> Anthropic 这次被抓到了。下一次，抓到的会是谁，抓不到的还有多少——谁也说不准。</p>
+<p>Unicode 隐写只是一个手段。明天可以是 token 长度差异、可以是 embedding 向量偏移、可以是 prompt 里的&quot;正常&quot;措辞变化。数学上能编码信息的手段，在 AI 的管道里都能变成隐写通道。这意味着你不可能只靠&quot;审查输出&quot;来确保安全——真正让人安心的唯一方式是<strong>整个 Agent 的运行环境都是可审计的、不被单一厂商控制的。</strong></p>
+<hr>
+<p><em>写于 2026 年 7 月 1 日。我在 Claude Code 对 Claude Code 本身的问题进行了分析。这件事的全部讽刺，都在这句话里。</em></p>
+<hr>
+<h2 id="参考资料">参考资料</h2>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p>Anthropic npm 打包失误泄漏 51.2 万行源码——<a href="https://pub.towardsai.net/anthropic-blocked-china-from-using-claude-then-accidentally-gave-them-the-entire-source-code-ed31321d141b" target="_blank" rel="noopener noreffer ">Towards AI 报道</a>；<a href="https://cloud.tencent.com.cn/developer/article/2689122" target="_blank" rel="noopener noreffer ">腾讯科技中文分析</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2">
+<p>MITRE ATT&amp;CK C0062——<a href="https://attack.mitre.org/campaigns/C0062/" target="_blank" rel="noopener noreffer ">Anthropic AI-orchestrated Campaign</a>，2026 年 4 月 20 日收录&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3">
+<p>隐写机制技术细节——<a href="https://www.gm7.org/archives/121607" target="_blank" rel="noopener noreffer ">FreeBuf / 信息安全知识库</a>；<a href="https://locdd.com/t/topic/65609/4" target="_blank" rel="noopener noreffer ">开发者社区实测验证</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a>&#160;<a href="#fnref1:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4">
+<p>147 个中国域名黑名单及 XOR 加密——<a href="https://www.80aj.com/2026/06/30/anthropic-clude-telemetry-fingerprinting/" target="_blank" rel="noopener noreffer ">80aj 技术分析</a>&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5">
+<p>ZCode——<a href="https://docs.bigmodel.cn/cn/coding-plan/tool/zcode" target="_blank" rel="noopener noreffer ">智谱 AI 编程 Desktop</a>；OpenCode——<a href="https://github.com/anomalyco/opencode" target="_blank" rel="noopener noreffer ">开源 AI 编程 Agent</a>&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2026-07-01</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/2026/07/01/claude-code-backdoor-analysis/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/07/01/claude-code-backdoor-analysis/" data-title="Claude Code 隐写后门事件：当你信任的工具开始欺骗你" data-hashtags="tech,ai,claude code,security,privacy,backdoor,steganography"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/07/01/claude-code-backdoor-analysis/" data-hashtag="tech"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/07/01/claude-code-backdoor-analysis/" data-title="Claude Code 隐写后门事件：当你信任的工具开始欺骗你"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/07/01/claude-code-backdoor-analysis/" data-title="Claude Code 隐写后门事件：当你信任的工具开始欺骗你"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/07/01/claude-code-backdoor-analysis/" data-title="Claude Code 隐写后门事件：当你信任的工具开始欺骗你"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微信" onclick="var d=document.getElementById('wechat-qr-9f75d6ccdc813166531808fd1b304e4e');d.style.display=d.style.display==='none'?'block':'none';return false"><i class="fab fa-weixin fa-fw" aria-hidden="true"></i></a>
+        <div id="wechat-qr-9f75d6ccdc813166531808fd1b304e4e" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:9999" onclick="this.style.display='none'">
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;padding:20px;border-radius:8px;text-align:center">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https%3a%2f%2fwhitefirer.org%2fposts%2f2026%2f07%2f01%2fclaude-code-backdoor-analysis%2f" alt="微信扫一扫" style="display:block">
+                <p style="margin:10px 0 0;font-size:14px;color:#333">微信扫一扫 · 分享文章</p>
+            </div>
+        </div></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/tech/">技术</a>,&nbsp;<a href="/tags/ai/">Ai</a>,&nbsp;<a href="/tags/claude-code/">Claude Code</a>,&nbsp;<a href="/tags/security/">Security</a>,&nbsp;<a href="/tags/privacy/">Privacy</a>,&nbsp;<a href="/tags/backdoor/">Backdoor</a>,&nbsp;<a href="/tags/steganography/">Steganography</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2026/06/25/claude-fable5-prompt-analysis/" class="prev" rel="prev" title="Claude Fable 5 提示词完整逆向：从系统指令看 Anthropic 的 AI 工程哲学"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Claude Fable 5 提示词完整逆向：从系统指令看 Anthropic 的 AI 工程哲学</a></div>
+
+</div>
+<div id="comments"><div id="waline" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://waline.js.org/">Waline</a>.
+            </noscript><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article>
+<script>(function(){var b=document.getElementById('reading-progress');if(!b)return;function u(){var h=document.documentElement,s=h.scrollHeight-h.clientHeight,w=s>0?Math.min((h.scrollTop||document.body.scrollTop)/s*100,100):0;b.style.width=w+'%'}window.addEventListener('scroll',u,{passive:true});u()})();</script></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.131.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span><img src="https://hits.sh/whitefirer.org.svg" alt="" aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;clip:rect(0 0 0 0);pointer-events:none"></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/waline/waline.min.css"><script type="text/javascript" src="/lib/waline/waline.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config=Object.assign(window.config||{},{"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Comments","categoryId":"DIC_kwDOH2gmzc4CQ_fM","darkTheme":"dark","emitMetadata":"0","inputPosition":"bottom","lang":"zh-CN","lazyLoading":true,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"whitefirer/whitefirer.github.io","repoId":"R_kgDOH2gmzQ"},"waline":{"dark":"auto","el":"#waline","lang":"zh-CN","pageSize":10,"requiredMeta":["nick","mail"],"serverURL":"https://comment.whitefirer.org"}},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}});</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">!function(){function svgToPng(svg,cb){var c=svg.cloneNode(!0),d=new XMLSerializer().serializeToString(c),img=new Image(),cv=document.createElement('canvas'),w=c.viewBox.animVal.width||c.getBoundingClientRect().width||400,h=c.viewBox.animVal.height||c.getBoundingClientRect().height||300,s=2;cv.width=w*s,cv.height=h*s;var ctx=cv.getContext('2d'),b=new Blob([d],{type:'image/svg+xml;charset=utf-8'}),u=URL.createObjectURL(b);img.onload=function(){ctx.fillStyle='#fff',ctx.fillRect(0,0,cv.width,cv.height),ctx.drawImage(img,0,0,cv.width,cv.height),URL.revokeObjectURL(u),cv.toBlob(function(blob){var a=document.createElement('a');a.href=URL.createObjectURL(blob);var id=svg.id||'diagram';a.download=id+'.png',a.click(),URL.revokeObjectURL(a.href),cb&&cb()})},img.src=u}function addSaveBtn(svg){if(svg.closest('.mermaid-stage,.mermaid-fs-overlay,.mermaid-wrapper,.mermaid-toolbar,.svg-diagram-wrap'))return;var wrap=document.createElement('div');wrap.className='svg-diagram-wrap';var d=svg.style.display||'block',w=svg.style.width||svg.getAttribute('width')||'100%',mw=svg.style.maxWidth||'',m=svg.style.margin||'';wrap.style.cssText='position:relative;display:'+d+';width:'+w+';'+(mw?'max-width:'+mw+';':'')+(m?'margin:'+m+';':'')+'line-height:0';svg.style.display='block';svg.style.width='100%';svg.style.maxWidth='';svg.style.margin='0';svg.parentNode.insertBefore(wrap,svg);wrap.appendChild(svg);var bar=document.createElement('div');bar.style.cssText='text-align:right;padding-top:6px';var btn=document.createElement('button');btn.className='svg-save-btn',btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span style="vertical-align:middle;font-size:12px">保存图片</span>',btn.style.cssText='background:none;border:1px solid transparent;border-radius:4px;padding:2px 6px;cursor:pointer;color:#b0b7c3;font-family:system-ui,sans-serif;line-height:1';bar.appendChild(btn);wrap.appendChild(bar);btn.onmouseenter=function(){btn.style.color='#6366f1';btn.style.borderColor='#e5e7eb'};btn.onmouseleave=function(){btn.style.color='#b0b7c3';btn.style.borderColor='transparent'};btn.onclick=function(e){e.stopPropagation();var orig=btn.innerHTML;btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span style="vertical-align:middle;font-size:12px">导出中...</span>';btn.disabled=!0;svgToPng(svg,function(){btn.innerHTML=orig;btn.disabled=!1})}}function initSvgButtons(){document.querySelectorAll('.content svg').forEach(function(svg){addSaveBtn(svg)})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initSvgButtons);else initSvgButtons()}()</script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-70Q8REKE17', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-70Q8REKE17" async></script></body>
+</html>
