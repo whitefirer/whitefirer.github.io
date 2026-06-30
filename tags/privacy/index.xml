@@ -10,7 +10,7 @@
     <pubDate>Wed, 01 Jul 2026 01:37:22 &#43;0800</pubDate>
     <author>whitefirer</author>
     <guid>https://whitefirer.org/posts/2026/07/01/claude-code-backdoor-analysis/</guid>
-    <description><![CDATA[我写了六篇文章教你用好 Claude Code。现在它用 Unicode 隐写标记你是中国用户、用 XOR 91 加密你的环境信息。我不得不写这篇——这次不是意外，而是有意为之。 前言]]></description>
+    <description><![CDATA[我写了六篇文章教你用好 Claude Code。现在它用 Unicode 隐写标记你是中国用户、用 XOR 91 加密你的环境信息。我不得不进行分析并写下了这篇。 前言 今年 3 月 31 日，A]]></description>
 </item>
 </channel>
 </rss>
