@@ -81,7 +81,7 @@
 
 我们在写作本文的机器上对 Claude Code v2.1.195 二进制做了独立验证。`strings` 提取确认：
 
-```text
+```bash
 $ strings /opt/claude-code/bin/claude | grep -iE "shanghai|fingerprint|chinese|modifier"
 
 Asia:Shanghai
