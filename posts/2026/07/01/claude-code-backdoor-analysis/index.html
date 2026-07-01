@@ -12,7 +12,7 @@
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
     <meta property="article:published_time" content="2026-07-01T01:37:22+08:00">
-    <meta property="article:modified_time" content="2026-07-01T04:14:23+08:00">
+    <meta property="article:modified_time" content="2026-07-01T20:11:27+08:00">
     <meta property="article:tag" content="技术">
     <meta property="article:tag" content="Ai">
     <meta property="article:tag" content="Claude Code">
@@ -46,8 +46,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/whitefirer.org\/posts\/2026\/07\/01\/claude-code-backdoor-analysis\/"
-        },"genre": "posts","keywords": "tech, ai, claude code, security, privacy, backdoor, steganography","wordcount":  5850 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2026\/07\/01\/claude-code-backdoor-analysis\/","datePublished": "2026-07-01T01:37:22+08:00","dateModified": "2026-07-01T04:14:23+08:00","license": "2022©️whitefirer","publisher": {
+        },"genre": "posts","keywords": "tech, ai, claude code, security, privacy, backdoor, steganography","wordcount":  6013 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/07\/01\/claude-code-backdoor-analysis\/","datePublished": "2026-07-01T01:37:22+08:00","dateModified": "2026-07-01T20:11:27+08:00","license": "2022©️whitefirer","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -151,8 +151,8 @@
     <article class="page single"><div style="display:flex;align-items:baseline;gap:0">
         <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">Claude Code 隐写后门事件：当你信任的工具开始欺骗你</h1></div><h2 class="single-subtitle">Unicode 替换标记中国用户、XOR 91 加密环境指纹、MITRE 收录为国家级间谍活动——这次不是意外，而是有意为之</h2><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-07-01">2026-07-01</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 5850 字&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 12 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/07/01/claude-code-backdoor-analysis.svg" alt="" aria-hidden="true" loading="eager"
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-07-01">2026-07-01</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 6013 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 13 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/07/01/claude-code-backdoor-analysis.svg" alt="" aria-hidden="true" loading="eager"
      style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none"></div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
@@ -198,7 +198,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 120" width="100%" style="max-width:680px;display:block;margin:1.2em auto"><defs><filter id="sh"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/></filter></defs><rect x="30" y="40" width="80" height="24" rx="12" fill="#6366f1"/><text x="70" y="56" text-anchor="middle" fill="#fff" font-size="10" font-weight="600" font-family="system-ui,sans-serif">3月31日</text><text x="70" y="80" text-anchor="middle" fill="#6b7280" font-size="9" font-family="system-ui,sans-serif">源码泄漏</text><line x1="110" y1="52" x2="178" y2="52" stroke="#d1d5db" stroke-width="1.5"/><polygon points="175,49 180,52 175,55" fill="#d1d5db"/><rect x="185" y="40" width="80" height="24" rx="12" fill="#f59e0b"/><text x="225" y="56" text-anchor="middle" fill="#fff" font-size="10" font-weight="600" font-family="system-ui,sans-serif">4月2日</text><text x="225" y="80" text-anchor="middle" fill="#6b7280" font-size="9" font-family="system-ui,sans-serif">v2.1.91 植入</text><line x1="265" y1="52" x2="333" y2="52" stroke="#d1d5db" stroke-width="1.5"/><polygon points="330,49 335,52 330,55" fill="#d1d5db"/><rect x="340" y="40" width="88" height="24" rx="12" fill="#ef4444"/><text x="384" y="56" text-anchor="middle" fill="#fff" font-size="10" font-weight="600" font-family="system-ui,sans-serif">4月20日</text><text x="384" y="80" text-anchor="middle" fill="#6b7280" font-size="9" font-family="system-ui,sans-serif">MITRE C0062</text><line x1="428" y1="52" x2="496" y2="52" stroke="#d1d5db" stroke-width="1.5"/><polygon points="493,49 498,52 493,55" fill="#d1d5db"/><rect x="503" y="40" width="80" height="24" rx="12" fill="#10b981"/><text x="543" y="56" text-anchor="middle" fill="#fff" font-size="10" font-weight="600" font-family="system-ui,sans-serif">6月下旬</text><text x="543" y="80" text-anchor="middle" fill="#6b7280" font-size="9" font-family="system-ui,sans-serif">Reddit 发现</text><rect x="20" y="96" width="640" height="18" rx="4" fill="#f3f4f6"/><text x="340" y="109" text-anchor="middle" fill="#6b7280" font-size="9" font-family="system-ui,sans-serif">3个月，从隐蔽植入到全球曝光</text></svg>
 <figcaption class="image-caption">图 1：事件时间线</figcaption>
 </figure>
-<p>截止到 2026 年 7 月 1 日，Anthropic 官方尚未对本次隐写检测事件做出公开回应。</p>
+<p>7 月 1 日，Anthropic Claude Code 团队成员 Thariq Shihipar 做出回应：确认该机制为今年 3 月上线的一项实验，目的在于防止未经授权的转售商滥用账号并防范模型蒸馏。其表示团队此后已落地更强的缓解措施，原本也计划下线该实验，相关 PR 已经合并，预计在明日发布的版本中完全回滚。</p>
+<p>Anthropic 确认了机制的存在，称之为&quot;实验&quot;而非功能。他们没有解释为什么这项实验需要 XOR 加密混淆、为什么 changelog 从未提及、为什么选择隐写通道而非透明日志。</p>
 <p>下面客观还原它到底做了什么、怎么做的，然后讲为什么这件事对你的影响比 Fable 5 提示词泄漏大得多。</p>
 <hr>
 <h2 id="1-它到底做了什么">1. 它到底做了什么</h2>
