@@ -4,9 +4,17 @@
         <link>https://whitefirer.org/</link>
         <description>This is my cool site</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Wed, 01 Jul 2026 01:37:22 &#43;0800</lastBuildDate>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Thu, 02 Jul 2026 02:13:00 &#43;0800</lastBuildDate>
             <atom:link href="https://whitefirer.org/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>英伟达含量为零的开源模型，在 OpenRouter 登顶 Hermes 榜——中国编程 AI 的还手方式</title>
+    <link>https://whitefirer.org/posts/2026/07/02/longcat-china-coding-ai/</link>
+    <pubDate>Thu, 02 Jul 2026 02:13:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/07/02/longcat-china-coding-ai/</guid>
+    <description><![CDATA[英伟达含量为零。MIT 开源。OpenRouter 登顶 Hermes 榜。出口管制想要的不是这个——但得到的结果就是这个。 前言 6 月 30 日，美团正式发布并开源了]]></description>
+</item>
+<item>
     <title>Claude Code 隐写后门事件：当你信任的工具开始欺骗你</title>
     <link>https://whitefirer.org/posts/2026/07/01/claude-code-backdoor-analysis/</link>
     <pubDate>Wed, 01 Jul 2026 01:37:22 &#43;0800</pubDate>
@@ -77,14 +85,6 @@
     <author>whitefirer</author>
     <guid>https://whitefirer.org/posts/2026/05/15/ebpf-ai-service-mesh/</guid>
     <description><![CDATA[服务网格走过了两个阶段。第一个阶段是 Sidecar——每个 Pod 挂一个 Envoy，接管流量，上报指标。做得漂亮，但代价不小。第二个阶段是 Side]]></description>
-</item>
-<item>
-    <title>Need Is All You Need</title>
-    <link>https://whitefirer.org/posts/2026/05/13/need-is-all-you-need/</link>
-    <pubDate>Wed, 13 May 2026 22:17:43 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/posts/2026/05/13/need-is-all-you-need/</guid>
-    <description><![CDATA[2017 年，一篇论文的标题震动了 AI 圈。五个单词，没一个多余：Attention Is All You Need。 当时没有人会知道，这句话会改写整个行业的底层架构。T]]></description>
 </item>
 </channel>
 </rss>

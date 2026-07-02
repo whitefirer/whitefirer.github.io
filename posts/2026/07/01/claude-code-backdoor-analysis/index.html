@@ -27,7 +27,7 @@
 <meta name="apple-mobile-web-app-title" content="赛博闲谭-whitefirer"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-        <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/07/01/claude-code-backdoor-analysis/" /><link rel="prev" href="https://whitefirer.org/posts/2026/06/25/claude-fable5-prompt-analysis/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/07/01/claude-code-backdoor-analysis/" /><link rel="prev" href="https://whitefirer.org/posts/2026/06/25/claude-fable5-prompt-analysis/" /><link rel="next" href="https://whitefirer.org/posts/2026/07/02/longcat-china-coding-ai/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta property="og:title" content="Claude Code 隐写后门事件：当你信任的工具开始欺骗你 - 赛博闲谭-whitefirer" />
 <meta property="og:description" content="客观还原 Claude Code v2.1.91 隐写后门的技术原理：时区检测、147 个中国域名黑名单、Unicode 撇号替换编码、XOR 密钥加密。分析信任模型断裂、用户隐私侵犯、企业伦理失格与地缘政治武器化。" />
@@ -444,7 +444,8 @@
         </section>
     </div>
 
-    <div class="post-nav"><a href="/posts/2026/06/25/claude-fable5-prompt-analysis/" class="prev" rel="prev" title="Claude Fable 5 提示词完整逆向：从系统指令看 Anthropic 的 AI 工程哲学"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Claude Fable 5 提示词完整逆向：从系统指令看 Anthropic 的 AI 工程哲学</a></div>
+    <div class="post-nav"><a href="/posts/2026/06/25/claude-fable5-prompt-analysis/" class="prev" rel="prev" title="Claude Fable 5 提示词完整逆向：从系统指令看 Anthropic 的 AI 工程哲学"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Claude Fable 5 提示词完整逆向：从系统指令看 Anthropic 的 AI 工程哲学</a>
+            <a href="/posts/2026/07/02/longcat-china-coding-ai/" class="next" rel="next" title="英伟达含量为零的开源模型，在 OpenRouter 登顶 Hermes 榜——中国编程 AI 的还手方式">英伟达含量为零的开源模型，在 OpenRouter 登顶 Hermes 榜——中国编程 AI 的还手方式<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 
 </div>
 <div id="comments"><div id="waline" class="comment"></div><noscript>

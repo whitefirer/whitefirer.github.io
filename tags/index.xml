@@ -4,12 +4,52 @@
         <link>https://whitefirer.org/tags/</link>
         <description>Tags - 标签 - 赛博闲谭-whitefirer</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Wed, 01 Jul 2026 01:37:22 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Thu, 02 Jul 2026 02:13:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/" rel="self" type="application/rss+xml" /><item>
     <title>Ai</title>
     <link>https://whitefirer.org/tags/ai/</link>
-    <pubDate>Wed, 01 Jul 2026 01:37:22 &#43;0800</pubDate>
+    <pubDate>Thu, 02 Jul 2026 02:13:00 &#43;0800</pubDate>
     <author>whitefirer</author>
     <guid>https://whitefirer.org/tags/ai/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>China</title>
+    <link>https://whitefirer.org/tags/china/</link>
+    <pubDate>Thu, 02 Jul 2026 02:13:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/china/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Glm</title>
+    <link>https://whitefirer.org/tags/glm/</link>
+    <pubDate>Thu, 02 Jul 2026 02:13:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/glm/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Longcat</title>
+    <link>https://whitefirer.org/tags/longcat/</link>
+    <pubDate>Thu, 02 Jul 2026 02:13:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/longcat/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Meituan</title>
+    <link>https://whitefirer.org/tags/meituan/</link>
+    <pubDate>Thu, 02 Jul 2026 02:13:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/meituan/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Opensource</title>
+    <link>https://whitefirer.org/tags/opensource/</link>
+    <pubDate>Thu, 02 Jul 2026 02:13:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/opensource/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
@@ -42,46 +82,6 @@
     <pubDate>Wed, 01 Jul 2026 01:37:22 &#43;0800</pubDate>
     <author>whitefirer</author>
     <guid>https://whitefirer.org/tags/security/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Steganography</title>
-    <link>https://whitefirer.org/tags/steganography/</link>
-    <pubDate>Wed, 01 Jul 2026 01:37:22 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/steganography/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Claude</title>
-    <link>https://whitefirer.org/tags/claude/</link>
-    <pubDate>Thu, 25 Jun 2026 20:00:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/claude/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Fable5</title>
-    <link>https://whitefirer.org/tags/fable5/</link>
-    <pubDate>Thu, 25 Jun 2026 20:00:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/fable5/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Prompt Engineering</title>
-    <link>https://whitefirer.org/tags/prompt-engineering/</link>
-    <pubDate>Thu, 25 Jun 2026 20:00:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/prompt-engineering/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>System Prompt</title>
-    <link>https://whitefirer.org/tags/system-prompt/</link>
-    <pubDate>Thu, 25 Jun 2026 20:00:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/system-prompt/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>

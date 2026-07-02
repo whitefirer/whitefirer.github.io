@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Longcat - 标签 - 赛博闲谭-whitefirer</title>
+        <link>https://whitefirer.org/tags/longcat/</link>
+        <description>Longcat - 标签 - 赛博闲谭-whitefirer</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Thu, 02 Jul 2026 02:13:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/longcat/" rel="self" type="application/rss+xml" /><item>
+    <title>英伟达含量为零的开源模型，在 OpenRouter 登顶 Hermes 榜——中国编程 AI 的还手方式</title>
+    <link>https://whitefirer.org/posts/2026/07/02/longcat-china-coding-ai/</link>
+    <pubDate>Thu, 02 Jul 2026 02:13:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/07/02/longcat-china-coding-ai/</guid>
+    <description><![CDATA[英伟达含量为零。MIT 开源。OpenRouter 登顶 Hermes 榜。出口管制想要的不是这个——但得到的结果就是这个。 前言 6 月 30 日，美团正式发布并开源了]]></description>
+</item>
+</channel>
+</rss>
