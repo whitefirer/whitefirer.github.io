@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Harness Engineering 入门：从 Prompt 到 Context 到 Harness，Agent 工程的最后一层 - 赛博闲谭-whitefirer</title><meta name="Description" content="从零理解 Harness Engineering：Prompt ⊂ Context ⊂ Harness 三层模型拆解、六大核心组件、为什么同一个模型不同 Harness 性能差 6 倍。结尾给出一个可运行的最小 Harness 示例，读完就能动手。"><meta property="og:url" content="https://whitefirer.org/posts/2026/07/03/harness-engineering-intro/">
+  <meta property="og:site_name" content="赛博闲谭-whitefirer">
+  <meta property="og:title" content="Harness Engineering 入门：从 Prompt 到 Context 到 Harness，Agent 工程的最后一层">
+  <meta property="og:description" content="从零理解 Harness Engineering：Prompt ⊂ Context ⊂ Harness 三层模型拆解、六大核心组件、为什么同一个模型不同 Harness 性能差 6 倍。结尾给出一个可运行的最小 Harness 示例，读完就能动手。">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-07-03T03:17:00+08:00">
+    <meta property="article:modified_time" content="2026-07-12T20:48:46+08:00">
+    <meta property="article:tag" content="技术">
+    <meta property="article:tag" content="Ai">
+    <meta property="article:tag" content="Harness Engineering">
+    <meta property="article:tag" content="Agent">
+    <meta property="article:tag" content="Claude Code">
+    <meta property="article:tag" content="Prompt Engineering">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Harness Engineering 入门：从 Prompt 到 Context 到 Harness，Agent 工程的最后一层">
+  <meta name="twitter:description" content="从零理解 Harness Engineering：Prompt ⊂ Context ⊂ Harness 三层模型拆解、六大核心组件、为什么同一个模型不同 Harness 性能差 6 倍。结尾给出一个可运行的最小 Harness 示例，读完就能动手。">
+<meta name="application-name" content="赛博闲谭-whitefirer">
+<meta name="apple-mobile-web-app-title" content="赛博闲谭-whitefirer"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/07/03/harness-engineering-intro/" /><link rel="prev" href="https://whitefirer.org/posts/2026/07/02/longcat-china-coding-ai/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta property="og:title" content="Harness Engineering 入门：从 Prompt 到 Context 到 Harness，Agent 工程的最后一层 - 赛博闲谭-whitefirer" />
+<meta property="og:description" content="从零理解 Harness Engineering：Prompt ⊂ Context ⊂ Harness 三层模型拆解、六大核心组件、为什么同一个模型不同 Harness 性能差 6 倍。结尾给出一个可运行的最小 Harness 示例，读完就能动手。" />
+<meta property="og:image" content="https://whitefirer.org/og-default.png" />
+<meta property="og:url" content="https://whitefirer.org/posts/2026/07/03/harness-engineering-intro/" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="赛博闲谭-whitefirer" /><meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Harness Engineering 入门：从 Prompt 到 Context 到 Harness，Agent 工程的最后一层 - 赛博闲谭-whitefirer" />
+<meta name="twitter:description" content="从零理解 Harness Engineering：Prompt ⊂ Context ⊂ Harness 三层模型拆解、六大核心组件、为什么同一个模型不同 Harness 性能差 6 倍。结尾给出一个可运行的最小 Harness 示例，读完就能动手。" />
+<meta name="twitter:image" content="https://whitefirer.org/og-default.png" /><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Harness Engineering 入门：从 Prompt 到 Context 到 Harness，Agent 工程的最后一层",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/whitefirer.org\/posts\/2026\/07\/03\/harness-engineering-intro\/"
+        },"genre": "posts","keywords": "tech, ai, harness engineering, agent, claude code, prompt engineering","wordcount":  3945 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/07\/03\/harness-engineering-intro\/","datePublished": "2026-07-03T03:17:00+08:00","dateModified": "2026-07-12T20:48:46+08:00","license": "2022©️whitefirer","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "whitefirer"
+            },"description": "从零理解 Harness Engineering：Prompt ⊂ Context ⊂ Harness 三层模型拆解、六大核心组件、为什么同一个模型不同 Harness 性能差 6 倍。结尾给出一个可运行的最小 Harness 示例，读完就能动手。"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="赛博闲谭-whitefirer">赛博闲谭-whitefirer</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/series/ai-zatan/"> AI 杂谈 </a><div class="menu-item has-dropdown">
+                            <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                            <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a><a class="dropdown-item" href="/series/harness-engineering/"> Harness Engineering </a></div>
+                        </div><a class="menu-item" href="/series/%e5%9f%ba%e7%a1%80%e6%9e%b6%e6%9e%84/"> 基础架构 </a><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/2026/07/03/harness-engineering-intro/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header>
+<script>
+(function() {
+    document.querySelectorAll('.has-dropdown .dropdown-toggle').forEach(function(toggle) {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var parent = this.closest('.has-dropdown');
+            parent.classList.toggle('open');
+        });
+    });
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.has-dropdown.open').forEach(function(d) {
+            d.classList.remove('open');
+        });
+    });
+})();
+</script><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="赛博闲谭-whitefirer">赛博闲谭-whitefirer</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/series/ai-zatan/" title="">AI 杂谈</a><div class="menu-item has-dropdown">
+                        <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                        <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a><a class="dropdown-item" href="/series/harness-engineering/"> Harness Engineering </a></div>
+                    </div><a class="menu-item" href="/series/%e5%9f%ba%e7%a1%80%e6%9e%b6%e6%9e%84/" title="">基础架构</a><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/posts/2026/07/03/harness-engineering-intro/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><div id="reading-progress"></div>
+    <article class="page single"><div style="display:flex;align-items:baseline;gap:0">
+        <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">Harness Engineering 入门：从 Prompt 到 Context 到 Harness，Agent 工程的最后一层</h1></div><h2 class="single-subtitle">提示词管一句话，上下文管一个窗口，Harness 管 Agent 的整个运行环境——怎么跑、跑错了怎么纠、怎么让同一个错误不再犯第二次</h2><div class="post-series">
+                <a href="/series/harness-engineering/"><i class="fas fa-layer-group fa-fw" aria-hidden="true"></i>AI 编程·Harness Engineering</a>
+            </div><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-07-03">2026-07-03</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3945 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 8 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/07/03/harness-engineering-intro.svg" alt="" aria-hidden="true" loading="eager"
+     style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none"></div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#前言">前言</a></li>
+    <li><a href="#1-从一个翻车现场说起">1. 从一个翻车现场说起</a></li>
+    <li><a href="#2-三层模型prompt--context--harness">2. 三层模型：Prompt ⊂ Context ⊂ Harness</a></li>
+    <li><a href="#3-harness-的六个组件">3. Harness 的六个组件</a>
+      <ul>
+        <li><a href="#31-结构化上下文管理">3.1 结构化上下文管理</a></li>
+        <li><a href="#32-工具系统设计">3.2 工具系统设计</a></li>
+        <li><a href="#33-执行编排">3.3 执行编排</a></li>
+        <li><a href="#34-状态与记忆管理">3.4 状态与记忆管理</a></li>
+        <li><a href="#35-独立评估与可观测性">3.5 独立评估与可观测性</a></li>
+        <li><a href="#36-约束验证与恢复">3.6 约束、验证与恢复</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-为什么是现在">4. 为什么是现在</a></li>
+    <li><a href="#5-搭一个最小-harness">5. 搭一个最小 Harness</a></li>
+    <li><a href="#6-和-context-engineering-的关系">6. 和 Context Engineering 的关系</a></li>
+    <li><a href="#7-结语">7. 结语</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><blockquote>
+<p>提示词管一句话，上下文管一个窗口，Harness 管 Agent 的整个运行环境——怎么跑、跑错了怎么纠、怎么让同一个错误不再犯第二次。</p>
+</blockquote>
+<hr>
+<h2 id="前言">前言</h2>
+<p><a href="/posts/2026/06/25/claude-fable5-prompt-analysis/" rel="">上一篇</a>拆了 Fable 5 的 120K 字符系统提示词。拆完之后我一直在想一个问题：Fable 5 的提示词里有一半篇幅在定义工具、写搜索规则、配 MCP 连接器——这些东西本质上不是&quot;告诉模型怎么说话&quot;，是<strong>给模型搭了一个可以安全运行的工作环境。</strong></p>
+<p>这个工作环境有一个名字，叫 Harness。</p>
+<p>Mitchell Hashimoto（HashiCorp 创始人，Terraform 作者）在今年 2 月提了这个概念。他说了句很戳我的话：</p>
+<blockquote>
+<p>Every time an agent makes a mistake, you don&rsquo;t just tell it to do better next time. You change the system so that specific mistake becomes <strong>structurally harder to repeat</strong>.</p>
+</blockquote>
+<p>翻译：每次 Agent 犯错，你不是对它说&quot;下次注意&quot;。你直接把系统改了，让这个错从此犯不了。</p>
+<p>Harness 这个词原义是马的挽具——缰绳、马鞍、嚼子、笼头，一套完整的控制系统。马有力量，但没挽具就是脱缰的野兽。AI 同理：模型是马，Harness 是挽具。这就是 Harness Engineering。</p>
+<hr>
+<h2 id="1-从一个翻车现场说起">1. 从一个翻车现场说起</h2>
+<p>先看一个真实场景。你用 Claude Code 写了一个代码审查 Agent，配了 prompt：&ldquo;请审查以下代码，检查类型注解、异常处理、资源管理。&rdquo; Agent 跑完，回了一句：</p>
+<blockquote>
+<p>代码看起来不错，类型注解基本齐全，异常处理也覆盖了主要路径。Looks good.</p>
+</blockquote>
+<p>但你手动翻了一下——三个 <code>open()</code> 调用没写 <code>with</code>，两个函数缺返回类型，还有一个 <code>except:</code> 裸捕获。Agent 跳过了全部问题，自信地说没问题。</p>
+<p>你怎么办？很多人第一反应是<strong>改 prompt</strong>：在提示词里写得更细、加更多&quot;必须检查&quot;的条款。写过提示词的人都懂——改完之后效果好一阵，过了两天又犯，继续微调，像修漏水的管子。</p>
+<p>问题不在 prompt 上。问题在你只告诉 Agent&quot;要做对&quot;，但没建任何东西来<strong>验证它做对了没有</strong>。</p>
+<p>这就到了 Harness 该上场的时候。</p>
+<hr>
+<h2 id="2-三层模型prompt--context--harness">2. 三层模型：Prompt ⊂ Context ⊂ Harness</h2>
+<p>把 AI Agent 的工程体系想象成三层。我做了一张图，和前两篇 Context Engineering、Fable 5 分析的视角接在一起：</p>
+<figure>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 360" width="100%" style="max-width:680px;display:block;margin:1.2em auto"><defs><linearGradient id="hp" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#fbbf24"/></linearGradient><linearGradient id="hc" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#818cf8"/></linearGradient><linearGradient id="hh" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#34d399"/></linearGradient><filter id="sh"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/></filter></defs><!-- Layer 1: Prompt --><g filter="url(#sh)"><rect x="40" y="12" width="600" height="68" rx="8" fill="#fff" stroke="#f59e0b" stroke-width="1.5"/><rect x="40" y="12" width="600" height="30" rx="8" fill="url(#hp)"/><rect x="40" y="34" width="600" height="8" fill="url(#hp)"/><text x="56" y="32" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">① Prompt Engineering — 管一句话</text><text x="56" y="60" fill="#374151" font-size="11" font-family="system-ui,sans-serif">告诉模型"做什么"和"不能做什么"。但模型有主观能动性，它会绕、会忘、会偷懒。</text></g><!-- Arrow --><line x1="340" y1="80" x2="340" y2="102" stroke="#d1d5db" stroke-width="1.5"/><polygon points="336,101 340,105 344,101" fill="#d1d5db"/><!-- Layer 2: Context --><g filter="url(#sh)"><rect x="40" y="106" width="600" height="68" rx="8" fill="#fff" stroke="#6366f1" stroke-width="1.5"/><rect x="40" y="106" width="600" height="30" rx="8" fill="url(#hc)"/><rect x="40" y="128" width="600" height="8" fill="url(#hc)"/><text x="56" y="126" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">② Context Engineering — 管一个窗口</text><text x="56" y="154" fill="#374151" font-size="11" font-family="system-ui,sans-serif">管 token 预算、缓存策略、防污染——每一段上下文都要值回它的 token 成本。</text></g><!-- Arrow --><line x1="340" y1="174" x2="340" y2="196" stroke="#d1d5db" stroke-width="1.5"/><polygon points="336,195 340,199 344,195" fill="#d1d5db"/><!-- Layer 3: Harness --><g filter="url(#sh)"><rect x="40" y="200" width="600" height="82" rx="8" fill="#fff" stroke="#10b981" stroke-width="2"/><rect x="40" y="200" width="600" height="34" rx="8" fill="url(#hh)"/><rect x="40" y="226" width="600" height="8" fill="url(#hh)"/><text x="56" y="224" fill="#fff" font-size="14" font-weight="700" font-family="system-ui,sans-serif">③ Harness Engineering — 管整个运行环境</text><rect x="540" y="204" width="88" height="20" rx="10" fill="#fff" opacity="0.20"/><text x="584" y="218" text-anchor="middle" fill="#fff" font-size="9" font-weight="600" font-family="system-ui,sans-serif">本文主题</text><text x="56" y="252" fill="#374151" font-size="11" font-family="system-ui,sans-serif">怎么跑、跑错了怎么纠、输出怎么验证、同一个错误怎么从环境中铲掉。</text><text x="56" y="268" fill="#6b7280" font-size="10" font-family="system-ui,sans-serif">Prompt 是方向盘，Context 是路况信息，Harness 是安全带、刹车、护栏、黑匣子。</text></g><!-- Sub-layers of Harness --><g opacity="0.6"><rect x="60" y="300" width="110" height="20" rx="4" fill="#d1fae5"/><text x="115" y="314" text-anchor="middle" fill="#065f46" font-size="9" font-family="system-ui,sans-serif">工具系统</text><rect x="180" y="300" width="110" height="20" rx="4" fill="#d1fae5"/><text x="235" y="314" text-anchor="middle" fill="#065f46" font-size="9" font-family="system-ui,sans-serif">执行编排</text><rect x="300" y="300" width="110" height="20" rx="4" fill="#d1fae5"/><text x="355" y="314" text-anchor="middle" fill="#065f46" font-size="9" font-family="system-ui,sans-serif">状态与记忆</text><rect x="420" y="300" width="110" height="20" rx="4" fill="#d1fae5"/><text x="475" y="314" text-anchor="middle" fill="#065f46" font-size="9" font-family="system-ui,sans-serif">独立评估</text><rect x="540" y="300" width="88" height="20" rx="4" fill="#d1fae5"/><text x="584" y="314" text-anchor="middle" fill="#065f46" font-size="9" font-family="system-ui,sans-serif">约束恢复</text></g></svg>
+<figcaption class="image-caption">图 1：Prompt ⊂ Context ⊂ Harness 三层模型</figcaption>
+</figure>
+<p>回到代码审查 Agent 那个翻车现场。第一层（Prompt）告诉它查什么，第二层（Context）给它配了 Skill 和 CLAUDE.md。但它照样能跳过检查说没问题——因为这两层都依赖 Agent 主动遵守。<strong>Harness 反过来了：它不靠 Agent 自觉，靠环境约束。</strong></p>
+<p>具体做法：不让 Agent 自己说&quot;我检查完了&quot;，而是让 Harness 在 Agent 输出之后跑一轮自动化验证——<code>pytest</code> 跑了没、类型检查工具 <code>mypy</code> 过了没、退出码是不是零。任何一个没通过，输出直接打回，Agent 被迫回去修。</p>
+<p>这就是三层的关系——Prompt 是方向盘，Context 是路况信息，Harness 是安全带、刹车、护栏和黑匣子。光靠&quot;好好开车&quot;和安全手册，出不了真正的安全——你得先把路修好。</p>
+<hr>
+<h2 id="3-harness-的六个组件">3. Harness 的六个组件</h2>
+<p>Mitchell Hashimoto 的定义里，一个成熟的 Harness 有六个组成部分。我拿我自己的项目举例，每个组件你都能在 Devspace 里找到对应的东西：</p>
+<h3 id="31-结构化上下文管理">3.1 结构化上下文管理</h3>
+<p>不只是堆上下文，是<strong>把上下文按层级和生命周期组织好。</strong></p>
+<table>
+<thead>
+<tr>
+<th>我的做法</th>
+<th>用什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>全局规则</td>
+<td><code>~/.claude/CLAUDE.md</code> — commit 习惯、语言偏好、测试优先</td>
+</tr>
+<tr>
+<td>项目规则</td>
+<td>项目根目录 <code>CLAUDE.md</code> — 技术栈、端口号、已知坑</td>
+</tr>
+<tr>
+<td>任务按需加载</td>
+<td>Superpowers Skills — 意图匹配时注入</td>
+</tr>
+<tr>
+<td>动态信息注入</td>
+<td>Hook <code>UserPromptSubmit</code> — 当前 git 状态、最近操作</td>
+</tr>
+</tbody>
+</table>
+<p>上一篇 Context Engineering 讲了怎么把上下文管好。这里不展开，只强调一点：<strong>结构性会让 Agent 知道自己此刻在哪一层、该遵守什么。</strong></p>
+<h3 id="32-工具系统设计">3.2 工具系统设计</h3>
+<p>Agent 能调什么工具、怎么调、异常怎么处理——全在这层定义。</p>
+<table>
+<thead>
+<tr>
+<th>我的做法</th>
+<th>用什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Claude Code 内置工具</td>
+<td>Bash、Write、Edit、WebSearch — 日常开发的基础工具箱</td>
+</tr>
+<tr>
+<td>MCP 自定义工具</td>
+<td>自研 MCP 服务 — 扩展 Claude Code 访问外部系统</td>
+</tr>
+<tr>
+<td>权限控制</td>
+<td>MCP 鉴权层 — 关键操作必须 opt-in 授权</td>
+</tr>
+<tr>
+<td>安全边界</td>
+<td>敏感文件保护 Hook — <code>.env</code>、<code>secrets.yaml</code> 禁止 Write</td>
+</tr>
+</tbody>
+</table>
+<p>Fable 5 的提示词里有一半篇幅在干这件事——定义工具、写搜索规则、配连接器。我写完 <a href="/posts/2026/06/10/claude-code-mcp-guide/" rel="">MCP 篇</a>之后做的几个 MCP 服务，就是这层的东西。</p>
+<h3 id="33-执行编排">3.3 执行编排</h3>
+<p>Agent 接到任务后，不是自由发挥——是沿着预设的&quot;轨道&quot;跑。复杂任务拆成子任务，子任务之间有依赖关系，出错了有重试策略。</p>
+<table>
+<thead>
+<tr>
+<th>我的做法</th>
+<th>用什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>工作流引擎</td>
+<td>自研轻量引擎 — 步骤编排、依赖管理、重试策略</td>
+</tr>
+<tr>
+<td>多 Agent 编排</td>
+<td><a href="/posts/2026/06/14/claude-code-workflows-guide/" rel="">Claude Code Workflows</a> — pipeline、parallel、agent() 三大原语</td>
+</tr>
+<tr>
+<td>对抗验证</td>
+<td>Generator + Reviewer 角色对立，循环直到通过</td>
+</tr>
+</tbody>
+</table>
+<p>工作流引擎和多 Agent 编排的区别：引擎负责物流——&ldquo;这个步骤跑完了、下个可以开始了&rdquo;；编排负责决策——&ldquo;这个任务谁做、做完怎么审&rdquo;。</p>
+<h3 id="34-状态与记忆管理">3.4 状态与记忆管理</h3>
+<p>Agent 跑着跑着就忘了自己在干什么——这是上下文压缩和长任务最头疼的问题。</p>
+<table>
+<thead>
+<tr>
+<th>我的做法</th>
+<th>用什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>任务进度追踪</td>
+<td>PostToolUse Hook → 持续写 <code>task-state.json</code></td>
+</tr>
+<tr>
+<td>压缩前快照</td>
+<td>PreCompact Hook → 标记未解决问题</td>
+</tr>
+<tr>
+<td>跨 session 恢复</td>
+<td>SessionStart Hook → 读回上次状态</td>
+</tr>
+</tbody>
+</table>
+<p>这是 Context Engineering 里 4.3 节讲的那条三层 Hook 链路。Fable 5 提示词里的 <code>&lt;memory_system&gt;</code> 也是这个思路——记忆的存在和记忆的引用是两层控制，有的信息存了但特定场景下绝对不能调出来。</p>
+<h3 id="35-独立评估与可观测性">3.5 独立评估与可观测性</h3>
+<p>这层最反直觉——<strong>Agent 不能给自己打分。</strong> 它说&quot;我做得很好&quot;不算数，得有一个独立于 Agent 的验证系统来做裁判。</p>
+<table>
+<thead>
+<tr>
+<th>我的做法</th>
+<th>用什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>对抗验证</td>
+<td>Workflow — 指定 Reviewer 角色挑刺，不通过打回</td>
+</tr>
+<tr>
+<td>自动化验证</td>
+<td>Hook Stop — 检查 pytest/mypy 是否通过</td>
+</tr>
+<tr>
+<td>审计日志</td>
+<td>PostToolUse → 记录每次 Bash 执行的命令和结果</td>
+</tr>
+</tbody>
+</table>
+<h3 id="36-约束验证与恢复">3.6 约束、验证与恢复</h3>
+<p>Agent 的输出不等于最终产物。这层在 Agent 输出之后加了一道闸——不符合标准的输出根本出不去。</p>
+<table>
+<thead>
+<tr>
+<th>我的做法</th>
+<th>用什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>格式锁定</td>
+<td>prompt 类型 Hook — 检查输出是否包含规定格式</td>
+</tr>
+<tr>
+<td>失败回滚</td>
+<td>git reset + 重新生成</td>
+</tr>
+<tr>
+<td>权限审批</td>
+<td>MCP auth — 高风险操作推送飞书/桌面通知确认</td>
+</tr>
+<tr>
+<td>危险拦截</td>
+<td>PreToolUse — <code>rm -rf /</code>、<code>DROP TABLE</code> 等命令直接 block</td>
+</tr>
+</tbody>
+</table>
+<p>前三层让 Agent 能做，后三层让 Agent 不出错。缺了后三层，你拿到的就是一个能力超强但随时翻车的 Agent。</p>
+<hr>
+<h2 id="4-为什么是现在">4. 为什么是现在</h2>
+<p>Harness Engineering 是不是又一个造出来的 buzzword？有两个数据：</p>
+<p><strong>斯坦福 + 清华联合研究</strong>：同一个基座模型，配不同的 Harness 设计，任务成功率可以差 <strong>6 倍</strong>。不是 6 个百分点，是六倍。</p>
+<p><strong>OpenAI Codex 团队</strong>：五个月内用 AI Agent 产出了约 100 万行生产代码。人类写了几行？零。做什么了？<strong>只做 Harness Engineering</strong>——定义检查规则、配 CI 流程、审查输出、修正失败模式。</p>
+<p>模型本身不是壁垒。谁给模型搭的 Harness 好，谁的 Agent 就比别人跑得远。</p>
+<p>最近 Claude Code 隐写后门事件也从反面印证了这一点：当你依赖的工具本身不可信时，唯一能保护你的就是你给它套的那层约束。</p>
+<hr>
+<h2 id="5-搭一个最小-harness">5. 搭一个最小 Harness</h2>
+<p>不纸上谈兵。下面是一个可运行的例子——给一个代码审查 Agent 套上 Harness。</p>
+<p>Agent 本身很简单：每次有人提 PR，Claude Code 自动审查 diff。裸跑的版本就是上面翻车现场那个——看完自信地说没问题，实际上漏了一堆。</p>
+<p>下面是加了 Harness 之后的 CI 流水线配置。它跑在 GitHub Actions 里，但换成 GitLab CI 或 Jenkins 也一样——核心是把 Agent 的输出套进自动化验证流程里：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="c"># .github/harness-code-review.yml — 最小 Harness 配置</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Code Review Harness</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">on</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="l">pull_request]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">jobs</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">review</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">steps</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="c"># 第1步：Claude Code 审查</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">AI Review</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">          claude -p &#34;审查 git diff，检查类型注解、异常处理、资源管理。
+</span></span></span><span class="line"><span class="cl"><span class="sd">            输出格式：TYPE_CHECK / EXCEPTION_CHECK / RESOURCE_CHECK，每项 PASS 或 FAIL。
+</span></span></span><span class="line"><span class="cl"><span class="sd">            如果 FAIL，给出具体行号和修复建议。&#34; &gt; review-output.md</span><span class="w">          
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="c"># 第2步：Harness — 独立验证，Agent 说了不算</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Type Check</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l">mypy . --strict</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">continue-on-error</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Lint</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l">ruff check .</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l">pytest -x --tb=short</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="c"># 第3步：输出审计</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Audit Log</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">          echo &#34;[$(date)] PR #${{ github.event.pull_request.number }}&#34; &gt;&gt; audit.log
+</span></span></span><span class="line"><span class="cl"><span class="sd">          echo &#34;Review output: $(wc -l &lt; review-output.md) lines&#34; &gt;&gt; audit.log</span><span class="w">          
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="c"># 第4步：失败处理 — 不许 merge</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Enforce Quality Gate</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">          if grep -q &#34;FAIL&#34; review-output.md; then
+</span></span></span><span class="line"><span class="cl"><span class="sd">            echo &#34;Harness: Review found issues. Merge blocked.&#34;
+</span></span></span><span class="line"><span class="cl"><span class="sd">            exit 1
+</span></span></span><span class="line"><span class="cl"><span class="sd">          fi</span><span class="w">          
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c"># 这最后一道闸，Agent 绕不过去</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>这个 Harness 做了四件事，Agent 一个都挡不住：</p>
+<ol>
+<li><strong>约束输出格式</strong> — 不是让 Agent 自由回答，是强制它输出 PASS/FAIL 判定</li>
+<li><strong>独立验证</strong> — Agent 说没问题，但 <code>mypy</code>、<code>ruff</code>、<code>pytest</code> 的退出码才是真正的裁判</li>
+<li><strong>审计记录</strong> — 每次审查的命令、输出、结果都持久化</li>
+<li><strong>质量闸</strong> — FAIL 了直接 block merge，Agent 被迫回去修</li>
+</ol>
+<p>总共不到 30 行配置。你已经有 Claude Code、pytest、mypy、ruff，差的就是这几行把散的组件串起来的逻辑。这就是 Harness。</p>
+<hr>
+<h2 id="6-和-context-engineering-的关系">6. 和 Context Engineering 的关系</h2>
+<p>上一篇写了 Context Engineering——管的是 token 怎么花、上下文怎么不污染。有人会问：这和 Harness 有什么区别？</p>
+<p>一句话：<strong>Context 管的是 Agent 看到什么，Harness 管的是 Agent 怎么做。</strong></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Context Engineering</th>
+<th>Harness Engineering</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>问题</td>
+<td>Agent 看到的东西够不够、对不对</td>
+<td>Agent 产出的东西对不对、会不会错</td>
+</tr>
+<tr>
+<td>手段</td>
+<td>预算帽、缓存策略、<code>/clear</code>、防污染</td>
+<td>工具定义、编排、独立验证、质量闸</td>
+</tr>
+<tr>
+<td>关系</td>
+<td>地基</td>
+<td>上面盖的楼</td>
+</tr>
+</tbody>
+</table>
+<p>Context 是 Harness 的第 1 号组件。没有好的上下文管理，后面的验证再多也是空中楼阁。但光有上下文没有验证，Agent 看到了所有该看的东西照样能犯错——因为它会偷懒。</p>
+<hr>
+<h2 id="7-结语">7. 结语</h2>
+<p>Mitchell Hashimoto 说 Harness Engineering 是 Prompt Engineering 之后的下一个范式。Prompt 之上有 Context，Context 之上有 Harness——每一层都是为了解决底层解决不了的问题出现的。</p>
+<p>写了这么多，最想说的是：Harness 不是大厂才配玩的东西。你用的 Claude Code Hooks、你写的 CI pipeline、你给 Agent 配的工具权限、你在 shell 里加的那一行 <code>exit 1</code>——这些拼起来，就是你自己的 Harness。差别只在有没有意识到它，有没有把它当成一个系统来设计。</p>
+<p>下一篇讲 Harness 的第一个核心组件——怎么给 Agent 搭一个安全隔离沙箱。</p>
+<p><em>感谢阅读。</em></p>
+<div class="post-series-nav">
+                <em>本文是「<a href="/series/harness-engineering/">AI 编程·Harness Engineering</a>」系列第 1 篇，共 1 篇。</em>
+            </div></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2026-07-12</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/2026/07/03/harness-engineering-intro/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/07/03/harness-engineering-intro/" data-title="Harness Engineering 入门：从 Prompt 到 Context 到 Harness，Agent 工程的最后一层" data-hashtags="tech,ai,harness engineering,agent,claude code,prompt engineering"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/07/03/harness-engineering-intro/" data-hashtag="tech"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/07/03/harness-engineering-intro/" data-title="Harness Engineering 入门：从 Prompt 到 Context 到 Harness，Agent 工程的最后一层"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/07/03/harness-engineering-intro/" data-title="Harness Engineering 入门：从 Prompt 到 Context 到 Harness，Agent 工程的最后一层"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/07/03/harness-engineering-intro/" data-title="Harness Engineering 入门：从 Prompt 到 Context 到 Harness，Agent 工程的最后一层"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微信" onclick="var d=document.getElementById('wechat-qr-c71fa84a56ae28913a280ca60fcc82a9');d.style.display=d.style.display==='none'?'block':'none';return false"><i class="fab fa-weixin fa-fw" aria-hidden="true"></i></a>
+        <div id="wechat-qr-c71fa84a56ae28913a280ca60fcc82a9" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:9999" onclick="this.style.display='none'">
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;padding:20px;border-radius:8px;text-align:center">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https%3a%2f%2fwhitefirer.org%2fposts%2f2026%2f07%2f03%2fharness-engineering-intro%2f" alt="微信扫一扫" style="display:block">
+                <p style="margin:10px 0 0;font-size:14px;color:#333">微信扫一扫 · 分享文章</p>
+            </div>
+        </div></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/tech/">技术</a>,&nbsp;<a href="/tags/ai/">Ai</a>,&nbsp;<a href="/tags/harness-engineering/">Harness Engineering</a>,&nbsp;<a href="/tags/agent/">Agent</a>,&nbsp;<a href="/tags/claude-code/">Claude Code</a>,&nbsp;<a href="/tags/prompt-engineering/">Prompt Engineering</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2026/07/02/longcat-china-coding-ai/" class="prev" rel="prev" title="英伟达含量为零的开源模型，在 OpenRouter 登顶 Hermes 榜——中国编程 AI 的还手方式"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>英伟达含量为零的开源模型，在 OpenRouter 登顶 Hermes 榜——中国编程 AI 的还手方式</a></div>
+
+</div>
+<div id="comments"><div id="waline" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://waline.js.org/">Waline</a>.
+            </noscript><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article>
+<script>(function(){var b=document.getElementById('reading-progress');if(!b)return;function u(){var h=document.documentElement,s=h.scrollHeight-h.clientHeight,w=s>0?Math.min((h.scrollTop||document.body.scrollTop)/s*100,100):0;b.style.width=w+'%'}window.addEventListener('scroll',u,{passive:true});u()})();</script></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.131.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span><img src="https://hits.sh/whitefirer.org.svg" alt="" aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;clip:rect(0 0 0 0);pointer-events:none"></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/waline/waline.min.css"><script type="text/javascript" src="/lib/waline/waline.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config=Object.assign(window.config||{},{"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Comments","categoryId":"DIC_kwDOH2gmzc4CQ_fM","darkTheme":"dark","emitMetadata":"0","inputPosition":"bottom","lang":"zh-CN","lazyLoading":true,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"whitefirer/whitefirer.github.io","repoId":"R_kgDOH2gmzQ"},"waline":{"dark":"auto","el":"#waline","lang":"zh-CN","pageSize":10,"requiredMeta":["nick","mail"],"serverURL":"https://comment.whitefirer.org"}},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}});</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">!function(){function svgToPng(svg,cb){var c=svg.cloneNode(!0),d=new XMLSerializer().serializeToString(c),img=new Image(),cv=document.createElement('canvas'),w=c.viewBox.animVal.width||c.getBoundingClientRect().width||400,h=c.viewBox.animVal.height||c.getBoundingClientRect().height||300,s=2;cv.width=w*s,cv.height=h*s;var ctx=cv.getContext('2d'),b=new Blob([d],{type:'image/svg+xml;charset=utf-8'}),u=URL.createObjectURL(b);img.onload=function(){ctx.fillStyle='#fff',ctx.fillRect(0,0,cv.width,cv.height),ctx.drawImage(img,0,0,cv.width,cv.height),URL.revokeObjectURL(u),cv.toBlob(function(blob){var a=document.createElement('a');a.href=URL.createObjectURL(blob);var id=svg.id||'diagram';a.download=id+'.png',a.click(),URL.revokeObjectURL(a.href),cb&&cb()})},img.src=u}function addSaveBtn(svg){if(svg.closest('.mermaid-stage,.mermaid-fs-overlay,.mermaid-wrapper,.mermaid-toolbar,.svg-diagram-wrap'))return;var wrap=document.createElement('div');wrap.className='svg-diagram-wrap';var d=svg.style.display||'block',w=svg.style.width||svg.getAttribute('width')||'100%',mw=svg.style.maxWidth||'',m=svg.style.margin||'';wrap.style.cssText='position:relative;display:'+d+';width:'+w+';'+(mw?'max-width:'+mw+';':'')+(m?'margin:'+m+';':'')+'line-height:0';svg.style.display='block';svg.style.width='100%';svg.style.maxWidth='';svg.style.margin='0';svg.parentNode.insertBefore(wrap,svg);wrap.appendChild(svg);var bar=document.createElement('div');bar.style.cssText='text-align:right;padding-top:6px';var btn=document.createElement('button');btn.className='svg-save-btn',btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span style="vertical-align:middle;font-size:12px">保存图片</span>',btn.style.cssText='background:none;border:1px solid transparent;border-radius:4px;padding:2px 6px;cursor:pointer;color:#b0b7c3;font-family:system-ui,sans-serif;line-height:1';bar.appendChild(btn);wrap.appendChild(bar);btn.onmouseenter=function(){btn.style.color='#6366f1';btn.style.borderColor='#e5e7eb'};btn.onmouseleave=function(){btn.style.color='#b0b7c3';btn.style.borderColor='transparent'};btn.onclick=function(e){e.stopPropagation();var orig=btn.innerHTML;btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span style="vertical-align:middle;font-size:12px">导出中...</span>';btn.disabled=!0;svgToPng(svg,function(){btn.innerHTML=orig;btn.disabled=!1})}}function initSvgButtons(){document.querySelectorAll('.content svg').forEach(function(svg){addSaveBtn(svg)})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initSvgButtons);else initSvgButtons()}()</script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-70Q8REKE17', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-70Q8REKE17" async></script></body>
+</html>

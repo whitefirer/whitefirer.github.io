@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Harness Engineering - 标签 - 赛博闲谭-whitefirer</title>
+        <link>https://whitefirer.org/tags/harness-engineering/</link>
+        <description>Harness Engineering - 标签 - 赛博闲谭-whitefirer</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Fri, 03 Jul 2026 03:17:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/harness-engineering/" rel="self" type="application/rss+xml" /><item>
+    <title>Harness Engineering 入门：从 Prompt 到 Context 到 Harness，Agent 工程的最后一层</title>
+    <link>https://whitefirer.org/posts/2026/07/03/harness-engineering-intro/</link>
+    <pubDate>Fri, 03 Jul 2026 03:17:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/07/03/harness-engineering-intro/</guid>
+    <description><![CDATA[提示词管一句话，上下文管一个窗口，Harness 管 Agent 的整个运行环境——怎么跑、跑错了怎么纠、怎么让同一个错误不再犯第二次。 前言 上一篇拆了 Fable 5]]></description>
+</item>
+</channel>
+</rss>
