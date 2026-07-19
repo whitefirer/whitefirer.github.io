@@ -4,7 +4,23 @@
         <link>https://whitefirer.org/posts/</link>
         <description>所有文章 | 赛博闲谭-whitefirer</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Fri, 03 Jul 2026 03:17:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/posts/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sun, 19 Jul 2026 04:30:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>荷兰牧场与 AI 时代：别让旧思维束缚了想象力</title>
+    <link>https://whitefirer.org/posts/2026/07/19/dutch-pasture-ai-era/</link>
+    <pubDate>Sun, 19 Jul 2026 01:50:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/07/19/dutch-pasture-ai-era/</guid>
+    <description><![CDATA[王小波在《荷兰牧场与父老乡亲》里写过一段经历。他在山东插队时，天不亮就得推独轮车往山上送粪——美其名曰粪，其实是刚垫进猪圈的土，猪还没来得及]]></description>
+</item>
+<item>
+    <title>AI 的天轴时刻——我们都把电动机装在了旧皮带上</title>
+    <link>https://whitefirer.org/posts/2026/07/15/ai-line-shaft-moment/</link>
+    <pubDate>Wed, 15 Jul 2026 03:00:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/07/15/ai-line-shaft-moment/</guid>
+    <description><![CDATA[19 世纪末的工厂把蒸汽机换成电动机，天轴和皮带原封不动。等了 40 年，人们终于拆掉天轴、改成单机驱动，流水线才诞生。AI 今天一模一样。 2018 年，律所，]]></description>
+</item>
+<item>
     <title>Harness Engineering 入门：从 Prompt 到 Context 到 Harness，Agent 工程的最后一层</title>
     <link>https://whitefirer.org/posts/2026/07/03/harness-engineering-intro/</link>
     <pubDate>Fri, 03 Jul 2026 03:17:00 &#43;0800</pubDate>
@@ -67,22 +83,6 @@
     <author>whitefirer</author>
     <guid>https://whitefirer.org/posts/2026/06/09/claude-code-skills-guide/</guid>
     <description><![CDATA[插件给能力，Hooks 给自动化，Skill 给的是方法论。三层递进，打造 AI 编程的完整技术栈。 前言 《Claude Code 插件完全指南》 讲了&quot;]]></description>
-</item>
-<item>
-    <title>Claude Code Hooks 完全指南：事件驱动的 AI 编程自动化</title>
-    <link>https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/</link>
-    <pubDate>Tue, 02 Jun 2026 03:50:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/posts/2026/06/02/claude-code-hooks-guide/</guid>
-    <description><![CDATA[九种 Hook 类型 + 十一个秒用场景，把 Claude Code 从工具变成搭档。 前言 之前写了《Claude Code 插件完全指南》，介绍四个插件和一个 MCP 服务。那是&quot;用什]]></description>
-</item>
-<item>
-    <title>从云原生转型到AI转型，什么值得借鉴？什么需要摒弃？</title>
-    <link>https://whitefirer.org/posts/2026/05/25/cloud-native-to-ai-transformation/</link>
-    <pubDate>Mon, 25 May 2026 17:30:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/posts/2026/05/25/cloud-native-to-ai-transformation/</guid>
-    <description><![CDATA[1895 年，Panhard &amp; Levassor 造出第一批量产汽车1。不是在工厂从零设计的——他们把 Daimler 内燃机绑在传统马车的木头底盘下面。驭手座位还在，铁包木轮没换，]]></description>
 </item>
 </channel>
 </rss>
