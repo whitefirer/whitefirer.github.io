@@ -2,7 +2,7 @@
     <channel>
         <title>赛博闲谭-whitefirer</title>
         <link>https://whitefirer.org/en/</link>
-        <description>This is my cool site</description>
+        <description>Welcome to the blog of whitefirer.</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
             <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sun, 21 Aug 2022 18:59:27 &#43;0800</lastBuildDate>
             <atom:link href="https://whitefirer.org/en/index.xml" rel="self" type="application/rss+xml" />

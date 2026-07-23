@@ -4,28 +4,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <title>Sidecarless 之后：eBPF &#43; AI，服务网格的下一站 - 赛博闲谭-whitefirer</title><meta name="Description" content="Sidecar 太重，Ambient 还不够。eBPF 把可观测性推到内核态，AI 帮你解读海量内核数据——两者结合，可能重新定义服务网格的智能运维。"><meta property="og:url" content="https://whitefirer.org/posts/2026/05/15/ebpf-ai-service-mesh/">
-  <meta property="og:site_name" content="赛博闲谭-whitefirer">
-  <meta property="og:title" content="Sidecarless 之后：eBPF &#43; AI，服务网格的下一站">
-  <meta property="og:description" content="Sidecar 太重，Ambient 还不够。eBPF 把可观测性推到内核态，AI 帮你解读海量内核数据——两者结合，可能重新定义服务网格的智能运维。">
-  <meta property="og:locale" content="zh_CN">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="posts">
-    <meta property="article:published_time" content="2026-05-15T23:17:43+08:00">
-    <meta property="article:modified_time" content="2026-06-15T07:05:11+08:00">
-    <meta property="article:tag" content="技术">
-    <meta property="article:tag" content="Ebpf">
-    <meta property="article:tag" content="服务网格">
-    <meta property="article:tag" content="Ai">
-    <meta property="article:tag" content="Observability">
-      <meta property="og:see_also" content="https://whitefirer.org/posts/2022/08/30/polaris2istio/">
-      <meta property="og:see_also" content="https://whitefirer.org/posts/2022/08/29/extension-and-expansion-of-service-mesh/">
-      <meta property="og:see_also" content="https://whitefirer.org/posts/2021/04/13/building-a-distributed-pressure-testing-system-based-on-kubernetes/">
-      <meta property="og:see_also" content="https://whitefirer.org/posts/2020/09/11/the-evolution-and-practice-of-tenclass-infrastructure/">
+        <title>Sidecarless 之后：eBPF &#43; AI，服务网格的下一站 - 赛博闲谭-whitefirer</title><meta name="Description" content="Sidecar 太重，Ambient 还不够。eBPF 把可观测性推到内核态，AI 帮你解读海量内核数据——两者结合，可能重新定义服务网格的智能运维。">
 
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Sidecarless 之后：eBPF &#43; AI，服务网格的下一站">
-  <meta name="twitter:description" content="Sidecar 太重，Ambient 还不够。eBPF 把可观测性推到内核态，AI 帮你解读海量内核数据——两者结合，可能重新定义服务网格的智能运维。">
 <meta name="application-name" content="赛博闲谭-whitefirer">
 <meta name="apple-mobile-web-app-title" content="赛博闲谭-whitefirer"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -254,7 +234,8 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2026-06-15</span>
+                <span>更新于 2026-06-15&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/de211cc546395c1c6ccf79efda77311b1a08408d" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) de211cc546395c1c6ccf79efda77311b1a08408d: publish: set draft=false for eBPF article">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>de211cc</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>

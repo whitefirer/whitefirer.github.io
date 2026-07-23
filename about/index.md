@@ -9,7 +9,7 @@
 - 💬 欢迎探讨 *`服务网格`*、*`Agent 工程`*、*`架构设计`*，乃至一切 *`有趣的技术`*
 - 📫 [发邮件](mailto:whitefirer@gmail.com) ·
   [![Gmail](https://img.shields.io/badge/-whitefirer@gmail.com-ea4335?style=flat&logo=Gmail&logoColor=ffffff)](mailto:whitefirer@gmail.com)
-  [![Wechat](https://img.shields.io/badge/-whitefirer-5fcd73?style=flat&logo=Wechat&logoColor=ffffff)](./img/wechat.jpg)
+  [![Wechat](https://img.shields.io/badge/-whitefirer-5fcd73?style=flat&logo=Wechat&logoColor=ffffff)](wechat.jpg)
   [![Zhihu](https://img.shields.io/badge/-whitefirer-2369f6?style=flat&logo=Zhihu&logoColor=ffffff)](https://www.zhihu.com/people/whitefirer?_blank)
   [![GitHub](https://img.shields.io/badge/-whitefirer-5f5f5f?style=flat&logo=github&logoColor=000000&labelColor=ffffff)](https://github.com/whitefirer)
 

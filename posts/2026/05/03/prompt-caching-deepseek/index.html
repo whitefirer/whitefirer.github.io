@@ -4,25 +4,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <title>Prompt Caching 深度解析：插件 &#43; 缓存 = 98% 费用节省 - 赛博闲谭-whitefirer</title><meta name="Description" content="拆解两层省钱机制——插件砍 token 量（省 97%），Prompt Caching 砍单价（多省 46%）。深入 DeepSeek V4 Pro 的三池异构 KV Cache 架构和 ShadowRadix 前缀复用系统，解析 120 倍缓存折扣的底层原理。"><meta property="og:url" content="https://whitefirer.org/posts/2026/05/03/prompt-caching-deepseek/">
-  <meta property="og:site_name" content="赛博闲谭-whitefirer">
-  <meta property="og:title" content="Prompt Caching 深度解析：插件 &#43; 缓存 = 98% 费用节省">
-  <meta property="og:description" content="拆解两层省钱机制——插件砍 token 量（省 97%），Prompt Caching 砍单价（多省 46%）。深入 DeepSeek V4 Pro 的三池异构 KV Cache 架构和 ShadowRadix 前缀复用系统，解析 120 倍缓存折扣的底层原理。">
-  <meta property="og:locale" content="zh_CN">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="posts">
-    <meta property="article:published_time" content="2026-05-03T22:15:00+08:00">
-    <meta property="article:modified_time" content="2026-05-08T04:45:08+08:00">
-    <meta property="article:tag" content="技术">
-    <meta property="article:tag" content="Ai">
-    <meta property="article:tag" content="Prompt Caching">
-    <meta property="article:tag" content="Deepseek">
-    <meta property="article:tag" content="Claude Code">
-    <meta property="article:tag" content="Cost Optimization">
+        <title>Prompt Caching 深度解析：插件 &#43; 缓存 = 98% 费用节省 - 赛博闲谭-whitefirer</title><meta name="Description" content="拆解两层省钱机制——插件砍 token 量（省 97%），Prompt Caching 砍单价（多省 46%）。深入 DeepSeek V4 Pro 的三池异构 KV Cache 架构和 ShadowRadix 前缀复用系统，解析 120 倍缓存折扣的底层原理。">
 
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Prompt Caching 深度解析：插件 &#43; 缓存 = 98% 费用节省">
-  <meta name="twitter:description" content="拆解两层省钱机制——插件砍 token 量（省 97%），Prompt Caching 砍单价（多省 46%）。深入 DeepSeek V4 Pro 的三池异构 KV Cache 架构和 ShadowRadix 前缀复用系统，解析 120 倍缓存折扣的底层原理。">
 <meta name="application-name" content="赛博闲谭-whitefirer">
 <meta name="apple-mobile-web-app-title" content="赛博闲谭-whitefirer"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -777,7 +760,8 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2026-05-08</span>
+                <span>更新于 2026-05-08&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/a2edb80159bd56335442b825b85904db91e52642" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) a2edb80159bd56335442b825b85904db91e52642: post: add cache breakdown SVG diagram to prompt-caching-deepseek">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>a2edb80</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
