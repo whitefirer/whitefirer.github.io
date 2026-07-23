@@ -4,7 +4,15 @@
         <link>https://whitefirer.org/tags/agent/</link>
         <description>Agent - 标签 - 赛博闲谭-whitefirer</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Fri, 03 Jul 2026 03:17:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/agent/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sun, 19 Jul 2026 04:30:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/agent/" rel="self" type="application/rss+xml" /><item>
+    <title>Harness Engineering 之二：给 Agent 搭一个安全沙箱</title>
+    <link>https://whitefirer.org/posts/2026/07/19/harness-engineering-sandbox/</link>
+    <pubDate>Sun, 19 Jul 2026 04:30:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/07/19/harness-engineering-sandbox/</guid>
+    <description><![CDATA[Prompt 是劝，沙箱是墙。劝一个 Agent 别干坏事是没用的——它分不清哪些是数据、哪些是指令。你能做的只有一件事：把它关进一个干不了坏事的屋子里。 0. 一个凌晨]]></description>
+</item>
+<item>
     <title>Harness Engineering 入门：从 Prompt 到 Context 到 Harness，Agent 工程的最后一层</title>
     <link>https://whitefirer.org/posts/2026/07/03/harness-engineering-intro/</link>
     <pubDate>Fri, 03 Jul 2026 03:17:00 &#43;0800</pubDate>

@@ -4,12 +4,52 @@
         <link>https://whitefirer.org/tags/</link>
         <description>Tags - 标签 - 赛博闲谭-whitefirer</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sun, 19 Jul 2026 01:50:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sun, 19 Jul 2026 04:30:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/" rel="self" type="application/rss+xml" /><item>
+    <title>Agent</title>
+    <link>https://whitefirer.org/tags/agent/</link>
+    <pubDate>Sun, 19 Jul 2026 04:30:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/agent/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>Ai</title>
     <link>https://whitefirer.org/tags/ai/</link>
-    <pubDate>Sun, 19 Jul 2026 01:50:00 &#43;0800</pubDate>
+    <pubDate>Sun, 19 Jul 2026 04:30:00 &#43;0800</pubDate>
     <author>whitefirer</author>
     <guid>https://whitefirer.org/tags/ai/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Claude Code</title>
+    <link>https://whitefirer.org/tags/claude-code/</link>
+    <pubDate>Sun, 19 Jul 2026 04:30:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/claude-code/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Harness Engineering</title>
+    <link>https://whitefirer.org/tags/harness-engineering/</link>
+    <pubDate>Sun, 19 Jul 2026 04:30:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/harness-engineering/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Sandbox</title>
+    <link>https://whitefirer.org/tags/sandbox/</link>
+    <pubDate>Sun, 19 Jul 2026 04:30:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/sandbox/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Security</title>
+    <link>https://whitefirer.org/tags/security/</link>
+    <pubDate>Sun, 19 Jul 2026 04:30:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/security/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
@@ -42,46 +82,6 @@
     <pubDate>Wed, 15 Jul 2026 03:00:00 &#43;0800</pubDate>
     <author>whitefirer</author>
     <guid>https://whitefirer.org/tags/electricity/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>History</title>
-    <link>https://whitefirer.org/tags/history/</link>
-    <pubDate>Wed, 15 Jul 2026 03:00:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/history/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Industry</title>
-    <link>https://whitefirer.org/tags/industry/</link>
-    <pubDate>Wed, 15 Jul 2026 03:00:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/industry/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Productivity</title>
-    <link>https://whitefirer.org/tags/productivity/</link>
-    <pubDate>Wed, 15 Jul 2026 03:00:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/productivity/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Agent</title>
-    <link>https://whitefirer.org/tags/agent/</link>
-    <pubDate>Fri, 03 Jul 2026 03:17:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/agent/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Claude Code</title>
-    <link>https://whitefirer.org/tags/claude-code/</link>
-    <pubDate>Fri, 03 Jul 2026 03:17:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/claude-code/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>

