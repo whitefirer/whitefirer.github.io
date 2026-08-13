@@ -2,9 +2,9 @@
     xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     ><url>
-            <loc>https://whitefirer.org/tags/agent/</loc><lastmod>2026-08-14T01:44:27&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/tags/ai/</loc><lastmod>2026-08-14T01:44:27&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/categories/</loc><lastmod>2026-08-14T01:44:27&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://whitefirer.org/tags/agent/</loc><lastmod>2026-08-14T03:42:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/tags/ai/</loc><lastmod>2026-08-14T03:42:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/categories/</loc><lastmod>2026-08-14T03:42:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://whitefirer.org/en/categories/"
@@ -13,12 +13,12 @@
                     hreflang="zh-cn"
                     href="https://whitefirer.org/categories/"
                     /></url><url>
-            <loc>https://whitefirer.org/tags/deepseek/</loc><lastmod>2026-08-14T01:44:27&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/posts/2026/08/14/deepseek-harness-hands-on/</loc><lastmod>2026-08-14T01:44:27&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/tags/event-sourcing/</loc><lastmod>2026-08-14T01:44:27&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/tags/harness/</loc><lastmod>2026-08-14T01:44:27&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/tags/plugin/</loc><lastmod>2026-08-14T01:44:27&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/posts/</loc><lastmod>2026-08-14T03:33:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://whitefirer.org/tags/deepseek/</loc><lastmod>2026-08-14T03:42:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/posts/2026/08/14/deepseek-harness-hands-on/</loc><lastmod>2026-08-14T03:42:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/tags/event-sourcing/</loc><lastmod>2026-08-14T03:42:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/tags/harness/</loc><lastmod>2026-08-14T03:42:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/tags/plugin/</loc><lastmod>2026-08-14T03:42:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/posts/</loc><lastmod>2026-08-14T03:42:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://whitefirer.org/en/posts/"
@@ -27,7 +27,7 @@
                     hreflang="zh-cn"
                     href="https://whitefirer.org/posts/"
                     /></url><url>
-            <loc>https://whitefirer.org/tags/</loc><lastmod>2026-08-14T01:44:27&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://whitefirer.org/tags/</loc><lastmod>2026-08-14T03:42:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://whitefirer.org/en/tags/"
@@ -36,7 +36,7 @@
                     hreflang="zh-cn"
                     href="https://whitefirer.org/tags/"
                     /></url><url>
-            <loc>https://whitefirer.org/</loc><lastmod>2026-08-14T03:33:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://whitefirer.org/</loc><lastmod>2026-08-14T03:42:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://whitefirer.org/en/"
@@ -50,7 +50,7 @@
             <loc>https://whitefirer.org/posts/2026/07/19/harness-engineering-sandbox/</loc><lastmod>2026-07-23T19:35:57&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url><url>
             <loc>https://whitefirer.org/tags/sandbox/</loc><lastmod>2026-07-23T19:35:57&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url><url>
             <loc>https://whitefirer.org/tags/security/</loc><lastmod>2026-07-23T19:35:57&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url><url>
-            <loc>https://whitefirer.org/series/</loc><lastmod>2026-07-23T19:35:57&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.7</priority><xhtml:link
+            <loc>https://whitefirer.org/series/</loc><lastmod>2026-08-14T03:42:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://whitefirer.org/en/series/"
@@ -59,10 +59,10 @@
                     hreflang="zh-cn"
                     href="https://whitefirer.org/series/"
                     /></url><url>
-            <loc>https://whitefirer.org/tags/infrastructure/</loc><lastmod>2026-07-19T23:16:09&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url><url>
-            <loc>https://whitefirer.org/tags/monopoly/</loc><lastmod>2026-07-19T23:16:09&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url><url>
-            <loc>https://whitefirer.org/tags/thoughts/</loc><lastmod>2026-07-19T23:16:09&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url><url>
-            <loc>https://whitefirer.org/posts/2026/07/19/dutch-pasture-ai-era/</loc><lastmod>2026-07-19T23:16:09&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url><url>
+            <loc>https://whitefirer.org/tags/infrastructure/</loc><lastmod>2026-08-14T03:42:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/tags/monopoly/</loc><lastmod>2026-08-14T03:42:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/tags/thoughts/</loc><lastmod>2026-08-14T03:42:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/posts/2026/07/19/dutch-pasture-ai-era/</loc><lastmod>2026-08-14T03:42:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/posts/2026/07/15/ai-line-shaft-moment/</loc><lastmod>2026-07-19T22:50:26&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url><url>
             <loc>https://whitefirer.org/tags/electricity/</loc><lastmod>2026-07-19T22:50:26&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url><url>
             <loc>https://whitefirer.org/tags/history/</loc><lastmod>2026-07-19T22:50:26&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url><url>
