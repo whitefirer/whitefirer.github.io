@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <title>DeepSeek Harness 实测：开源当晚破 3 万 star 的 Agent 运行时 - 赛博闲谭-whitefirer</title><meta name="Description" content="DeepSeek 开源 deepseek-harness 当晚破 3 万 star。本文实测：headless 秒回、1.1M token 的长思考任务、agent 自我验收闭环、社区插件 6 小时长出 IDE 级生态、审批机制与事件溯源日志实证。结论：它不是 Codex 竞品，是组装 Agent 的基础设施。">
+        <title>DeepSeek Harness 实测：开源当晚破 3 万 star 的 Agent 运行时 - 赛博闲谭-whitefirer</title><meta name="Description" content="DeepSeek 开源 deepseek-harness 当晚破 3 万 star。本文实测：headless 秒回、1.1M token 的长思考任务、agent 自我验收闭环、官方内置 130 插件与灰度期社区插件、审批机制与事件溯源日志实证。结论：它不是 Codex 竞品，是组装 Agent 的基础设施。">
 
 <meta name="application-name" content="赛博闲谭-whitefirer">
 <meta name="apple-mobile-web-app-title" content="赛博闲谭-whitefirer"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
@@ -13,13 +13,13 @@
         <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/08/14/deepseek-harness-hands-on/" /><link rel="prev" href="https://whitefirer.org/posts/2026/07/19/harness-engineering-sandbox/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta property="og:title" content="DeepSeek Harness 实测：开源当晚破 3 万 star 的 Agent 运行时 - 赛博闲谭-whitefirer" />
-<meta property="og:description" content="DeepSeek 开源 deepseek-harness 当晚破 3 万 star。本文实测：headless 秒回、1.1M token 的长思考任务、agent 自我验收闭环、社区插件 6 小时长出 IDE 级生态、审批机制与事件溯源日志实证。结论：它不是 Codex 竞品，是组装 Agent 的基础设施。" />
+<meta property="og:description" content="DeepSeek 开源 deepseek-harness 当晚破 3 万 star。本文实测：headless 秒回、1.1M token 的长思考任务、agent 自我验收闭环、官方内置 130 插件与灰度期社区插件、审批机制与事件溯源日志实证。结论：它不是 Codex 竞品，是组装 Agent 的基础设施。" />
 <meta property="og:image" content="https://whitefirer.org/og-default.png" />
 <meta property="og:url" content="https://whitefirer.org/posts/2026/08/14/deepseek-harness-hands-on/" />
 <meta property="og:type" content="article" />
 <meta property="og:site_name" content="赛博闲谭-whitefirer" /><meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="DeepSeek Harness 实测：开源当晚破 3 万 star 的 Agent 运行时 - 赛博闲谭-whitefirer" />
-<meta name="twitter:description" content="DeepSeek 开源 deepseek-harness 当晚破 3 万 star。本文实测：headless 秒回、1.1M token 的长思考任务、agent 自我验收闭环、社区插件 6 小时长出 IDE 级生态、审批机制与事件溯源日志实证。结论：它不是 Codex 竞品，是组装 Agent 的基础设施。" />
+<meta name="twitter:description" content="DeepSeek 开源 deepseek-harness 当晚破 3 万 star。本文实测：headless 秒回、1.1M token 的长思考任务、agent 自我验收闭环、官方内置 130 插件与灰度期社区插件、审批机制与事件溯源日志实证。结论：它不是 Codex 竞品，是组装 Agent 的基础设施。" />
 <meta name="twitter:image" content="https://whitefirer.org/og-default.png" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
@@ -29,13 +29,13 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/whitefirer.org\/posts\/2026\/08\/14\/deepseek-harness-hands-on\/"
-        },"genre": "posts","keywords": "tech, ai, deepseek, harness, agent, plugin, event-sourcing","wordcount":  3378 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/14\/deepseek-harness-hands-on\/","datePublished": "2026-08-14T00:30:00+08:00","dateModified": "2026-08-14T03:42:08+08:00","license": "2022©️whitefirer","publisher": {
+        },"genre": "posts","keywords": "tech, ai, deepseek, harness, agent, plugin, event-sourcing","wordcount":  3485 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/14\/deepseek-harness-hands-on\/","datePublished": "2026-08-14T00:30:00+08:00","dateModified": "2026-08-14T04:11:35+08:00","license": "2022©️whitefirer","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
                 "name": "whitefirer"
-            },"description": "DeepSeek 开源 deepseek-harness 当晚破 3 万 star。本文实测：headless 秒回、1.1M token 的长思考任务、agent 自我验收闭环、社区插件 6 小时长出 IDE 级生态、审批机制与事件溯源日志实证。结论：它不是 Codex 竞品，是组装 Agent 的基础设施。"
+            },"description": "DeepSeek 开源 deepseek-harness 当晚破 3 万 star。本文实测：headless 秒回、1.1M token 的长思考任务、agent 自我验收闭环、官方内置 130 插件与灰度期社区插件、审批机制与事件溯源日志实证。结论：它不是 Codex 竞品，是组装 Agent 的基础设施。"
     }
     </script></head>
     <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
@@ -134,7 +134,7 @@
     <article class="page single"><div style="display:flex;align-items:baseline;gap:0">
         <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">DeepSeek Harness 实测：开源当晚破 3 万 star 的 Agent 运行时</h1></div><h2 class="single-subtitle">Agent = Model &#43; Harness：插件生态、事件溯源、自我验收——一个可重组的 Agent 运行时实测记录</h2><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-14">2026-08-14</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3378 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-14">2026-08-14</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3485 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 7 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/08/14/deepseek-harness-hands-on.svg" alt="" aria-hidden="true" loading="eager"
      style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none"></div>
         </div><div class="details toc" id="toc-static"  data-kept="">
@@ -148,7 +148,7 @@
     <li><a href="#二第一印象像-codex但处处露出框架的底子">二、第一印象：像 Codex，但处处露出&quot;框架&quot;的底子</a></li>
     <li><a href="#三实测一threejs-小游戏慢但它在自我验收">三、实测一：Three.js 小游戏，慢，但它在自我验收</a></li>
     <li><a href="#四意外收获审批机制和写工作区外的真实教训">四、意外收获：审批机制，和&quot;写工作区外&quot;的真实教训</a></li>
-    <li><a href="#五插件实测一切皆插件不是口号6-小时长出-ide-级生态">五、插件实测：&ldquo;一切皆插件&quot;不是口号，6 小时长出 IDE 级生态</a></li>
+    <li><a href="#五插件实测一切皆插件不是口号130-个内置插件打底">五、插件实测：&ldquo;一切皆插件&quot;不是口号，130 个内置插件打底</a></li>
     <li><a href="#六会话与数据事件溯源眼见为实">六、会话与数据：事件溯源，眼见为实</a></li>
     <li><a href="#七结论它是基础设施不是又一个-codex">七、结论：它是基础设施，不是又一个 Codex</a></li>
   </ul>
@@ -269,8 +269,8 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>默认策略是 ask</strong>：涉及工作区之外的写入，模型不能自作主张，必须人点&quot;允许&quot;。headless 自动化没有审批人，任务就永远挂着。这对想做无人值守自动化的团队是个真实提醒：<strong>DSH 的权限边界是硬约束，不是摆设</strong>——而它的策略状态（workspace-write / ask）是直接写进会话日志的，重启不丢（详见下节）。</p>
-<h2 id="五插件实测一切皆插件不是口号6-小时长出-ide-级生态">五、插件实测：&ldquo;一切皆插件&quot;不是口号，6 小时长出 IDE 级生态</h2>
-<p>开源当天，社区就出了一个叫 <strong>dsh-better-sidebar</strong> 的插件（发布在 npm，一条命令安装）：</p>
+<h2 id="五插件实测一切皆插件不是口号130-个内置插件打底">五、插件实测：&ldquo;一切皆插件&quot;不是口号，130 个内置插件打底</h2>
+<p><strong>官方发布时 Web 版就内置了 130 个插件</strong>（实测 <code>dsh --profile web --dump-default-config</code> 数出 130 个 <code>- id:</code> 条目；headless 版 81 个）——插件生态不是从零起步，是官方先铺好了底。而<strong>灰度测试期间社区就已经有人在做插件</strong>了，开源时即可安装，比如 <strong>dsh-better-sidebar</strong>（发布在 npm，一条命令安装）：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -302,7 +302,7 @@
         title="文件编辑 &#43; HTML 沙箱预览 &#43; &amp;ldquo;临时解锁（不安全）&amp;ldquo;警示" width="1440" height="900" /></p>
 <p>这个&quot;预览即沙箱、解锁有红警提示&quot;的设计，比很多正式 IDE 的预览器还谨慎。而这个插件还带：内嵌浏览器、xterm 真实终端（node-pty）、Git 面板（真 diff + 右键暂存/提交）、后台任务拓扑视图、移动端适配——<strong>一个社区插件就是一套迷你 IDE</strong>。</p>
 <p>安装过程中也踩到 README 预警的坑：pnpm 的 <code>strict-dep-builds</code> 拦了 node-pty 的构建脚本，需要 <code>pnpm approve-builds --all</code> 放行。README 一字不差地预告了这个坑——插件文档的成熟度也是&quot;社区已形成&quot;的证据。</p>
-<p><strong>&ldquo;一切皆插件&quot;的验证结论：真的。</strong> 工具是插件、模型是插件、UI 是插件、连侧边栏都是插件——而且 6 小时就有第三方把它改成 IDE。这种扩展性上限，一体式产品（Codex 没有插件体系）给不了。</p>
+<p><strong>&ldquo;一切皆插件&quot;的验证结论：真的。</strong> 工具是插件、模型是插件、UI 是插件、连侧边栏都是插件——官方 130 个插件打底 + 灰度期就有社区插件改 UI，这种扩展性上限，一体式产品（Codex 没有插件体系）给不了。</p>
 <h2 id="六会话与数据事件溯源眼见为实">六、会话与数据：事件溯源，眼见为实</h2>
 <p>dsh 架构里最值得实锤的一点，这次实测直接看到了实据。磁盘上的会话是这样的：</p>
 <div class="highlight"><div class="chroma">
@@ -343,7 +343,7 @@
 <p>这一轮实测下来，我们自己的结论是：</p>
 <ul>
 <li><strong>它确实不是 Codex 的竞品</strong>。Codex 交付的是&quot;拿来即用的 Agent&rdquo;；DSH 交付的是&quot;组装 Agent 的运行时&rdquo;——预设、profile、插件、事件溯源，它把大量结构暴露给你，让你自己决定 Agent 是谁。用它的官方公式：<strong>Agent = Model + Harness</strong>，模型是灵魂，Harness 是让模型在真实场景持续工作的能力。它是<strong>基础设施</strong>，不是产品</li>
-<li><strong>惊艳的地方</strong>：插件生态的上限（6 小时长出 IDE 级插件）、事件溯源的彻底性（策略状态都进日志）、agent 的自我验收闭环</li>
+<li><strong>惊艳的地方</strong>：插件生态的上限（官方内置 130 插件 + 灰度期社区插件）、事件溯源的彻底性（策略状态都进日志）、agent 的自我验收闭环</li>
 <li><strong>劝退的地方</strong>：慢（半小时级任务 + 1.1M token 输入）、无 TUI（交互前门只有 Web）、配置门槛（模型、预设、权限都要自己摆弄）、预览版说变就变（rc.5 明确&quot;THERE WILL BE COMPATIBILITY-BREAKING CHANGES&rdquo;）</li>
 <li><strong>给自动化用户的提醒</strong>：权限边界是硬约束，无人值守场景先解决审批（策略从 ask 改成更宽松的模式，或补审批人）</li>
 </ul>
@@ -354,8 +354,8 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2026-08-14&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/ef8a17fcfa83d346064c630cd6639c4104db9c78" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) ef8a17fcfa83d346064c630cd6639c4104db9c78: chore: 置顶换为 dsh 体验文（热点期），荷兰牧场取消置顶">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>ef8a17f</a></span>
+                <span>更新于 2026-08-14&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/fab8ca06040b907134258b5e7764332149d7e74b" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) fab8ca06040b907134258b5e7764332149d7e74b: fix: 修正插件生态表述——官方发布时内置 130 插件（web profile 实测），灰度期已有社区插件，非开源后从零长出">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>fab8ca0</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
