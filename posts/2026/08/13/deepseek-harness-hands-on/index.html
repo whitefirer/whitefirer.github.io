@@ -10,12 +10,12 @@
 <meta name="apple-mobile-web-app-title" content="赛博闲谭-whitefirer"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-        <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/08/14/deepseek-harness-hands-on/" /><link rel="prev" href="https://whitefirer.org/posts/2026/07/19/harness-engineering-sandbox/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/08/13/deepseek-harness-hands-on/" /><link rel="prev" href="https://whitefirer.org/posts/2026/07/19/harness-engineering-sandbox/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta property="og:title" content="DeepSeek Harness 实测：开源当晚破 3 万 star 的 Agent 运行时 - 赛博闲谭-whitefirer" />
 <meta property="og:description" content="DeepSeek 开源 deepseek-harness 当晚破 3 万 star。本文实测：headless 秒回、1.1M token 的长思考任务、agent 自我验收闭环、官方内置 130 插件与灰度期社区插件、审批机制与事件溯源日志实证。结论：它不是 Codex 竞品，是组装 Agent 的基础设施。" />
 <meta property="og:image" content="https://whitefirer.org/og-default.png" />
-<meta property="og:url" content="https://whitefirer.org/posts/2026/08/14/deepseek-harness-hands-on/" />
+<meta property="og:url" content="https://whitefirer.org/posts/2026/08/13/deepseek-harness-hands-on/" />
 <meta property="og:type" content="article" />
 <meta property="og:site_name" content="赛博闲谭-whitefirer" /><meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="DeepSeek Harness 实测：开源当晚破 3 万 star 的 Agent 运行时 - 赛博闲谭-whitefirer" />
@@ -28,9 +28,9 @@
         "inLanguage": "zh-CN",
         "mainEntityOfPage": {
             "@type": "WebPage",
-            "@id": "https:\/\/whitefirer.org\/posts\/2026\/08\/14\/deepseek-harness-hands-on\/"
+            "@id": "https:\/\/whitefirer.org\/posts\/2026\/08\/13\/deepseek-harness-hands-on\/"
         },"genre": "posts","keywords": "tech, ai, deepseek, harness, agent, plugin, event-sourcing","wordcount":  3485 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/14\/deepseek-harness-hands-on\/","datePublished": "2026-08-14T00:30:00+08:00","dateModified": "2026-08-14T04:11:35+08:00","license": "2022©️whitefirer","publisher": {
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/13\/deepseek-harness-hands-on\/","datePublished": "2026-08-13T23:51:33+08:00","dateModified": "2026-08-14T05:21:18+08:00","license": "2022©️whitefirer","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -64,7 +64,7 @@
                     <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
                 </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
                     <i class="fa fa-globe" aria-hidden="true"></i>                      
-                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/2026/08/14/deepseek-harness-hands-on/" selected>简体中文</option></select>
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/2026/08/13/deepseek-harness-hands-on/" selected>简体中文</option></select>
                 </a></div>
         </div>
     </div>
@@ -118,7 +118,7 @@
                 <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
             </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
                     <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
-                    <select class="language-select" onchange="location = this.value;"><option value="/posts/2026/08/14/deepseek-harness-hands-on/" selected>简体中文</option></select>
+                    <select class="language-select" onchange="location = this.value;"><option value="/posts/2026/08/13/deepseek-harness-hands-on/" selected>简体中文</option></select>
                 </a></div>
     </div>
 </header><div class="search-dropdown desktop">
@@ -134,8 +134,8 @@
     <article class="page single"><div style="display:flex;align-items:baseline;gap:0">
         <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">DeepSeek Harness 实测：开源当晚破 3 万 star 的 Agent 运行时</h1></div><h2 class="single-subtitle">Agent = Model &#43; Harness：插件生态、事件溯源、自我验收——一个可重组的 Agent 运行时实测记录</h2><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-14">2026-08-14</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3485 字&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 7 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/08/14/deepseek-harness-hands-on.svg" alt="" aria-hidden="true" loading="eager"
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-13">2026-08-13</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3485 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 7 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/08/13/deepseek-harness-hands-on.svg" alt="" aria-hidden="true" loading="eager"
      style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none"></div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
@@ -167,10 +167,10 @@
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="/posts/2026/08/14/deepseek-harness-hands-on/01-inner-notice.png"
-        data-srcset="/posts/2026/08/14/deepseek-harness-hands-on/01-inner-notice.png, /posts/2026/08/14/deepseek-harness-hands-on/01-inner-notice.png 1.5x, /posts/2026/08/14/deepseek-harness-hands-on/01-inner-notice.png 2x"
+        data-src="/posts/2026/08/13/deepseek-harness-hands-on/01-inner-notice.png"
+        data-srcset="/posts/2026/08/13/deepseek-harness-hands-on/01-inner-notice.png, /posts/2026/08/13/deepseek-harness-hands-on/01-inner-notice.png 1.5x, /posts/2026/08/13/deepseek-harness-hands-on/01-inner-notice.png 2x"
         data-sizes="auto"
-        alt="/posts/2026/08/14/deepseek-harness-hands-on/01-inner-notice.png"
+        alt="/posts/2026/08/13/deepseek-harness-hands-on/01-inner-notice.png"
         title="内测声明弹窗——&amp;ldquo;面向 Harness 开发者进行测试&amp;rdquo;" width="1440" height="900" /></p>
 <p>命令行模式更快验证链路：</p>
 <div class="highlight"><div class="chroma">
@@ -193,10 +193,10 @@
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="/posts/2026/08/14/deepseek-harness-hands-on/02-main.png"
-        data-srcset="/posts/2026/08/14/deepseek-harness-hands-on/02-main.png, /posts/2026/08/14/deepseek-harness-hands-on/02-main.png 1.5x, /posts/2026/08/14/deepseek-harness-hands-on/02-main.png 2x"
+        data-src="/posts/2026/08/13/deepseek-harness-hands-on/02-main.png"
+        data-srcset="/posts/2026/08/13/deepseek-harness-hands-on/02-main.png, /posts/2026/08/13/deepseek-harness-hands-on/02-main.png 1.5x, /posts/2026/08/13/deepseek-harness-hands-on/02-main.png 2x"
         data-sizes="auto"
-        alt="/posts/2026/08/14/deepseek-harness-hands-on/02-main.png"
+        alt="/posts/2026/08/13/deepseek-harness-hands-on/02-main.png"
         title="原生主界面：侧边栏 / 顶栏 / 模型 / 推理等级" width="1440" height="900" /></p>
 <h2 id="三实测一threejs-小游戏慢但它在自我验收">三、实测一：Three.js 小游戏，慢，但它在自我验收</h2>
 <p>此前有媒体用&quot;滑沙游戏&quot;任务横评过 DSH / Reasonix / Codex 三家。我们复刻了同款任务：</p>
@@ -215,10 +215,10 @@
 </div><p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="/posts/2026/08/14/deepseek-harness-hands-on/04-result.png"
-        data-srcset="/posts/2026/08/14/deepseek-harness-hands-on/04-result.png, /posts/2026/08/14/deepseek-harness-hands-on/04-result.png 1.5x, /posts/2026/08/14/deepseek-harness-hands-on/04-result.png 2x"
+        data-src="/posts/2026/08/13/deepseek-harness-hands-on/04-result.png"
+        data-srcset="/posts/2026/08/13/deepseek-harness-hands-on/04-result.png, /posts/2026/08/13/deepseek-harness-hands-on/04-result.png 1.5x, /posts/2026/08/13/deepseek-harness-hands-on/04-result.png 2x"
         data-sizes="auto"
-        alt="/posts/2026/08/14/deepseek-harness-hands-on/04-result.png"
+        alt="/posts/2026/08/13/deepseek-harness-hands-on/04-result.png"
         title="任务运行中：状态栏实时数据 &#43; 思考状态（右上角任务统计）" width="1440" height="900" /></p>
 <p><strong>输入 1.1M token</strong>——它把整个游戏代码、截图分析结果、探针输出全部喂给了模型反复检查。DeepSeek 的长思考模型 + 反复验证 = 半小时级任务（此前媒体横评也观察到了同样的现象）。</p>
 <p><strong>但慢得有道理：它不是在&quot;写一遍就交差&quot;，它在自我验收。</strong> 会话轨迹里可以看到它干的事：</p>
@@ -232,26 +232,26 @@
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="/posts/2026/08/14/deepseek-harness-hands-on/05b-0.png"
-        data-srcset="/posts/2026/08/14/deepseek-harness-hands-on/05b-0.png, /posts/2026/08/14/deepseek-harness-hands-on/05b-0.png 1.5x, /posts/2026/08/14/deepseek-harness-hands-on/05b-0.png 2x"
+        data-src="/posts/2026/08/13/deepseek-harness-hands-on/05b-0.png"
+        data-srcset="/posts/2026/08/13/deepseek-harness-hands-on/05b-0.png, /posts/2026/08/13/deepseek-harness-hands-on/05b-0.png 1.5x, /posts/2026/08/13/deepseek-harness-hands-on/05b-0.png 2x"
         data-sizes="auto"
-        alt="/posts/2026/08/14/deepseek-harness-hands-on/05b-0.png"
+        alt="/posts/2026/08/13/deepseek-harness-hands-on/05b-0.png"
         title="开局：从沙丘顶端出发" width="1200" height="750" /></p>
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="/posts/2026/08/14/deepseek-harness-hands-on/05b-3.png"
-        data-srcset="/posts/2026/08/14/deepseek-harness-hands-on/05b-3.png, /posts/2026/08/14/deepseek-harness-hands-on/05b-3.png 1.5x, /posts/2026/08/14/deepseek-harness-hands-on/05b-3.png 2x"
+        data-src="/posts/2026/08/13/deepseek-harness-hands-on/05b-3.png"
+        data-srcset="/posts/2026/08/13/deepseek-harness-hands-on/05b-3.png, /posts/2026/08/13/deepseek-harness-hands-on/05b-3.png 1.5x, /posts/2026/08/13/deepseek-harness-hands-on/05b-3.png 2x"
         data-sizes="auto"
-        alt="/posts/2026/08/14/deepseek-harness-hands-on/05b-3.png"
+        alt="/posts/2026/08/13/deepseek-harness-hands-on/05b-3.png"
         title="滑行中：穿过沙丘与光门" width="1200" height="750" /></p>
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="/posts/2026/08/14/deepseek-harness-hands-on/05b-5.png"
-        data-srcset="/posts/2026/08/14/deepseek-harness-hands-on/05b-5.png, /posts/2026/08/14/deepseek-harness-hands-on/05b-5.png 1.5x, /posts/2026/08/14/deepseek-harness-hands-on/05b-5.png 2x"
+        data-src="/posts/2026/08/13/deepseek-harness-hands-on/05b-5.png"
+        data-srcset="/posts/2026/08/13/deepseek-harness-hands-on/05b-5.png, /posts/2026/08/13/deepseek-harness-hands-on/05b-5.png 1.5x, /posts/2026/08/13/deepseek-harness-hands-on/05b-5.png 2x"
         data-sizes="auto"
-        alt="/posts/2026/08/14/deepseek-harness-hands-on/05b-5.png"
+        alt="/posts/2026/08/13/deepseek-harness-hands-on/05b-5.png"
         title="后期：场景更亮，接近绿洲" width="1200" height="750" /></p>
 <h2 id="四意外收获审批机制和写工作区外的真实教训">四、意外收获：审批机制，和&quot;写工作区外&quot;的真实教训</h2>
 <p>第二个任务想让它建一个 Python 命令行 todo 工具（加功能 + 写测试 + 跑通），<strong>指定了工作区之外的目录</strong>。然后任务就挂起了——不是失败，是<strong>卡在审批上</strong>。</p>
@@ -283,10 +283,10 @@
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="/posts/2026/08/14/deepseek-harness-hands-on/07-plugin-sidebar.png"
-        data-srcset="/posts/2026/08/14/deepseek-harness-hands-on/07-plugin-sidebar.png, /posts/2026/08/14/deepseek-harness-hands-on/07-plugin-sidebar.png 1.5x, /posts/2026/08/14/deepseek-harness-hands-on/07-plugin-sidebar.png 2x"
+        data-src="/posts/2026/08/13/deepseek-harness-hands-on/07-plugin-sidebar.png"
+        data-srcset="/posts/2026/08/13/deepseek-harness-hands-on/07-plugin-sidebar.png, /posts/2026/08/13/deepseek-harness-hands-on/07-plugin-sidebar.png 1.5x, /posts/2026/08/13/deepseek-harness-hands-on/07-plugin-sidebar.png 2x"
         data-sizes="auto"
-        alt="/posts/2026/08/14/deepseek-harness-hands-on/07-plugin-sidebar.png"
+        alt="/posts/2026/08/13/deepseek-harness-hands-on/07-plugin-sidebar.png"
         title="插件装后：侧边栏变为 Explorer 文件树" width="1440" height="900" /></p>
 <ul>
 <li><strong>CodeMirror 6 编辑器</strong>打开，可直接编辑、Ctrl+S 保存</li>
@@ -295,10 +295,10 @@
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="/posts/2026/08/14/deepseek-harness-hands-on/08-plugin-editor.png"
-        data-srcset="/posts/2026/08/14/deepseek-harness-hands-on/08-plugin-editor.png, /posts/2026/08/14/deepseek-harness-hands-on/08-plugin-editor.png 1.5x, /posts/2026/08/14/deepseek-harness-hands-on/08-plugin-editor.png 2x"
+        data-src="/posts/2026/08/13/deepseek-harness-hands-on/08-plugin-editor.png"
+        data-srcset="/posts/2026/08/13/deepseek-harness-hands-on/08-plugin-editor.png, /posts/2026/08/13/deepseek-harness-hands-on/08-plugin-editor.png 1.5x, /posts/2026/08/13/deepseek-harness-hands-on/08-plugin-editor.png 2x"
         data-sizes="auto"
-        alt="/posts/2026/08/14/deepseek-harness-hands-on/08-plugin-editor.png"
+        alt="/posts/2026/08/13/deepseek-harness-hands-on/08-plugin-editor.png"
         title="文件编辑 &#43; HTML 沙箱预览 &#43; &amp;ldquo;临时解锁（不安全）&amp;ldquo;警示" width="1440" height="900" /></p>
 <p>这个&quot;预览即沙箱、解锁有红警提示&quot;的设计，比很多正式 IDE 的预览器还谨慎。而这个插件还带：内嵌浏览器、xterm 真实终端（node-pty）、Git 面板（真 diff + 右键暂存/提交）、后台任务拓扑视图、移动端适配——<strong>一个社区插件就是一套迷你 IDE</strong>。</p>
 <p>安装过程中也踩到 README 预警的坑：pnpm 的 <code>strict-dep-builds</code> 拦了 node-pty 的构建脚本，需要 <code>pnpm approve-builds --all</code> 放行。README 一字不差地预告了这个坑——插件文档的成熟度也是&quot;社区已形成&quot;的证据。</p>
@@ -354,18 +354,18 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2026-08-14&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/fab8ca06040b907134258b5e7764332149d7e74b" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) fab8ca06040b907134258b5e7764332149d7e74b: fix: 修正插件生态表述——官方发布时内置 130 插件（web profile 实测），灰度期已有社区插件，非开源后从零长出">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>fab8ca0</a></span>
+                <span>更新于 2026-08-14&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/73f8f1c7f710b0f45beb047e9b6b99c444c0e6ec" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) 73f8f1c7f710b0f45beb047e9b6b99c444c0e6ec: chore: 发布时间自然化——体验文 8-13 23:51(连夜实测),深度拆解 8-14 08:42,随机分钟秒">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>73f8f1c</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
-                            <a class="link-to-markdown" href="/posts/2026/08/14/deepseek-harness-hands-on/index.md" target="_blank">阅读原始文档</a>
+                            <a class="link-to-markdown" href="/posts/2026/08/13/deepseek-harness-hands-on/index.md" target="_blank">阅读原始文档</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/08/14/deepseek-harness-hands-on/" data-title="DeepSeek Harness 实测：开源当晚破 3 万 star 的 Agent 运行时" data-hashtags="tech,ai,deepseek,harness,agent,plugin,event-sourcing"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/08/14/deepseek-harness-hands-on/" data-hashtag="tech"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/08/14/deepseek-harness-hands-on/" data-title="DeepSeek Harness 实测：开源当晚破 3 万 star 的 Agent 运行时"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/08/14/deepseek-harness-hands-on/" data-title="DeepSeek Harness 实测：开源当晚破 3 万 star 的 Agent 运行时"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/08/14/deepseek-harness-hands-on/" data-title="DeepSeek Harness 实测：开源当晚破 3 万 star 的 Agent 运行时"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微信" onclick="var d=document.getElementById('wechat-qr-cac1eb5ccf6336b655c6c6ae81aaab5d');d.style.display=d.style.display==='none'?'block':'none';return false"><i class="fab fa-weixin fa-fw" aria-hidden="true"></i></a>
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/08/13/deepseek-harness-hands-on/" data-title="DeepSeek Harness 实测：开源当晚破 3 万 star 的 Agent 运行时" data-hashtags="tech,ai,deepseek,harness,agent,plugin,event-sourcing"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/08/13/deepseek-harness-hands-on/" data-hashtag="tech"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/08/13/deepseek-harness-hands-on/" data-title="DeepSeek Harness 实测：开源当晚破 3 万 star 的 Agent 运行时"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/08/13/deepseek-harness-hands-on/" data-title="DeepSeek Harness 实测：开源当晚破 3 万 star 的 Agent 运行时"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/08/13/deepseek-harness-hands-on/" data-title="DeepSeek Harness 实测：开源当晚破 3 万 star 的 Agent 运行时"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微信" onclick="var d=document.getElementById('wechat-qr-cac1eb5ccf6336b655c6c6ae81aaab5d');d.style.display=d.style.display==='none'?'block':'none';return false"><i class="fab fa-weixin fa-fw" aria-hidden="true"></i></a>
         <div id="wechat-qr-cac1eb5ccf6336b655c6c6ae81aaab5d" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:9999" onclick="this.style.display='none'">
             <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;padding:20px;border-radius:8px;text-align:center">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https%3a%2f%2fwhitefirer.org%2fposts%2f2026%2f08%2f14%2fdeepseek-harness-hands-on%2f" alt="微信扫一扫" style="display:block">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https%3a%2f%2fwhitefirer.org%2fposts%2f2026%2f08%2f13%2fdeepseek-harness-hands-on%2f" alt="微信扫一扫" style="display:block">
                 <p style="margin:10px 0 0;font-size:14px;color:#333">微信扫一扫 · 分享文章</p>
             </div>
         </div></span>
