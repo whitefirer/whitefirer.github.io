@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>DeepSeek Harness 全拆解：开源首日破 3 万 star 的 Agent 运行时，硬在哪 - 赛博闲谭-whitefirer</title><meta name="Description" content="DeepSeek 开源 dsh 首日破 3 万 star。本文从决策记录与源码逐层拆解：一个引擎五个出口、Cordis 插件化地基、事件溯源会话模型、压缩阴影机制、四象限 RPC、landlock 沙箱、hooks 兼容层——以及&#39;它为什么不是 Codex 竞品&#39;的架构级答案。">
+
+<meta name="application-name" content="赛博闲谭-whitefirer">
+<meta name="apple-mobile-web-app-title" content="赛博闲谭-whitefirer"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/" /><link rel="prev" href="https://whitefirer.org/posts/2026/08/14/deepseek-harness-hands-on/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta property="og:title" content="DeepSeek Harness 全拆解：开源首日破 3 万 star 的 Agent 运行时，硬在哪 - 赛博闲谭-whitefirer" />
+<meta property="og:description" content="DeepSeek 开源 dsh 首日破 3 万 star。本文从决策记录与源码逐层拆解：一个引擎五个出口、Cordis 插件化地基、事件溯源会话模型、压缩阴影机制、四象限 RPC、landlock 沙箱、hooks 兼容层——以及&#39;它为什么不是 Codex 竞品&#39;的架构级答案。" />
+<meta property="og:image" content="https://whitefirer.org/og-default.png" />
+<meta property="og:url" content="https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="赛博闲谭-whitefirer" /><meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="DeepSeek Harness 全拆解：开源首日破 3 万 star 的 Agent 运行时，硬在哪 - 赛博闲谭-whitefirer" />
+<meta name="twitter:description" content="DeepSeek 开源 dsh 首日破 3 万 star。本文从决策记录与源码逐层拆解：一个引擎五个出口、Cordis 插件化地基、事件溯源会话模型、压缩阴影机制、四象限 RPC、landlock 沙箱、hooks 兼容层——以及&#39;它为什么不是 Codex 竞品&#39;的架构级答案。" />
+<meta name="twitter:image" content="https://whitefirer.org/og-default.png" /><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "DeepSeek Harness 全拆解：开源首日破 3 万 star 的 Agent 运行时，硬在哪",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/whitefirer.org\/posts\/2026\/08\/14\/deepseek-harness-deep-dive\/"
+        },"genre": "posts","keywords": "tech, ai, deepseek, harness, architecture, event-sourcing, plugin","wordcount":  16412 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/14\/deepseek-harness-deep-dive\/","datePublished": "2026-08-14T05:00:00+08:00","dateModified": "2026-08-14T05:01:09+08:00","license": "2022©️whitefirer","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "whitefirer"
+            },"description": "DeepSeek 开源 dsh 首日破 3 万 star。本文从决策记录与源码逐层拆解：一个引擎五个出口、Cordis 插件化地基、事件溯源会话模型、压缩阴影机制、四象限 RPC、landlock 沙箱、hooks 兼容层——以及'它为什么不是 Codex 竞品'的架构级答案。"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="赛博闲谭-whitefirer">赛博闲谭-whitefirer</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/series/ai-zatan/"> AI 杂谈 </a><div class="menu-item has-dropdown">
+                            <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                            <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a><a class="dropdown-item" href="/series/harness-engineering/"> Harness Engineering </a></div>
+                        </div><a class="menu-item" href="/series/%e5%9f%ba%e7%a1%80%e6%9e%b6%e6%9e%84/"> 基础架构 </a><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/2026/08/14/deepseek-harness-deep-dive/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header>
+<script>
+(function() {
+    document.querySelectorAll('.has-dropdown .dropdown-toggle').forEach(function(toggle) {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var parent = this.closest('.has-dropdown');
+            parent.classList.toggle('open');
+        });
+    });
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.has-dropdown.open').forEach(function(d) {
+            d.classList.remove('open');
+        });
+    });
+})();
+</script><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="赛博闲谭-whitefirer">赛博闲谭-whitefirer</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/series/ai-zatan/" title="">AI 杂谈</a><div class="menu-item has-dropdown">
+                        <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                        <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a><a class="dropdown-item" href="/series/harness-engineering/"> Harness Engineering </a></div>
+                    </div><a class="menu-item" href="/series/%e5%9f%ba%e7%a1%80%e6%9e%b6%e6%9e%84/" title="">基础架构</a><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/posts/2026/08/14/deepseek-harness-deep-dive/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><div id="reading-progress"></div>
+    <article class="page single"><div style="display:flex;align-items:baseline;gap:0">
+        <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">DeepSeek Harness 全拆解：开源首日破 3 万 star 的 Agent 运行时，硬在哪</h1></div><h2 class="single-subtitle">事件溯源会话、surface 阴影压缩、fail-closed 沙箱、automation-only 的 ACP——一个 219 包插件化架构的完整解剖</h2><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-14">2026-08-14</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 16412 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 33 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive.svg" alt="" aria-hidden="true" loading="eager"
+     style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none"></div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#导语为什么值得读">导语：为什么值得读</a></li>
+    <li><a href="#关键事实">关键事实</a></li>
+    <li><a href="#一定位一个引擎五个产品出口">一、定位：一个引擎，五个产品出口</a>
+      <ul>
+        <li><a href="#11-组装机制profile--bundle-补丁层">1.1 组装机制：profile + bundle 补丁层</a></li>
+        <li><a href="#12-出口四的展开单文件-exe-与配置决定一切">1.2 出口四的展开：单文件 exe 与&quot;配置决定一切&quot;</a></li>
+      </ul>
+    </li>
+    <li><a href="#二地基vendored-cordis-与五个概念">二、地基：vendored Cordis 与五个概念</a></li>
+    <li><a href="#三事件三分域扩展点放在哪是第一决策">三、事件三分域：扩展点放在哪，是第一决策</a></li>
+    <li><a href="#四会话事件溯源--surface-阴影--zstd-jsonl">四、会话：事件溯源 + surface 阴影 + zstd JSONL</a>
+      <ul>
+        <li><a href="#41-日志即状态">4.1 日志即状态</a></li>
+        <li><a href="#42-turnstep-流转与事件日志的咬合">4.2 turn/step 流转与事件日志的咬合</a></li>
+        <li><a href="#43-surface压缩的阴影机制">4.3 surface：压缩的阴影机制</a></li>
+        <li><a href="#44-持久化zstd-帧-jsonl--崩溃修复">4.4 持久化：zstd 帧 JSONL + 崩溃修复</a></li>
+        <li><a href="#45-磁盘布局可读的项目会话目录">4.5 磁盘布局：可读的项目会话目录</a></li>
+        <li><a href="#46-会话数据面的其余部分一圈派生视图">4.6 会话数据面的其余部分：一圈派生视图</a></li>
+      </ul>
+    </li>
+    <li><a href="#五能力缝换-provider-换整个产品不换模型契约">五、能力缝：换 provider 换整个产品，不换模型契约</a>
+      <ul>
+        <li><a href="#51-工具管线每个相位一种权威">5.1 工具管线：每个相位一种权威</a></li>
+        <li><a href="#52-同款纪律的旁证">5.2 同款纪律的旁证</a></li>
+      </ul>
+    </li>
+    <li><a href="#六acp两次演化从编辑器桥到-automation-only">六、ACP：两次演化，从编辑器桥到 automation-only</a></li>
+    <li><a href="#七gui分层纪律--四象限-rpc">七、GUI：分层纪律 + 四象限 RPC</a>
+      <ul>
+        <li><a href="#71-三层分层implementedarchitecture2026-07-19-gui-layering-and-rpc-protocolmd">7.1 三层分层（<code>implemented/architecture/2026-07-19-gui-layering-and-rpc-protocol.md</code>）</a></li>
+        <li><a href="#72-四象限消息模型">7.2 四象限消息模型</a></li>
+      </ul>
+    </li>
+    <li><a href="#八浏览器里跑第二棵-cordis-树">八、浏览器里跑第二棵 Cordis 树</a></li>
+    <li><a href="#九沙箱landlock-run-与-fail-closed-哲学">九、沙箱：landlock-run 与 fail-closed 哲学</a>
+      <ul>
+        <li><a href="#91-自包含启动器">9.1 自包含启动器</a></li>
+        <li><a href="#92-能力缝与平台链implementedfeature2026-07-06-sandboxmd">9.2 能力缝与平台链（<code>implemented/feature/2026-07-06-sandbox.md</code>）</a></li>
+      </ul>
+    </li>
+    <li><a href="#十hooks兼容适配器不是权力工具">十、hooks：兼容适配器，不是权力工具</a>
+      <ul>
+        <li><a href="#101-原生层hook-不是包">10.1 原生层：hook 不是包</a></li>
+        <li><a href="#102-兼容层两个桥--一个共享协议库">10.2 兼容层：两个桥 + 一个共享协议库</a></li>
+      </ul>
+    </li>
+    <li><a href="#十一工程实践用-agent-开发-agent的样本">十一、工程实践：&ldquo;用 agent 开发 agent&quot;的样本</a></li>
+    <li><a href="#十二观察风险与对自建工具链的启示">十二、观察、风险与对自建工具链的启示</a>
+      <ul>
+        <li><a href="#观察">观察</a></li>
+        <li><a href="#对自建-agent-工具链的启示">对自建 agent 工具链的启示</a></li>
+      </ul>
+    </li>
+    <li><a href="#结语">结语</a></li>
+    <li><a href="#附录获取与安装">附录：获取与安装</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><blockquote>
+<p>2026-08-13 开源 · 0.1.0-rc.5 开发者预览 · MIT 许可。本文全部机制描述均出自仓库（<code>docs/</code>、<code>.agents/notes/</code>、源码），个别处注明&quot;从决策记录看&quot;。Star 数据为 GitHub API 实测（开源首日终值 31078 / forks 2330，2026-08-13 24:00 抓取）。</p>
+</blockquote>
+<h2 id="导语为什么值得读">导语：为什么值得读</h2>
+<p>2026 年 8 月 13 日，DeepSeek 官方开源了 deepseek-harness（下文简称 dsh）——一个 TypeScript 写的 agent harness（agent 运行时/框架）。开源当天数小时内，GitHub star 突破 4000。</p>
+<p>这个仓库没有&quot;README 画饼、代码潦草&quot;的开源典型病：两个多月、约 1.2 万次提交；49 个包组、219 个包；600+ 条带日期的架构决策记录（Agent Notes）；文档带词数预算门禁，目录表全部由脚本从源码生成并做新鲜度校验。这是&quot;用 agent 开发 agent&quot;的产物——<strong>工程过程本身就是产品</strong>。</p>
+<p>对熟悉 AI agent / LLM 工程的中高级开发者，它值得一读的原因很具体：</p>
+<ul>
+<li><strong>会话模型是事件溯源</strong>（append-only 事件日志），并配套一套&quot;压缩不改日志、回放仍确定&quot;的 surface 阴影机制——这是几乎所有自建 agent 工具链迟早要面对的坑；</li>
+<li><strong>沙箱用自带的 landlock-run</strong>（约 300 行 C11），fail-closed、功能探测、审批升级闭环——进程级沙箱的务实样板；</li>
+<li><strong>ACP（Agent Client Protocol）经历了&quot;编辑器桥 → automation-only&quot;的主动退化</strong>，是&quot;UI 职责与自动化协议必须分家&quot;的活案例；</li>
+<li><strong>hooks 协议</strong>（Claude Code / Codex 的 <code>hooks.json</code>）被做成一个带 matcher / 退出码 / 合并语义的共享库——你要兼容这两家的 hook 生态，这就是现成规格书。</li>
+</ul>
+<p>提醒一句口径：它是预览版，README 明说 &ldquo;THERE WILL BE COMPATIBILITY-BREAKING CHANGES&rdquo;，文末&quot;观察与风险&quot;会给出坦率评价。</p>
+<h2 id="关键事实">关键事实</h2>
+<table>
+<thead>
+<tr>
+<th>项</th>
+<th>事实</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>发布</td>
+<td>2026-08-13 开源，<code>0.1.0-rc.5</code> 开发者预览，MIT</td>
+</tr>
+<tr>
+<td>热度</td>
+<td>开源首日破 3 万 star：终值 <strong>31078</strong> / forks 2330（2026-08-13 24:00 抓取；当日曾抓 4187 → 20436）</td>
+</tr>
+<tr>
+<td>技术栈</td>
+<td>TypeScript ESM monorepo，pnpm 11.7.0，Node <code>^22.19 || &gt;=24</code></td>
+</tr>
+<tr>
+<td>规模</td>
+<td>49 个包组、219 个包；约 1.2 万次提交（约 2 个月）</td>
+</tr>
+<tr>
+<td>布局</td>
+<td><code>apps/cli</code>（dsh 命令）+ <code>apps/web</code>（Vite 应用）；<code>native/landlock-run</code>（C 沙箱启动器）；<code>python/</code>（Python SDK + 单文件 exe）；<code>examples/</code> 6 个可运行组合</td>
+</tr>
+<tr>
+<td>定位</td>
+<td>&ldquo;everything is a plugin&rdquo;：模型适配、工具注册表、会话日志、乃至 agent 主循环本身都是可替换的插件；官方站点口号：&ldquo;一切皆插件，运行有迹可循&rdquo;</td>
+</tr>
+<tr>
+<td>官方站点</td>
+<td><a href="https://www.deepseek.com/harness/" target="_blank" rel="noopener noreffer ">deepseek.com/harness</a>（2026-08-13 上线，面向 Harness 开发者开放测试；官方公式 Agent = Model + Harness）</td>
+</tr>
+<tr>
+<td>获取</td>
+<td>源码 <code>git clone https://github.com/deepseek-ai/deepseek-harness.git</code>；即装即用 <code>npx @deepseek-ai/dsh web</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="一定位一个引擎五个产品出口">一、定位：一个引擎，五个产品出口</h2>
+<p>官方站点把它浓缩成一句口号：<strong>&ldquo;一切皆插件，运行有迹可循&rdquo;</strong>。前一半是架构承诺（下面第二节展开），后一半是数据承诺——系统提示词、思维链、工具调用与结果、子 Agent 调度、每一次上下文注入，全部写入仅追加的会话日志，Trajectory 视图按来源查看，恢复、分叉、检索与回放共享同一份事件流（第四节的会话模型）。官方还给出一个公式：<strong>Agent = Model + Harness</strong>——模型是灵魂，Harness 给予 Agent 理解环境、使用工具、在真实场景中持续工作的能力。</p>
+<p><code>dsh</code> 本身只是一个产品启动器。同一套 core，按 profile（命名插件组合）组装出不同产品面：</p>
+<table>
+<thead>
+<tr>
+<th>出口</th>
+<th>形态</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dsh web</code></td>
+<td>Web UI（默认 <code>127.0.0.1:3080</code>）</td>
+<td>交互主产品面：选工作区 → 配模型 → 跑任务，审批弹窗</td>
+</tr>
+<tr>
+<td><code>dsh --profile headless &quot;任务&quot;</code></td>
+<td>一次性无头 runner，跑完打印答案退出</td>
+<td>自动化/批处理，零 Host / HTTP / 浏览器层</td>
+</tr>
+<tr>
+<td>ACP server</td>
+<td>stdio JSON-RPC 自动化契约</td>
+<td>被父 agent / 自动化控制器驱动</td>
+</tr>
+<tr>
+<td>JSON-RPC SDK</td>
+<td>进程内/跨进程协议 + TS 客户端 + <strong>单文件 exe</strong>（约 174MB）</td>
+<td>Python SDK 的运行时载体</td>
+</tr>
+<tr>
+<td><code>dsh plugin</code></td>
+<td>按 profile 安装第三方插件（pnpm 转发）</td>
+<td>生态入口（<code>dsh-plugin</code> topic）</td>
+</tr>
+</tbody>
+</table>
+<p>注意：没有 TUI 出口。这不是疏忽——交互前门在两个月里摇摆了两次：7 月 20 日 readline 退役让位全屏 TUI（<code>archived/simplification/2026-07-20-retire-readline-front-door.md</code>），8 月 4 日 TUI 整包移除（<code>implemented/simplification/2026-08-04-remove-tui-package.md</code>，决策记录原话：&ldquo;Web remains the shipped interactive surface&rdquo;）。产品最终收敛为 <strong>Web UI + 自动化协议</strong> 双面。预览期的产品形状就是这么漂移的，读到后面你会习惯。</p>
+<p>关键点：产品出口的多样性来自<strong>组装</strong>而不是<strong>分支</strong>——同一进程 <code>dsh --profile web</code> 与 <code>dsh --profile headless</code>，一棵插件树两种装法。这是它区别于&quot;一堆 CLI 开关&quot;的本质，也是下一节的地基。</p>
+<h3 id="11-组装机制profile--bundle-补丁层">1.1 组装机制：profile + bundle 补丁层</h3>
+<p>一个运行中的 dsh 是一棵在启动时按有序层次组装出来的插件树（<code>docs/architecture.md</code> #Profiles-and-bundles）：</p>
+<ul>
+<li><strong>profile</strong> 是命名组合（存于 Harness home）：列出它叠加的 bundle、持有外置插件、保留用户自己的 <code>cordis.patch.yml</code>；</li>
+<li><strong>bundle</strong> 是 Cordis 配置行 + 代码的分发格式——它插入的东西仍可被上层补丁覆盖；</li>
+<li><strong>层序</strong>：profile 列的 bundle 按序 → profile 的 <code>cordis.patch.yml</code> → home 级补丁 → <code>--patch</code> overlay。patch 按 id 定位一行并整体替换其 config，或插入新行；</li>
+<li><strong>随装模板</strong>：<code>dsh-base</code>（每 profile 的第一层：模型适配器、工具、持久化、沙箱与审批策略、设置、凭证）、<code>dsh-web-app</code>、<code>dsh-headless</code>。</li>
+</ul>
+<p>验证工具很直白：<code>dsh --profile web --dump-config</code> 打印你机器实际 boot 的树——打印出来的任何一行都能被你自己的 patch 替换。组装不是黑盒，是可审计的层。</p>
+<h3 id="12-出口四的展开单文件-exe-与配置决定一切">1.2 出口四的展开：单文件 exe 与&quot;配置决定一切&quot;</h3>
+<p>JSON-RPC SDK 的运行时载体是个约 174MB 的单文件可执行（<code>implemented/architecture/2026-07-10-single-file-executable-sdk-runtime-distribution.md</code>），打包路线值得单独说：</p>
+<ul>
+<li>用 <code>@yao-pkg/pkg</code> 的 <code>--sea</code> 模式（vercel/pkg 归档后的活跃 fork），目标 Node 24；VFS 里放的是<strong>真实包树 + 真实 node_modules</strong>，ESM 动态 import 原样工作，无 ESM→CJS 转译、无字节码编译；</li>
+<li><strong>&ldquo;exe 里 boot 什么插件，由外部 <code>cordis.yml</code> 决定&quot;是硬语义</strong>：配置发现只有两条通道——<code>DSH_CORDIS_CONFIG</code> 环境变量优先、argv 位置参数其次，<strong>无默认路径、无内置回退</strong>，双缺即 fail loud；</li>
+<li>闭包清单是 <code>python/sdk-runtime/package.json</code>（零代码纯依赖清单，唯一事实源）：加一个插件 = 加一行依赖重新打包；VFS 里没有的名字 import 必失败——<strong>不需要 allowlist 代码，集合就是 VFS 装了什么</strong>；</li>
+<li>Python SDK 双载体：生产用 exe，开发用 <code>DSH_RUNTIME_MODE=node</code> 指向源码树（成员验证通道，不进 wheel）。</li>
+</ul>
+<p>代价也记在案：约 174MB、源码原样进 blob（无混淆，闭源分发需另行评估）；pkg 的 VFS/module-hook 层是社区维护（版本 pin 6.21.0，升级是显式变更）。这是&quot;零依赖单文件分发&quot;与&quot;插件语义与源码运行完全一致&quot;之间的一个务实落点。</p>
+<h2 id="二地基vendored-cordis-与五个概念">二、地基：vendored Cordis 与五个概念</h2>
+<p>dsh 没有发明框架，而是把上游 Cordis（聊天机器人领域的插件框架）vendor 进仓库（<code>vendor/</code>，rescope 成 <code>@deepseek-ai/cordis</code>），在其上构建全部产品。Cordis 不是草台轮子：它有 80 页理论论文（<a href="https://github.com/cordiverse/paper" target="_blank" rel="noopener noreffer ">cordiverse/paper</a>，北大 + DeepSeek 作者）把&quot;插件卸载必须完全撤销副作用、依赖变化必须结构化感知&quot;这两件事形式化成了运行时机制。<code>docs/cordis-primer.md</code> 用五句话讲完它：</p>
+<ol>
+<li><strong>插件即 Service</strong>：插件是一个带 <code>inject</code> + <code>apply(ctx)</code> 的函数，或一个 Service 子类；</li>
+<li><strong>ctx 是服务仓库</strong>：服务以 <code>ctx.tools</code> / <code>ctx.llm</code> / <code>ctx.sessions</code> 这样的键注册，插件按键找服务，而不是 import 具体实现；</li>
+<li><strong><code>inject</code> 声明依赖</strong>：Loader 等依赖的服务存在后才激活插件——<strong>加载顺序 = 服务依赖图，不是手排的启动序列</strong>；</li>
+<li><strong>typed events</strong>：事件用 TypeScript declaration merging 声明，按语义选择分发模式（见下表）；</li>
+<li><strong>注册即可逆 effect</strong>：一切注册（工具、适配器、监听器）走 <code>ctx.effect()</code> / <code>ctx.on()</code>，插件卸载时自动回滚——热重载有结构保证。</li>
+</ol>
+<p>事件分发模式是事件声明的公共契约（<code>@mode</code> 标签会被生成目录校验）：</p>
+<table>
+<thead>
+<tr>
+<th>模式</th>
+<th>是否 await</th>
+<th>分发顺序</th>
+<th>有返回值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>emit</code></td>
+<td>否</td>
+<td>按注册顺序观察</td>
+<td>无</td>
+</tr>
+<tr>
+<td><code>waterfall</code></td>
+<td>否</td>
+<td>按注册顺序</td>
+<td>有（可改返回值）</td>
+</tr>
+<tr>
+<td><code>parallel</code></td>
+<td>是</td>
+<td>全体并行观察</td>
+<td>无</td>
+</tr>
+<tr>
+<td><code>serial</code></td>
+<td>是</td>
+<td>按注册顺序</td>
+<td>有</td>
+</tr>
+</tbody>
+</table>
+<p><code>waterfall</code> 是&quot;around 中间件&rdquo;：监听器收到 <code>(...args, next)</code>，调 <code>next()</code> 委派（可能被包装过的结果），不调则短路。对单决策事件，短路就是设计本身——策略监听器可以&quot;占有&quot;决策；而只注解、只观察的监听器<strong>必须委派</strong>，否则后续策略监听器再也看不到事件。这条纪律在后面 hooks 一节会再次出现。</p>
+<p>架构文档开宗明义（<code>docs/architecture.md</code>）：</p>
+<blockquote>
+<p>There is no privileged core to patch.</p>
+</blockquote>
+<p>没有特权核心可打补丁——扩展 dsh = 在 <code>cordis.yml</code> 里挂一个插件；agent-loop 本身也只是 <code>ctx.agentLoop</code> 上的一个可替换实现。Core 包只有六个：<code>core/session</code>（事件日志）、<code>core/system-prompt</code>（提示词与工具 schema 组装）、<code>core/tools</code>（作用域工具注册表）、<code>core/agent</code>（Agent 接口与注册表）、<code>core/agent-loop</code>（默认驱动循环，<strong>本身可换</strong>）、<code>core/scope</code>（作用域注册原语）。</p>
+<h2 id="三事件三分域扩展点放在哪是第一决策">三、事件三分域：扩展点放在哪，是第一决策</h2>
+<p><code>docs/architecture.md</code> #Events 把所有事件分成三个域——新行为挂哪，第一个问题就是选域：</p>
+<table>
+<thead>
+<tr>
+<th>域</th>
+<th>性质</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>session events</strong></td>
+<td>持久事实，append 进会话日志并广播</td>
+<td>必须跨重启存活的（turn / step / user message / tool 结果）</td>
+</tr>
+<tr>
+<td><strong>agent events</strong>（<code>agent/*</code>）</td>
+<td>携带活 <code>Agent</code> 的实时事件</td>
+<td>观察/拦截进行中的工作（inbox、pre-step、request、turn-stopping）</td>
+</tr>
+<tr>
+<td><strong>capability events</strong>（<code>fs/*</code>、<code>tools/*</code>）</td>
+<td>策略与适配器挂载点</td>
+<td>不 import 循环的横切逻辑</td>
+</tr>
+</tbody>
+</table>
+<p>配套一条硬不变量：&ldquo;模型可见 ⟺ 已入日志&rdquo;——任何到达模型请求的内容必须能从日志重建，运行时断言校验。这就是为什么&quot;加一种模型可见的输入&quot;必须&quot;加一种新的 session event&quot;：<code>SessionEventMap</code> 是 merge-extensible 的，扩展面不是 API 旁路。</p>
+<h2 id="四会话事件溯源--surface-阴影--zstd-jsonl">四、会话：事件溯源 + surface 阴影 + zstd JSONL</h2>
+<p>这是全仓库含金量最高的设计，拆成四层讲。</p>
+<h3 id="41-日志即状态">4.1 日志即状态</h3>
+<p>决策记录 <code>implemented/architecture/2026-06-11-event-sourced-sessions.md</code>：<code>Session</code> = 类型化 <code>SessionEvent</code> 的 <strong>append-only 日志</strong>，是唯一事实源。LLM 消息历史<strong>从日志派生</strong>（<code>deriveMessages()</code>），不是一份独立维护的数组；原始 <code>assistant/chunk</code> 原样入日志保 token 级回放保真，但派生以组装后的 <code>assistant/message</code> 为准。备选方案&quot;可变消息数组 + 事件当通知&quot;被否，理由只有一句：<strong>状态与日志可能分叉，而事件溯源让分叉结构性不可能</strong>。</p>
+<p>append 是同步的（热路径不阻塞 I/O），持久化插件缓冲 write-behind，在<strong>语义检查点</strong> drain：请求派发前、工具派发前、step 批次后、turn 末尾（<code>2026-06-14-session-persistence.md</code> + <code>bug-fix/2026-07-21-semantic-session-checkpoints.md</code>）。持久化只是插件关注点，内存 store 即默认实现。</p>
+<h3 id="42-turnstep-流转与事件日志的咬合">4.2 turn/step 流转与事件日志的咬合</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">turn/start
+</span></span><span class="line"><span class="cl">  claim 队列输入 → 组装 prompt 分区 + 工具 schema
+</span></span><span class="line"><span class="cl">  → agent/pre-step（waterfall：reject 则无 step 关 turn / enter 开 step）
+</span></span><span class="line"><span class="cl">  step/start
+</span></span><span class="line"><span class="cl">  append user/message（模型可见 ⟺ 已入日志）
+</span></span><span class="line"><span class="cl">  agent/request → llm/stream → assistant/chunk*（原样入日志）→ assistant/message（权威派生源）
+</span></span><span class="line"><span class="cl">  tool/call* → tools/pre-execute → execute → post-execute → tool/result*
+</span></span><span class="line"><span class="cl">  step/end → 工具欠请求或有新输入则下一 step
+</span></span><span class="line"><span class="cl">  → agent/turn-stopping（要续则 steer()）
+</span></span><span class="line"><span class="cl">turn/end
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><code>turn/*</code>、<code>step/*</code>、<code>user/message</code>、<code>assistant/*</code>、<code>tool/*</code> 是持久 session events；<code>agent/*</code>、<code>llm/stream</code>、<code>tools/*</code> 是活扩展点（waterfall 必须 <code>next()</code> 委派）。注意 <code>agent/pre-step</code> 的 enter 决策先于 <code>step/start</code>：被 reject 的输入会关掉一个&quot;没花 step 的 turn&quot;并留档——<strong>尝试本身也是事实</strong>。</p>
+<h3 id="43-surface压缩的阴影机制">4.3 surface：压缩的阴影机制</h3>
+<p>日志无限增长，上下文必须压缩。naive 做法是&quot;改日志 / 改派生函数&quot;，但压缩后的历史怎么保证回放确定性？</p>
+<p><code>implemented/architecture/2026-06-18-session-surface.md</code> 的答案：每个事件带两个可选字段——</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-ts" data-lang="ts"><span class="line"><span class="cl"><span class="kr">export</span> <span class="kr">type</span> <span class="nx">SurfaceOp</span> <span class="o">=</span>
+</span></span><span class="line"><span class="cl">  <span class="o">|</span> <span class="s1">&#39;append&#39;</span>                                    <span class="c1">// 普通尾部追加
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="o">|</span> <span class="p">{</span> <span class="nx">op</span><span class="o">:</span> <span class="s1">&#39;replace&#39;</span><span class="p">;</span> <span class="nx">start</span>: <span class="kt">number</span><span class="p">;</span> <span class="nx">end</span>: <span class="kt">number</span> <span class="p">}</span>  <span class="c1">// 阴影 [start, end]（含端点）
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><code>surfaceOp</code> 说明这个事件如何进入 surface（&ldquo;产生模型消息的事件序列&quot;这个投影）；</li>
+<li><code>sourceEventSeqs</code> 引用它替换掉的事件 seq——<strong>被阴影的事件必须被完整列举</strong>，否则替换不合法。</li>
+</ul>
+<p><strong>压缩 = 追加一条带 <code>replace</code> 标记的汇总事件，阴影掉一段旧事件；日志永不改写。</strong> 被阴影的事件仍在日志里，只是不再出现在 surface 上。<code>SurfaceManager</code> 增量维护这条有序 seq 序列（delta O(new events)，不重扫全日志），派生历史、压缩、工作区上下文共享同一投影。<code>assistant/message</code> 记录其完整 chunk 来源集（空流记 <code>[]</code>），<code>tool/result</code> 记录其 <code>tool/call</code> 来源——每条派生事实都能追溯来源。</p>
+<p>这套设计回答的问题：<strong>上下文压缩之后，回放和 fork 凭什么还确定？</strong> 答案不是&quot;别压缩&rdquo;，而是&quot;压缩也是日志里的一条事实&quot;。</p>
+<h3 id="44-持久化zstd-帧-jsonl--崩溃修复">4.4 持久化：zstd 帧 JSONL + 崩溃修复</h3>
+<ul>
+<li><strong>双后端同一契约</strong>：<code>SessionPersistence</code> 是能力缝，JSONL 与 SQLite 跑同一套 <code>runPersistenceContract</code> 契约套件；<code>SessionEvent</code> 1:1 存成 <code>(session_id, seq, type, time, data)</code> 行——<strong>无转换类型</strong>（<code>2026-06-14-session-persistence.md</code>）。</li>
+<li><strong>元数据出日志</strong>：format version / cwd / lineage 放在日志之外的 <code>SessionHeader</code>——&ldquo;元数据不是可回放状态&rdquo;。</li>
+<li><strong>zstd 帧</strong>（<code>implemented/architecture/2026-07-19-zstandard-jsonl-session-logs.md</code>）：默认存为 <code>.jsonl.zstd</code>，标准 Zstandard 帧拼接——头帧单独一帧（保证 metadata-only 列目录不读事件帧），之后<strong>每个 durable append batch 一个独立校验和帧</strong>（帧边界 = turn 提交点，存储层不感知 turn 类型）。压缩用 Node 内建 <code>zstdCompress</code>（API 标注 experimental，Node 22.19 floor），开 <code>ZSTD_c_checksumFlag</code>，零新依赖。</li>
+<li><strong>崩溃的 torn tail 在帧边界修复</strong>：EOF 落在最后一帧中间 = 可恢复的撕裂尾部，从该帧起始字节截断，把已解码的完整事件 + 合成 closers 重写为带校验的新帧。<strong>被中断的 turn 不截断</strong>——它可能含大量有效工作；<code>repair.ts</code> 合成带 surface 标记的 <code>tool/result</code> closers 补孤儿 tool call。只有不完整的最后一条记录会被丢弃；帧内校验失败 = 损坏，拒绝加载，不做静默修复。</li>
+</ul>
+<h3 id="45-磁盘布局可读的项目会话目录">4.5 磁盘布局：可读的项目会话目录</h3>
+<p><code>implemented/architecture/2026-07-24-project-session-directories.md</code>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">&lt;root&gt;/--&lt;normalized-cwd&gt;--/&lt;encoded-session-id&gt;/session.jsonl.zstd
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>用可读项目路径（lossy 归一化：分隔符转 <code>-</code>，危险字符 <code>~XXXX</code>，<strong>故意不带 hash 后缀</strong>）替代不透明 cwd hash，共享根可导航；每会话一个拥有目录，未来 artifact（附件 / spill / 协调状态）不换布局。<code>locate()</code> 仍返回固定 transcript 路径，保持 <code>transcript_path</code> 语义——hook 协议、外部消费者都不感知布局变化。</p>
+<h3 id="46-会话数据面的其余部分一圈派生视图">4.6 会话数据面的其余部分：一圈派生视图</h3>
+<p>日志之上还长着一圈独立缝（<code>packages/README.md</code> 的 session / session-query 两组）：</p>
+<ul>
+<li><strong>projection 缝</strong>：派生视图（如消息历史、surface）是独立可替换的服务；</li>
+<li><strong>log-backed titles</strong>：会话标题由 <code>ctx.sessionTitle</code> 的<strong>唯一 provider</strong> 生成（架构文档扩展表点名&quot;注册唯一 provider&quot;）——&ldquo;标题从哪来&quot;被做成了可替换插件，而不是散落的特判；</li>
+<li><strong>telemetry / 报告</strong>：同样从日志派生；</li>
+<li><strong>session-query 家族</strong>：逻辑语料、有界读取、血缘关系、事件关系、语义过滤、SQLite FTS——回放/检索与存储解耦成独立的查询缝。</li>
+</ul>
+<p>结论很一致：会话数据面是&rdquo;<strong>一条日志 + 一圈派生视图</strong>&quot;，每个视图都是独立缝。要加一种新读法，不动存储。</p>
+<p><strong>一句话总结这一节</strong>：日志是事实，派生是投影，压缩是日志里的一条新事实，元数据在日志外。这套分层让回放、fork、恢复、检索全部从同一条流上长出来，而不是各做一套状态。</p>
+<h2 id="五能力缝换-provider-换整个产品不换模型契约">五、能力缝：换 provider 换整个产品，不换模型契约</h2>
+<p>&ldquo;一切皆插件&quot;如果只是&quot;能挂插件&rdquo;，还不够。dsh 的纪律是<strong>能力缝（capability seam）三件套</strong>（<code>implemented/architecture/2026-06-13-capability-seams.md</code>）：</p>
+<ul>
+<li><strong>Service Definition</strong>：接口声明（如 <code>ctx.web</code>）；</li>
+<li><strong>Service Provider</strong>：实现（如 Exa 搜索、Perplexity 搜索、DeepSeek 搜索、HTTP fetch）；</li>
+<li><strong>Consumer</strong>：通常是模型可见的工具（<code>web_search</code> / <code>web_fetch</code>）。</li>
+</ul>
+<p>铁律（<code>implemented/architecture/2026-06-24-web-capability-seam.md</code>）：<strong>Provider 永不注册工具</strong>。Provider 注册能力，<code>dsh-tool-web</code> 是模型可见名字、描述、JSON schema、提示词的唯一所有者。换 provider 不换模型契约；provider 缺失/配错不导致工具消失——schema 注册时稳定存在，执行时抛结构化 <code>WebError</code>（<code>WEB_PROVIDER_CONFIGURED_MISSING</code> / <code>WEB_PROVIDER_AMBIGUOUS</code> 等）。工具保持可见、执行时报错，而不是让&quot;加载顺序、凭证状态、HMR 时机&quot;进入模型契约。</p>
+<p>依赖方向（每条都可从包依赖审计）：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">dsh-tool-web  --依赖--&gt;  dsh-web（ctx.web）  &lt;--依赖--  dsh-web-search-exa / -perplexity / -deepseek
+</span></span><span class="line"><span class="cl">   consumer                   interface                    dsh-web-fetch-http（implementation）
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>同一个模式铺满全仓库：fs（seam + local impl + 文件工具 + bash-backed grep/glob）、shell（bash executor + sandboxed bash + 模型可见工具）、subprocess（<code>ctx.subprocess</code>）、LSP、skill、compaction、subagent……每个能力一组包，方向单一，不 import 循环。选 provider 也有纪律：配置的 provider id 优先；未配置时<strong>只有恰好一个可用 provider 才自动选中</strong>，多个则抛 <code>AMBIGUOUS</code>——注册顺序不是产品策略。</p>
+<h3 id="51-工具管线每个相位一种权威">5.1 工具管线：每个相位一种权威</h3>
+<p>工具调用不是一条事件，是一条<strong>六相位管线</strong>（<code>implemented/feature/2026-06-30-interception-extension-points.md</code>）：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">tools/pre-execute → guard → tools/execute → dispatch → tools/post-execute → finalizeContent → tools/result
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><code>pre-execute</code>：可扩展的 waterfall 闸门，<code>PreToolDecision</code> 允许 / 拒绝 / 询问；ask 经可选 approval seam 解析，<code>allowed-once</code> 才继续；</li>
+<li><code>guard</code>：同步、作用域感知的最终策略，<strong>只能拒绝不能强放</strong>——监听器顺序救不活被最终不变量禁止的操作；</li>
+<li><code>execute</code>：around-dispatch 包装（超时、重试、指标）；</li>
+<li><code>post-execute</code>：检查/变换 waterfall，可 block、替换内容、附加上下文；</li>
+<li><code>finalizeContent</code>：工具自己最后的 content 不变量（不能改写 <code>isError</code> / 错误身份 / 上下文）；</li>
+<li><code>result</code>：纯观察，监听器失败被隔离，不能改变结果。</li>
+</ul>
+<p>关键纪律：<strong>身份在策略前封存</strong>——registry 在策略开始前快照调用者输入、冻结参数、分配不透明 token，日志、UI、工具体看到的是同一个事实。这就是为什么&quot;pre-tool 入参改写&quot;迟迟不做：改写必须同时更新历史、审计、展示与执行，是一个独立设计单元而不是一个字段（见 hooks 缺口）。</p>
+<h3 id="52-同款纪律的旁证">5.2 同款纪律的旁证</h3>
+<ul>
+<li><strong>per-session cwd</strong>（<code>implemented/architecture/2026-07-02-fs-per-session-cwd.md</code>）：bash 工具、文件工具、沙箱策略共享同一&quot;会话工作区&quot;解析——含 <code>symlink/..</code> 或普通 symlink 的路径先按原生文件系统身份解析再做词法拼接，一次调用一个工作区身份；调用方（工具）提供 cwd，provider 不反向依赖 session——&ldquo;显式 &gt; 隐式&quot;的包边界约定。</li>
+<li><strong>后台任务</strong>（<code>ctx.jobs</code> + <code>job_*</code> 控制工具，<code>2026-06-20-generic-long-running-tool-runtime.md</code>）：长任务统一运行时，统一 id、授权与控制词汇。</li>
+</ul>
+<h2 id="六acp两次演化从编辑器桥到-automation-only">六、ACP：两次演化，从编辑器桥到 automation-only</h2>
+<p>ACP（Agent Client Protocol）是&quot;外部 agent / 编辑器驱动 harness&quot;的 JSON-RPC over stdio 契约。dsh 自己实现了 ACP <strong>服务端</strong>——方向是&quot;被驱动&rdquo;，和&quot;harness 驱动外部 CLI agent&quot;是相反的两端。</p>
+<p><strong>第一版（<code>archived/feature/2026-06-14-acp-agent-client-protocol.md</code>，已归档）</strong>：做的是 Zed 编辑器桥。工具卡片、终端渲染、diff、plan、权限选择器、human elicitation，全翻译进 ACP——决策记录自己承认，它成了一个&quot;第二交互式产品 UI&quot;。</p>
+<p><strong>7 月 23 日主动退化</strong>（<code>implemented/simplification/2026-07-23-acp-automation-only-protocol.md</code>），理由值得原样引用：</p>
+<blockquote>
+<p>The ACP bridge had become a second interactive product UI.</p>
+</blockquote>
+<p>ACP 桥变成了第二个交互式产品 UI。决策记录说得很白：这些职责重复了 TUI 和 Web client，却把自动化传输耦合进 UI 服务、持久化查询、展示策略和编辑器私有约定。退化的契约刻意保持窄：</p>
+<ul>
+<li>版本协商；fresh 文本会话（一连接多会话复用，<code>Map&lt;SessionId, SessionRecord&gt;</code> 精确归属）；每会话一个 in-flight prompt；</li>
+<li><strong>只发 committed 的 <code>assistant/message</code> 文本</strong>——reasoning、token 流、工具活动、todo、plan、标题全部留在会话日志或 UI 专属通道；</li>
+<li>按会话 cancel；one-shot <code>request_permission</code>（机器策略通道，不是人审 UI：只接受精确 agent 对象，grant 不持久化）；</li>
+<li>不提供 session load/list/delete、commands、modes、模型切换、plan review、human elicitation。</li>
+</ul>
+<p><strong>执行权永远留在 harness</strong>：ACP 从不把 shell 执行委托给客户端——第一版决策记录明确拒绝 <code>terminal/create</code> 子协议（终端只做展示投影，<code>_meta.terminal_*</code> 能力门控约定）。stdout 是协议传输通道，因此 app 组合不挂任何 stdout logger，测试守护&quot;stdout 只出现 framed JSON-RPC&quot;。</p>
+<p>这条演化的教训对所有做 agent 工具链的人都成立：<strong>UI 呈现职责和自动化协议必须分家</strong>。一个协议一旦承担了&quot;好看&quot;，就会同时承担慢、耦合和版本包袱。</p>
+<h2 id="七gui分层纪律--四象限-rpc">七、GUI：分层纪律 + 四象限 RPC</h2>
+<h3 id="71-三层分层implementedarchitecture2026-07-19-gui-layering-and-rpc-protocolmd">7.1 三层分层（<code>implemented/architecture/2026-07-19-gui-layering-and-rpc-protocol.md</code>）</h3>
+<table>
+<thead>
+<tr>
+<th>层</th>
+<th>包</th>
+<th>职责</th>
+<th>关键纪律</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>协议层</td>
+<td><code>dsh-host-apiproxy</code></td>
+<td>TS/zod 定义 + <code>{fetch}</code> 抽象 + 客户端基类</td>
+<td>浏览器/Node 都能 import；client 不得绕过 api 直连 ctx</td>
+</tr>
+<tr>
+<td>组装层</td>
+<td><code>dsh-host-runtime</code></td>
+<td>插件组合 + ApiProxy 集成 + UI 插件挂载</td>
+<td>挂哪些插件、什么默认值只在这里决定</td>
+</tr>
+<tr>
+<td>载体层</td>
+<td><code>dsh-host-webserver</code></td>
+<td>静态服务 + <code>/api/*</code> 转发 + WebSocket 升级 + <code>__DSH_BOOT__</code> 注入</td>
+<td>只服务 Web；依赖 <code>{fetch}</code> 接口而非 runtime（运行时注入，不是包依赖）</td>
+</tr>
+</tbody>
+</table>
+<p>方向纪律可审计：client 包只 import apiproxy 的 <code>/api</code>、<code>/client</code> 两个浏览器安全子路径；未来的 Electron 壳只需要换一个 <code>doFetch</code> 子类。<code>apps/</code> 只做组装，动态 import，应用间互不加载。</p>
+<h3 id="72-四象限消息模型">7.2 四象限消息模型</h3>
+<p>每条线上消息按&quot;谁发起 × 请求/响应&quot;分四类，与物理信道解耦：</p>
+<table>
+<thead>
+<tr>
+<th>象限</th>
+<th>消息</th>
+<th>Web 载体</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>client→server 请求</td>
+<td><code>ClientRequest</code></td>
+<td><code>POST /api/&lt;method&gt;</code></td>
+</tr>
+<tr>
+<td>server→client 响应</td>
+<td><code>ServerResponse</code></td>
+<td>该 POST 的响应体（恒 HTTP 200）</td>
+</tr>
+<tr>
+<td>server→client 请求（帧）</td>
+<td><code>ServerRequest</code>（approval/question 可应答帧 + session/event 纯推送帧）</td>
+<td>WebSocket 下行</td>
+</tr>
+<tr>
+<td>client→server 响应</td>
+<td><code>ClientResponse</code>（echo rpcId）</td>
+<td><code>POST /api/respond</code></td>
+</tr>
+</tbody>
+</table>
+<p>要点：</p>
+<ul>
+<li><strong>rpcId 品牌化</strong>（branded string）：发起方铸造，响应永远 echo，业务代码不铸 id。审批/问答帧的 id 在受理时铸一次、重连回放原样复用——稳定可追溯由此而来；</li>
+<li><strong>签名即事实源</strong>：<code>RpcMethodMap</code> 从接口方法签名派生全部类型，加一个 unary 方法 = 5 步机械改动（接口签名 → map 一行 → schema 一对 → handler 一行 → 实现）；加帧类型 3 步；加错误码 2 步（<code>RpcErrorDetailsMap</code> 一行 + 一个分支，漏了编译错）；</li>
+<li><strong>无 DTO</strong>：wire 上的 <code>SessionEvent</code> / <code>ContentBlock</code> 就是核心类型（<code>import type</code> 直达浏览器）；<code>assistant/chunk</code> 即 token 流，没有单独 delta 帧；</li>
+<li><strong>双向 zod 校验</strong>，未知方法 fail loud（<code>bad-request</code>），没有 not-implemented 回退；</li>
+<li><strong>reconnect = rebuild</strong>：无 resume cursor，按 <code>subscribed.lastSeq</code> 与历史尾部对比补拉一次。</li>
+</ul>
+<p>这套东西与其说是&quot;协议设计&quot;，不如说是<strong>把扩展做成机械流程</strong>：方法表即契约、错误码穷举即类型、载体可换即抽象。复杂度是实打实的，但每一分都有审计出口。</p>
+<h2 id="八浏览器里跑第二棵-cordis-树">八、浏览器里跑第二棵 Cordis 树</h2>
+<p><code>implemented/architecture/2026-07-19-gui-web-client-architecture.md</code>：host 是一棵 Cordis 树，<strong>浏览器是第二棵</strong>——同一个 vendored Loader，配一个自研 ClientModuleSystem（懒 CJS 表 + external script 到达 + HMR）补 Node 缺席的底层。</p>
+<ul>
+<li><strong>UI 能力全部是 <code>dsh.client</code> 插件</strong>：manifest 声明 <code>inject</code> / <code>immediately</code>，host 编 <code>__DSH_BOOT__</code> 图，两阶段 boot（immediately 预拉 → 全量激活，settled 一次成型，无渐进渲染）；</li>
+<li><strong>slot 系统组合页面</strong>：组件零 Cordis 运行时依赖，一次 <code>register</code> 调用占一个 slot、声明子 slot、声明 store、注入业务面；每个渲染项在独立 error boundary 里；</li>
+<li><strong>业务对象层 React-free</strong>：事件窗口、流式累积在对象层维护<strong>不可变快照</strong>（每次业务更新只替换对应键的引用），React 纯投影（uSES + 引用保持）——token 流不抖渲染树，<code>assistant/chunk</code> 每动画帧最多发布一次；Notifier 微任务合批：N 次变更一次通知一次渲染；</li>
+<li><strong>会话 scope 观看驱动、惰性建、常驻吃帧</strong>：切走再切回即渲染；host 侧会话死亡不拆 scope（冻结为只读视口）。</li>
+</ul>
+<p>代价也明说了：loader/module-table 机制是自研基础设施，全程自己养；一次成型 boot 放弃首屏渐进性；双 tsconfig aggregate 让&quot;哪个编译单元看到这个文件&quot;成为开发中要回答的问题。这是&quot;运行时插件化&quot;的完整价格清单。</p>
+<h2 id="九沙箱landlock-run-与-fail-closed-哲学">九、沙箱：landlock-run 与 fail-closed 哲学</h2>
+<h3 id="91-自包含启动器">9.1 自包含启动器</h3>
+<p><code>native/landlock-run/README.md</code>：约 300 行 C11、musl 静态链接、直接调 Landlock 内核 UAPI 的 <strong>self-restrict-then-exec</strong> 启动器——先给自己装 ruleset 再 <code>exec</code> 目标命令，ruleset 跨 <code>execve</code> 继承：<strong>宿主进程不受限，被包装命令及其后代全程受限</strong>。内核不能强制时 fail-closed（exit 125，不运行命令）。分发为平台预编译 npm 包 + <code>probe()</code> 功能探测（<code>full</code> / <code>partial</code> / <code>unusable</code>）——探测是功能性的（真的建 ruleset 并强制），不是查版本号。内核 ABI 不够新时报 <code>partial</code>（如旧 ABI 管不了 truncate），不假装 full。</p>
+<h3 id="92-能力缝与平台链implementedfeature2026-07-06-sandboxmd">9.2 能力缝与平台链（<code>implemented/feature/2026-07-06-sandbox.md</code>）</h3>
+<p><code>ctx.sandbox</code> 缝：<code>confine(argv, policy)</code> 返回<strong>包装后的 argv</strong>，consumer 直接 spawn；无可用后端抛 <code>SANDBOX_UNAVAILABLE</code>，<strong>绝不静默降级为无沙箱</strong>。平台链：Linux 功能探测 bwrap → Landlock；macOS Seatbelt（依赖已废弃的 <code>sandbox-exec</code> CLI，fail-closed 兜底）；Windows restricted-token 链是 2026-08-08 的决策，报告 <code>partial</code>。</p>
+<p>关键设计点：</p>
+<ul>
+<li><strong>denialSignatures + runnerFailureRules</strong>：每后端带&quot;内核拒绝文本特征&quot;与&quot;启动器故障特征&quot;，区分**&ldquo;命令被沙箱拒&rdquo;<strong>（正常结果）与</strong>&ldquo;沙箱坏了&rdquo;**（基础设施错误）——这是大多数&quot;加个 wrapper&quot;方案忽略的语义层；</li>
+<li><strong>模式只声明文件效应</strong>：<code>read-only</code> / <code>workspace-write</code> / <code>danger-full-access</code>，网络与进程可见性<strong>不承诺</strong>——诚实边界；</li>
+<li><strong>升级路径 = 一次审批</strong>：被拒后模型可带 <code>sandbox_permissions</code>（必须严格更宽）+ <code>justification</code> 重试一次，经 approval seam 人审；<strong>grant 不持久化</strong>，拒绝即结束，无 <code>allow_always</code>。重试是新的 <code>tool/call</code>（新参数、新结果事实），不是隐藏重入；</li>
+<li><strong>每会话模式是会话日志的一部分</strong>：<code>sandbox/mode</code> 事件 + <code>effective = findLast(events) ?? config default</code> 折叠——重启免疫、多会话隔离，零外部配置存储。决策记录还留着一次失败实验：把模式写进稳定 system prompt，模型从此拒绝尝试会被拒的操作（首个手工会话 12 轮里 5 轮零工具调用），沙箱变软锁，该方案被移除；</li>
+<li><strong>进程内工具（fs/web）经 <code>dsh-fs-sandbox</code> 复用同一模式词汇做路径围栏</strong>——argv 包装对闭包 <code>ctx</code> 的函数无意义，它不假装统一。</li>
+</ul>
+<p>沙箱是<strong>可组合的能力</strong>，不是某个 executor 的私藏——四行 <code>cordis.yml</code> 就把一个无沙箱编码 agent 变成沙箱产品路径（<code>examples/acp-agent</code> 默认即此组合）：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl">- <span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l">sandbox</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;@deepseek-ai/dsh-sandbox-local&#39;</span><span class="w">   </span><span class="c"># 每平台 runner provider（ctx.sandbox）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span>- <span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l">bash</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;@deepseek-ai/dsh-bash-sandbox&#39;</span><span class="w">    </span><span class="c"># 受限 executor，替换 dsh-bash-local</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">config</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="l">workspace-write                 </span><span class="w"> </span><span class="c"># 部署默认模式</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">workspaceRoot</span><span class="p">:</span><span class="w"> </span><span class="cp">!!js</span><span class="w"> </span><span class="l">process.cwd()     </span><span class="w"> </span><span class="c"># workspace-write 可写的边界</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span>- <span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l">approval</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;@deepseek-ai/dsh-user-approval&#39;</span><span class="w">   </span><span class="c"># 升级闸门的通道</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">config</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">policy</span><span class="p">:</span><span class="w"> </span><span class="l">ask</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span>- <span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l">permission</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;@deepseek-ai/dsh-permission-presets&#39;</span><span class="w">  </span><span class="c"># 产品面的模式/策略选择器</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>交换对 <code>ctx.shell</code> 的所有消费者透明（bash 工具、hook 命令、后台任务照旧 spawn 包装后的 argv）；删掉 sandbox 与 permission 条目、换回 <code>dsh-bash-local</code> 即退出沙箱，升级字段随之从工具 schema 消失——<strong>能力门控在挂载的 executor 上，不在配置上</strong>；省略 approval 则一切升级 fail-closed；部分组合在加载时 fail loud。</p>
+<h2 id="十hooks兼容适配器不是权力工具">十、hooks：兼容适配器，不是权力工具</h2>
+<h3 id="101-原生层hook-不是包">10.1 原生层：hook 不是包</h3>
+<p>&ldquo;原生 hook&quot;就是一个订阅 typed 事件的普通插件（<code>implemented/feature/2026-06-30-interception-extension-points.md</code>）：</p>
+<table>
+<thead>
+<tr>
+<th>事件</th>
+<th>模式</th>
+<th>语义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>agent/session-start</code></td>
+<td>emit（不能阻塞）</td>
+<td>纯通知，可 <code>agent.inject()</code> 种上下文</td>
+</tr>
+<tr>
+<td><code>agent/pre-step</code></td>
+<td>waterfall</td>
+<td><code>PreStepDecision</code>：enter / reject</td>
+</tr>
+<tr>
+<td><code>tools/pre-execute</code></td>
+<td>waterfall</td>
+<td><code>PreToolDecision</code>：allow / deny / ask</td>
+</tr>
+<tr>
+<td><code>tools/post-execute</code></td>
+<td>waterfall</td>
+<td><code>PostToolDecision</code>：block / 替换 / 附加上下文</td>
+</tr>
+<tr>
+<td><code>agent/turn-stopping</code></td>
+<td>serial</td>
+<td>要续则 <code>agent.steer()</code></td>
+</tr>
+</tbody>
+</table>
+<p>立场原话：&ldquo;Anything a bridge can do, a plain plugin can do directly&rdquo;——原生插件更强大（无序列化边界、全 ctx、typed 返回）。</p>
+<h3 id="102-兼容层两个桥--一个共享协议库">10.2 兼容层：两个桥 + 一个共享协议库</h3>
+<p><code>dsh-hooks-claude-code</code>（7 个 hook 点：SessionStart / UserPromptSubmit / PreToolUse / PostToolUse / Stop / SubagentStart / SubagentStop）与 <code>dsh-hooks-codex</code>（5 个）把用户已有的 CC/Codex <code>hooks.json</code> shell 命令钩子翻译到上述 typed 事件。共享库 <code>dsh-hook-protocol</code> 持有<strong>真正相同的协议原语</strong>（<code>implemented/feature/2026-06-30-hook-protocol-lib.md</code>；事实基础：Codex 引擎刻意实现了 CC hook 协议的子集）：</p>
+<table>
+<thead>
+<tr>
+<th>原语</th>
+<th>CC 方言</th>
+<th>Codex 方言</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>matcher</td>
+<td>纯 `[A-Za-z0-9_</td>
+<td>]+<code> 视为字面量（</code></td>
+</tr>
+<tr>
+<td>stdin payload</td>
+<td>基础字段（<code>session_id</code> / <code>transcript_path</code> / <code>cwd</code> / <code>hook_event_name</code>）+ 每事件字段，<strong>带尾换行</strong>；注入 <code>CLAUDE_PROJECT_DIR</code> 等 env</td>
+<td>snake_case 字段 + <code>turn_id</code> / <code>model</code> / <code>permission_mode</code>，<strong>无尾换行</strong>；无 env 注入</td>
+</tr>
+<tr>
+<td>退出码</td>
+<td>exit 0 = stdout lenient JSON；exit 2 = blocking error（stderr 为原因）；其他 = 非阻断错误</td>
+<td>同左</td>
+</tr>
+<tr>
+<td>合并</td>
+<td>多匹配 hook 串行执行，<strong>deny &gt; ask &gt; allow</strong> 最严格折叠，block 原因 <code>\n\n</code> 连接，上下文按序累积</td>
+<td>同左</td>
+</tr>
+</tbody>
+</table>
+<p>每条 hook 调用写 <code>hook/invoked</code> + <code>hook/result</code> 会话事件（log-only，不上 surface）——<strong>拒绝/阻断有持久决策证据</strong>。上下文注入一律标 <code>source: plugin</code>（防&quot;插件上下文冒充用户&rdquo;）；只加上下文不阻断的 hook 必须 <code>next()</code> 委派，否则短路后续策略监听器——这两条是 hook 语义安全的双保险。配置加载与校验 fail loud：matcher 正则非法 = 整配置拒绝加载、注册零个监听器，不静默跳过；桥读不到/解析不了配置文件则记录后跳过，不 crash boot。</p>
+<p>已知缺口（决策记录明示，<code>TODO</code> 挂起）：<code>updatedInput</code> 工具入参改写只记录 + 警告；<code>continue:false</code> 硬停未实现；stop loop-guard（CC 的八次连续 block 上限）未实现；per-session hook config 未实现。<strong>宣称&quot;跑用户既有 hooks 原样执行&quot;要打折</strong>——见文末风险。</p>
+<h2 id="十一工程实践用-agent-开发-agent的样本">十一、工程实践：&ldquo;用 agent 开发 agent&quot;的样本</h2>
+<p>dsh 的工程过程本身值得单独记录：</p>
+<ul>
+<li><strong>Agent Notes 是决策宪法</strong>：非平凡改动必须同 PR 附五段式笔记（Problem / Decision / Alternatives / Consequences / Verification），<code>implemented/</code> 描述已落地现实，归档即冻结、不再是现行权威。仓库里 600+ 条带日期的记录（implemented 状态 500+ 条），从 2026-06-11 到开源日约两个月——<strong>每个&quot;为什么&quot;都有出处</strong>，本文能写出来全靠它；</li>
+<li><strong>文档预算门禁</strong>（<code>docs/AGENTS.md</code>）：根 <code>AGENTS.md</code> ≤1600 词、<code>architecture.md</code> ≤1800、子树 ≤600，超了先挪内容再提额度——文档也是编译产物；</li>
+<li><strong>生成式目录</strong>：config catalog / tool catalog / persistence catalog / module graph / Cordis API 全部由脚本从源码生成并 freshness-gated——手写文档会漂移的问题用生成解决；</li>
+<li><strong>验证分级</strong>：unit → 真实 Loader 组合测试 → keyless snapshot（可回放的真实装配转写，不依赖 mock）→ real-API e2e（无 key 自跳过）→ 每文件 100% coverage 门禁。snapshot 体系让&quot;模型/用户可见行为&quot;有确定性回归。</li>
+</ul>
+<p>这里有个内在矛盾值得点破：<strong>文档预算 + 五段式笔记 + 每文件覆盖率，是&quot;agent 团队写 agent 产品&quot;的特化纪律</strong>——人肉执行成本极高，但 agent 执行它恰好成本低。读它的文档比读大多数开源项目信息密度高，但也要警惕&quot;文档即意图&rdquo;：实现可能落后于文档。</p>
+<h2 id="十二观察风险与对自建工具链的启示">十二、观察、风险与对自建工具链的启示</h2>
+<h3 id="观察">观察</h3>
+<ol>
+<li><strong>预览版迭代极快、明确破坏兼容</strong>：rc.5 + &ldquo;THERE WILL BE COMPATIBILITY-BREAKING CHANGES&rdquo;；磁盘格式 bump-and-reject（旧格式拒绝不迁移，<code>SESSION_FORMAT_VERSION</code> 恒 0）；两个月里前门两次摇摆（readline → TUI → Web）、ACP 一次主动退化。<strong>产品形状仍在快速漂移——按模式跟踪，别按版本追车</strong>。</li>
+<li><strong>复杂度换自由度，价格透明</strong>：219 包、双 tsconfig aggregate、浏览器第二棵树、自研模块系统——为&quot;运行时插件化 + 热重载 + 浏览器插件&quot;付的全套账单，决策记录逐项列了成本。插件化是它的产品本身；对多数工具链，&ldquo;可配置&quot;比&quot;可插件化&quot;更划算。</li>
+<li><strong>默认绑定自家生态</strong>：默认 provider 是 DeepSeek API；模型无关靠 <code>ctx.llm</code> 适配器缝，但开箱体验与生态围绕自家 API；第三方插件生态（<code>dsh-plugin</code> topic）刚起步。</li>
+<li><strong>vendored Cordis 双刃剑</strong>：rescope + 私有补丁 = 上游演进自担；<code>vendor/</code> 同步有流程但仍是维护负担。</li>
+<li><strong>hooks 兼容是子集兼容</strong>：入参改写、硬停、loop-guard 均未实现。迁移既有 CC/Codex hooks 前先对照 Known Limitations。</li>
+<li><strong>示例 ≠ 产品面</strong>：<code>examples/</code> 的 6 个组合（acp-agent / headless-agent / jsonrpc-agent / mcp-memory / web-cordis / web-schedule）多为 keyless snapshot 载体与组装示范，不是产品承诺——TUI 即因&quot;无 shipped composition&quot;被整包删除。</li>
+<li><strong>热度信号</strong>：开源首日即破 3 万 star（终值 31078，2026-08-13 24:00 抓取）说明&quot;DeepSeek 牌 harness&quot;有强市场关注，但关注度不等于稳定性。</li>
+<li><strong>它是框架，不是产品</strong>：dsh 的入口是 profile / headless / SDK / 插件体系——定位是&quot;agent 的基础设施&rdquo;（让生态在它上面建产品），而不是开箱即用的产品；Claude Code / Codex 则是后者的代表（一体式、无插件体系）。这解释了它为什么&quot;文档比产品成熟&quot;：框架先证明机制，产品才需要打磨体验。可以把它理解成&quot;Agent 界的 Kubernetes&quot;——当年 K8s 同样被批&quot;太复杂、不是产品&quot;，但作为基础设施赢了。插件化 vs 一体化是路线之争，胜负取决于场景：一体化的当下体验 vs 可组合的未来灵活性；而它附带的产品面（<code>dsh web</code>）是用框架思维做的产品，恰是&quot;技术成熟 ≠ 产品成熟&quot;批评的落点。</li>
+</ol>
+<h3 id="对自建-agent-工具链的启示">对自建 agent 工具链的启示</h3>
+<table>
+<thead>
+<tr>
+<th>机制</th>
+<th>启示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>事件溯源会话 + 派生历史</td>
+<td>session 即 append-only 事件日志，消息历史从日志派生——回放 / 恢复 / telemetry 结构性免费，分叉结构性不可能</td>
+</tr>
+<tr>
+<td>surface replace 阴影</td>
+<td>上下文压缩 = 追加一条带 <code>replace</code> 标记的汇总事件（<code>sourceEventSeqs</code> 引用被阴影事件）——压缩后回放仍确定，别改日志</td>
+</tr>
+<tr>
+<td>元数据出日志（SessionHeader）</td>
+<td>format version / cwd 是存储关注点，不是可回放状态——避免&quot;每行日志都是状态&quot;的教条</td>
+</tr>
+<tr>
+<td>策略状态事件化（<code>sandbox/mode</code> + fold）</td>
+<td>权限/模式是日志事件 + findLast 折叠——重启免疫、会话隔离，零外部配置存储</td>
+</tr>
+<tr>
+<td>landlock-run：fail-closed + probe + denial 可辨识 + 一次更宽重试</td>
+<td>进程沙箱的务实样板：静态二进制可直接 spawn；&ldquo;沙箱拒了命令&quot;与&quot;沙箱坏了&quot;必须可区分；grant 不持久化</td>
+</tr>
+<tr>
+<td>ACP automation-only</td>
+<td>UI 职责与自动化协议分家；自动化契约只放最小文本 / 任务 / 权限面，会话归属与取消按精确对象隔离</td>
+</tr>
+<tr>
+<td>四象限 RPC + rpcId 全链路</td>
+<td>审批 / 问答帧稳定 id + 重连回放；方法表单一事实源，加方法 = 机械改动，错误码穷举即类型</td>
+</tr>
+<tr>
+<td>hooks 协议语义库</td>
+<td>matcher / 退出码 / merge 优先级（deny &gt; ask &gt; allow）是现成规格书；拒绝留持久审计事件；hook 配置加载失败 fail loud</td>
+</tr>
+</tbody>
+</table>
+<h2 id="结语">结语</h2>
+<p>DeepSeek Harness 是一款&quot;文档成熟度反常地高&quot;的预览版——它的决策记录让外人能读懂每一个设计取舍的 why，这在开源 agent 工具里是稀缺品。事件溯源会话、surface 阴影压缩、fail-closed 沙箱、automation-only 的 ACP，这四样东西对任何自建 agent 工具链都有直接参考价值；而 219 包的插件化架构本身，是一道&quot;要不要为自由度付费&quot;的清醒判断题。</p>
+<p>展望到 1.0，值得跟踪的几件事：磁盘格式是否冻结（<code>SESSION_FORMAT_VERSION</code> 何时离开 0）、hooks 已知缺口何时补齐（入参改写 / 硬停 / loop-guard）、Windows 沙箱链能否从 <code>partial</code> 毕业、<code>dsh-plugin</code> 生态能否长出第三方组合——这四件事分别对应稳定性、兼容性、安全边界与生态，恰好是预览版最容易被质疑的四点。</p>
+<h2 id="附录获取与安装">附录：获取与安装</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 即装即用（发布版，当前 0.1.0-rc.x）</span>
+</span></span><span class="line"><span class="cl">npx @deepseek-ai/dsh web        <span class="c1"># 启动 Web UI，默认 http://127.0.0.1:3080</span>
+</span></span><span class="line"><span class="cl">npm install -g @deepseek-ai/dsh  <span class="c1"># 或全局安装后直接敲 dsh</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 源码（含全部决策记录，适合跟迭代/研究）</span>
+</span></span><span class="line"><span class="cl">git clone https://github.com/deepseek-ai/deepseek-harness.git
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> deepseek-harness <span class="o">&amp;&amp;</span> pnpm install <span class="o">&amp;&amp;</span> pnpm run build
+</span></span><span class="line"><span class="cl">pnpm dsh web
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 无头模式跑一次性任务</span>
+</span></span><span class="line"><span class="cl">dsh --profile headless <span class="s2">&#34;运行项目测试并总结结果&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>配置与数据默认在 <code>$DSH_HOME</code>（未设置时为 <code>~/.dsh</code>）：模型凭据、profile 补丁层、会话日志都在这里。注意：npm 发布版（rc.6）比仓库 master（rc.5）略新，以 npm 为准。</p>
+<p>相关链接：<a href="https://github.com/deepseek-ai/deepseek-harness" target="_blank" rel="noopener noreffer ">GitHub 仓库</a> · <a href="https://www.deepseek.com/harness/" target="_blank" rel="noopener noreffer ">官方站点</a>（含四种预设模式说明：标准 / PTC / 极简 / 创造）· <a href="https://github.com/cordiverse/paper" target="_blank" rel="noopener noreffer ">Cordis 设计论文</a>。</p>
+<p>最后重复一遍文首的提醒：它开源首日破 3 万 star（终值 31078，24:00 抓取）说明关注度极高，但关注度不等于稳定性。对一个 rc.5 的预览版，最合理的态度是：<strong>值得吸收的机制大胆吸收，需要兑现的承诺谨慎等待，下个版本见。</strong></p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2026-08-14&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/8c6387f7530c0d966957277b26f9f116dcc17b38" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) 8c6387f7530c0d966957277b26f9f116dcc17b38: chore: 发布 dsh 深度拆解（博客全文，公众号定时 8-15 上午精简版）">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>8c6387f</a></span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/2026/08/14/deepseek-harness-deep-dive/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/" data-title="DeepSeek Harness 全拆解：开源首日破 3 万 star 的 Agent 运行时，硬在哪" data-hashtags="tech,ai,deepseek,harness,architecture,event-sourcing,plugin"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/" data-hashtag="tech"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/" data-title="DeepSeek Harness 全拆解：开源首日破 3 万 star 的 Agent 运行时，硬在哪"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/" data-title="DeepSeek Harness 全拆解：开源首日破 3 万 star 的 Agent 运行时，硬在哪"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/" data-title="DeepSeek Harness 全拆解：开源首日破 3 万 star 的 Agent 运行时，硬在哪"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微信" onclick="var d=document.getElementById('wechat-qr-04bc9b3845639ca2476e0071293f6306');d.style.display=d.style.display==='none'?'block':'none';return false"><i class="fab fa-weixin fa-fw" aria-hidden="true"></i></a>
+        <div id="wechat-qr-04bc9b3845639ca2476e0071293f6306" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:9999" onclick="this.style.display='none'">
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;padding:20px;border-radius:8px;text-align:center">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https%3a%2f%2fwhitefirer.org%2fposts%2f2026%2f08%2f14%2fdeepseek-harness-deep-dive%2f" alt="微信扫一扫" style="display:block">
+                <p style="margin:10px 0 0;font-size:14px;color:#333">微信扫一扫 · 分享文章</p>
+            </div>
+        </div></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/tech/">技术</a>,&nbsp;<a href="/tags/ai/">Ai</a>,&nbsp;<a href="/tags/deepseek/">Deepseek</a>,&nbsp;<a href="/tags/harness/">Harness</a>,&nbsp;<a href="/tags/architecture/">Architecture</a>,&nbsp;<a href="/tags/event-sourcing/">Event-Sourcing</a>,&nbsp;<a href="/tags/plugin/">Plugin</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2026/08/14/deepseek-harness-hands-on/" class="prev" rel="prev" title="DeepSeek Harness 实测：开源当晚破 3 万 star 的 Agent 运行时"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>DeepSeek Harness 实测：开源当晚破 3 万 star 的 Agent 运行时</a></div>
+
+</div>
+<div id="comments"><div id="waline" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://waline.js.org/">Waline</a>.
+            </noscript><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article>
+<script>(function(){var b=document.getElementById('reading-progress');if(!b)return;function u(){var h=document.documentElement,s=h.scrollHeight-h.clientHeight,w=s>0?Math.min((h.scrollTop||document.body.scrollTop)/s*100,100):0;b.style.width=w+'%'}window.addEventListener('scroll',u,{passive:true});u()})();</script></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.131.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span><img src="https://hits.sh/whitefirer.org.svg" alt="" aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;clip:rect(0 0 0 0);pointer-events:none"></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/waline/waline.min.css"><script type="text/javascript" src="/lib/waline/waline.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config=Object.assign(window.config||{},{"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Comments","categoryId":"DIC_kwDOH2gmzc4CQ_fM","darkTheme":"dark","emitMetadata":"0","inputPosition":"bottom","lang":"zh-CN","lazyLoading":true,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"whitefirer/whitefirer.github.io","repoId":"R_kgDOH2gmzQ"},"waline":{"dark":"auto","el":"#waline","lang":"zh-CN","pageSize":10,"requiredMeta":["nick","mail"],"serverURL":"https://comment.whitefirer.org"}},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}});</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">!function(){function svgToPng(svg,cb){var c=svg.cloneNode(!0),d=new XMLSerializer().serializeToString(c),img=new Image(),cv=document.createElement('canvas'),w=c.viewBox.animVal.width||c.getBoundingClientRect().width||400,h=c.viewBox.animVal.height||c.getBoundingClientRect().height||300,s=2;cv.width=w*s,cv.height=h*s;var ctx=cv.getContext('2d'),b=new Blob([d],{type:'image/svg+xml;charset=utf-8'}),u=URL.createObjectURL(b);img.onload=function(){ctx.fillStyle='#fff',ctx.fillRect(0,0,cv.width,cv.height),ctx.drawImage(img,0,0,cv.width,cv.height),URL.revokeObjectURL(u),cv.toBlob(function(blob){var a=document.createElement('a');a.href=URL.createObjectURL(blob);var id=svg.id||'diagram';a.download=id+'.png',a.click(),URL.revokeObjectURL(a.href),cb&&cb()})},img.src=u}function addSaveBtn(svg){if(svg.closest('.mermaid-stage,.mermaid-fs-overlay,.mermaid-wrapper,.mermaid-toolbar,.svg-diagram-wrap'))return;var wrap=document.createElement('div');wrap.className='svg-diagram-wrap';var d=svg.style.display||'block',w=svg.style.width||svg.getAttribute('width')||'100%',mw=svg.style.maxWidth||'',m=svg.style.margin||'';wrap.style.cssText='position:relative;display:'+d+';width:'+w+';'+(mw?'max-width:'+mw+';':'')+(m?'margin:'+m+';':'')+'line-height:0';svg.style.display='block';svg.style.width='100%';svg.style.maxWidth='';svg.style.margin='0';svg.parentNode.insertBefore(wrap,svg);wrap.appendChild(svg);var bar=document.createElement('div');bar.style.cssText='text-align:right;padding-top:6px';var btn=document.createElement('button');btn.className='svg-save-btn',btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span style="vertical-align:middle;font-size:12px">保存图片</span>',btn.style.cssText='background:none;border:1px solid transparent;border-radius:4px;padding:2px 6px;cursor:pointer;color:#b0b7c3;font-family:system-ui,sans-serif;line-height:1';bar.appendChild(btn);wrap.appendChild(bar);btn.onmouseenter=function(){btn.style.color='#6366f1';btn.style.borderColor='#e5e7eb'};btn.onmouseleave=function(){btn.style.color='#b0b7c3';btn.style.borderColor='transparent'};btn.onclick=function(e){e.stopPropagation();var orig=btn.innerHTML;btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span style="vertical-align:middle;font-size:12px">导出中...</span>';btn.disabled=!0;svgToPng(svg,function(){btn.innerHTML=orig;btn.disabled=!1})}}function initSvgButtons(){document.querySelectorAll('.content svg').forEach(function(svg){addSaveBtn(svg)})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initSvgButtons);else initSvgButtons()}()</script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-70Q8REKE17', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-70Q8REKE17" async></script></body>
+</html>

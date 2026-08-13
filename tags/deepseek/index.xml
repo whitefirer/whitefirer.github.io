@@ -4,7 +4,15 @@
         <link>https://whitefirer.org/tags/deepseek/</link>
         <description>Deepseek - 标签 - 赛博闲谭-whitefirer</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Fri, 14 Aug 2026 00:30:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/deepseek/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Fri, 14 Aug 2026 05:00:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/deepseek/" rel="self" type="application/rss+xml" /><item>
+    <title>DeepSeek Harness 全拆解：开源首日破 3 万 star 的 Agent 运行时，硬在哪</title>
+    <link>https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/</link>
+    <pubDate>Fri, 14 Aug 2026 05:00:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/</guid>
+    <description><![CDATA[2026-08-13 开源 · 0.1.0-rc.5 开发者预览 · MIT 许可。本文全部机制描述均出自仓库（docs/、.agents/notes/、源码），个别处注明&quot;从决策记录]]></description>
+</item>
+<item>
     <title>DeepSeek Harness 实测：开源当晚破 3 万 star 的 Agent 运行时</title>
     <link>https://whitefirer.org/posts/2026/08/14/deepseek-harness-hands-on/</link>
     <pubDate>Fri, 14 Aug 2026 00:30:00 &#43;0800</pubDate>
