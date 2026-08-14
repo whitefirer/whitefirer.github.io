@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <title>DeepSeek Harness 全拆解：开源首日破 3 万 star 的 Agent 运行时，特别在哪 - 赛博闲谭-whitefirer</title><meta name="Description" content="DeepSeek 开源 dsh 首日破 3 万 star。本文从决策记录与源码逐层拆解：一个引擎五个出口、Cordis 插件化地基、事件溯源会话模型、压缩阴影机制、四象限 RPC、landlock 沙箱、hooks 兼容层——以及它真正服务的对象：模型自己（为自进化铺路）。：一个引擎五个出口、Cordis 插件化地基、事件溯源会话模型、压缩阴影机制、四象限 RPC、landlock 沙箱、hooks 兼容层——以及&#39;它为什么不是 Codex 竞品&#39;的架构级答案。">
+        <title>DeepSeek Harness 全拆解：30 小时 9 万&#43; star 的 Agent 运行时，特别在哪 - 赛博闲谭-whitefirer</title><meta name="Description" content="DeepSeek 开源 dsh，首日破 3 万 star、30 小时破 9 万。本文从决策记录与源码逐层拆解：一个引擎五个出口、Cordis 插件化地基、事件溯源会话模型、压缩阴影机制、四象限 RPC、landlock 沙箱、hooks 兼容层——以及它真正服务的对象：模型自己（为自进化铺路）。">
 
 <meta name="application-name" content="赛博闲谭-whitefirer">
 <meta name="apple-mobile-web-app-title" content="赛博闲谭-whitefirer"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
@@ -12,30 +12,30 @@
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
         <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/" /><link rel="prev" href="https://whitefirer.org/posts/2026/08/13/deepseek-harness-hands-on/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta property="og:title" content="DeepSeek Harness 全拆解：开源首日破 3 万 star 的 Agent 运行时，特别在哪 - 赛博闲谭-whitefirer" />
-<meta property="og:description" content="DeepSeek 开源 dsh 首日破 3 万 star。本文从决策记录与源码逐层拆解：一个引擎五个出口、Cordis 插件化地基、事件溯源会话模型、压缩阴影机制、四象限 RPC、landlock 沙箱、hooks 兼容层——以及它真正服务的对象：模型自己（为自进化铺路）。：一个引擎五个出口、Cordis 插件化地基、事件溯源会话模型、压缩阴影机制、四象限 RPC、landlock 沙箱、hooks 兼容层——以及&#39;它为什么不是 Codex 竞品&#39;的架构级答案。" />
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta property="og:title" content="DeepSeek Harness 全拆解：30 小时 9 万&#43; star 的 Agent 运行时，特别在哪 - 赛博闲谭-whitefirer" />
+<meta property="og:description" content="DeepSeek 开源 dsh，首日破 3 万 star、30 小时破 9 万。本文从决策记录与源码逐层拆解：一个引擎五个出口、Cordis 插件化地基、事件溯源会话模型、压缩阴影机制、四象限 RPC、landlock 沙箱、hooks 兼容层——以及它真正服务的对象：模型自己（为自进化铺路）。" />
 <meta property="og:image" content="https://whitefirer.org/og-default.png" />
 <meta property="og:url" content="https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/" />
 <meta property="og:type" content="article" />
 <meta property="og:site_name" content="赛博闲谭-whitefirer" /><meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="DeepSeek Harness 全拆解：开源首日破 3 万 star 的 Agent 运行时，特别在哪 - 赛博闲谭-whitefirer" />
-<meta name="twitter:description" content="DeepSeek 开源 dsh 首日破 3 万 star。本文从决策记录与源码逐层拆解：一个引擎五个出口、Cordis 插件化地基、事件溯源会话模型、压缩阴影机制、四象限 RPC、landlock 沙箱、hooks 兼容层——以及它真正服务的对象：模型自己（为自进化铺路）。：一个引擎五个出口、Cordis 插件化地基、事件溯源会话模型、压缩阴影机制、四象限 RPC、landlock 沙箱、hooks 兼容层——以及&#39;它为什么不是 Codex 竞品&#39;的架构级答案。" />
+<meta name="twitter:title" content="DeepSeek Harness 全拆解：30 小时 9 万&#43; star 的 Agent 运行时，特别在哪 - 赛博闲谭-whitefirer" />
+<meta name="twitter:description" content="DeepSeek 开源 dsh，首日破 3 万 star、30 小时破 9 万。本文从决策记录与源码逐层拆解：一个引擎五个出口、Cordis 插件化地基、事件溯源会话模型、压缩阴影机制、四象限 RPC、landlock 沙箱、hooks 兼容层——以及它真正服务的对象：模型自己（为自进化铺路）。" />
 <meta name="twitter:image" content="https://whitefirer.org/og-default.png" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
-        "headline": "DeepSeek Harness 全拆解：开源首日破 3 万 star 的 Agent 运行时，特别在哪",
+        "headline": "DeepSeek Harness 全拆解：30 小时 9 万+ star 的 Agent 运行时，特别在哪",
         "inLanguage": "zh-CN",
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/whitefirer.org\/posts\/2026\/08\/14\/deepseek-harness-deep-dive\/"
-        },"genre": "posts","keywords": "tech, ai, deepseek, harness, architecture, event-sourcing, plugin","wordcount":  16693 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/14\/deepseek-harness-deep-dive\/","datePublished": "2026-08-14T07:31:12+08:00","dateModified": "2026-08-14T18:47:45+08:00","license": "2022©️whitefirer","publisher": {
+        },"genre": "posts","keywords": "tech, ai, deepseek, harness, architecture, event-sourcing, plugin","wordcount":  16612 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/14\/deepseek-harness-deep-dive\/","datePublished": "2026-08-14T07:31:12+08:00","dateModified": "2026-08-15T01:44:43+08:00","license": "2022©️whitefirer","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
                 "name": "whitefirer"
-            },"description": "DeepSeek 开源 dsh 首日破 3 万 star。本文从决策记录与源码逐层拆解：一个引擎五个出口、Cordis 插件化地基、事件溯源会话模型、压缩阴影机制、四象限 RPC、landlock 沙箱、hooks 兼容层——以及它真正服务的对象：模型自己（为自进化铺路）。：一个引擎五个出口、Cordis 插件化地基、事件溯源会话模型、压缩阴影机制、四象限 RPC、landlock 沙箱、hooks 兼容层——以及'它为什么不是 Codex 竞品'的架构级答案。"
+            },"description": "DeepSeek 开源 dsh，首日破 3 万 star、30 小时破 9 万。本文从决策记录与源码逐层拆解：一个引擎五个出口、Cordis 插件化地基、事件溯源会话模型、压缩阴影机制、四象限 RPC、landlock 沙箱、hooks 兼容层——以及它真正服务的对象：模型自己（为自进化铺路）。"
     }
     </script></head>
     <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
@@ -132,9 +132,9 @@
             <div class="toc-content" id="toc-content-auto"></div>
         </div><div id="reading-progress"></div>
     <article class="page single"><div style="display:flex;align-items:baseline;gap:0">
-        <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">DeepSeek Harness 全拆解：开源首日破 3 万 star 的 Agent 运行时，特别在哪</h1></div><h2 class="single-subtitle">一个 219 包插件化架构的完整解剖——服务对象是模型自己，为自进化铺路</h2><div class="post-meta">
+        <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">DeepSeek Harness 全拆解：30 小时 9 万+ star 的 Agent 运行时，特别在哪</h1></div><h2 class="single-subtitle">一个 219 包插件化架构的完整解剖——服务对象是模型自己，为自进化铺路</h2><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-14">2026-08-14</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 16693 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-14">2026-08-14</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 16612 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 34 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive.svg" alt="" aria-hidden="true" loading="eager"
      style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none"></div>
         </div><div class="details toc" id="toc-static"  data-kept="">
@@ -203,7 +203,7 @@
   </ul>
 </nav></div>
             </div><div class="content" id="content"><blockquote>
-<p>2026-08-13 开源 · 0.1.0-rc.5 开发者预览 · MIT 许可。本文全部机制描述均出自仓库（<code>docs/</code>、<code>.agents/notes/</code>、源码），个别处注明&quot;从决策记录看&quot;。Star 数据为 GitHub API 实测（开源首日终值 31078 / forks 2330，2026-08-13 24:00 抓取）。</p>
+<p>2026-08-13 开源 · 0.1.0-rc.5 开发者预览 · MIT 许可。本文全部机制描述均出自仓库（<code>docs/</code>、<code>.agents/notes/</code>、源码），个别处注明&quot;从决策记录看&quot;。Star 数据为 GitHub API 实测：开源首日约 3.1 万，不到 30 小时已约 9.4 万（forks 逾 8 千），增势未缓。</p>
 </blockquote>
 <h2 id="导语为什么值得读">导语：为什么值得读</h2>
 <p>2026 年 8 月 13 日，DeepSeek 官方开源了 deepseek-harness（下文简称 dsh）——一个 TypeScript 写的 agent harness（agent 运行时/框架）。开源当天数小时内，GitHub star 突破 4000。</p>
@@ -231,7 +231,7 @@
 </tr>
 <tr>
 <td>热度</td>
-<td>开源首日破 3 万 star：终值 <strong>31078</strong> / forks 2330（2026-08-13 24:00 抓取；当日曾抓 4187 → 20436）</td>
+<td>开源首日即破 3 万 star</td>
 </tr>
 <tr>
 <td>技术栈</td>
@@ -765,7 +765,7 @@
 <li><strong>vendored Cordis 双刃剑</strong>：rescope + 私有补丁 = 上游演进自担；<code>vendor/</code> 同步有流程但仍是维护负担。</li>
 <li><strong>hooks 兼容是子集兼容</strong>：入参改写、硬停、loop-guard 均未实现。迁移既有 CC/Codex hooks 前先对照 Known Limitations。</li>
 <li><strong>示例 ≠ 产品面</strong>：<code>examples/</code> 的 6 个组合（acp-agent / headless-agent / jsonrpc-agent / mcp-memory / web-cordis / web-schedule）多为 keyless snapshot 载体与组装示范，不是产品承诺——TUI 即因&quot;无 shipped composition&quot;被整包删除。</li>
-<li><strong>热度信号</strong>：开源首日即破 3 万 star（终值 31078，2026-08-13 24:00 抓取）说明&quot;DeepSeek 牌 harness&quot;有强市场关注，但关注度不等于稳定性。</li>
+<li><strong>热度信号</strong>：开源首日即破 3 万 star 说明&quot;DeepSeek 牌 harness&quot;有强市场关注，但关注度不等于稳定性。</li>
 <li><strong>它是框架，不是产品</strong>：dsh 的入口是 profile / headless / SDK / 插件体系——定位是&quot;agent 的基础设施&rdquo;（让生态在它上面建产品），而不是开箱即用的产品；Claude Code / Codex 则是后者的代表（一体式、无插件体系）。这解释了它为什么&quot;文档比产品成熟&quot;：框架先证明机制，产品才需要打磨体验。可以把它理解成&quot;Agent 界的 Kubernetes&quot;——当年 K8s 同样被批&quot;太复杂、不是产品&quot;，但作为基础设施赢了。插件化 vs 一体化是路线之争，胜负取决于场景：一体化的当下体验 vs 可组合的未来灵活性；而它附带的产品面（<code>dsh web</code>）是用框架思维做的产品，恰是&quot;技术成熟 ≠ 产品成熟&quot;批评的落点。</li>
 </ol>
 <h3 id="对自建-agent-工具链的启示">对自建 agent 工具链的启示</h3>
@@ -847,20 +847,20 @@
 </div>
 </div><p>配置与数据默认在 <code>$DSH_HOME</code>（未设置时为 <code>~/.dsh</code>）：模型凭据、profile 补丁层、会话日志都在这里。注意：npm 发布版（rc.6）比仓库 master（rc.5）略新，以 npm 为准。</p>
 <p>相关链接：<a href="https://github.com/deepseek-ai/deepseek-harness" target="_blank" rel="noopener noreffer ">GitHub 仓库</a> · <a href="https://www.deepseek.com/harness/" target="_blank" rel="noopener noreffer ">官方站点</a>（含四种预设模式说明：标准 / PTC / 极简 / 创造）· <a href="https://github.com/cordiverse/paper" target="_blank" rel="noopener noreffer ">Cordis 设计论文</a>。</p>
-<p>最后重复一遍文首的提醒：它开源首日破 3 万 star（终值 31078，24:00 抓取）说明关注度极高，但关注度不等于稳定性。对一个 rc.5 的预览版，最合理的态度是：<strong>值得吸收的机制大胆吸收，需要兑现的承诺谨慎等待，下个版本见。</strong></p>
+<p>最后重复一遍文首的提醒：它开源首日破 3 万 star 说明关注度极高，但关注度不等于稳定性。对一个 rc.5 的预览版，最合理的态度是：<strong>值得吸收的机制大胆吸收，需要兑现的承诺谨慎等待，下个版本见。</strong></p>
 </div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2026-08-14&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/5fcaf2f959f4b48d390c139dfc85024790378798" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) 5fcaf2f959f4b48d390c139dfc85024790378798: chore: dsh 拆解博客标题/subtitle/升华节同步——&#39;特别在哪&#39; &#43; &#39;服务对象是模型自己，为自进化铺路&#39;">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>5fcaf2f</a></span>
+                <span>更新于 2026-08-15&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/d9639497cd55f2a15063b2b4f2a512ee6c25fe55" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) d9639497cd55f2a15063b2b4f2a512ee6c25fe55: docs: 深度文标题改 30 小时 9 万&#43; star，修 description 重复拼接">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>d963949</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
                             <a class="link-to-markdown" href="/posts/2026/08/14/deepseek-harness-deep-dive/index.md" target="_blank">阅读原始文档</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/" data-title="DeepSeek Harness 全拆解：开源首日破 3 万 star 的 Agent 运行时，特别在哪" data-hashtags="tech,ai,deepseek,harness,architecture,event-sourcing,plugin"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/" data-hashtag="tech"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/" data-title="DeepSeek Harness 全拆解：开源首日破 3 万 star 的 Agent 运行时，特别在哪"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/" data-title="DeepSeek Harness 全拆解：开源首日破 3 万 star 的 Agent 运行时，特别在哪"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/" data-title="DeepSeek Harness 全拆解：开源首日破 3 万 star 的 Agent 运行时，特别在哪"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微信" onclick="var d=document.getElementById('wechat-qr-04bc9b3845639ca2476e0071293f6306');d.style.display=d.style.display==='none'?'block':'none';return false"><i class="fab fa-weixin fa-fw" aria-hidden="true"></i></a>
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/" data-title="DeepSeek Harness 全拆解：30 小时 9 万&#43; star 的 Agent 运行时，特别在哪" data-hashtags="tech,ai,deepseek,harness,architecture,event-sourcing,plugin"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/" data-hashtag="tech"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/" data-title="DeepSeek Harness 全拆解：30 小时 9 万&#43; star 的 Agent 运行时，特别在哪"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/" data-title="DeepSeek Harness 全拆解：30 小时 9 万&#43; star 的 Agent 运行时，特别在哪"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/" data-title="DeepSeek Harness 全拆解：30 小时 9 万&#43; star 的 Agent 运行时，特别在哪"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微信" onclick="var d=document.getElementById('wechat-qr-04bc9b3845639ca2476e0071293f6306');d.style.display=d.style.display==='none'?'block':'none';return false"><i class="fab fa-weixin fa-fw" aria-hidden="true"></i></a>
         <div id="wechat-qr-04bc9b3845639ca2476e0071293f6306" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:9999" onclick="this.style.display='none'">
             <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;padding:20px;border-radius:8px;text-align:center">
                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https%3a%2f%2fwhitefirer.org%2fposts%2f2026%2f08%2f14%2fdeepseek-harness-deep-dive%2f" alt="微信扫一扫" style="display:block">

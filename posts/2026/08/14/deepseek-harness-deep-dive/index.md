@@ -1,7 +1,7 @@
-# DeepSeek Harness 全拆解：开源首日破 3 万 star 的 Agent 运行时，特别在哪
+# DeepSeek Harness 全拆解：30 小时 9 万+ star 的 Agent 运行时，特别在哪
 
 
-> 2026-08-13 开源 · 0.1.0-rc.5 开发者预览 · MIT 许可。本文全部机制描述均出自仓库（`docs/`、`.agents/notes/`、源码），个别处注明"从决策记录看"。Star 数据为 GitHub API 实测（开源首日终值 31078 / forks 2330，2026-08-13 24:00 抓取）。
+> 2026-08-13 开源 · 0.1.0-rc.5 开发者预览 · MIT 许可。本文全部机制描述均出自仓库（`docs/`、`.agents/notes/`、源码），个别处注明"从决策记录看"。Star 数据为 GitHub API 实测：开源首日约 3.1 万，不到 30 小时已约 9.4 万（forks 逾 8 千），增势未缓。
 
 ## 导语：为什么值得读
 
@@ -23,7 +23,7 @@
 | 项 | 事实 |
 |---|---|
 | 发布 | 2026-08-13 开源，`0.1.0-rc.5` 开发者预览，MIT |
-| 热度 | 开源首日破 3 万 star：终值 **31078** / forks 2330（2026-08-13 24:00 抓取；当日曾抓 4187 → 20436） |
+| 热度 | 开源首日即破 3 万 star |
 | 技术栈 | TypeScript ESM monorepo，pnpm 11.7.0，Node `^22.19 \|\| >=24` |
 | 规模 | 49 个包组、219 个包；约 1.2 万次提交（约 2 个月） |
 | 布局 | `apps/cli`（dsh 命令）+ `apps/web`（Vite 应用）；`native/landlock-run`（C 沙箱启动器）；`python/`（Python SDK + 单文件 exe）；`examples/` 6 个可运行组合 |
@@ -382,7 +382,7 @@ dsh 的工程过程本身值得单独记录：
 4. **vendored Cordis 双刃剑**：rescope + 私有补丁 = 上游演进自担；`vendor/` 同步有流程但仍是维护负担。
 5. **hooks 兼容是子集兼容**：入参改写、硬停、loop-guard 均未实现。迁移既有 CC/Codex hooks 前先对照 Known Limitations。
 6. **示例 ≠ 产品面**：`examples/` 的 6 个组合（acp-agent / headless-agent / jsonrpc-agent / mcp-memory / web-cordis / web-schedule）多为 keyless snapshot 载体与组装示范，不是产品承诺——TUI 即因"无 shipped composition"被整包删除。
-7. **热度信号**：开源首日即破 3 万 star（终值 31078，2026-08-13 24:00 抓取）说明"DeepSeek 牌 harness"有强市场关注，但关注度不等于稳定性。
+7. **热度信号**：开源首日即破 3 万 star 说明"DeepSeek 牌 harness"有强市场关注，但关注度不等于稳定性。
 8. **它是框架，不是产品**：dsh 的入口是 profile / headless / SDK / 插件体系——定位是"agent 的基础设施"（让生态在它上面建产品），而不是开箱即用的产品；Claude Code / Codex 则是后者的代表（一体式、无插件体系）。这解释了它为什么"文档比产品成熟"：框架先证明机制，产品才需要打磨体验。可以把它理解成"Agent 界的 Kubernetes"——当年 K8s 同样被批"太复杂、不是产品"，但作为基础设施赢了。插件化 vs 一体化是路线之争，胜负取决于场景：一体化的当下体验 vs 可组合的未来灵活性；而它附带的产品面（`dsh web`）是用框架思维做的产品，恰是"技术成熟 ≠ 产品成熟"批评的落点。
 
 ### 对自建 agent 工具链的启示
@@ -428,5 +428,5 @@ dsh --profile headless "运行项目测试并总结结果"
 
 相关链接：[GitHub 仓库](https://github.com/deepseek-ai/deepseek-harness) · [官方站点](https://www.deepseek.com/harness/)（含四种预设模式说明：标准 / PTC / 极简 / 创造）· [Cordis 设计论文](https://github.com/cordiverse/paper)。
 
-最后重复一遍文首的提醒：它开源首日破 3 万 star（终值 31078，24:00 抓取）说明关注度极高，但关注度不等于稳定性。对一个 rc.5 的预览版，最合理的态度是：**值得吸收的机制大胆吸收，需要兑现的承诺谨慎等待，下个版本见。**
+最后重复一遍文首的提醒：它开源首日破 3 万 star 说明关注度极高，但关注度不等于稳定性。对一个 rc.5 的预览版，最合理的态度是：**值得吸收的机制大胆吸收，需要兑现的承诺谨慎等待，下个版本见。**
 
