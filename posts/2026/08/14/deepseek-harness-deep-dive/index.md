@@ -1,4 +1,4 @@
-# DeepSeek Harness 全拆解：30 小时 9 万+ star 的 Agent 运行时，特别在哪
+# DeepSeek Harness 全拆解：30 小时逼近 10 万 star 的 Agent 运行时，特别在哪
 
 
 > 2026-08-13 开源 · 0.1.0-rc.5 开发者预览 · MIT 许可。本文全部机制描述均出自仓库（`docs/`、`.agents/notes/`、源码），个别处注明"从决策记录看"。Star 数据为 GitHub API 实测：开源首日约 3.1 万，不到 30 小时已约 9.4 万（forks 逾 8 千），增势未缓。
