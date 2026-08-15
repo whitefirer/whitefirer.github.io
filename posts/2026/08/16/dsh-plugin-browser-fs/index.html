@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件 - 赛博闲谭-whitefirer</title><meta name="Description" content="dsh 开源几天插件目录站收录已破千，但所有插件读的都是 dsh 宿主机的文件——远程部署时 Agent 摸不到你这台电脑。本文从零写一个真实可用的插件 dsh-browser-fs：浏览器授权一个本地目录，Agent 就能 list/read/write。过程中把 dsh 插件系统拆给你看：Cordis 生命周期、host/client 双面结构、工具注册、WS 中继、创造模式是什么，以及 secure context 等四个坑。">
+
+<meta name="application-name" content="赛博闲谭-whitefirer">
+<meta name="apple-mobile-web-app-title" content="赛博闲谭-whitefirer"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/08/16/dsh-plugin-browser-fs/" /><link rel="prev" href="https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta property="og:title" content="给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件 - 赛博闲谭-whitefirer" />
+<meta property="og:description" content="dsh 开源几天插件目录站收录已破千，但所有插件读的都是 dsh 宿主机的文件——远程部署时 Agent 摸不到你这台电脑。本文从零写一个真实可用的插件 dsh-browser-fs：浏览器授权一个本地目录，Agent 就能 list/read/write。过程中把 dsh 插件系统拆给你看：Cordis 生命周期、host/client 双面结构、工具注册、WS 中继、创造模式是什么，以及 secure context 等四个坑。" />
+<meta property="og:image" content="https://whitefirer.org/og-default.png" />
+<meta property="og:url" content="https://whitefirer.org/posts/2026/08/16/dsh-plugin-browser-fs/" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="赛博闲谭-whitefirer" /><meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件 - 赛博闲谭-whitefirer" />
+<meta name="twitter:description" content="dsh 开源几天插件目录站收录已破千，但所有插件读的都是 dsh 宿主机的文件——远程部署时 Agent 摸不到你这台电脑。本文从零写一个真实可用的插件 dsh-browser-fs：浏览器授权一个本地目录，Agent 就能 list/read/write。过程中把 dsh 插件系统拆给你看：Cordis 生命周期、host/client 双面结构、工具注册、WS 中继、创造模式是什么，以及 secure context 等四个坑。" />
+<meta name="twitter:image" content="https://whitefirer.org/og-default.png" /><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/whitefirer.org\/posts\/2026\/08\/16\/dsh-plugin-browser-fs\/"
+        },"genre": "posts","keywords": "tech, ai, deepseek, harness, plugin, tutorial, file-system-access","wordcount":  3825 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/16\/dsh-plugin-browser-fs\/","datePublished": "2026-08-16T04:11:39+08:00","dateModified": "2026-08-16T04:12:24+08:00","license": "2022©️whitefirer","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "whitefirer"
+            },"description": "dsh 开源几天插件目录站收录已破千，但所有插件读的都是 dsh 宿主机的文件——远程部署时 Agent 摸不到你这台电脑。本文从零写一个真实可用的插件 dsh-browser-fs：浏览器授权一个本地目录，Agent 就能 list/read/write。过程中把 dsh 插件系统拆给你看：Cordis 生命周期、host/client 双面结构、工具注册、WS 中继、创造模式是什么，以及 secure context 等四个坑。"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="赛博闲谭-whitefirer">赛博闲谭-whitefirer</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/series/ai-zatan/"> AI 杂谈 </a><div class="menu-item has-dropdown">
+                            <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                            <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a><a class="dropdown-item" href="/series/harness-engineering/"> Harness Engineering </a><a class="dropdown-item" href="/series/deepseek-harness/"> DeepSeek Harness </a></div>
+                        </div><a class="menu-item" href="/series/%e5%9f%ba%e7%a1%80%e6%9e%b6%e6%9e%84/"> 基础架构 </a><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/2026/08/16/dsh-plugin-browser-fs/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header>
+<script>
+(function() {
+    document.querySelectorAll('.has-dropdown .dropdown-toggle').forEach(function(toggle) {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var parent = this.closest('.has-dropdown');
+            parent.classList.toggle('open');
+        });
+    });
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.has-dropdown.open').forEach(function(d) {
+            d.classList.remove('open');
+        });
+    });
+})();
+</script><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="赛博闲谭-whitefirer">赛博闲谭-whitefirer</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/series/ai-zatan/" title="">AI 杂谈</a><div class="menu-item has-dropdown">
+                        <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                        <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a><a class="dropdown-item" href="/series/harness-engineering/"> Harness Engineering </a><a class="dropdown-item" href="/series/deepseek-harness/"> DeepSeek Harness </a></div>
+                    </div><a class="menu-item" href="/series/%e5%9f%ba%e7%a1%80%e6%9e%b6%e6%9e%84/" title="">基础架构</a><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/posts/2026/08/16/dsh-plugin-browser-fs/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><div id="reading-progress"></div>
+    <article class="page single"><div style="display:flex;align-items:baseline;gap:0">
+        <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件</h1></div><h2 class="single-subtitle">从插件系统解剖到实战：为什么「双面插件」是唯一路线、File System Access API 怎么接、以及那些 README 里不会写的坑</h2><div class="post-series">
+                <a href="/series/deepseek-harness/"><i class="fas fa-layer-group fa-fw" aria-hidden="true"></i>DeepSeek Harness</a>
+            </div><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-16">2026-08-16</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3825 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 8 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/08/16/dsh-plugin-browser-fs.svg" alt="" aria-hidden="true" loading="eager"
+     style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none"></div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#一一个真空地带">一、一个真空地带</a></li>
+    <li><a href="#二先搞懂-dsh-插件系统">二、先搞懂 dsh 插件系统</a>
+      <ul>
+        <li><a href="#一切皆插件包括它自己">一切皆插件，包括它自己</a></li>
+        <li><a href="#插件的物理形态">插件的物理形态</a></li>
+        <li><a href="#创造模式是什么">创造模式是什么</a></li>
+      </ul>
+    </li>
+    <li><a href="#三关键结论必须做双面插件">三、关键结论：必须做&quot;双面插件&quot;</a></li>
+    <li><a href="#四实战dsh-browser-fs-走查">四、实战：dsh-browser-fs 走查</a>
+      <ul>
+        <li><a href="#host-半工具--ws-中继">host 半：工具 + WS 中继</a></li>
+        <li><a href="#client-半file-system-access-执行器">client 半：File System Access 执行器</a></li>
+        <li><a href="#client-bundle-的构建契约">client bundle 的构建契约</a></li>
+      </ul>
+    </li>
+    <li><a href="#五四个坑readme-不会告诉你的">五、四个坑（README 不会告诉你的）</a></li>
+    <li><a href="#六装机与验证">六、装机与验证</a></li>
+    <li><a href="#七限制与边界">七、限制与边界</a></li>
+    <li><a href="#八资源">八、资源</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="一一个真空地带">一、一个真空地带</h2>
+<p>DeepSeek Harness（dsh）开源后插件爆发，目录站收录几天破千。但翻一遍会发现一个空白：<strong>所有文件类插件操作的都是 dsh 宿主机的磁盘</strong>。</p>
+<p>这在&quot;dsh 跑在自己电脑上&quot;时无所谓。但一旦你把它部署到服务器、用手机或另一台电脑的浏览器访问，Agent 能读写的就只有那台服务器——你手头这台电脑上的文件，它一个也碰不到。已有的最接近的方案是手动上传（<code>dsh-file-uploads</code>：把文件传进宿主容器），那是一次性动作，不是&quot;Agent 直接读我的项目目录&quot;。</p>
+<p>所以我写了 <code>dsh-browser-fs</code>：在 dsh 页面里授权一个本地目录（浏览器 File System Access API），Agent 就多了三个工具——<code>browser_fs_list</code> / <code>browser_fs_read</code> / <code>browser_fs_write</code>，读写的是<strong>你浏览器这台电脑</strong>。</p>
+<p>这篇文章是它的完整开发记录。dsh 的插件文档目前很薄，真正的知识都在源码里，我把拆解过程一并写出来。</p>
+<h2 id="二先搞懂-dsh-插件系统">二、先搞懂 dsh 插件系统</h2>
+<h3 id="一切皆插件包括它自己">一切皆插件，包括它自己</h3>
+<p>dsh 基于 Cordis 元框架，&ldquo;everything is a plugin&rdquo; 不是口号：连它的 HTTP 服务器（<code>webserver</code>）都只是一个 266 行的插件，静态资源服务、API RPC、WebSocket 事件流都是挂在上面的注册项。这带来一个好消息：插件能摸到系统的一切；一个坏消息：文档追不上代码，看源码是最快的学习方式。</p>
+<h3 id="插件的物理形态">插件的物理形态</h3>
+<p>一个可被 <code>dsh plugin --profile web add</code> 安装的插件 = 一个 npm 包 + 两个声明：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="o">//</span> <span class="n">package</span><span class="o">.</span><span class="n">json</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;dsh-browser-fs&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;module&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;exports&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;.&#34;</span><span class="p">:</span> <span class="s2">&#34;./lib/index.js&#34;</span><span class="p">,</span>        <span class="o">//</span> <span class="n">host</span> <span class="err">半（</span><span class="ne">Node</span> <span class="err">进程里跑）</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;./client&#34;</span><span class="p">:</span> <span class="s2">&#34;./lib/client.js&#34;</span> <span class="o">//</span> <span class="n">client</span> <span class="err">半（浏览器里跑）</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;dsh&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;bundle&#34;</span><span class="p">:</span> <span class="p">{</span> <span class="s2">&#34;patch&#34;</span><span class="p">:</span> <span class="s2">&#34;./cordis.patch.yml&#34;</span> <span class="p">},</span> <span class="o">//</span> <span class="err">挂载配置</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;client&#34;</span><span class="p">:</span> <span class="p">{</span> <span class="s2">&#34;platform&#34;</span><span class="p">:</span> <span class="s2">&#34;web&#34;</span> <span class="p">}</span>              <span class="o">//</span> <span class="err">声明有浏览器半</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="c"># cordis.patch.yml：把自己的行插进 Cordis 树</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span>- <span class="nt">insert</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l">browser-fs</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;dsh-browser-fs&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span>{<span class="w"> </span><span class="nt">wsPath: &#39;/browser-fs/ws&#39;, requestTimeoutMs</span><span class="p">:</span><span class="w"> </span><span class="m">120000</span><span class="w"> </span>}<span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>生命周期骨架是 Cordis 标准式：<code>export const inject = ['webServer', 'tools']</code> 声明依赖的服务，<code>export function apply(ctx, config)</code> 里注册一切，资源回收走 <code>ctx.effect()</code>。</p>
+<h3 id="创造模式是什么">创造模式是什么</h3>
+<p>插一句很多人问的：dsh 四个内置 preset 里的「创造模式」（cordis preset）就是官方给插件作者的辅助模式——标准模式的全部能力，外加运行时检查、插件实验和 preset 创作指导。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/2026/08/16/dsh-plugin-browser-fs/02-presets.png"
+        data-srcset="/posts/2026/08/16/dsh-plugin-browser-fs/02-presets.png, /posts/2026/08/16/dsh-plugin-browser-fs/02-presets.png 1.5x, /posts/2026/08/16/dsh-plugin-browser-fs/02-presets.png 2x"
+        data-sizes="auto"
+        alt="/posts/2026/08/16/dsh-plugin-browser-fs/02-presets.png"
+        title="dsh 的四个内置 preset" width="1440" height="900" /></p>
+<p>两条开发路线都成立：用创造模式让 dsh 帮你写（自举），或者源码调研后手写。我这次选了后者——不是创造模式不好，而是我要的 API 事实（client 侧能否注册工具这类）必须看代码才能确认，AI 辅助调研源码+手写实现反而更快。</p>
+<h2 id="三关键结论必须做双面插件">三、关键结论：必须做&quot;双面插件&quot;</h2>
+<p>这是整个开发里最重要的架构判断，也是 README 里找不到的事实：</p>
+<p><strong>dsh 的模型工具只能在 host 侧注册。</strong> <code>ctx.tools.register(defineTool({...}))</code> 注册的工具，其 <code>execute</code> 函数运行在 dsh 宿主的 Node 进程里。浏览器侧的 client bundle 没有任何&quot;注册模型工具&quot;的入口。</p>
+<p>那浏览器的能力怎么给模型用？dsh 自己早有答案——<code>ask_user_question</code>（模型主动向用户提问）就是&quot;host 注册 + 浏览器执行&quot;的双面结构，只是它走的事件流通道是 apiproxy 私有的，第三方插件复用不了。我用公开 API 复刻同样的架构：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">模型调用 browser_fs_read
+</span></span><span class="line"><span class="cl">  → host 半工具的 execute()（dsh 进程）
+</span></span><span class="line"><span class="cl">  → 自建 WebSocket 通道（webServer.registerUpgrade）
+</span></span><span class="line"><span class="cl">  → 浏览器 client 半执行 File System Access 操作
+</span></span><span class="line"><span class="cl">  → 结果沿 WS 回到 host → 回到模型
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>WS 通道上跑自己定义的帧协议：<code>call</code>（host→浏览器，带 rpcId 和参数）、<code>result</code>（浏览器→host，按 rpcId 配对）、<code>cancel</code>（中断传播）、<code>state</code>（浏览器上报&quot;我有没有授权句柄&quot;）。</p>
+<h2 id="四实战dsh-browser-fs-走查">四、实战：dsh-browser-fs 走查</h2>
+<p>最终结构：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">dsh-browser-fs/
+</span></span><span class="line"><span class="cl">├── package.json / cordis.patch.yml / build.mjs
+</span></span><span class="line"><span class="cl">└── src/
+</span></span><span class="line"><span class="cl">    ├── index.ts      # host 半：WS 中继 + 三个工具注册 + roster 广播
+</span></span><span class="line"><span class="cl">    ├── wire.ts       # 帧协议与两侧校验（state/call/result/roster）
+</span></span><span class="line"><span class="cl">    └── client/
+</span></span><span class="line"><span class="cl">        ├── index.ts  # 入口：WS 客户端（断线重连）、call 分发、特性检测降级
+</span></span><span class="line"><span class="cl">        ├── fs.ts     # FsBackend 抽象 + 完整模式句柄后端
+</span></span><span class="line"><span class="cl">        ├── files-backend.ts  # 兼容模式：webkitdirectory File 映射（只读）
+</span></span><span class="line"><span class="cl">        ├── preview.ts # 预览纯函数（类型判断/截断/二进制嗅探）
+</span></span><span class="line"><span class="cl">        ├── device.ts  # UA 派生设备名
+</span></span><span class="line"><span class="cl">        ├── store.ts  # IndexedDB 句柄持久化
+</span></span><span class="line"><span class="cl">        └── ui.tsx    # 授权卡片 + 目录树（文件预览/刷新按钮）
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>后记：初版只有「句柄后端」一条路。手机局域网 http 场景下 File System Access API 整个不可用（安全上下文门控），后来补了 FsBackend 抽象 + 兼容模式；多设备同时在线时的「当前授权在哪台设备」可见性也是后加的。演进细节见同系列《把 dsh 开放到局域网》一篇。</p>
+</blockquote>
+<h3 id="host-半工具--ws-中继">host 半：工具 + WS 中继</h3>
+<p>三件事：起 WebSocketServer（挂在 <code>registerUpgrade</code> 注册的路径上）、维护 <code>pending</code> 映射（rpcId → resolve/reject）、注册工具。工具的 <code>execute</code> 把参数广播给在线浏览器，然后 <code>await</code> 对应 rpcId 的结果帧：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-ts" data-lang="ts"><span class="line"><span class="cl"><span class="nx">ctx</span><span class="p">.</span><span class="nx">tools</span><span class="p">.</span><span class="nx">register</span><span class="p">(</span><span class="nx">defineTool</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;browser_fs_read&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;读取用户浏览器所在电脑上、已授权目录下的文本文件&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">parameters</span><span class="o">:</span> <span class="p">{</span> <span class="nx">path</span><span class="o">:</span> <span class="p">{</span> <span class="kr">type</span><span class="o">:</span> <span class="s1">&#39;string&#39;</span> <span class="p">},</span> <span class="nx">maxBytes</span><span class="o">:</span> <span class="p">{</span> <span class="kr">type</span><span class="o">:</span> <span class="s1">&#39;number&#39;</span> <span class="p">}</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">output</span><span class="o">:</span> <span class="p">{</span> <span class="nx">schema</span>: <span class="kt">...</span><span class="p">,</span> <span class="nx">render</span><span class="o">:</span> <span class="p">(</span><span class="nx">args</span><span class="p">,</span> <span class="nx">v</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="nx">textBlock</span><span class="p">(</span><span class="nx">v</span><span class="p">)]</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">async</span> <span class="nx">execute</span><span class="p">(</span><span class="nx">args</span><span class="p">,</span> <span class="nx">exec</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// exec.signal 接到 pending：会话中断时 WS 等待一并取消
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="nx">relay</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">exec</span><span class="p">,</span> <span class="s1">&#39;read&#39;</span><span class="p">,</span> <span class="nx">args</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl"><span class="p">}));</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>没有浏览器在线、或在线浏览器没授权目录时，立即返回明确的错误结果（让模型知道该叫人去授权，而不是傻等）。</p>
+<h3 id="client-半file-system-access-执行器">client 半：File System Access 执行器</h3>
+<p>浏览器侧核心是三个操作，全部限定在用户授权的目录句柄之下——沙箱由浏览器强制，代码层面再加一道 <code>..</code> 逃逸检查：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-ts" data-lang="ts"><span class="line"><span class="cl"><span class="c1">// 授权（必须由用户手势触发）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">const</span> <span class="nx">handle</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">showDirectoryPicker</span><span class="p">({</span> <span class="nx">mode</span><span class="o">:</span> <span class="s1">&#39;readwrite&#39;</span> <span class="p">});</span>
+</span></span><span class="line"><span class="cl"><span class="k">await</span> <span class="nx">saveHandle</span><span class="p">(</span><span class="nx">handle</span><span class="p">);</span> <span class="c1">// 存 IndexedDB，下次启动读回 + queryPermission()
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">// list / read / write 都是 FileSystemDirectoryHandle 的标准操作
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">const</span> <span class="nx">dir</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">resolveDir</span><span class="p">(</span><span class="nx">handle</span><span class="p">,</span> <span class="nx">args</span><span class="p">.</span><span class="nx">path</span><span class="p">);</span> <span class="c1">// 逐级 getDirectoryHandle
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">for</span> <span class="k">await</span> <span class="p">(</span><span class="kr">const</span> <span class="nx">entry</span> <span class="k">of</span> <span class="nx">dir</span><span class="p">.</span><span class="nx">values</span><span class="p">())</span> <span class="p">{</span> <span class="cm">/* ... */</span> <span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><code>read</code> 默认上限 256KiB 并标注截断；<code>write</code> 自动创建父目录、返回写入字节数。</p>
+<h3 id="client-bundle-的构建契约">client bundle 的构建契约</h3>
+<p>浏览器半不是普通 npm 包，dsh 的模块加载器要求：</p>
+<ul>
+<li>产物固定 <code>lib/client.js</code>，CJS 闭包</li>
+<li>首尾包装 <code>window.__ModuleLoader__.load({ id, factory })</code></li>
+<li>external 只允许平台模块（react、cordis 等少数几个），其余依赖全部 inline</li>
+</ul>
+<p>官方构建 preset 没发布成包，我用 esbuild 三十几行配置复刻了这个契约（<code>banner</code>/<code>footer</code> 注入包装）。</p>
+<h2 id="五四个坑readme-不会告诉你的">五、四个坑（README 不会告诉你的）</h2>
+<ol>
+<li><strong>npm registry 超时</strong>：国内装依赖记得配镜像（项目里放 <code>.npmrc</code> 指向 npmmirror；<code>dsh plugin add</code> 内部走 pnpm，用 <code>npm_config_registry</code> 环境变量带过去）。</li>
+<li><strong>句柄不能序列化</strong>：FileSystemDirectoryHandle 只能存 IndexedDB，走不了 dsh 的 settings 服务（而且 settings RPC 在非 loopback 访问时被官方钉死禁用）。</li>
+<li><strong>WS 路由不过信任栅栏</strong>：<code>registerUpgrade</code> 挂的路径不走 <code>/api</code> 的 Host/Origin 检查，自己的 handler 里要补同源校验（我的规则：Origin 存在则必须与 Host 同源，缺失放行——和 dsh 官方栅栏同款语义）。</li>
+<li><strong>安全上下文</strong>：<code>showDirectoryPicker</code> 只在 HTTPS 或 localhost 可用。<code>http://192.168.x.x</code> 局域网访问时这个 API 直接不存在，polyfill 都救不了（这类权限级 API 和 <code>crypto.randomUUID</code> 不同，补不出来——上一篇《手机访问局域网服务就白屏？》详细讲过这个坑）。</li>
+</ol>
+<h2 id="六装机与验证">六、装机与验证</h2>
+<p>安装一行命令（file: 依赖是打包拷贝，改动后要重装+重启 dsh）：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">dsh plugin --profile web add file:/path/to/dsh-browser-fs
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>验证清单：boot manifest 出现 <code>browser-fs/client.js?rev=...</code>；<code>/plugins/dsh-browser-fs/client.js</code> 返回 200；WS 路由返回 426（等 upgrade）；真实 WS 握手同源 101 / 跨源 403；链路自检脚本 10/10（工具注册、参数校验、无授权报错、断连中断、list/read/write 全往返）。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/2026/08/16/dsh-plugin-browser-fs/01-main.png"
+        data-srcset="/posts/2026/08/16/dsh-plugin-browser-fs/01-main.png, /posts/2026/08/16/dsh-plugin-browser-fs/01-main.png 1.5x, /posts/2026/08/16/dsh-plugin-browser-fs/01-main.png 2x"
+        data-sizes="auto"
+        alt="/posts/2026/08/16/dsh-plugin-browser-fs/01-main.png"
+        title="dsh web 主界面（插件已挂载）" width="1440" height="900" /></p>
+<p>最后一步只能真人完成：<code>showDirectoryPicker</code> 是系统级弹窗，自动化点不了。在 <code>localhost:3080</code> 打开页面，授权卡片里选一个目录，然后对 Agent 说&quot;列出我授权目录里的文件&quot;——它会调起 <code>browser_fs_list</code>，读的是你这台电脑。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/2026/08/16/dsh-plugin-browser-fs/04-permission.png"
+        data-srcset="/posts/2026/08/16/dsh-plugin-browser-fs/04-permission.png, /posts/2026/08/16/dsh-plugin-browser-fs/04-permission.png 1.5x, /posts/2026/08/16/dsh-plugin-browser-fs/04-permission.png 2x"
+        data-sizes="auto"
+        alt="/posts/2026/08/16/dsh-plugin-browser-fs/04-permission.png"
+        title="授权目录后，浏览器还会对写权限再确认一次（「允许此网站修改文件？」）；右下角插件卡片此时还是「未授权目录」" width="2028" height="1094" /></p>
+<p>注意新版 Chrome 在选完目录后还会再确认一次写权限（上图的「允许此网站修改文件？」——因为我申请的是 readwrite 模式）。这层&quot;每步都经过你&quot;的授权链，就是这个插件的安全边界。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/2026/08/16/dsh-plugin-browser-fs/03-in-action.png"
+        data-srcset="/posts/2026/08/16/dsh-plugin-browser-fs/03-in-action.png, /posts/2026/08/16/dsh-plugin-browser-fs/03-in-action.png 1.5x, /posts/2026/08/16/dsh-plugin-browser-fs/03-in-action.png 2x"
+        data-sizes="auto"
+        alt="/posts/2026/08/16/dsh-plugin-browser-fs/03-in-action.png"
+        title="agent 通过 browser_fs_read 读到授权目录里的 hello.txt；右下角是插件卡片（授权状态 &#43; 目录树）" width="2650" height="1878" /></p>
+<h2 id="七限制与边界">七、限制与边界</h2>
+<ul>
+<li>浏览器标签页必须开着，工具才能执行（架构使然）</li>
+<li>多个标签页/设备在线时，由第一个持授权句柄的执行者干活（roster 帧让每台设备可见「当前授权在哪」）</li>
+<li>完整模式仅 Chrome/Edge 等 Chromium 系（File System Access API 的浏览器覆盖现状）；<strong>非安全上下文</strong>（手机局域网 http）自动降级「兼容模式」——<code>webkitdirectory</code> 快照、只读、页面刷新需重选；iOS 目录选择返回 0 文件，故授权区提供「选择目录 / 选多个文件」双入口（安全上下文细节见同系列《把 DeepSeek Harness 开放到局域网》一篇）</li>
+<li>目录树文件名点击出预览：文本前 64KB 截断、图片 ≤8MB 走 blob URL、二进制只提示不支持；「↻」刷新按钮在完整模式清缓存重拉，兼容模式下等价于重新选择目录</li>
+<li>dsh 处于 rc 阶段、无兼容承诺，<code>defineTool</code>/<code>registerUpgrade</code> 这些 API 面未来可能漂移——好在我的接触面很窄，跟起来不难</li>
+</ul>
+<h2 id="八资源">八、资源</h2>
+<ul>
+<li>插件仓库：<a href="https://github.com/whitefirer/dsh-browser-fs" target="_blank" rel="noopener noreffer ">github.com/whitefirer/dsh-browser-fs</a>（本文所有代码）</li>
+<li>必读源码：<code>packages/core/tools</code>（工具注册）、<code>packages/host/webserver</code>（HTTP/WS 注册口）、<code>packages/client/connection/src/websocket-downlink.ts</code>（WS 服务端模板）、<code>packages/client/ui-user-questions</code>（双面插件的官方先例）</li>
+<li>插件目录站：awesome-dsh-plugin / Oh-My-DSH / dsh-plugin-directory（投稿入口都在）</li>
+</ul>
+<div class="post-series-nav">
+                <em>本文是「<a href="/series/deepseek-harness/">DeepSeek Harness</a>」系列第 3 篇，共 3 篇。上一篇：<a href="/posts/2026/08/14/deepseek-harness-deep-dive/">DeepSeek Harness 全拆解：30 小时逼近 10 万 star 的 Agent 运行时，特别在哪</a>。</em>
+            </div></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2026-08-16&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/2f0a6c2c4b3e195ccc27edcb8abfbcb9ee26be1d" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) 2f0a6c2c4b3e195ccc27edcb8abfbcb9ee26be1d: feat: 发布《给 DeepSeek Harness 写插件》——导航加系列入口；lan-access/之三/论文解读保持草稿，hugo2wechat 压回草稿">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>2f0a6c2</a></span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/2026/08/16/dsh-plugin-browser-fs/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/08/16/dsh-plugin-browser-fs/" data-title="给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件" data-hashtags="tech,ai,deepseek,harness,plugin,tutorial,file-system-access"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/08/16/dsh-plugin-browser-fs/" data-hashtag="tech"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/08/16/dsh-plugin-browser-fs/" data-title="给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/08/16/dsh-plugin-browser-fs/" data-title="给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/08/16/dsh-plugin-browser-fs/" data-title="给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微信" onclick="var d=document.getElementById('wechat-qr-ca598c2d6f051000d4fceea55fdfe832');d.style.display=d.style.display==='none'?'block':'none';return false"><i class="fab fa-weixin fa-fw" aria-hidden="true"></i></a>
+        <div id="wechat-qr-ca598c2d6f051000d4fceea55fdfe832" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:9999" onclick="this.style.display='none'">
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;padding:20px;border-radius:8px;text-align:center">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https%3a%2f%2fwhitefirer.org%2fposts%2f2026%2f08%2f16%2fdsh-plugin-browser-fs%2f" alt="微信扫一扫" style="display:block">
+                <p style="margin:10px 0 0;font-size:14px;color:#333">微信扫一扫 · 分享文章</p>
+            </div>
+        </div></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/tech/">技术</a>,&nbsp;<a href="/tags/ai/">Ai</a>,&nbsp;<a href="/tags/deepseek/">Deepseek</a>,&nbsp;<a href="/tags/harness/">Harness</a>,&nbsp;<a href="/tags/plugin/">Plugin</a>,&nbsp;<a href="/tags/tutorial/">Tutorial</a>,&nbsp;<a href="/tags/file-system-access/">File-System-Access</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2026/08/14/deepseek-harness-deep-dive/" class="prev" rel="prev" title="DeepSeek Harness 全拆解：30 小时逼近 10 万 star 的 Agent 运行时，特别在哪"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>DeepSeek Harness 全拆解：30 小时逼近 10 万 star 的 Agent 运行时，特别在哪</a></div>
+
+</div>
+<div id="comments"><div id="waline" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://waline.js.org/">Waline</a>.
+            </noscript><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article>
+<script>(function(){var b=document.getElementById('reading-progress');if(!b)return;function u(){var h=document.documentElement,s=h.scrollHeight-h.clientHeight,w=s>0?Math.min((h.scrollTop||document.body.scrollTop)/s*100,100):0;b.style.width=w+'%'}window.addEventListener('scroll',u,{passive:true});u()})();</script></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.131.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span><img src="https://hits.sh/whitefirer.org.svg" alt="" aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;clip:rect(0 0 0 0);pointer-events:none"></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/waline/waline.min.css"><script type="text/javascript" src="/lib/waline/waline.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config=Object.assign(window.config||{},{"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Comments","categoryId":"DIC_kwDOH2gmzc4CQ_fM","darkTheme":"dark","emitMetadata":"0","inputPosition":"bottom","lang":"zh-CN","lazyLoading":true,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"whitefirer/whitefirer.github.io","repoId":"R_kgDOH2gmzQ"},"waline":{"dark":"auto","el":"#waline","lang":"zh-CN","pageSize":10,"requiredMeta":["nick","mail"],"serverURL":"https://comment.whitefirer.org"}},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}});</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">!function(){function svgToPng(svg,cb){var c=svg.cloneNode(!0),d=new XMLSerializer().serializeToString(c),img=new Image(),cv=document.createElement('canvas'),w=c.viewBox.animVal.width||c.getBoundingClientRect().width||400,h=c.viewBox.animVal.height||c.getBoundingClientRect().height||300,s=2;cv.width=w*s,cv.height=h*s;var ctx=cv.getContext('2d'),b=new Blob([d],{type:'image/svg+xml;charset=utf-8'}),u=URL.createObjectURL(b);img.onload=function(){ctx.fillStyle='#fff',ctx.fillRect(0,0,cv.width,cv.height),ctx.drawImage(img,0,0,cv.width,cv.height),URL.revokeObjectURL(u),cv.toBlob(function(blob){var a=document.createElement('a');a.href=URL.createObjectURL(blob);var id=svg.id||'diagram';a.download=id+'.png',a.click(),URL.revokeObjectURL(a.href),cb&&cb()})},img.src=u}function addSaveBtn(svg){if(svg.closest('.mermaid-stage,.mermaid-fs-overlay,.mermaid-wrapper,.mermaid-toolbar,.svg-diagram-wrap'))return;var wrap=document.createElement('div');wrap.className='svg-diagram-wrap';var d=svg.style.display||'block',w=svg.style.width||svg.getAttribute('width')||'100%',mw=svg.style.maxWidth||'',m=svg.style.margin||'';wrap.style.cssText='position:relative;display:'+d+';width:'+w+';'+(mw?'max-width:'+mw+';':'')+(m?'margin:'+m+';':'')+'line-height:0';svg.style.display='block';svg.style.width='100%';svg.style.maxWidth='';svg.style.margin='0';svg.parentNode.insertBefore(wrap,svg);wrap.appendChild(svg);var bar=document.createElement('div');bar.style.cssText='text-align:right;padding-top:6px';var btn=document.createElement('button');btn.className='svg-save-btn',btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span style="vertical-align:middle;font-size:12px">保存图片</span>',btn.style.cssText='background:none;border:1px solid transparent;border-radius:4px;padding:2px 6px;cursor:pointer;color:#b0b7c3;font-family:system-ui,sans-serif;line-height:1';bar.appendChild(btn);wrap.appendChild(bar);btn.onmouseenter=function(){btn.style.color='#6366f1';btn.style.borderColor='#e5e7eb'};btn.onmouseleave=function(){btn.style.color='#b0b7c3';btn.style.borderColor='transparent'};btn.onclick=function(e){e.stopPropagation();var orig=btn.innerHTML;btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span style="vertical-align:middle;font-size:12px">导出中...</span>';btn.disabled=!0;svgToPng(svg,function(){btn.innerHTML=orig;btn.disabled=!1})}}function initSvgButtons(){document.querySelectorAll('.content svg').forEach(function(svg){addSaveBtn(svg)})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initSvgButtons);else initSvgButtons()}()</script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-70Q8REKE17', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-70Q8REKE17" async></script></body>
+</html>

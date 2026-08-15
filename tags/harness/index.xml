@@ -4,7 +4,15 @@
         <link>https://whitefirer.org/tags/harness/</link>
         <description>Harness - 标签 - 赛博闲谭-whitefirer</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Fri, 14 Aug 2026 07:31:12 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/harness/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sun, 16 Aug 2026 04:11:39 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/harness/" rel="self" type="application/rss+xml" /><item>
+    <title>给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件</title>
+    <link>https://whitefirer.org/posts/2026/08/16/dsh-plugin-browser-fs/</link>
+    <pubDate>Sun, 16 Aug 2026 04:11:39 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/08/16/dsh-plugin-browser-fs/</guid>
+    <description><![CDATA[一、一个真空地带 DeepSeek Harness（dsh）开源后插件爆发，目录站收录几天破千。但翻一遍会发现一个空白：所有文件类插件操作的都是 dsh 宿主机的磁盘]]></description>
+</item>
+<item>
     <title>DeepSeek Harness 全拆解：30 小时逼近 10 万 star 的 Agent 运行时，特别在哪</title>
     <link>https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/</link>
     <pubDate>Fri, 14 Aug 2026 07:31:12 &#43;0800</pubDate>

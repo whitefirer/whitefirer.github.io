@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="赛博闲谭-whitefirer"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-        <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/" /><link rel="prev" href="https://whitefirer.org/posts/2026/08/13/deepseek-harness-hands-on/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/" /><link rel="prev" href="https://whitefirer.org/posts/2026/08/13/deepseek-harness-hands-on/" /><link rel="next" href="https://whitefirer.org/posts/2026/08/16/dsh-plugin-browser-fs/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta property="og:title" content="DeepSeek Harness 全拆解：30 小时逼近 10 万 star 的 Agent 运行时，特别在哪 - 赛博闲谭-whitefirer" />
 <meta property="og:description" content="DeepSeek 开源 dsh，首日破 3 万 star、30 小时逼近 10 万。本文从决策记录与源码逐层拆解：一个引擎五个出口、Cordis 插件化地基、事件溯源会话模型、压缩阴影机制、四象限 RPC、landlock 沙箱、hooks 兼容层——以及它真正服务的对象：模型自己（为自进化铺路）。" />
@@ -30,7 +30,7 @@
             "@type": "WebPage",
             "@id": "https:\/\/whitefirer.org\/posts\/2026\/08\/14\/deepseek-harness-deep-dive\/"
         },"genre": "posts","keywords": "tech, ai, deepseek, harness, architecture, event-sourcing, plugin","wordcount":  16612 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/14\/deepseek-harness-deep-dive\/","datePublished": "2026-08-14T07:31:12+08:00","dateModified": "2026-08-15T02:50:17+08:00","license": "2022©️whitefirer","publisher": {
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/14\/deepseek-harness-deep-dive\/","datePublished": "2026-08-14T07:31:12+08:00","dateModified": "2026-08-16T04:12:24+08:00","license": "2022©️whitefirer","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -48,7 +48,7 @@
         <div class="menu">
             <div class="menu-inner"><a class="menu-item" href="/series/ai-zatan/"> AI 杂谈 </a><div class="menu-item has-dropdown">
                             <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
-                            <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a><a class="dropdown-item" href="/series/harness-engineering/"> Harness Engineering </a></div>
+                            <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a><a class="dropdown-item" href="/series/harness-engineering/"> Harness Engineering </a><a class="dropdown-item" href="/series/deepseek-harness/"> DeepSeek Harness </a></div>
                         </div><a class="menu-item" href="/series/%e5%9f%ba%e7%a1%80%e6%9e%b6%e6%9e%84/"> 基础架构 </a><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
@@ -113,7 +113,7 @@
                     </a>
                 </div><a class="menu-item" href="/series/ai-zatan/" title="">AI 杂谈</a><div class="menu-item has-dropdown">
                         <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
-                        <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a><a class="dropdown-item" href="/series/harness-engineering/"> Harness Engineering </a></div>
+                        <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a><a class="dropdown-item" href="/series/harness-engineering/"> Harness Engineering </a><a class="dropdown-item" href="/series/deepseek-harness/"> DeepSeek Harness </a></div>
                     </div><a class="menu-item" href="/series/%e5%9f%ba%e7%a1%80%e6%9e%b6%e6%9e%84/" title="">基础架构</a><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
                 <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
             </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
@@ -132,7 +132,9 @@
             <div class="toc-content" id="toc-content-auto"></div>
         </div><div id="reading-progress"></div>
     <article class="page single"><div style="display:flex;align-items:baseline;gap:0">
-        <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">DeepSeek Harness 全拆解：30 小时逼近 10 万 star 的 Agent 运行时，特别在哪</h1></div><h2 class="single-subtitle">一个 219 包插件化架构的完整解剖——服务对象是模型自己，为自进化铺路</h2><div class="post-meta">
+        <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">DeepSeek Harness 全拆解：30 小时逼近 10 万 star 的 Agent 运行时，特别在哪</h1></div><h2 class="single-subtitle">一个 219 包插件化架构的完整解剖——服务对象是模型自己，为自进化铺路</h2><div class="post-series">
+                <a href="/series/deepseek-harness/"><i class="fas fa-layer-group fa-fw" aria-hidden="true"></i>DeepSeek Harness</a>
+            </div><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
             <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-14">2026-08-14</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 16612 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 34 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive.svg" alt="" aria-hidden="true" loading="eager"
@@ -848,12 +850,14 @@
 </div><p>配置与数据默认在 <code>$DSH_HOME</code>（未设置时为 <code>~/.dsh</code>）：模型凭据、profile 补丁层、会话日志都在这里。注意：npm 发布版（rc.6）比仓库 master（rc.5）略新，以 npm 为准。</p>
 <p>相关链接：<a href="https://github.com/deepseek-ai/deepseek-harness" target="_blank" rel="noopener noreffer ">GitHub 仓库</a> · <a href="https://www.deepseek.com/harness/" target="_blank" rel="noopener noreffer ">官方站点</a>（含四种预设模式说明：标准 / PTC / 极简 / 创造）· <a href="https://github.com/cordiverse/paper" target="_blank" rel="noopener noreffer ">Cordis 设计论文</a>。</p>
 <p>最后重复一遍文首的提醒：它开源首日破 3 万 star 说明关注度极高，但关注度不等于稳定性。对一个 rc.5 的预览版，最合理的态度是：<strong>值得吸收的机制大胆吸收，需要兑现的承诺谨慎等待，下个版本见。</strong></p>
-</div><div class="post-footer" id="post-footer">
+<div class="post-series-nav">
+                <em>本文是「<a href="/series/deepseek-harness/">DeepSeek Harness</a>」系列第 2 篇，共 3 篇。上一篇：<a href="/posts/2026/08/13/deepseek-harness-hands-on/">DeepSeek Harness 实测：开源当晚破 3 万 star 的 Agent 运行时</a>。下一篇：<a href="/posts/2026/08/16/dsh-plugin-browser-fs/">给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件</a>。</em>
+            </div></div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2026-08-15&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/e1c6d2d03ad2adae5870681fb91164cbfd51a0f7" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) e1c6d2d03ad2adae5870681fb91164cbfd51a0f7: docs: 深度文标题改 30 小时逼近 10 万 star">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>e1c6d2d</a></span>
+                <span>更新于 2026-08-16&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/2f0a6c2c4b3e195ccc27edcb8abfbcb9ee26be1d" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) 2f0a6c2c4b3e195ccc27edcb8abfbcb9ee26be1d: feat: 发布《给 DeepSeek Harness 写插件》——导航加系列入口；lan-access/之三/论文解读保持草稿，hugo2wechat 压回草稿">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>2f0a6c2</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
@@ -878,7 +882,8 @@
         </section>
     </div>
 
-    <div class="post-nav"><a href="/posts/2026/08/13/deepseek-harness-hands-on/" class="prev" rel="prev" title="DeepSeek Harness 实测：开源当晚破 3 万 star 的 Agent 运行时"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>DeepSeek Harness 实测：开源当晚破 3 万 star 的 Agent 运行时</a></div>
+    <div class="post-nav"><a href="/posts/2026/08/13/deepseek-harness-hands-on/" class="prev" rel="prev" title="DeepSeek Harness 实测：开源当晚破 3 万 star 的 Agent 运行时"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>DeepSeek Harness 实测：开源当晚破 3 万 star 的 Agent 运行时</a>
+            <a href="/posts/2026/08/16/dsh-plugin-browser-fs/" class="next" rel="next" title="给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件">给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 
 </div>
 <div id="comments"><div id="waline" class="comment"></div><noscript>

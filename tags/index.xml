@@ -4,12 +4,52 @@
         <link>https://whitefirer.org/tags/</link>
         <description>Tags - 标签 - 赛博闲谭-whitefirer</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Fri, 14 Aug 2026 07:31:12 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sun, 16 Aug 2026 04:11:39 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/" rel="self" type="application/rss+xml" /><item>
     <title>Ai</title>
     <link>https://whitefirer.org/tags/ai/</link>
-    <pubDate>Fri, 14 Aug 2026 07:31:12 &#43;0800</pubDate>
+    <pubDate>Sun, 16 Aug 2026 04:11:39 &#43;0800</pubDate>
     <author>whitefirer</author>
     <guid>https://whitefirer.org/tags/ai/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Deepseek</title>
+    <link>https://whitefirer.org/tags/deepseek/</link>
+    <pubDate>Sun, 16 Aug 2026 04:11:39 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/deepseek/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>File-System-Access</title>
+    <link>https://whitefirer.org/tags/file-system-access/</link>
+    <pubDate>Sun, 16 Aug 2026 04:11:39 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/file-system-access/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Harness</title>
+    <link>https://whitefirer.org/tags/harness/</link>
+    <pubDate>Sun, 16 Aug 2026 04:11:39 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/harness/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Plugin</title>
+    <link>https://whitefirer.org/tags/plugin/</link>
+    <pubDate>Sun, 16 Aug 2026 04:11:39 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/plugin/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Tutorial</title>
+    <link>https://whitefirer.org/tags/tutorial/</link>
+    <pubDate>Sun, 16 Aug 2026 04:11:39 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/tutorial/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
@@ -21,35 +61,11 @@
     <description><![CDATA[]]></description>
 </item>
 <item>
-    <title>Deepseek</title>
-    <link>https://whitefirer.org/tags/deepseek/</link>
-    <pubDate>Fri, 14 Aug 2026 07:31:12 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/deepseek/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
     <title>Event-Sourcing</title>
     <link>https://whitefirer.org/tags/event-sourcing/</link>
     <pubDate>Fri, 14 Aug 2026 07:31:12 &#43;0800</pubDate>
     <author>whitefirer</author>
     <guid>https://whitefirer.org/tags/event-sourcing/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Harness</title>
-    <link>https://whitefirer.org/tags/harness/</link>
-    <pubDate>Fri, 14 Aug 2026 07:31:12 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/harness/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Plugin</title>
-    <link>https://whitefirer.org/tags/plugin/</link>
-    <pubDate>Fri, 14 Aug 2026 07:31:12 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/plugin/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
@@ -66,22 +82,6 @@
     <pubDate>Sun, 19 Jul 2026 04:30:00 &#43;0800</pubDate>
     <author>whitefirer</author>
     <guid>https://whitefirer.org/tags/claude-code/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Harness Engineering</title>
-    <link>https://whitefirer.org/tags/harness-engineering/</link>
-    <pubDate>Sun, 19 Jul 2026 04:30:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/harness-engineering/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Sandbox</title>
-    <link>https://whitefirer.org/tags/sandbox/</link>
-    <pubDate>Sun, 19 Jul 2026 04:30:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/sandbox/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>
