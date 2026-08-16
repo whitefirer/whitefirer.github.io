@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Web - 标签 - 赛博闲谭-whitefirer</title>
+        <link>https://whitefirer.org/tags/web/</link>
+        <description>Web - 标签 - 赛博闲谭-whitefirer</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sun, 16 Aug 2026 12:47:26 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/web/" rel="self" type="application/rss+xml" /><item>
+    <title>把 DeepSeek Harness 开放到局域网：手机访问的几个坑与解法清单</title>
+    <link>https://whitefirer.org/posts/2026/08/16/dsh-lan-access/</link>
+    <pubDate>Sun, 16 Aug 2026 12:47:26 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/08/16/dsh-lan-access/</guid>
+    <description><![CDATA[一、目标：让手机也能用局域网里的 dsh DeepSeek Harness（dsh）的 web UI 默认绑 127.0.0.1，官方态度很明确：「--host 0.0.0.0 在远程访问具备鉴]]></description>
+</item>
+</channel>
+</rss>

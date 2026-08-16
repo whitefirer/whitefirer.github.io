@@ -4,7 +4,55 @@
         <link>https://whitefirer.org/tags/</link>
         <description>Tags - 标签 - 赛博闲谭-whitefirer</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sat, 15 Aug 2026 23:14:52 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sun, 16 Aug 2026 12:47:26 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/" rel="self" type="application/rss+xml" /><item>
+    <title>Debugging</title>
+    <link>https://whitefirer.org/tags/debugging/</link>
+    <pubDate>Sun, 16 Aug 2026 12:47:26 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/debugging/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Deepseek-Harness</title>
+    <link>https://whitefirer.org/tags/deepseek-harness/</link>
+    <pubDate>Sun, 16 Aug 2026 12:47:26 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/deepseek-harness/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Go</title>
+    <link>https://whitefirer.org/tags/go/</link>
+    <pubDate>Sun, 16 Aug 2026 12:47:26 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/go/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Reverse-Proxy</title>
+    <link>https://whitefirer.org/tags/reverse-proxy/</link>
+    <pubDate>Sun, 16 Aug 2026 12:47:26 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/reverse-proxy/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Secure-Context</title>
+    <link>https://whitefirer.org/tags/secure-context/</link>
+    <pubDate>Sun, 16 Aug 2026 12:47:26 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/secure-context/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Web</title>
+    <link>https://whitefirer.org/tags/web/</link>
+    <pubDate>Sun, 16 Aug 2026 12:47:26 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/web/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>Ai</title>
     <link>https://whitefirer.org/tags/ai/</link>
     <pubDate>Sat, 15 Aug 2026 23:14:52 &#43;0800</pubDate>
@@ -34,54 +82,6 @@
     <pubDate>Sat, 15 Aug 2026 23:14:52 &#43;0800</pubDate>
     <author>whitefirer</author>
     <guid>https://whitefirer.org/tags/harness/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Plugin</title>
-    <link>https://whitefirer.org/tags/plugin/</link>
-    <pubDate>Sat, 15 Aug 2026 23:14:52 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/plugin/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Tutorial</title>
-    <link>https://whitefirer.org/tags/tutorial/</link>
-    <pubDate>Sat, 15 Aug 2026 23:14:52 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/tutorial/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Architecture</title>
-    <link>https://whitefirer.org/tags/architecture/</link>
-    <pubDate>Fri, 14 Aug 2026 07:31:12 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/architecture/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Event-Sourcing</title>
-    <link>https://whitefirer.org/tags/event-sourcing/</link>
-    <pubDate>Fri, 14 Aug 2026 07:31:12 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/event-sourcing/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Agent</title>
-    <link>https://whitefirer.org/tags/agent/</link>
-    <pubDate>Thu, 13 Aug 2026 23:51:33 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/agent/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Claude Code</title>
-    <link>https://whitefirer.org/tags/claude-code/</link>
-    <pubDate>Sun, 19 Jul 2026 04:30:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/claude-code/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>

@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="赛博闲谭-whitefirer"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-        <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/08/15/dsh-plugin-browser-fs/" /><link rel="prev" href="https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/08/15/dsh-plugin-browser-fs/" /><link rel="prev" href="https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/" /><link rel="next" href="https://whitefirer.org/posts/2026/08/16/dsh-lan-access/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta property="og:title" content="给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件 - 赛博闲谭-whitefirer" />
 <meta property="og:description" content="dsh 开源几天插件目录站收录已破千，但所有插件读的都是 dsh 宿主机的文件——远程部署时 Agent 摸不到你这台电脑。本文从零写一个真实可用的插件 dsh-browser-fs：浏览器授权一个本地目录，Agent 就能 list/read/write。过程中把 dsh 插件系统拆给你看：Cordis 生命周期、host/client 双面结构、工具注册、WS 中继、创造模式是什么，以及 secure context 等四个坑。" />
@@ -419,7 +419,7 @@
 <li>插件目录站：awesome-dsh-plugin / Oh-My-DSH / dsh-plugin-directory（投稿入口都在）</li>
 </ul>
 <div class="post-series-nav">
-                <em>本文是「<a href="/series/deepseek-harness/">DeepSeek Harness</a>」系列第 3 篇，共 3 篇。上一篇：<a href="/posts/2026/08/14/deepseek-harness-deep-dive/">DeepSeek Harness 全拆解：30 小时逼近 10 万 star 的 Agent 运行时，特别在哪</a>。</em>
+                <em>本文是「<a href="/series/deepseek-harness/">DeepSeek Harness</a>」系列第 3 篇，共 4 篇。上一篇：<a href="/posts/2026/08/14/deepseek-harness-deep-dive/">DeepSeek Harness 全拆解：30 小时逼近 10 万 star 的 Agent 运行时，特别在哪</a>。下一篇：<a href="/posts/2026/08/16/dsh-lan-access/">把 DeepSeek Harness 开放到局域网：手机访问的几个坑与解法清单</a>。</em>
             </div></div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
@@ -450,7 +450,8 @@
         </section>
     </div>
 
-    <div class="post-nav"><a href="/posts/2026/08/14/deepseek-harness-deep-dive/" class="prev" rel="prev" title="DeepSeek Harness 全拆解：30 小时逼近 10 万 star 的 Agent 运行时，特别在哪"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>DeepSeek Harness 全拆解：30 小时逼近 10 万 star 的 Agent 运行时，特别在哪</a></div>
+    <div class="post-nav"><a href="/posts/2026/08/14/deepseek-harness-deep-dive/" class="prev" rel="prev" title="DeepSeek Harness 全拆解：30 小时逼近 10 万 star 的 Agent 运行时，特别在哪"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>DeepSeek Harness 全拆解：30 小时逼近 10 万 star 的 Agent 运行时，特别在哪</a>
+            <a href="/posts/2026/08/16/dsh-lan-access/" class="next" rel="next" title="把 DeepSeek Harness 开放到局域网：手机访问的几个坑与解法清单">把 DeepSeek Harness 开放到局域网：手机访问的几个坑与解法清单<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 
 </div>
 <div id="comments"><div id="waline" class="comment"></div><noscript>

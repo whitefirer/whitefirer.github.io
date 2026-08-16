@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>把 DeepSeek Harness 开放到局域网：手机访问的几个坑与解法清单 - 赛博闲谭-whitefirer</title><meta name="Description" content="把 DeepSeek Harness 用带鉴权的反向代理挂进内网后，PC 一切正常，手机却接连踩坑：先是 crypto.randomUUID is not a function 直接白屏，后是文件授权按钮失效。两坑同根——安全上下文规范把现代 Web API 分成「可 polyfill」和「权限门控」两类。本文记录排查过程、反代层注入 polyfill 的实现（含一个 Accept-Encoding 的坑）、应用层降级方案，以及一份局域网访问解法清单。">
+
+<meta name="application-name" content="赛博闲谭-whitefirer">
+<meta name="apple-mobile-web-app-title" content="赛博闲谭-whitefirer"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/08/16/dsh-lan-access/" /><link rel="prev" href="https://whitefirer.org/posts/2026/08/15/dsh-plugin-browser-fs/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta property="og:title" content="把 DeepSeek Harness 开放到局域网：手机访问的几个坑与解法清单 - 赛博闲谭-whitefirer" />
+<meta property="og:description" content="把 DeepSeek Harness 用带鉴权的反向代理挂进内网后，PC 一切正常，手机却接连踩坑：先是 crypto.randomUUID is not a function 直接白屏，后是文件授权按钮失效。两坑同根——安全上下文规范把现代 Web API 分成「可 polyfill」和「权限门控」两类。本文记录排查过程、反代层注入 polyfill 的实现（含一个 Accept-Encoding 的坑）、应用层降级方案，以及一份局域网访问解法清单。" />
+<meta property="og:image" content="https://whitefirer.org/og-default.png" />
+<meta property="og:url" content="https://whitefirer.org/posts/2026/08/16/dsh-lan-access/" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="赛博闲谭-whitefirer" /><meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="把 DeepSeek Harness 开放到局域网：手机访问的几个坑与解法清单 - 赛博闲谭-whitefirer" />
+<meta name="twitter:description" content="把 DeepSeek Harness 用带鉴权的反向代理挂进内网后，PC 一切正常，手机却接连踩坑：先是 crypto.randomUUID is not a function 直接白屏，后是文件授权按钮失效。两坑同根——安全上下文规范把现代 Web API 分成「可 polyfill」和「权限门控」两类。本文记录排查过程、反代层注入 polyfill 的实现（含一个 Accept-Encoding 的坑）、应用层降级方案，以及一份局域网访问解法清单。" />
+<meta name="twitter:image" content="https://whitefirer.org/og-default.png" /><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "把 DeepSeek Harness 开放到局域网：手机访问的几个坑与解法清单",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/whitefirer.org\/posts\/2026\/08\/16\/dsh-lan-access\/"
+        },"genre": "posts","keywords": "tech, web, secure-context, reverse-proxy, go, deepseek-harness, debugging","wordcount":  4775 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/16\/dsh-lan-access\/","datePublished": "2026-08-16T12:47:26+08:00","dateModified": "2026-08-16T16:29:45+08:00","license": "2022©️whitefirer","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "whitefirer"
+            },"description": "把 DeepSeek Harness 用带鉴权的反向代理挂进内网后，PC 一切正常，手机却接连踩坑：先是 crypto.randomUUID is not a function 直接白屏，后是文件授权按钮失效。两坑同根——安全上下文规范把现代 Web API 分成「可 polyfill」和「权限门控」两类。本文记录排查过程、反代层注入 polyfill 的实现（含一个 Accept-Encoding 的坑）、应用层降级方案，以及一份局域网访问解法清单。"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="赛博闲谭-whitefirer">赛博闲谭-whitefirer</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/series/ai-zatan/"> AI 杂谈 </a><div class="menu-item has-dropdown">
+                            <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                            <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a><a class="dropdown-item" href="/series/harness-engineering/"> Harness Engineering </a><a class="dropdown-item" href="/series/deepseek-harness/"> DeepSeek Harness </a></div>
+                        </div><a class="menu-item" href="/series/%e5%9f%ba%e7%a1%80%e6%9e%b6%e6%9e%84/"> 基础架构 </a><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/2026/08/16/dsh-lan-access/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header>
+<script>
+(function() {
+    document.querySelectorAll('.has-dropdown .dropdown-toggle').forEach(function(toggle) {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var parent = this.closest('.has-dropdown');
+            parent.classList.toggle('open');
+        });
+    });
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.has-dropdown.open').forEach(function(d) {
+            d.classList.remove('open');
+        });
+    });
+})();
+</script><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="赛博闲谭-whitefirer">赛博闲谭-whitefirer</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/series/ai-zatan/" title="">AI 杂谈</a><div class="menu-item has-dropdown">
+                        <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                        <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a><a class="dropdown-item" href="/series/harness-engineering/"> Harness Engineering </a><a class="dropdown-item" href="/series/deepseek-harness/"> DeepSeek Harness </a></div>
+                    </div><a class="menu-item" href="/series/%e5%9f%ba%e7%a1%80%e6%9e%b6%e6%9e%84/" title="">基础架构</a><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/posts/2026/08/16/dsh-lan-access/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><div id="reading-progress"></div>
+    <article class="page single"><div style="display:flex;align-items:baseline;gap:0">
+        <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">把 DeepSeek Harness 开放到局域网：手机访问的几个坑与解法清单</h1></div><h2 class="single-subtitle">官方还没放开 --host 0.0.0.0，用反代自己挂是主流过渡方案；但手机一打开就白屏、授权按钮失效——根因都指向同一份规范：安全上下文（Secure Contexts）</h2><div class="post-series">
+                <a href="/series/deepseek-harness/"><i class="fas fa-layer-group fa-fw" aria-hidden="true"></i>DeepSeek Harness</a>
+            </div><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-16">2026-08-16</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 4775 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 10 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/08/16/dsh-lan-access.svg" alt="" aria-hidden="true" loading="eager"
+     style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none"></div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#一目标让手机也能用局域网里的-dsh">一、目标：让手机也能用局域网里的 dsh</a></li>
+    <li><a href="#二根因安全上下文把-web-api-分成了两类">二、根因：安全上下文把 Web API 分成了两类</a></li>
+    <li><a href="#三坑一的修复在反代层注入-polyfill">三、坑一的修复：在反代层注入 polyfill</a>
+      <ul>
+        <li><a href="#一个顺手的坑accept-encoding-删不掉">一个顺手的坑：Accept-Encoding 删不掉</a></li>
+      </ul>
+    </li>
+    <li><a href="#四坑二授权按钮失效不是所有-api-都能-polyfill">四、坑二：授权按钮失效——不是所有 API 都能 polyfill</a></li>
+    <li><a href="#五不只我一个人踩到">五、不只我一个人踩到</a></li>
+    <li><a href="#六解法清单局域网手机访问内网服务">六、解法清单：局域网/手机访问内网服务</a></li>
+    <li><a href="#七附一个-python-最小实现单文件带鉴权">七、附：一个 Python 最小实现（单文件，带鉴权）</a>
+      <ul>
+        <li><a href="#插曲域名访问触发-dsh-的-dns-rebinding-防御">插曲：域名访问触发 dsh 的 DNS-rebinding 防御</a></li>
+      </ul>
+    </li>
+    <li><a href="#八收尾">八、收尾</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="一目标让手机也能用局域网里的-dsh">一、目标：让手机也能用局域网里的 dsh</h2>
+<p>DeepSeek Harness（dsh）的 web UI 默认绑 <code>127.0.0.1</code>，官方态度很明确：「<code>--host 0.0.0.0</code> 在远程访问具备鉴权层之前不予支持」。想从手机、平板访问，主流过渡方案是：<strong>dsh 继续绑本地，前面架一个带鉴权的反向代理</strong>（我挂在了自用的 agent 工作台 cenacle 里），局域网设备经代理访问。</p>
+<p>PC 上一切正常。换成手机打开 <code>http://192.168.0.102:9101</code>，接连踩了两个坑：</p>
+<ol>
+<li>首页能出来，一点「打开工作区」就白屏报错：<code>crypto.randomUUID is not a function</code></li>
+<li>修完白屏后，我自己写的 dsh 插件（browser-fs，让 agent 直接读你当前设备上的文件）在手机上点「授权目录」又失效：<code>showDirectoryPicker</code> 根本不存在</li>
+</ol>
+<p>两个坑症状不同，根因是同一个：<strong>安全上下文（Secure Contexts）规范</strong>。</p>
+<h2 id="二根因安全上下文把-web-api-分成了两类">二、根因：安全上下文把 Web API 分成了两类</h2>
+<p>规范里「安全上下文」大致是：<code>https://</code> 页面、<code>localhost</code>/<code>127.0.0.1</code>（被特殊豁免）、<code>file://</code>。而 <code>http://192.168.0.102</code> 这种<strong>局域网 IP + 明文 HTTP</strong>，不算。</p>
+<p>PC 上为什么没踩到？因为我习惯用 <code>http://localhost:9101</code> 访问——localhost 被豁免了。手机没有 localhost 可言，只能用局域网 IP，立刻现形。</p>
+<p>关键认知是：受安全上下文限制的 API 其实分两类，命运完全不同——</p>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>例子</th>
+<th>非安全上下文下的表现</th>
+<th>能否补救</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>纯函数/数据类</td>
+<td><code>crypto.randomUUID</code>、<code>crypto.subtle</code></td>
+<td>函数不存在</td>
+<td><strong>可以 polyfill</strong>（有 <code>crypto.getRandomValues</code> 这个豁免原语兜底）</td>
+</tr>
+<tr>
+<td>权限/对话框门控类</td>
+<td><code>showDirectoryPicker</code>（File System Access）、<code>getUserMedia</code>、Clipboard 读写、<code>Notification</code>、Service Worker</td>
+<td>整个 API 对象不存在</td>
+<td><strong>补不出来</strong>，只能降级或上 HTTPS</td>
+</tr>
+</tbody>
+</table>
+<p>任何用了这些 API 的现代前端（Vite/React 生态里 UUID 库遍地都是），在「局域网 HTTP」场景下都是直接崩给你看，而不是温柔降级。</p>
+<h2 id="三坑一的修复在反代层注入-polyfill">三、坑一的修复：在反代层注入 polyfill</h2>
+<p>三条路权衡：</p>
+<p><strong>1. 给服务上 HTTPS。</strong> 治本，但局域网场景代价不小：自签证书要在每台手机装根证书，或者搞内网域名 + DNS-01 签真证书。对「我自己在家用」属于杀鸡用牛刀（完整方案对比见第六节清单）。</p>
+<p><strong>2. 改上游代码，去掉 randomUUID 依赖。</strong> 不现实——这次是 dsh，下次是 code-server、别的什么工具，每个都打补丁没法维护，升级还丢。</p>
+<p><strong>3. 在反向代理层注入 polyfill。</strong> 代理本来就过手所有响应，给 HTML 统一注入一小段 <code>crypto.randomUUID</code> 的兼容实现即可。一次投入，所有挂载的工具受益，上游零改动。</p>
+<p>我选了 3。代理本体是 <code>net/http/httputil.ReverseProxy</code>，关键在 <code>ModifyResponse</code> 钩子：只处理 <code>text/html</code>，把 polyfill 脚本插到 <code>&lt;head&gt;</code> 之后（要保证它在页面任何业务脚本之前执行）：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">ModifyResponse</span><span class="p">:</span> <span class="kd">func</span><span class="p">(</span><span class="nx">resp</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Response</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">!</span><span class="nx">strings</span><span class="p">.</span><span class="nf">Contains</span><span class="p">(</span><span class="nx">strings</span><span class="p">.</span><span class="nf">ToLower</span><span class="p">(</span><span class="nx">resp</span><span class="p">.</span><span class="nx">Header</span><span class="p">.</span><span class="nf">Get</span><span class="p">(</span><span class="s">&#34;Content-Type&#34;</span><span class="p">)),</span> <span class="s">&#34;text/html&#34;</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">body</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">io</span><span class="p">.</span><span class="nf">ReadAll</span><span class="p">(</span><span class="nx">io</span><span class="p">.</span><span class="nf">LimitReader</span><span class="p">(</span><span class="nx">resp</span><span class="p">.</span><span class="nx">Body</span><span class="p">,</span> <span class="mi">32</span><span class="o">&lt;&lt;</span><span class="mi">20</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">resp</span><span class="p">.</span><span class="nx">Body</span><span class="p">.</span><span class="nf">Close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">err</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">loc</span> <span class="o">:=</span> <span class="nx">headRe</span><span class="p">.</span><span class="nf">FindIndex</span><span class="p">(</span><span class="nx">body</span><span class="p">);</span> <span class="nx">loc</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">body</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">body</span><span class="p">[:</span><span class="nx">loc</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="nb">append</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">polyfillSnippet</span><span class="p">),</span> <span class="nx">body</span><span class="p">[</span><span class="nx">loc</span><span class="p">[</span><span class="mi">1</span><span class="p">]:]</span><span class="o">...</span><span class="p">)</span><span class="o">...</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">body</span> <span class="p">=</span> <span class="nb">append</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">polyfillSnippet</span><span class="p">),</span> <span class="nx">body</span><span class="o">...</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">resp</span><span class="p">.</span><span class="nx">Body</span> <span class="p">=</span> <span class="nx">io</span><span class="p">.</span><span class="nf">NopCloser</span><span class="p">(</span><span class="nx">bytes</span><span class="p">.</span><span class="nf">NewReader</span><span class="p">(</span><span class="nx">body</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">resp</span><span class="p">.</span><span class="nx">ContentLength</span> <span class="p">=</span> <span class="nb">int64</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nx">body</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">resp</span><span class="p">.</span><span class="nx">Header</span><span class="p">.</span><span class="nf">Set</span><span class="p">(</span><span class="s">&#34;Content-Length&#34;</span><span class="p">,</span> <span class="nx">strconv</span><span class="p">.</span><span class="nf">Itoa</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nx">body</span><span class="p">)))</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">resp</span><span class="p">.</span><span class="nx">Header</span><span class="p">.</span><span class="nf">Del</span><span class="p">(</span><span class="s">&#34;ETag&#34;</span><span class="p">)</span> <span class="c1">// 内容已变，旧摘要作废
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl"><span class="p">},</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>注意两个细节：改了 body 就要同步 <code>Content-Length</code>；<code>ETag</code> 必须摘掉，否则缓存校验会拿旧摘要说事。</p>
+<p>polyfill 本体用 <code>crypto.getRandomValues</code> 实现（它<strong>不受</strong>安全上下文限制，这才是整个方案成立的关键），再老的浏览器退 <code>Math.random</code>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">crypto</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">crypto</span><span class="p">.</span><span class="nx">randomUUID</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">var</span> <span class="nx">grv</span> <span class="o">=</span> <span class="nx">crypto</span><span class="p">.</span><span class="nx">getRandomValues</span> <span class="o">?</span> <span class="nx">crypto</span><span class="p">.</span><span class="nx">getRandomValues</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="nx">crypto</span><span class="p">)</span> <span class="o">:</span> <span class="kc">null</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">crypto</span><span class="p">.</span><span class="nx">randomUUID</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="nx">grv</span> <span class="o">?</span> <span class="nx">grv</span><span class="p">(</span><span class="k">new</span> <span class="nx">Uint8Array</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span> <span class="o">:</span> <span class="kc">null</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">b</span><span class="p">)</span> <span class="p">{</span> <span class="nx">b</span> <span class="o">=</span> <span class="p">[];</span> <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">16</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="nx">b</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">256</span><span class="p">));</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">b</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="nx">b</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mi">15</span><span class="p">)</span> <span class="o">|</span> <span class="mi">64</span><span class="p">;</span>   <span class="c1">// version 4
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">b</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="nx">b</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mi">63</span><span class="p">)</span> <span class="o">|</span> <span class="mi">128</span><span class="p">;</span>  <span class="c1">// variant
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">var</span> <span class="nx">h</span> <span class="o">=</span> <span class="p">[];</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">16</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="nx">h</span><span class="p">.</span><span class="nx">push</span><span class="p">((</span><span class="nx">b</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">16</span> <span class="o">?</span> <span class="s2">&#34;0&#34;</span> <span class="o">:</span> <span class="s2">&#34;&#34;</span><span class="p">)</span> <span class="o">+</span> <span class="nx">b</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">toString</span><span class="p">(</span><span class="mi">16</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="nx">h</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="s2">&#34;&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">s</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span><span class="o">+</span><span class="s2">&#34;-&#34;</span><span class="o">+</span><span class="nx">s</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">12</span><span class="p">)</span><span class="o">+</span><span class="s2">&#34;-&#34;</span><span class="o">+</span><span class="nx">s</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">16</span><span class="p">)</span><span class="o">+</span><span class="s2">&#34;-&#34;</span><span class="o">+</span><span class="nx">s</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="mi">20</span><span class="p">)</span><span class="o">+</span><span class="s2">&#34;-&#34;</span><span class="o">+</span><span class="nx">s</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">20</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="一个顺手的坑accept-encoding-删不掉">一个顺手的坑：Accept-Encoding 删不掉</h3>
+<p>要改 body 就不能让上游返回压缩内容，直觉写法是在转发前删掉请求头：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">pr</span><span class="p">.</span><span class="nx">Out</span><span class="p">.</span><span class="nx">Header</span><span class="p">.</span><span class="nf">Del</span><span class="p">(</span><span class="s">&#34;Accept-Encoding&#34;</span><span class="p">)</span> <span class="c1">// 不够！
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>实测上游照样收到 <code>gzip</code>。原因是 Go 的 <code>http.Transport</code> 看到出站请求<strong>没有</strong> <code>Accept-Encoding</code> 时会自作主张补一个 <code>gzip</code>（它本想帮你自动解压）。正确写法是显式声明不接受压缩：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">pr</span><span class="p">.</span><span class="nx">Out</span><span class="p">.</span><span class="nx">Header</span><span class="p">.</span><span class="nf">Set</span><span class="p">(</span><span class="s">&#34;Accept-Encoding&#34;</span><span class="p">,</span> <span class="s">&#34;identity&#34;</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这个行为在文档里写着，但不踩一次很难记住。</p>
+<p>单测覆盖了注入位置（必须在 <code>&lt;head&gt;</code> 之后）、<code>Content-Length</code> 同步、非 HTML 内容原样透传、以及上面那个 <code>Accept-Encoding</code> 断言。上线后手机再开工作区，正常加载——坑一解决。</p>
+<h2 id="四坑二授权按钮失效不是所有-api-都能-polyfill">四、坑二：授权按钮失效——不是所有 API 都能 polyfill</h2>
+<p>白屏修好后，轮到我写的 browser-fs 插件出问题：它依赖 <code>window.showDirectoryPicker</code> 让用户授权一个本地目录给 agent 读写。这个 API 属于上表右列——<strong>整个对象在非安全上下文里根本不存在</strong>，polyfill 无米下锅。</p>
+<p>这类「权限门控」API 没有补丁可打，只有两条路：上 HTTPS，或者<strong>应用层降级</strong>。我给插件做了后者：</p>
+<ul>
+<li>启动时检测 <code>typeof window.showDirectoryPicker === 'function'</code>，检测不到自动进入「兼容模式」（不要看 <code>isSecureContext</code> 标志位——我的反代 polyfill 恰好动过它，会误判）</li>
+<li>兼容模式用 <code>&lt;input type=&quot;file&quot; webkitdirectory&gt;</code> 选目录——这个老 API <strong>不受</strong>安全上下文限制，手机浏览器普遍支持；但 iOS 上目录选择形同虚设（返回 0 个文件），所以授权区是「选择目录 / 选多个文件」<strong>双入口</strong>，选不到会给明确错误提示而不是静默</li>
+<li>选中后插件把文件列表整理成目录树，agent 照常列目录、读文件；文件预览（文本截断/图片 blob）两个模式同路径可用；降级体现在：<strong>只读</strong>（拿不到可写句柄，写操作返回明确错误）、<strong>页面刷新后需重选</strong>（没有句柄就没有 IndexedDB 持久化；目录树上的「↻」按钮在兼容模式下等价于重新选择目录）</li>
+<li>UI 上挂「兼容模式」徽标，并列出获得完整模式的三条途径（SSH 端口转发、Chrome flag、HTTPS）</li>
+</ul>
+<p>效果是手机上从「完全不可用」变成「能让 agent 读我手机上的文件」——对「把资料丢给 agent 处理」这个主场景够用了。</p>
+<h2 id="五不只我一个人踩到">五、不只我一个人踩到</h2>
+<p>这个坑有多普遍？dsh 开源不到 48 小时，社区里已经长出了一圈「曲线救国」的方案：</p>
+<ul>
+<li><code>dsh-lan</code> 插件：一条 overlay 把 dsh web 绑到局域网，同时注入 <code>crypto.randomUUID</code> polyfill——和本文第三节一模一样的思路，只是注入点从反代换成了 dsh 自己的 HTML 变换钩子；</li>
+<li><code>dsh-webui-auth</code> 插件：给核心包打补丁加会话闸门，还做了「升级后自动重打」的自救逻辑；</li>
+<li>Caddy basic-auth 一键包：密码保护 + systemd 常驻的运维向方案；</li>
+<li>还有直接做多用户网关的（登录门户 + 每用户实例隔离）。</li>
+</ul>
+<p>这些项目的 README 里几乎都能翻到同一句话的官方引用：「<code>--host 0.0.0.0</code> 在远程访问具备鉴权层之前不予支持」。大家都知道这些是过渡产物——但过渡期的需求是真实的，而过渡期里最先崩的那个报错，往往就是 <code>crypto.randomUUID</code>。</p>
+<h2 id="六解法清单局域网手机访问内网服务">六、解法清单：局域网/手机访问内网服务</h2>
+<table>
+<thead>
+<tr>
+<th>方案</th>
+<th>能解决什么</th>
+<th>代价</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SSH 端口转发 <code>ssh -L 9101:127.0.0.1:9101 user@host</code></td>
+<td>全部（localhost 豁免生效）</td>
+<td>每台设备一条隧道；手机要用 Termius/Termux 类 App，体验差</td>
+<td>桌面调试</td>
+</tr>
+<tr>
+<td>Chrome <code>chrome://flags/#unsafely-treat-insecure-origin-as-secure</code></td>
+<td>全部（把指定源标记为安全）</td>
+<td>逐浏览器设置；微信内置浏览器没门</td>
+<td>安卓 Chrome 自用</td>
+</tr>
+<tr>
+<td>反代注入 polyfill</td>
+<td>「可补」类 API（randomUUID 等）</td>
+<td>一次性实现，注意 Accept-Encoding</td>
+<td>内网统一挂载多个工具</td>
+</tr>
+<tr>
+<td>应用层降级</td>
+<td>「权限门控」类 API</td>
+<td>功能阉割（如只读）</td>
+<td>自己写的组件/插件</td>
+</tr>
+<tr>
+<td>裸 VPN（WireGuard / ZeroTier）</td>
+<td><strong>不能解决</strong>——隧道加密≠安全上下文，浏览器只看 URL 的 scheme+host，<code>http://10.x.x.x</code> 走 VPN 依然白屏</td>
+<td>——</td>
+<td>只解决「连得上」，不解决「跑得起」</td>
+</tr>
+<tr>
+<td>Tailscale Serve / Cloudflare Tunnel</td>
+<td>全部（自动签真证书的 HTTPS 域名）</td>
+<td>依赖第三方服务，流量路径出局域网</td>
+<td>没域名也想零配置真 HTTPS</td>
+</tr>
+<tr>
+<td>HTTPS 自签 + 点过警告</td>
+<td>全部（<code>isSecureContext</code> 只看 scheme 不看证书有效性，点过去就是安全上下文）</td>
+<td>每个浏览器点一次警告；微信内置浏览器更烦</td>
+<td>临时自用</td>
+</tr>
+<tr>
+<td>HTTPS + mkcert 根证书</td>
+<td>全部，且无警告</td>
+<td>每台设备装一次根 CA（iOS 要装描述文件并手动开信任）</td>
+<td>固定几台设备自用</td>
+</tr>
+<tr>
+<td>HTTPS + 域名 + DNS-01 真证书</td>
+<td>全部，治本，且手机零配置</td>
+<td>要有个域名，DNS 服务商配 API</td>
+<td>多人共用、长期运行</td>
+</tr>
+</tbody>
+</table>
+<p>一个常见误解要特别说明：<strong>VPN 本身不改变安全上下文</strong>。WireGuard/ZeroTier 把流量加密送到对端，但浏览器看到的 URL 还是 <code>http://内网 IP</code>——它不知道也不关心底层链路加密了没有。能解决问题的是 Tailscale Serve、Cloudflare Tunnel 这类「VPN/隧道工具附带的 HTTPS 能力」：它们给你的是带真证书的 <code>https://</code> 域名，这才算数。</p>
+<p>另一个常被问到的是<strong>手机改 hosts</strong>：Android 改 <code>/etc/hosts</code> 要 root，iOS 要越狱；无 root 的等价物是 Hosts Go、DNS66 这类「本地 VPN 型」App（代价是常驻一个 VPN 槽位），或者干脆不改手机——在路由器/PC 上跑 dnsmasq、AdGuard Home 当局域网 DNS。但 hosts/DNS 只解决「域名到 IP 的映射」，不解决安全上下文，它始终是真证书方案的配角。实际上多数时候连它都不需要：把域名的<strong>公网 A 记录直接指向内网 IP</strong>（如 <code>192.168.0.102</code>）即可——DNS-01 签证书只验证域名控制权、不要求公网可访问，手机拿到域名后走局域网直连，零配置无警告。唯一的坑是部分路由器默认开启「DNS 重绑定保护」会拦截这种解析，关掉或加白名单即可。</p>
+<p>实战建议组合用：反代 polyfill 打底（覆盖工具类 API），自己写的组件做降级（兜住权限类 API），真要给多人长期用再上 HTTPS。</p>
+<h2 id="七附一个-python-最小实现单文件带鉴权">七、附：一个 Python 最小实现（单文件，带鉴权）</h2>
+<p>不想搭工作台的话，「HTTPS 反代 + 简单鉴权」一个 Python 脚本就够（完整版在 cenacle 仓库 <code>tests/debug/https_proxy.py</code>，约 150 行）。四个要点：</p>
+<ul>
+<li><strong>用 aiohttp 而不是标准库</strong>——WebSocket 必须透传（dsh 的终端流走 WS，不透传就是哑终端），标准库手写帧转发不值得；</li>
+<li>普通请求整源透传（零改写、流式回传），剥 hop-by-hop 头；</li>
+<li>Basic Auth：401 + <code>WWW-Authenticate</code> 头，浏览器自带弹窗，演示/自用足够；</li>
+<li>443 对外 HTTPS，80 只做 301 跳转；&lt;1024 端口要 root 或 <code>cap_net_bind_service</code>，调试期用 8443/8080 也一样。</li>
+</ul>
+<p>核心代码：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">HOP</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;connection&#34;</span><span class="p">,</span> <span class="s2">&#34;keep-alive&#34;</span><span class="p">,</span> <span class="s2">&#34;te&#34;</span><span class="p">,</span> <span class="s2">&#34;trailers&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">       <span class="s2">&#34;transfer-encoding&#34;</span><span class="p">,</span> <span class="s2">&#34;upgrade&#34;</span><span class="p">}</span>  <span class="c1"># hop-by-hop 头必须剥掉</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">check_auth</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">pwd</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">h</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;Authorization&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">h</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&#34;Basic &#34;</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="n">u</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="mi">6</span><span class="p">:])</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">&#34;:&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">u</span> <span class="o">==</span> <span class="n">user</span> <span class="ow">and</span> <span class="n">p</span> <span class="o">==</span> <span class="n">pwd</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="kc">False</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">async</span> <span class="k">def</span> <span class="nf">proxy_http</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">upstream</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sess</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">app</span><span class="p">[</span><span class="s2">&#34;sess&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">req</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">HOP</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">async</span> <span class="k">with</span> <span class="n">sess</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">method</span><span class="p">,</span> <span class="n">upstream</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">rel_url</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="k">await</span> <span class="n">req</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">as</span> <span class="n">up</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">out</span> <span class="o">=</span> <span class="n">web</span><span class="o">.</span><span class="n">StreamResponse</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">up</span><span class="o">.</span><span class="n">status</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">up</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">HOP</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                <span class="n">out</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+</span></span><span class="line"><span class="cl">        <span class="k">await</span> <span class="n">out</span><span class="o">.</span><span class="n">prepare</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">async</span> <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">up</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">iter_any</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">            <span class="k">await</span> <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">await</span> <span class="n">out</span><span class="o">.</span><span class="n">write_eof</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">out</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">async</span> <span class="k">def</span> <span class="nf">proxy_ws</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">upstream</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ws_in</span> <span class="o">=</span> <span class="n">web</span><span class="o">.</span><span class="n">WebSocketResponse</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="k">await</span> <span class="n">ws_in</span><span class="o">.</span><span class="n">prepare</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">async</span> <span class="k">with</span> <span class="n">req</span><span class="o">.</span><span class="n">app</span><span class="p">[</span><span class="s2">&#34;sess&#34;</span><span class="p">]</span><span class="o">.</span><span class="n">ws_connect</span><span class="p">(</span><span class="n">upstream</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">rel_url</span><span class="p">))</span> <span class="k">as</span> <span class="n">ws_out</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">async</span> <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">            <span class="k">async</span> <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">src</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="n">msg</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">WSMsgType</span><span class="o">.</span><span class="n">TEXT</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">await</span> <span class="n">dst</span><span class="o">.</span><span class="n">send_str</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="k">elif</span> <span class="n">msg</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">WSMsgType</span><span class="o">.</span><span class="n">BINARY</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">await</span> <span class="n">dst</span><span class="o">.</span><span class="n">send_bytes</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">break</span>
+</span></span><span class="line"><span class="cl">        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait</span><span class="p">([</span><span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">forward</span><span class="p">(</span><span class="n">ws_in</span><span class="p">,</span> <span class="n">ws_out</span><span class="p">)),</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">forward</span><span class="p">(</span><span class="n">ws_out</span><span class="p">,</span> <span class="n">ws_in</span><span class="p">))],</span>
+</span></span><span class="line"><span class="cl">                           <span class="n">return_when</span><span class="o">=</span><span class="n">asyncio</span><span class="o">.</span><span class="n">FIRST_COMPLETED</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">ws_in</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>起服务：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">pip install aiohttp
+</span></span><span class="line"><span class="cl">sudo python3 https_proxy.py --https-port <span class="m">443</span> --http-port <span class="m">80</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --cert ~/.cenacle/tls/fullchain.pem --key ~/.cenacle/tls/privkey.pem
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>如果你的开发机和我一样是 <strong>WSL2</strong>（NAT 网络，Windows 宿主才有局域网 IP），WSL 里监听好还不够，要在 Windows 的管理员 PowerShell 里把 443 转发进 WSL 并放行防火墙：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c"># 先看 443 有没有被旧规则占用，有就删了再加</span>
+</span></span><span class="line"><span class="cl"><span class="n">netsh</span> <span class="n">interface</span> <span class="n">portproxy</span> <span class="n">show</span> <span class="n">all</span>
+</span></span><span class="line"><span class="cl"><span class="n">netsh</span> <span class="n">interface</span> <span class="n">portproxy</span> <span class="n">add</span> <span class="n">v4tov4</span> <span class="n">listenport</span><span class="p">=</span><span class="mf">443</span> <span class="n">listenaddress</span><span class="p">=</span><span class="mf">0.0</span><span class="p">.</span><span class="py">0</span><span class="p">.</span><span class="py">0</span> <span class="n">connectport</span><span class="p">=</span><span class="mf">443</span> <span class="n">connectaddress</span><span class="p">=</span><span class="n">localhost</span>
+</span></span><span class="line"><span class="cl"><span class="nb">New-NetFirewallRule</span> <span class="n">-DisplayName</span> <span class="s2">&#34;WSL2-HTTPS-443&#34;</span> <span class="n">-Direction</span> <span class="n">Inbound</span> <span class="n">-Protocol</span> <span class="n">TCP</span> <span class="n">-LocalPort</span> <span class="mf">443</span> <span class="n">-Action</span> <span class="n">Allow</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>（<code>connectaddress=localhost</code> 依赖 WSL 默认开启的 localhost 转发；不灵就换成 <code>ip addr</code> 里 WSL 的 eth0 地址，但它会随 WSL 重启变化。）</p>
+<p>curl 实测四连：无鉴权 <code>401</code>（带 <code>WWW-Authenticate</code> 触发浏览器弹窗）→ basic auth 后 <code>200</code> 拿到 dsh 页面 → <code>http://</code> 请求 301 跳 https → WS 升级 <code>101</code> 正常透传。手机打开 <code>https://cenacle.whitefirer.org</code>（点过自签警告）即是完整安全上下文。</p>
+<h3 id="插曲域名访问触发-dsh-的-dns-rebinding-防御">插曲：域名访问触发 dsh 的 DNS-rebinding 防御</h3>
+<p>页面能开不代表完事——一点「打开目录」就 403。对照实验（都是 <code>POST /api/host.listDirectory</code>）：</p>
+<table>
+<thead>
+<tr>
+<th>Host</th>
+<th>Origin</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>127.0.0.1:3080</code>（直连）</td>
+<td>无</td>
+<td>200</td>
+</tr>
+<tr>
+<td>IP 字面量</td>
+<td>IP 字面量</td>
+<td>200</td>
+</tr>
+<tr>
+<td>IP 字面量</td>
+<td><code>cenacle.whitefirer.org</code></td>
+<td><strong>403</strong></td>
+</tr>
+<tr>
+<td><code>cenacle.whitefirer.org</code></td>
+<td>无</td>
+<td><strong>403</strong></td>
+</tr>
+</tbody>
+</table>
+<p>dsh 对 Host 和 Origin 各查一遍：<strong>非 localhost/IP 字面量一律 403</strong>——这是 DNS-rebinding 防御，防的是恶意网站把公用域名指到 <code>127.0.0.1</code> 来打你本机服务。它宁可错杀我这种「域名指内网 IP」的场景。</p>
+<p>修法在反代侧：转发时把 Host 改写成上游地址、剥掉 Origin（缺失的 Origin 反而放行——这条只挡「带错」不挡「没带」）。cenacle 的 Go 代理就是这么做的，上面 Python 版的 <code>skip</code> 清单也加了 <code>host</code>/<code>origin</code> 两个键。301 跳转腿不用处理——浏览器拿到新地址会自己重发。</p>
+<h2 id="八收尾">八、收尾</h2>
+<p>这个问题的有趣之处在于：它只在「跨设备 + 明文 HTTP + 现代前端」三个条件叠加时出现，PC 开发自测完全覆盖不到。如果你也有局域网手机访问的服务，值得主动做两件事：</p>
+<ol>
+<li>拿真手机打开 Console 看一眼，别等用户报白屏；</li>
+<li>把代码里用到的现代 API 按「可 polyfill / 权限门控」分成两类，前者反代统一补，后者设计好降级路径。</li>
+</ol>
+<p>以及，过渡方案终究是过渡方案——等官方鉴权落地，这些脚手架都可以体面退役。</p>
+<div class="post-series-nav">
+                <em>本文是「<a href="/series/deepseek-harness/">DeepSeek Harness</a>」系列第 4 篇，共 4 篇。上一篇：<a href="/posts/2026/08/15/dsh-plugin-browser-fs/">给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件</a>。</em>
+            </div></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2026-08-16&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/0ab6a18fb7d8e877e12b4c6ae5039e84729cae4f" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) 0ab6a18fb7d8e877e12b4c6ae5039e84729cae4f: 发布：dsh 局域网访问（手机白屏/安全上下文）转公开">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>0ab6a18</a></span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/2026/08/16/dsh-lan-access/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/08/16/dsh-lan-access/" data-title="把 DeepSeek Harness 开放到局域网：手机访问的几个坑与解法清单" data-hashtags="tech,web,secure-context,reverse-proxy,go,deepseek-harness,debugging"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/08/16/dsh-lan-access/" data-hashtag="tech"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/08/16/dsh-lan-access/" data-title="把 DeepSeek Harness 开放到局域网：手机访问的几个坑与解法清单"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/08/16/dsh-lan-access/" data-title="把 DeepSeek Harness 开放到局域网：手机访问的几个坑与解法清单"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/08/16/dsh-lan-access/" data-title="把 DeepSeek Harness 开放到局域网：手机访问的几个坑与解法清单"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微信" onclick="var d=document.getElementById('wechat-qr-9f0b0a088ad3e8c5a31657bd78c196a7');d.style.display=d.style.display==='none'?'block':'none';return false"><i class="fab fa-weixin fa-fw" aria-hidden="true"></i></a>
+        <div id="wechat-qr-9f0b0a088ad3e8c5a31657bd78c196a7" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:9999" onclick="this.style.display='none'">
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;padding:20px;border-radius:8px;text-align:center">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https%3a%2f%2fwhitefirer.org%2fposts%2f2026%2f08%2f16%2fdsh-lan-access%2f" alt="微信扫一扫" style="display:block">
+                <p style="margin:10px 0 0;font-size:14px;color:#333">微信扫一扫 · 分享文章</p>
+            </div>
+        </div></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/tech/">技术</a>,&nbsp;<a href="/tags/web/">Web</a>,&nbsp;<a href="/tags/secure-context/">Secure-Context</a>,&nbsp;<a href="/tags/reverse-proxy/">Reverse-Proxy</a>,&nbsp;<a href="/tags/go/">Go</a>,&nbsp;<a href="/tags/deepseek-harness/">Deepseek-Harness</a>,&nbsp;<a href="/tags/debugging/">Debugging</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2026/08/15/dsh-plugin-browser-fs/" class="prev" rel="prev" title="给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件</a></div>
+
+</div>
+<div id="comments"><div id="waline" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://waline.js.org/">Waline</a>.
+            </noscript><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article>
+<script>(function(){var b=document.getElementById('reading-progress');if(!b)return;function u(){var h=document.documentElement,s=h.scrollHeight-h.clientHeight,w=s>0?Math.min((h.scrollTop||document.body.scrollTop)/s*100,100):0;b.style.width=w+'%'}window.addEventListener('scroll',u,{passive:true});u()})();</script></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.131.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span><img src="https://hits.sh/whitefirer.org.svg" alt="" aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;clip:rect(0 0 0 0);pointer-events:none"></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/waline/waline.min.css"><script type="text/javascript" src="/lib/waline/waline.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config=Object.assign(window.config||{},{"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Comments","categoryId":"DIC_kwDOH2gmzc4CQ_fM","darkTheme":"dark","emitMetadata":"0","inputPosition":"bottom","lang":"zh-CN","lazyLoading":true,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"whitefirer/whitefirer.github.io","repoId":"R_kgDOH2gmzQ"},"waline":{"dark":"auto","el":"#waline","lang":"zh-CN","pageSize":10,"requiredMeta":["nick","mail"],"serverURL":"https://comment.whitefirer.org"}},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}});</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">!function(){function svgToPng(svg,cb){var c=svg.cloneNode(!0),d=new XMLSerializer().serializeToString(c),img=new Image(),cv=document.createElement('canvas'),w=c.viewBox.animVal.width||c.getBoundingClientRect().width||400,h=c.viewBox.animVal.height||c.getBoundingClientRect().height||300,s=2;cv.width=w*s,cv.height=h*s;var ctx=cv.getContext('2d'),b=new Blob([d],{type:'image/svg+xml;charset=utf-8'}),u=URL.createObjectURL(b);img.onload=function(){ctx.fillStyle='#fff',ctx.fillRect(0,0,cv.width,cv.height),ctx.drawImage(img,0,0,cv.width,cv.height),URL.revokeObjectURL(u),cv.toBlob(function(blob){var a=document.createElement('a');a.href=URL.createObjectURL(blob);var id=svg.id||'diagram';a.download=id+'.png',a.click(),URL.revokeObjectURL(a.href),cb&&cb()})},img.src=u}function addSaveBtn(svg){if(svg.closest('.mermaid-stage,.mermaid-fs-overlay,.mermaid-wrapper,.mermaid-toolbar,.svg-diagram-wrap'))return;var wrap=document.createElement('div');wrap.className='svg-diagram-wrap';var d=svg.style.display||'block',w=svg.style.width||svg.getAttribute('width')||'100%',mw=svg.style.maxWidth||'',m=svg.style.margin||'';wrap.style.cssText='position:relative;display:'+d+';width:'+w+';'+(mw?'max-width:'+mw+';':'')+(m?'margin:'+m+';':'')+'line-height:0';svg.style.display='block';svg.style.width='100%';svg.style.maxWidth='';svg.style.margin='0';svg.parentNode.insertBefore(wrap,svg);wrap.appendChild(svg);var bar=document.createElement('div');bar.style.cssText='text-align:right;padding-top:6px';var btn=document.createElement('button');btn.className='svg-save-btn',btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span style="vertical-align:middle;font-size:12px">保存图片</span>',btn.style.cssText='background:none;border:1px solid transparent;border-radius:4px;padding:2px 6px;cursor:pointer;color:#b0b7c3;font-family:system-ui,sans-serif;line-height:1';bar.appendChild(btn);wrap.appendChild(bar);btn.onmouseenter=function(){btn.style.color='#6366f1';btn.style.borderColor='#e5e7eb'};btn.onmouseleave=function(){btn.style.color='#b0b7c3';btn.style.borderColor='transparent'};btn.onclick=function(e){e.stopPropagation();var orig=btn.innerHTML;btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span style="vertical-align:middle;font-size:12px">导出中...</span>';btn.disabled=!0;svgToPng(svg,function(){btn.innerHTML=orig;btn.disabled=!1})}}function initSvgButtons(){document.querySelectorAll('.content svg').forEach(function(svg){addSaveBtn(svg)})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initSvgButtons);else initSvgButtons()}()</script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-70Q8REKE17', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-70Q8REKE17" async></script></body>
+</html>
