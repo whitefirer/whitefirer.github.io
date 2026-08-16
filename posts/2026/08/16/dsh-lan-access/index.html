@@ -29,8 +29,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/whitefirer.org\/posts\/2026\/08\/16\/dsh-lan-access\/"
-        },"genre": "posts","keywords": "tech, web, secure-context, reverse-proxy, go, deepseek-harness, debugging","wordcount":  4893 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/16\/dsh-lan-access\/","datePublished": "2026-08-16T12:47:26+08:00","dateModified": "2026-08-16T16:38:15+08:00","license": "2022©️whitefirer","publisher": {
+        },"genre": "posts","keywords": "tech, web, secure-context, reverse-proxy, go, deepseek-harness, debugging","wordcount":  5202 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/16\/dsh-lan-access\/","datePublished": "2026-08-16T12:47:26+08:00","dateModified": "2026-08-16T17:06:04+08:00","license": "2022©️whitefirer","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -136,8 +136,8 @@
                 <a href="/series/deepseek-harness/"><i class="fas fa-layer-group fa-fw" aria-hidden="true"></i>DeepSeek Harness</a>
             </div><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-16">2026-08-16</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 4893 字&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 10 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/08/16/dsh-lan-access.svg" alt="" aria-hidden="true" loading="eager"
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-16">2026-08-16</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 5202 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 11 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/08/16/dsh-lan-access.svg" alt="" aria-hidden="true" loading="eager"
      style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none"></div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
@@ -398,12 +398,12 @@
 <p>另一个常被问到的是<strong>手机改 hosts</strong>：Android 改 <code>/etc/hosts</code> 要 root，iOS 要越狱；无 root 的等价物是 Hosts Go、DNS66 这类「本地 VPN 型」App（代价是常驻一个 VPN 槽位），或者干脆不改手机——在路由器/PC 上跑 dnsmasq、AdGuard Home 当局域网 DNS。但 hosts/DNS 只解决「域名到 IP 的映射」，不解决安全上下文，它始终是真证书方案的配角。实际上多数时候连它都不需要：把域名的<strong>公网 A 记录直接指向内网 IP</strong>（如 <code>192.168.0.102</code>）即可——DNS-01 签证书只验证域名控制权、不要求公网可访问，手机拿到域名后走局域网直连，零配置无警告。唯一的坑是部分路由器默认开启「DNS 重绑定保护」会拦截这种解析，关掉或加白名单即可。</p>
 <p>实战建议组合用：反代 polyfill 打底（覆盖工具类 API），自己写的组件做降级（兜住权限类 API），真要给多人长期用再上 HTTPS。</p>
 <h2 id="七附一个-python-最小实现单文件带鉴权">七、附：一个 Python 最小实现（单文件，带鉴权）</h2>
-<p>不想搭工作台的话，「HTTPS 反代 + 简单鉴权」一个 Python 脚本就够（完整版在 cenacle 仓库 <code>tests/debug/https_proxy.py</code>，约 150 行）。四个要点：</p>
+<p>不想搭工作台的话，「HTTPS 反代 + 简单鉴权」一个 Python 脚本就够（完整版在 cenacle 仓库 <code>tests/debug/https_proxy.py</code>，约 240 行）。四个要点：</p>
 <ul>
 <li><strong>用 aiohttp 而不是标准库</strong>——WebSocket 必须透传（dsh 的终端流走 WS，不透传就是哑终端），标准库手写帧转发不值得；</li>
-<li>普通请求整源透传（零改写、流式回传），剥 hop-by-hop 头；</li>
+<li>普通请求流式透传、剥 hop-by-hop 头；唯一的改写是 HTML 一律注入 <code>crypto.randomUUID</code> polyfill（脚本自带存在性判断，HTTPS 安全上下文下是 no-op，所以两种模式同一套逻辑）；</li>
 <li>Basic Auth：401 + <code>WWW-Authenticate</code> 头，浏览器自带弹窗，演示/自用足够；</li>
-<li>443 对外 HTTPS，80 只做 301 跳转；&lt;1024 端口要 root 或 <code>cap_net_bind_service</code>，调试期用 8443/8080 也一样。</li>
+<li><code>--mode https</code>（默认）：443 对外 HTTPS，80 只做 301 跳转；<code>--mode http</code>：纯 HTTP 反代 + polyfill，不用碰证书。&lt;1024 端口要 root 或 <code>cap_net_bind_service</code>，调试期用 8443/8080 也一样。</li>
 </ul>
 <p>核心代码：</p>
 <div class="highlight"><div class="chroma">
@@ -450,6 +450,14 @@
 </span><span class="lnt">40
 </span><span class="lnt">41
 </span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">HOP</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;connection&#34;</span><span class="p">,</span> <span class="s2">&#34;keep-alive&#34;</span><span class="p">,</span> <span class="s2">&#34;te&#34;</span><span class="p">,</span> <span class="s2">&#34;trailers&#34;</span><span class="p">,</span>
@@ -468,6 +476,14 @@
 </span></span><span class="line"><span class="cl">    <span class="k">async</span> <span class="k">with</span> <span class="n">sess</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">method</span><span class="p">,</span> <span class="n">upstream</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">rel_url</span><span class="p">),</span>
 </span></span><span class="line"><span class="cl">                            <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="k">await</span> <span class="n">req</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span>
 </span></span><span class="line"><span class="cl">                            <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">as</span> <span class="n">up</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># HTML 一律注入 polyfill；aiohttp 已自动解压，必须摘掉</span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># Content-Encoding/Content-Length 再重写长度</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="s2">&#34;text/html&#34;</span> <span class="ow">in</span> <span class="n">up</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;Content-Type&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">            <span class="n">page</span> <span class="o">=</span> <span class="k">await</span> <span class="n">up</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">            <span class="n">page</span> <span class="o">=</span> <span class="n">inject_head</span><span class="p">(</span><span class="n">page</span><span class="p">,</span> <span class="n">POLYFILL</span><span class="p">)</span>   <span class="c1"># 插到 &lt;head&gt; 之后</span>
+</span></span><span class="line"><span class="cl">            <span class="n">out_headers</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">up</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">                           <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">HOP</span> <span class="o">|</span> <span class="p">{</span><span class="s2">&#34;content-encoding&#34;</span><span class="p">,</span> <span class="s2">&#34;content-length&#34;</span><span class="p">,</span> <span class="s2">&#34;etag&#34;</span><span class="p">}}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">up</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">page</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">out_headers</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">        <span class="n">out</span> <span class="o">=</span> <span class="n">web</span><span class="o">.</span><span class="n">StreamResponse</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">up</span><span class="o">.</span><span class="n">status</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">up</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
 </span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">HOP</span><span class="p">:</span>
@@ -509,7 +525,17 @@
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>  --cert ~/.cenacle/tls/fullchain.pem --key ~/.cenacle/tls/privkey.pem
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>如果你的开发机和我一样是 <strong>Windows 宿主上的 QEMU Debian 虚拟机</strong>（用户模式网络是 NAT，虚拟机拿到 <code>10.0.2.x</code>，局域网 IP 在 Windows 宿主上），虚拟机里监听好还不够，要让宿主的 443 能进虚拟机。QEMU 侧用 hostfwd 做端口转发——<strong>运行中的虚拟机不用重启</strong>，在 QEMU monitor 里热添加即可：</p>
+</div><p>不需要权限门控类 API（比如不用 browser-fs 的授权读写）的话，<strong>纯 HTTP 模式</strong>一行就够，证书、防火墙、端口转发全省：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">python3 https_proxy.py --mode http --http-port <span class="m">8080</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>手机开 <code>http://内网IP:8080</code> 就能进 dsh——polyfill 修好白屏；但 <code>showDirectoryPicker</code> 这类 API 在非安全上下文里整个对象不存在，那时再回 HTTPS 模式。</p>
+<p>如果你的开发机和我一样是 <strong>Windows 宿主上的 QEMU Debian 虚拟机</strong>（用户模式网络是 NAT，虚拟机拿到 <code>10.0.2.x</code>，局域网 IP 在 Windows 宿主上），虚拟机里监听好还不够，要让宿主的 443 能进虚拟机。QEMU 侧用 hostfwd 做端口转发——<strong>运行中的虚拟机不用重启</strong>，在 QEMU monitor 里热添加即可：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -595,8 +621,8 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2026-08-16&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/0d7a6d7b55638a2f850ce0a4c2cc71b7d99b2516" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) 0d7a6d7b55638a2f850ce0a4c2cc71b7d99b2516: fix: QEMU hostfwd 改为 monitor 热添加（无需重启虚拟机）；browser-fs 两处提及加文章内链">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>0d7a6d7</a></span>
+                <span>更新于 2026-08-16&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/1ee730830a1223c865414769865d9965edd884f2" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) 1ee730830a1223c865414769865d9965edd884f2: feat: lan-access 文补纯 HTTP 模式（https_proxy.py --mode http &#43; polyfill 注入），代码摘录与新脚本对齐">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>1ee7308</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
