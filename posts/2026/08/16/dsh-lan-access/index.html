@@ -29,8 +29,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/whitefirer.org\/posts\/2026\/08\/16\/dsh-lan-access\/"
-        },"genre": "posts","keywords": "tech, web, secure-context, reverse-proxy, go, deepseek-harness, debugging","wordcount":  4864 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/16\/dsh-lan-access\/","datePublished": "2026-08-16T12:47:26+08:00","dateModified": "2026-08-16T16:36:48+08:00","license": "2022©️whitefirer","publisher": {
+        },"genre": "posts","keywords": "tech, web, secure-context, reverse-proxy, go, deepseek-harness, debugging","wordcount":  4893 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/16\/dsh-lan-access\/","datePublished": "2026-08-16T12:47:26+08:00","dateModified": "2026-08-16T16:38:15+08:00","license": "2022©️whitefirer","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -136,7 +136,7 @@
                 <a href="/series/deepseek-harness/"><i class="fas fa-layer-group fa-fw" aria-hidden="true"></i>DeepSeek Harness</a>
             </div><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-16">2026-08-16</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 4864 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-16">2026-08-16</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 4893 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 10 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/08/16/dsh-lan-access.svg" alt="" aria-hidden="true" loading="eager"
      style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none"></div>
         </div><div class="details toc" id="toc-static"  data-kept="">
@@ -169,7 +169,7 @@
 <p>PC 上一切正常。换成手机打开 <code>http://192.168.0.102:9101</code>，接连踩了两个坑：</p>
 <ol>
 <li>首页能出来，一点「打开工作区」就白屏报错：<code>crypto.randomUUID is not a function</code></li>
-<li>修完白屏后，我自己写的 dsh 插件（browser-fs，让 agent 直接读你当前设备上的文件）在手机上点「授权目录」又失效：<code>showDirectoryPicker</code> 根本不存在</li>
+<li>修完白屏后，我自己写的 dsh 插件（<a href="/posts/2026/08/15/dsh-plugin-browser-fs/" rel="">browser-fs</a>，让 agent 直接读你当前设备上的文件）在手机上点「授权目录」又失效：<code>showDirectoryPicker</code> 根本不存在</li>
 </ol>
 <p>两个坑症状不同，根因是同一个：<strong>安全上下文（Secure Contexts）规范</strong>。</p>
 <h2 id="二根因安全上下文把-web-api-分成了两类">二、根因：安全上下文把 Web API 分成了两类</h2>
@@ -309,7 +309,7 @@
 </div><p>这个行为在文档里写着，但不踩一次很难记住。</p>
 <p>单测覆盖了注入位置（必须在 <code>&lt;head&gt;</code> 之后）、<code>Content-Length</code> 同步、非 HTML 内容原样透传、以及上面那个 <code>Accept-Encoding</code> 断言。上线后手机再开工作区，正常加载——坑一解决。</p>
 <h2 id="四坑二授权按钮失效不是所有-api-都能-polyfill">四、坑二：授权按钮失效——不是所有 API 都能 polyfill</h2>
-<p>白屏修好后，轮到我写的 browser-fs 插件出问题：它依赖 <code>window.showDirectoryPicker</code> 让用户授权一个本地目录给 agent 读写。这个 API 属于上表右列——<strong>整个对象在非安全上下文里根本不存在</strong>，polyfill 无米下锅。</p>
+<p>白屏修好后，轮到我写的 <a href="/posts/2026/08/15/dsh-plugin-browser-fs/" rel="">browser-fs 插件</a>出问题：它依赖 <code>window.showDirectoryPicker</code> 让用户授权一个本地目录给 agent 读写。这个 API 属于上表右列——<strong>整个对象在非安全上下文里根本不存在</strong>，polyfill 无米下锅。</p>
 <p>这类「权限门控」API 没有补丁可打，只有两条路：上 HTTPS，或者<strong>应用层降级</strong>。我给插件做了后者：</p>
 <ul>
 <li>启动时检测 <code>typeof window.showDirectoryPicker === 'function'</code>，检测不到自动进入「兼容模式」（不要看 <code>isSecureContext</code> 标志位——我的反代 polyfill 恰好动过它，会误判）</li>
@@ -509,16 +509,19 @@
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>  --cert ~/.cenacle/tls/fullchain.pem --key ~/.cenacle/tls/privkey.pem
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>如果你的开发机和我一样是 <strong>Windows 宿主上的 QEMU Debian 虚拟机</strong>（用户模式网络是 NAT，虚拟机拿到 <code>10.0.2.x</code>，局域网 IP 在 Windows 宿主上），虚拟机里监听好还不够，要让宿主的 443 能进虚拟机。QEMU 侧用启动参数做端口转发（改启动命令需要重启虚拟机，加在 <code>-netdev</code> 上）：</p>
+</div><p>如果你的开发机和我一样是 <strong>Windows 宿主上的 QEMU Debian 虚拟机</strong>（用户模式网络是 NAT，虚拟机拿到 <code>10.0.2.x</code>，局域网 IP 在 Windows 宿主上），虚拟机里监听好还不够，要让宿主的 443 能进虚拟机。QEMU 侧用 hostfwd 做端口转发——<strong>运行中的虚拟机不用重启</strong>，在 QEMU monitor 里热添加即可：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">-netdev user,id<span class="o">=</span>n0,hostfwd<span class="o">=</span>tcp::443-:443,hostfwd<span class="o">=</span>tcp::80-:80
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">(qemu) hostfwd_add tcp::443-:443
+</span></span><span class="line"><span class="cl">(qemu) hostfwd_add tcp::80-:80
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>再在 Windows 的管理员 PowerShell 里放行入站：</p>
+</div><p>想永久生效再把同样的转发写进启动参数的 <code>-netdev user,id=n0,hostfwd=tcp::443-:443,...</code> 里。</p>
+<p>再在 Windows 的管理员 PowerShell 里放行入站：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -592,8 +595,8 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2026-08-16&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/cf55b94ec3586cb1ed61a40d70e6376a295370a4" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) cf55b94ec3586cb1ed61a40d70e6376a295370a4: fix: 局域网访问文的环境更正为 QEMU 虚拟机（hostfwd），WSL2 方案保留为对照">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>cf55b94</a></span>
+                <span>更新于 2026-08-16&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/0d7a6d7b55638a2f850ce0a4c2cc71b7d99b2516" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) 0d7a6d7b55638a2f850ce0a4c2cc71b7d99b2516: fix: QEMU hostfwd 改为 monitor 热添加（无需重启虚拟机）；browser-fs 两处提及加文章内链">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>0d7a6d7</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>

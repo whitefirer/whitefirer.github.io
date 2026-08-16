@@ -8,7 +8,7 @@ DeepSeek Harness（dsh）的 web UI 默认绑 `127.0.0.1`，官方态度很明�
 PC 上一切正常。换成手机打开 `http://192.168.0.102:9101`，接连踩了两个坑：
 
 1. 首页能出来，一点「打开工作区」就白屏报错：`crypto.randomUUID is not a function`
-2. 修完白屏后，我自己写的 dsh 插件（browser-fs，让 agent 直接读你当前设备上的文件）在手机上点「授权目录」又失效：`showDirectoryPicker` 根本不存在
+2. 修完白屏后，我自己写的 dsh 插件（[browser-fs](/posts/2026/08/15/dsh-plugin-browser-fs/)，让 agent 直接读你当前设备上的文件）在手机上点「授权目录」又失效：`showDirectoryPicker` 根本不存在
 
 两个坑症状不同，根因是同一个：**安全上下文（Secure Contexts）规范**。
 
@@ -102,7 +102,7 @@ pr.Out.Header.Set("Accept-Encoding", "identity")
 
 ## 四、坑二：授权按钮失效——不是所有 API 都能 polyfill
 
-白屏修好后，轮到我写的 browser-fs 插件出问题：它依赖 `window.showDirectoryPicker` 让用户授权一个本地目录给 agent 读写。这个 API 属于上表右列——**整个对象在非安全上下文里根本不存在**，polyfill 无米下锅。
+白屏修好后，轮到我写的 [browser-fs 插件](/posts/2026/08/15/dsh-plugin-browser-fs/)出问题：它依赖 `window.showDirectoryPicker` 让用户授权一个本地目录给 agent 读写。这个 API 属于上表右列——**整个对象在非安全上下文里根本不存在**，polyfill 无米下锅。
 
 这类「权限门控」API 没有补丁可打，只有两条路：上 HTTPS，或者**应用层降级**。我给插件做了后者：
 
@@ -208,11 +208,14 @@ sudo python3 https_proxy.py --https-port 443 --http-port 80 \
   --cert ~/.cenacle/tls/fullchain.pem --key ~/.cenacle/tls/privkey.pem
 ```
 
-如果你的开发机和我一样是 **Windows 宿主上的 QEMU Debian 虚拟机**（用户模式网络是 NAT，虚拟机拿到 `10.0.2.x`，局域网 IP 在 Windows 宿主上），虚拟机里监听好还不够，要让宿主的 443 能进虚拟机。QEMU 侧用启动参数做端口转发（改启动命令需要重启虚拟机，加在 `-netdev` 上）：
+如果你的开发机和我一样是 **Windows 宿主上的 QEMU Debian 虚拟机**（用户模式网络是 NAT，虚拟机拿到 `10.0.2.x`，局域网 IP 在 Windows 宿主上），虚拟机里监听好还不够，要让宿主的 443 能进虚拟机。QEMU 侧用 hostfwd 做端口转发——**运行中的虚拟机不用重启**，在 QEMU monitor 里热添加即可：
 
-```bash
--netdev user,id=n0,hostfwd=tcp::443-:443,hostfwd=tcp::80-:80
 ```
+(qemu) hostfwd_add tcp::443-:443
+(qemu) hostfwd_add tcp::80-:80
+```
+
+想永久生效再把同样的转发写进启动参数的 `-netdev user,id=n0,hostfwd=tcp::443-:443,...` 里。
 
 再在 Windows 的管理员 PowerShell 里放行入站：
 
