@@ -179,7 +179,8 @@ dsh plugin --profile web add file:/path/to/dsh-browser-fs
 
 ## 八、资源
 
-- 插件仓库：[github.com/whitefirer/dsh-browser-fs](https://github.com/whitefirer/dsh-browser-fs)（本文所有代码）
+- 插件仓库：[github.com/whitefirer/dsh-browser-fs](https://github.com/whitefirer/dsh-browser-fs)（本文所有代码）——已收录进 awesome-dsh-plugin 主榜（[PR #773](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/773)），[目录站详情页](https://awesome-dsh-plugin.com/zh/p/whitefirer/dsh-browser-fs/)
 - 必读源码：`packages/core/tools`（工具注册）、`packages/host/webserver`（HTTP/WS 注册口）、`packages/client/connection/src/websocket-downlink.ts`（WS 服务端模板）、`packages/client/ui-user-questions`（双面插件的官方先例）
 - 插件目录站：awesome-dsh-plugin / Oh-My-DSH / dsh-plugin-directory（投稿入口都在）
+- 本文发布后插件仍在更新（拖拽跟手与卡片位置记忆、悬浮层压过侧边栏插件、界面语言跟随 dsh 的「设置 → 通用设置 → 语言」等），最新行为以仓库 README 为准
 
