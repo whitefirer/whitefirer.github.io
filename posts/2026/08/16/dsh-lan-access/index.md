@@ -208,7 +208,19 @@ sudo python3 https_proxy.py --https-port 443 --http-port 80 \
   --cert ~/.cenacle/tls/fullchain.pem --key ~/.cenacle/tls/privkey.pem
 ```
 
-如果你的开发机和我一样是 **WSL2**（NAT 网络，Windows 宿主才有局域网 IP），WSL 里监听好还不够，要在 Windows 的管理员 PowerShell 里把 443 转发进 WSL 并放行防火墙：
+如果你的开发机和我一样是 **Windows 宿主上的 QEMU Debian 虚拟机**（用户模式网络是 NAT，虚拟机拿到 `10.0.2.x`，局域网 IP 在 Windows 宿主上），虚拟机里监听好还不够，要让宿主的 443 能进虚拟机。QEMU 侧用启动参数做端口转发（改启动命令需要重启虚拟机，加在 `-netdev` 上）：
+
+```bash
+-netdev user,id=n0,hostfwd=tcp::443-:443,hostfwd=tcp::80-:80
+```
+
+再在 Windows 的管理员 PowerShell 里放行入站：
+
+```powershell
+New-NetFirewallRule -DisplayName "QEMU-HTTPS-443" -Direction Inbound -Protocol TCP -LocalPort 443 -Action Allow
+```
+
+如果你的开发机是 **WSL2**，思路一样、工具不同——用 `netsh portproxy` 把 443 转发进 WSL：
 
 ```powershell
 # 先看 443 有没有被旧规则占用，有就删了再加
@@ -217,7 +229,7 @@ netsh interface portproxy add v4tov4 listenport=443 listenaddress=0.0.0.0 connec
 New-NetFirewallRule -DisplayName "WSL2-HTTPS-443" -Direction Inbound -Protocol TCP -LocalPort 443 -Action Allow
 ```
 
-（`connectaddress=localhost` 依赖 WSL 默认开启的 localhost 转发；不灵就换成 `ip addr` 里 WSL 的 eth0 地址，但它会随 WSL 重启变化。）
+（WSL 的 `connectaddress=localhost` 依赖其默认开启的 localhost 转发；不灵就换成 `ip addr` 里 WSL 的 eth0 地址，但它会随 WSL 重启变化。）
 
 curl 实测四连：无鉴权 `401`（带 `WWW-Authenticate` 触发浏览器弹窗）→ basic auth 后 `200` 拿到 dsh 页面 → `http://` 请求 301 跳 https → WS 升级 `101` 正常透传。手机打开 `https://cenacle.whitefirer.org`（点过自签警告）即是完整安全上下文。
 
