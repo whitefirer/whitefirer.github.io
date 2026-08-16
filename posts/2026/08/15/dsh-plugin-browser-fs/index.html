@@ -10,12 +10,12 @@
 <meta name="apple-mobile-web-app-title" content="赛博闲谭-whitefirer"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-        <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/08/16/dsh-plugin-browser-fs/" /><link rel="prev" href="https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/08/15/dsh-plugin-browser-fs/" /><link rel="prev" href="https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta property="og:title" content="给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件 - 赛博闲谭-whitefirer" />
 <meta property="og:description" content="dsh 开源几天插件目录站收录已破千，但所有插件读的都是 dsh 宿主机的文件——远程部署时 Agent 摸不到你这台电脑。本文从零写一个真实可用的插件 dsh-browser-fs：浏览器授权一个本地目录，Agent 就能 list/read/write。过程中把 dsh 插件系统拆给你看：Cordis 生命周期、host/client 双面结构、工具注册、WS 中继、创造模式是什么，以及 secure context 等四个坑。" />
 <meta property="og:image" content="https://whitefirer.org/og-default.png" />
-<meta property="og:url" content="https://whitefirer.org/posts/2026/08/16/dsh-plugin-browser-fs/" />
+<meta property="og:url" content="https://whitefirer.org/posts/2026/08/15/dsh-plugin-browser-fs/" />
 <meta property="og:type" content="article" />
 <meta property="og:site_name" content="赛博闲谭-whitefirer" /><meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件 - 赛博闲谭-whitefirer" />
@@ -28,9 +28,9 @@
         "inLanguage": "zh-CN",
         "mainEntityOfPage": {
             "@type": "WebPage",
-            "@id": "https:\/\/whitefirer.org\/posts\/2026\/08\/16\/dsh-plugin-browser-fs\/"
-        },"genre": "posts","keywords": "tech, ai, deepseek, harness, plugin, tutorial, file-system-access","wordcount":  3825 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/16\/dsh-plugin-browser-fs\/","datePublished": "2026-08-16T04:11:39+08:00","dateModified": "2026-08-16T04:12:24+08:00","license": "2022©️whitefirer","publisher": {
+            "@id": "https:\/\/whitefirer.org\/posts\/2026\/08\/15\/dsh-plugin-browser-fs\/"
+        },"genre": "posts","keywords": "tech, ai, deepseek, harness, plugin, tutorial, file-system-access","wordcount":  3877 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/15\/dsh-plugin-browser-fs\/","datePublished": "2026-08-15T23:14:52+08:00","dateModified": "2026-08-16T12:26:36+08:00","license": "2022©️whitefirer","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -64,7 +64,7 @@
                     <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
                 </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
                     <i class="fa fa-globe" aria-hidden="true"></i>                      
-                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/2026/08/16/dsh-plugin-browser-fs/" selected>简体中文</option></select>
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/2026/08/15/dsh-plugin-browser-fs/" selected>简体中文</option></select>
                 </a></div>
         </div>
     </div>
@@ -118,7 +118,7 @@
                 <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
             </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
                     <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
-                    <select class="language-select" onchange="location = this.value;"><option value="/posts/2026/08/16/dsh-plugin-browser-fs/" selected>简体中文</option></select>
+                    <select class="language-select" onchange="location = this.value;"><option value="/posts/2026/08/15/dsh-plugin-browser-fs/" selected>简体中文</option></select>
                 </a></div>
     </div>
 </header><div class="search-dropdown desktop">
@@ -136,8 +136,8 @@
                 <a href="/series/deepseek-harness/"><i class="fas fa-layer-group fa-fw" aria-hidden="true"></i>DeepSeek Harness</a>
             </div><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-16">2026-08-16</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3825 字&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 8 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/08/16/dsh-plugin-browser-fs.svg" alt="" aria-hidden="true" loading="eager"
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-15">2026-08-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3877 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 8 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/08/15/dsh-plugin-browser-fs.svg" alt="" aria-hidden="true" loading="eager"
      style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none"></div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
@@ -232,10 +232,10 @@
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="/posts/2026/08/16/dsh-plugin-browser-fs/02-presets.png"
-        data-srcset="/posts/2026/08/16/dsh-plugin-browser-fs/02-presets.png, /posts/2026/08/16/dsh-plugin-browser-fs/02-presets.png 1.5x, /posts/2026/08/16/dsh-plugin-browser-fs/02-presets.png 2x"
+        data-src="/posts/2026/08/15/dsh-plugin-browser-fs/02-presets.png"
+        data-srcset="/posts/2026/08/15/dsh-plugin-browser-fs/02-presets.png, /posts/2026/08/15/dsh-plugin-browser-fs/02-presets.png 1.5x, /posts/2026/08/15/dsh-plugin-browser-fs/02-presets.png 2x"
         data-sizes="auto"
-        alt="/posts/2026/08/16/dsh-plugin-browser-fs/02-presets.png"
+        alt="/posts/2026/08/15/dsh-plugin-browser-fs/02-presets.png"
         title="dsh 的四个内置 preset" width="1440" height="900" /></p>
 <p>两条开发路线都成立：用创造模式让 dsh 帮你写（自举），或者源码调研后手写。我这次选了后者——不是创造模式不好，而是我要的 API 事实（client 侧能否注册工具这类）必须看代码才能确认，AI 辅助调研源码+手写实现反而更快。</p>
 <h2 id="三关键结论必须做双面插件">三、关键结论：必须做&quot;双面插件&quot;</h2>
@@ -364,41 +364,45 @@
 <li><strong>安全上下文</strong>：<code>showDirectoryPicker</code> 只在 HTTPS 或 localhost 可用。<code>http://192.168.x.x</code> 局域网访问时这个 API 直接不存在，polyfill 都救不了（这类权限级 API 和 <code>crypto.randomUUID</code> 不同，补不出来——上一篇《手机访问局域网服务就白屏？》详细讲过这个坑）。</li>
 </ol>
 <h2 id="六装机与验证">六、装机与验证</h2>
-<p>安装一行命令（file: 依赖是打包拷贝，改动后要重装+重启 dsh）：</p>
+<p>安装一行命令（远程装的是入库的构建产物，开箱即用；file: 是本地开发路径，改动后要重装+重启 dsh）：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">dsh plugin --profile web add file:/path/to/dsh-browser-fs
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">dsh plugin --profile web add github:whitefirer/dsh-browser-fs   <span class="c1"># 从 GitHub 安装（推荐）</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 本地开发/改代码时用 file: 路径重装：</span>
+</span></span><span class="line"><span class="cl">dsh plugin --profile web add file:/path/to/dsh-browser-fs
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>验证清单：boot manifest 出现 <code>browser-fs/client.js?rev=...</code>；<code>/plugins/dsh-browser-fs/client.js</code> 返回 200；WS 路由返回 426（等 upgrade）；真实 WS 握手同源 101 / 跨源 403；链路自检脚本 10/10（工具注册、参数校验、无授权报错、断连中断、list/read/write 全往返）。</p>
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="/posts/2026/08/16/dsh-plugin-browser-fs/01-main.png"
-        data-srcset="/posts/2026/08/16/dsh-plugin-browser-fs/01-main.png, /posts/2026/08/16/dsh-plugin-browser-fs/01-main.png 1.5x, /posts/2026/08/16/dsh-plugin-browser-fs/01-main.png 2x"
+        data-src="/posts/2026/08/15/dsh-plugin-browser-fs/01-main.png"
+        data-srcset="/posts/2026/08/15/dsh-plugin-browser-fs/01-main.png, /posts/2026/08/15/dsh-plugin-browser-fs/01-main.png 1.5x, /posts/2026/08/15/dsh-plugin-browser-fs/01-main.png 2x"
         data-sizes="auto"
-        alt="/posts/2026/08/16/dsh-plugin-browser-fs/01-main.png"
+        alt="/posts/2026/08/15/dsh-plugin-browser-fs/01-main.png"
         title="dsh web 主界面（插件已挂载）" width="1440" height="900" /></p>
 <p>最后一步只能真人完成：<code>showDirectoryPicker</code> 是系统级弹窗，自动化点不了。在 <code>localhost:3080</code> 打开页面，授权卡片里选一个目录，然后对 Agent 说&quot;列出我授权目录里的文件&quot;——它会调起 <code>browser_fs_list</code>，读的是你这台电脑。</p>
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="/posts/2026/08/16/dsh-plugin-browser-fs/04-permission.png"
-        data-srcset="/posts/2026/08/16/dsh-plugin-browser-fs/04-permission.png, /posts/2026/08/16/dsh-plugin-browser-fs/04-permission.png 1.5x, /posts/2026/08/16/dsh-plugin-browser-fs/04-permission.png 2x"
+        data-src="/posts/2026/08/15/dsh-plugin-browser-fs/04-permission.png"
+        data-srcset="/posts/2026/08/15/dsh-plugin-browser-fs/04-permission.png, /posts/2026/08/15/dsh-plugin-browser-fs/04-permission.png 1.5x, /posts/2026/08/15/dsh-plugin-browser-fs/04-permission.png 2x"
         data-sizes="auto"
-        alt="/posts/2026/08/16/dsh-plugin-browser-fs/04-permission.png"
+        alt="/posts/2026/08/15/dsh-plugin-browser-fs/04-permission.png"
         title="授权目录后，浏览器还会对写权限再确认一次（「允许此网站修改文件？」）；右下角插件卡片此时还是「未授权目录」" width="2028" height="1094" /></p>
 <p>注意新版 Chrome 在选完目录后还会再确认一次写权限（上图的「允许此网站修改文件？」——因为我申请的是 readwrite 模式）。这层&quot;每步都经过你&quot;的授权链，就是这个插件的安全边界。</p>
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="/posts/2026/08/16/dsh-plugin-browser-fs/03-in-action.png"
-        data-srcset="/posts/2026/08/16/dsh-plugin-browser-fs/03-in-action.png, /posts/2026/08/16/dsh-plugin-browser-fs/03-in-action.png 1.5x, /posts/2026/08/16/dsh-plugin-browser-fs/03-in-action.png 2x"
+        data-src="/posts/2026/08/15/dsh-plugin-browser-fs/03-in-action.png"
+        data-srcset="/posts/2026/08/15/dsh-plugin-browser-fs/03-in-action.png, /posts/2026/08/15/dsh-plugin-browser-fs/03-in-action.png 1.5x, /posts/2026/08/15/dsh-plugin-browser-fs/03-in-action.png 2x"
         data-sizes="auto"
-        alt="/posts/2026/08/16/dsh-plugin-browser-fs/03-in-action.png"
+        alt="/posts/2026/08/15/dsh-plugin-browser-fs/03-in-action.png"
         title="agent 通过 browser_fs_read 读到授权目录里的 hello.txt；右下角是插件卡片（授权状态 &#43; 目录树）" width="2650" height="1878" /></p>
 <h2 id="七限制与边界">七、限制与边界</h2>
 <ul>
@@ -420,18 +424,18 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2026-08-16&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/2f0a6c2c4b3e195ccc27edcb8abfbcb9ee26be1d" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) 2f0a6c2c4b3e195ccc27edcb8abfbcb9ee26be1d: feat: 发布《给 DeepSeek Harness 写插件》——导航加系列入口；lan-access/之三/论文解读保持草稿，hugo2wechat 压回草稿">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>2f0a6c2</a></span>
+                <span>更新于 2026-08-16&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/71b8aadedf92a279a3e77fd31e2de0853769562b" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) 71b8aadedf92a279a3e77fd31e2de0853769562b: fix: 插件教程发布时间改为 8-15 23:14:52（修复分享链接 404）">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>71b8aad</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
-                            <a class="link-to-markdown" href="/posts/2026/08/16/dsh-plugin-browser-fs/index.md" target="_blank">阅读原始文档</a>
+                            <a class="link-to-markdown" href="/posts/2026/08/15/dsh-plugin-browser-fs/index.md" target="_blank">阅读原始文档</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/08/16/dsh-plugin-browser-fs/" data-title="给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件" data-hashtags="tech,ai,deepseek,harness,plugin,tutorial,file-system-access"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/08/16/dsh-plugin-browser-fs/" data-hashtag="tech"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/08/16/dsh-plugin-browser-fs/" data-title="给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/08/16/dsh-plugin-browser-fs/" data-title="给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/08/16/dsh-plugin-browser-fs/" data-title="给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微信" onclick="var d=document.getElementById('wechat-qr-ca598c2d6f051000d4fceea55fdfe832');d.style.display=d.style.display==='none'?'block':'none';return false"><i class="fab fa-weixin fa-fw" aria-hidden="true"></i></a>
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/08/15/dsh-plugin-browser-fs/" data-title="给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件" data-hashtags="tech,ai,deepseek,harness,plugin,tutorial,file-system-access"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/08/15/dsh-plugin-browser-fs/" data-hashtag="tech"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/08/15/dsh-plugin-browser-fs/" data-title="给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/08/15/dsh-plugin-browser-fs/" data-title="给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/08/15/dsh-plugin-browser-fs/" data-title="给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微信" onclick="var d=document.getElementById('wechat-qr-ca598c2d6f051000d4fceea55fdfe832');d.style.display=d.style.display==='none'?'block':'none';return false"><i class="fab fa-weixin fa-fw" aria-hidden="true"></i></a>
         <div id="wechat-qr-ca598c2d6f051000d4fceea55fdfe832" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:9999" onclick="this.style.display='none'">
             <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;padding:20px;border-radius:8px;text-align:center">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https%3a%2f%2fwhitefirer.org%2fposts%2f2026%2f08%2f16%2fdsh-plugin-browser-fs%2f" alt="微信扫一扫" style="display:block">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https%3a%2f%2fwhitefirer.org%2fposts%2f2026%2f08%2f15%2fdsh-plugin-browser-fs%2f" alt="微信扫一扫" style="display:block">
                 <p style="margin:10px 0 0;font-size:14px;color:#333">微信扫一扫 · 分享文章</p>
             </div>
         </div></span>
