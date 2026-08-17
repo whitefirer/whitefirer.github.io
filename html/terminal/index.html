@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal — Needle on-device AI</title>
+    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/xterm@5.1.0/css/xterm.css" />
+    <script src="https://fastly.jsdelivr.net/npm/xterm@5.1.0/lib/xterm.min.js"></script>
+    <style>
+        html, body {
+            margin: 0;
+            height: 100%;
+            background: #1a1b26;
+        }
+        #terminal {
+            height: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="terminal"></div>
+    <script type="module">
+        import init, { NeedleWasm } from '/lib/needle-rs/needle_wasm.js';
+
+        const PROMPT = '\x1b[1;32mvisitor@blog\x1b[0m:\x1b[1;34m~\x1b[0m$ ';
+        const WEIGHTS_URL = '/lib/needle-rs/weights/needle.safetensors';
+        const VOCAB_URL = '/lib/needle-rs/weights/vocab.txt';
+        const INDEX_URL = '/index.json';
+
+        // Tool schemas handed to the model (needle-rs flat format).
+        const TOOLS = [
+            {
+                name: 'search_posts',
+                description: 'Search blog posts by keyword or topic',
+                parameters: { query: { type: 'string' } }
+            },
+            {
+                name: 'list_recent_posts',
+                description: 'List the most recent blog posts',
+                parameters: {}
+            },
+            {
+                name: 'list_posts_by_tag',
+                description: 'List blog posts that have a specific tag',
+                parameters: { tag: { type: 'string' } }
+            }
+        ];
+        const TOOLS_JSON = JSON.stringify(TOOLS);
+
+        const term = new Terminal({
+            linkHandler: {
+                // bypass xterm's default confirm() dialog for OSC8 links
+                activate: (event, text) => window.open(text, '_blank'),
+            },
+            cursorBlink: true,
+            fontFamily: '"Cascadia Code", Menlo, Consolas, monospace',
+            fontSize: 14,
+            theme: { background: '#1a1b26' }
+        });
+        term.open(document.getElementById('terminal'));
+
+        // ---------- state ----------
+        let posts = [];          // /index.json entries
+        let engine = null;       // NeedleWasm instance (lazy)
+        let engineLoading = null;
+        let lastResults = [];    // last search/list output, for `open N`
+        let inputBuf = '';
+        let history = [];
+        let historyIdx = -1;
+        let busy = false;
+
+        // ---------- helpers ----------
+        const write = (s) => term.write(s);
+        const writeln = (s = '') => term.write(s + '\r\n');
+        const dim = (s) => `\x1b[2m${s}\x1b[0m`;
+        const cyan = (s) => `\x1b[1;36m${s}\x1b[0m`;
+        const yellow = (s) => `\x1b[1;33m${s}\x1b[0m`;
+
+        function prompt() {
+            write(PROMPT);
+            inputBuf = '';
+        }
+
+        async function loadIndex() {
+            const res = await fetch(INDEX_URL);
+            const raw = await res.json();
+            // index.json chunks each post into several entries (objectID with
+            // ":N:M" suffixes) for lunr snippets — deduplicate by uri, keeping
+            // the first chunk which holds the leading content
+            const byUri = new Map();
+            for (const p of raw) {
+                if (!byUri.has(p.uri)) byUri.set(p.uri, p);
+            }
+            posts = [...byUri.values()];
+            posts.sort((a, b) => (a.date < b.date ? 1 : -1));
+        }
+
+        async function loadEngine(onProgress) {
+            if (engine) return engine;
+            if (!engineLoading) {
+                engineLoading = (async () => {
+                    await init();
+                    onProgress('downloading weights (22MB, first time only)...');
+                    const [wRes, vRes] = await Promise.all([fetch(WEIGHTS_URL), fetch(VOCAB_URL)]);
+                    const [wBuf, vText] = await Promise.all([wRes.arrayBuffer(), vRes.text()]);
+                    onProgress('loading model into WASM...');
+                    const e = NeedleWasm.load(new Uint8Array(wBuf), vText);
+                    if (!e) throw new Error('NeedleWasm.load() failed');
+                    engine = e;
+                    return e;
+                })();
+            }
+            return engineLoading;
+        }
+
+        // ---------- blog tools ----------
+        function scorePost(p, terms) {
+            const hay = {
+                title: (p.title || '').toLowerCase(),
+                tags: (p.tags || []).join(' ').toLowerCase(),
+                cats: (p.categories || []).join(' ').toLowerCase(),
+                content: (p.content || '').toLowerCase()
+            };
+            let score = 0;
+            for (const t of terms) {
+                if (hay.title.includes(t)) score += 10;
+                if (hay.tags.includes(t)) score += 8;
+                if (hay.cats.includes(t)) score += 6;
+                if (hay.content.includes(t)) score += 2;
+            }
+            return score;
+        }
+
+        function searchPosts(query) {
+            const q = query.toLowerCase().trim();
+            if (!q) return [];
+            // whitespace terms for latin, plus the raw string as one term for CJK
+            const terms = q.split(/\s+/).filter(Boolean);
+            // extract latin/digit runs too, so CJK-wrapped keywords like
+            // 找一下deepseek的文章 still match as "deepseek"
+            for (const m of q.matchAll(/[a-z0-9][a-z0-9._+-]*/g)) {
+                if (!terms.includes(m[0])) terms.push(m[0]);
+            }
+            if (!terms.includes(q)) terms.push(q);
+            return posts
+                .map(p => ({ p, s: scorePost(p, terms) }))
+                .filter(x => x.s > 0)
+                .sort((a, b) => b.s - a.s)
+                .slice(0, 8)
+                .map(x => x.p);
+        }
+
+        function printPosts(list) {
+            lastResults = list;
+            if (!list.length) {
+                writeln('没有匹配的文章。换个关键词试试？');
+                return;
+            }
+            list.forEach((p, i) => {
+                // OSC 8 hyperlink: title itself is clickable
+                const link = `\x1b]8;;${location.origin + p.uri}\x07${cyan(p.title)}\x1b]8;;\x07`;
+                writeln(`  ${yellow('[' + (i + 1) + ']')} ${link}`);
+                writeln(`      ${dim(p.date + '  ' + (p.tags || []).join(', '))}`);
+            });
+            writeln(dim('输入 open <序号> 打开对应文章'));
+        }
+
+        function execTool(name, args, rawInput) {
+            switch (name) {
+                case 'search_posts': {
+                    const q = args.query || '';
+                    writeln(dim(`$ search_posts("${q}")`));
+                    let results = searchPosts(q);
+                    // the model can garble pure-CJK queries — retry with the
+                    // original user input when its extraction found nothing
+                    if (!results.length && rawInput && rawInput !== q) {
+                        writeln(dim(`$ search_posts("${rawInput}") (retry)`));
+                        results = searchPosts(rawInput);
+                    }
+                    if (!results.length && /最近|最新|recent|latest|new/i.test(rawInput || q)) {
+                        writeln(dim('$ list_recent_posts() (fallback)'));
+                        results = posts.slice(0, 8);
+                    }
+                    printPosts(results);
+                    break;
+                }
+                case 'list_recent_posts':
+                    writeln(dim('$ list_recent_posts()'));
+                    printPosts(posts.slice(0, 8));
+                    break;
+                case 'list_posts_by_tag':
+                    writeln(dim(`$ list_posts_by_tag("${args.tag || ''}")`));
+                    printPosts(posts.filter(p => (p.tags || []).includes(args.tag)).slice(0, 8));
+                    break;
+                default:
+                    throw new Error('unknown tool: ' + name);
+            }
+        }
+
+        // ---------- AI routing ----------
+        async function aiRoute(input) {
+            const e = await loadEngine(m => writeln(dim('[needle] ' + m)));
+            const started = performance.now();
+            let line = '';
+            // stream raw tokens dimmed on a single overwriting line
+            const out = e.run_stream(input, TOOLS_JSON, (_id, piece) => {
+                line += piece;
+                const shown = line.length > 60 ? '…' + line.slice(-59) : line;
+                write('\r\x1b[2K' + dim(shown));
+            });
+            write('\r\x1b[2K');
+            writeln(dim(`[needle] ${(performance.now() - started).toFixed(0)}ms`));
+            // the 26M model emits truncated \uXXXX escapes for CJK text —
+            // strip malformed escapes before parsing (valid ones are kept)
+            const sanitized = out.replace(/\\u[0-9a-fA-F]{0,3}(?![0-9a-fA-F])/g, '');
+            let calls;
+            try {
+                calls = JSON.parse(sanitized);
+            } catch (err) {
+                console.log('[needle raw output]', out);
+                throw err;
+            }
+            if (!Array.isArray(calls) || !calls.length) throw new Error('empty tool call');
+            for (const c of calls) execTool(c.name, c.arguments || {}, input);
+        }
+
+        // ---------- commands ----------
+        function cmdHelp() {
+            writeln('可用命令:');
+            writeln('  help              显示本帮助');
+            writeln('  search <关键词>   直接搜索文章');
+            writeln('  ls [tag]          列出最新文章（或指定 tag）');
+            writeln('  open <序号>       打开上一次结果中的文章');
+            writeln('  clear             清屏');
+            writeln('  about             关于这个终端');
+            writeln('');
+            writeln('直接输入自然语言（如「找一下 hugo 相关的文章」）由本地 Needle 模型解析。');
+        }
+
+        function cmdAbout() {
+            writeln('本终端内置 Needle —— 26M 参数的端侧工具调用模型。');
+            writeln('模型在你的浏览器里通过 WASM 本地运行，不经过任何服务器或 LLM API。');
+            writeln('运行时: needle-rs (MIT) · 模型: Cactus Compute Needle (MIT)');
+        }
+
+        function openResult(n) {
+            const p = lastResults[n - 1];
+            if (!p) {
+                writeln('没有这个序号。先 search 或 ls 出结果。');
+                return;
+            }
+            writeln('打开 ' + cyan(p.uri) + ' ...');
+            window.open(p.uri, '_blank');
+        }
+
+        async function handleInput(raw) {
+            const input = raw.trim();
+            if (!input) return;
+
+            const [cmd, ...rest] = input.split(/\s+/);
+            const argStr = rest.join(' ');
+
+            switch (cmd) {
+                case 'help': cmdHelp(); return;
+                case 'clear': term.clear(); return;
+                case 'about': cmdAbout(); return;
+                case 'search': printPosts(searchPosts(argStr)); return;
+                case 'ls':
+                    printPosts(argStr
+                        ? posts.filter(p => (p.tags || []).includes(argStr)).slice(0, 8)
+                        : posts.slice(0, 8));
+                    return;
+                case 'open': openResult(parseInt(argStr, 10)); return;
+            }
+
+            // natural language → needle
+            try {
+                await aiRoute(input);
+            } catch (err) {
+                writeln(dim(`[needle] 解析失败（${err.message}），按关键词搜索处理`));
+                printPosts(searchPosts(input));
+            }
+        }
+
+        // ---------- REPL ----------
+        function recallHistory(dir) {
+            const next = historyIdx + dir;
+            if (next < 0 || next >= history.length) return;
+            historyIdx = next;
+            write('\r\x1b[2K' + PROMPT + history[historyIdx]);
+            inputBuf = history[historyIdx];
+        }
+
+        term.onData(async (data) => {
+            if (busy) return;
+            // escape sequences arrive as one string; handle before the char loop
+            if (data === '\x1b[A') return recallHistory(-1);
+            if (data === '\x1b[B') return recallHistory(1);
+            if (data.startsWith('\x1b')) return; // ignore other escape sequences
+            for (const ch of data) {
+                if (ch === '\r') {
+                    write('\r\n');
+                    const line = inputBuf;
+                    if (line.trim()) history.push(line);
+                    historyIdx = history.length;
+                    busy = true;
+                    try {
+                        await handleInput(line);
+                    } finally {
+                        busy = false;
+                        prompt();
+                    }
+                } else if (ch === '\u007F' || ch === '\b') {
+                    if (inputBuf.length > 0) {
+                        inputBuf = inputBuf.slice(0, -1);
+                        write('\b \b');
+                    }
+                } else if (ch >= ' ') {
+                    inputBuf += ch;
+                    write(ch);
+                }
+            }
+        });
+
+        // ---------- boot ----------
+        (async () => {
+            try {
+                writeln('正在载入文章索引...');
+                await loadIndex();
+                writeln(`已载入 ${posts.length} 篇文章。`);
+            } catch (e) {
+                writeln('索引载入失败: ' + e.message);
+            }
+            writeln('');
+            writeln(yellow('Needle Terminal') + dim(' —— 端侧 AI 博客终端（原型）'));
+            writeln('输入 help 查看命令；直接输入自然语言试试 AI 解析。');
+            writeln('');
+            prompt();
+        })();
+    </script>
+</body>
+
+</html>

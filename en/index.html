@@ -126,11 +126,11 @@
 
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/xterm@4.18.0/css/xterm.css" />
+    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.min.css" />
     <script src="https://fastly.jsdelivr.net/npm/jquery@3.1.1/dist/jquery.slim.min.js"></script>
-    <script src="https://fastly.jsdelivr.net/npm/xterm@4.18.0/lib/xterm.min.js"></script>
-    <script src="https://fastly.jsdelivr.net/npm/xterm-addon-webgl@0.12.0-beta.15/lib/xterm-addon-webgl.js"></script>
-    <script src="https://fastly.jsdelivr.net/npm/xterm-addon-web-links@0.8.0/lib/xterm-addon-web-links.min.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/@xterm/xterm@5.5.0/lib/xterm.min.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/@xterm/addon-webgl@0.18.0/lib/addon-webgl.min.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/@xterm/addon-web-links@0.11.0/lib/addon-web-links.min.js"></script>
     <script src="https://fastly.jsdelivr.net/pyodide/v0.23.0/full/pyodide.js"></script>
     <script>
         $(function () {
@@ -218,11 +218,15 @@
                 fontFamily: '"Cascadia Code", Menlo, monospace',
                 theme: baseTheme,
                 cursorBlink: true,
+                linkHandler: {
+                    
+                    activate: (event, text) => window.open(text, '_blank'),
+                },
             });
             term.open(document.querySelector('.demo .inner'));
             var isWebglEnabled = false;
             try {
-                const webgl = new window.WebglAddon.WebglAddon();
+                const webgl = new window.WebglAddon();
                 term.loadAddon(webgl);
                 var wl = new WebLinksAddon();
                 term.loadAddon(wl);
@@ -307,9 +311,9 @@
             }
 
             function earseCureentLinePythonCode() {
-                if (pythonCodeY === (term.buffer._normal.cursorY + term.buffer._normal.baseY + 1)) {
+                if (pythonCodeY === (term.buffer.active.cursorY + term.buffer.active.baseY + 1)) {
                     term.write('\r\x1b[2K\x1b[01;32m>>> ');
-                } else if (term.buffer._normal.cursorX > 4) {
+                } else if (term.buffer.active.cursorX > 4) {
                     term.write('\r\x1b[2K... ');
                 } else {
                     term.write('\r\x1b[2K');
@@ -320,15 +324,15 @@
                 const printable = !e.altKey && !e.ctrlKey && !e.metaKey;
                 switch (e) {
                     case VK_LEFT:
-                        if (term.buffer._normal.cursorX > 4) {
-                            setCursorPosition(term.buffer._normal.cursorX, term.buffer._normal.cursorY + 1);
+                        if (term.buffer.active.cursorX > 4) {
+                            setCursorPosition(term.buffer.active.cursorX, term.buffer.active.cursorY + 1);
                         }
                         break;
                     case VK_RIGHT:
                         lastCRIndex = pythonCode.lastIndexOf('\r');
                         lastPythonCodeLine = pythonCode.substring(lastCRIndex + 1, pythonCode.length + 1);
-                        if (term.buffer._normal.cursorX < (lastPythonCodeLine.length % term.cols + 4)) {
-                            setCursorPosition(term.buffer._normal.cursorX + 2, term.buffer._normal.cursorY + 1);
+                        if (term.buffer.active.cursorX < (lastPythonCodeLine.length % term.cols + 4)) {
+                            setCursorPosition(term.buffer.active.cursorX + 2, term.buffer.active.cursorY + 1);
                         }
                         break;
                     case VK_UP:
@@ -336,8 +340,8 @@
                             break;
                         }
                         if (pythonCode.length === 0) {
-                            pythonCodeX = term.buffer._normal.cursorX + 1;
-                            pythonCodeY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
+                            pythonCodeX = term.buffer.active.cursorX + 1;
+                            pythonCodeY = term.buffer.active.cursorY + term.buffer.active.baseY + 1;
                         }
                         historyCode = "";
                         historyIndex += 1;
@@ -350,7 +354,7 @@
                         lastCRIndex = pythonCode.lastIndexOf('\r');
                         pythonCode = pythonCode.substring(0, lastCRIndex + 1) + historyCode;
                         if (historyCode.length > 0) {
-                            writeHightPythonCode(5, pythonCodeY - term.buffer._normal.baseY, pythonCode)
+                            writeHightPythonCode(5, pythonCodeY - term.buffer.active.baseY, pythonCode)
                         }
                         break;
                     case VK_DOWN:
@@ -358,8 +362,8 @@
                             break;
                         }
                         if (pythonCode.length === 0) {
-                            pythonCodeX = term.buffer._normal.cursorX + 1;
-                            pythonCodeY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
+                            pythonCodeX = term.buffer.active.cursorX + 1;
+                            pythonCodeY = term.buffer.active.cursorY + term.buffer.active.baseY + 1;
                         }
                         historyCode = "";
                         historyIndex -= 1;
@@ -375,7 +379,7 @@
                         lastCRIndex = pythonCode.lastIndexOf('\r');
                         pythonCode = pythonCode.substring(0, lastCRIndex + 1) + historyCode;
                         if (historyCode.length > 0) {
-                            writeHightPythonCode(5, pythonCodeY - term.buffer._normal.baseY, pythonCode)
+                            writeHightPythonCode(5, pythonCodeY - term.buffer.active.baseY, pythonCode)
                         }
                         break;
                     case ENTER:
@@ -448,9 +452,9 @@
                     case DEL:
                         lastCRIndex = pythonCode.lastIndexOf('\r');
                         lastPythonCodeLine = pythonCode.substring(lastCRIndex + 1, pythonCode.length + 1);
-                        if (term._core.buffer.x > 4 || lastPythonCodeLine.length >= term.cols - 4) {
-                            let currentCursorY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
-                            let lasetEditIndex = term.buffer._normal.cursorX - 4;
+                        if (term.buffer.active.cursorX > 4 || lastPythonCodeLine.length >= term.cols - 4) {
+                            let currentCursorY = term.buffer.active.cursorY + term.buffer.active.baseY + 1;
+                            let lasetEditIndex = term.buffer.active.cursorX - 4;
                             let editIndex = lasetEditIndex;
                             if (lastPythonCodeLine.length >= term.cols - 4) {
                                 editIndex = lasetEditIndex + (currentCursorY - pythonCodeY) * term.cols
@@ -458,11 +462,11 @@
                             pythonCode = pythonCode.substring(0, lastCRIndex + 1) + lastPythonCodeLine.slice(0, editIndex - 1) + lastPythonCodeLine.slice(editIndex);
                             term.write('\x1b[?25l');
                             earseCureentLinePythonCode();
-                            writeHightPythonCode(pythonCodeX, pythonCodeY - term.buffer._normal.baseY, pythonCode).then(() => {
+                            writeHightPythonCode(pythonCodeX, pythonCodeY - term.buffer.active.baseY, pythonCode).then(() => {
                                 if (lastPythonCodeLine.length === term.cols - 4) {
-                                    setCursorPosition(term.cols, currentCursorY - term.buffer._normal.baseY - 1);
+                                    setCursorPosition(term.cols, currentCursorY - term.buffer.active.baseY - 1);
                                 } else {
-                                    setCursorPosition(lasetEditIndex + 4, currentCursorY - term.buffer._normal.baseY);
+                                    setCursorPosition(lasetEditIndex + 4, currentCursorY - term.buffer.active.baseY);
                                 }
                                 term.write('\x1b[?25h'); 
                             });
@@ -477,12 +481,12 @@
                                 }
                                 renderingCode = true;
                                 if (pythonCode.length === 0) {
-                                    pythonCodeX = term.buffer._normal.cursorX + 1;
-                                    pythonCodeY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
+                                    pythonCodeX = term.buffer.active.cursorX + 1;
+                                    pythonCodeY = term.buffer.active.cursorY + term.buffer.active.baseY + 1;
                                 }
-                                let currentCursorY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
+                                let currentCursorY = term.buffer.active.cursorY + term.buffer.active.baseY + 1;
                                 lastCRIndex = pythonCode.lastIndexOf('\r');
-                                let lasetEditIndex = term.buffer._normal.cursorX - 4;
+                                let lasetEditIndex = term.buffer.active.cursorX - 4;
                                 let editIndex = lasetEditIndex;
                                 lastPythonCodeLine = pythonCode.substring(lastCRIndex + 1, pythonCode.length + 1);
                                 if (lastPythonCodeLine.length >= term.cols - 4) {
@@ -491,11 +495,11 @@
                                 lastPythonCodeLine = lastPythonCodeLine.slice(0, editIndex) + e + lastPythonCodeLine.slice(editIndex)
                                 pythonCode = pythonCode.substring(0, lastCRIndex + 1) + lastPythonCodeLine;
                                 term.write('\x1b[?25l');
-                                writeHightPythonCode(pythonCodeX, pythonCodeY - term.buffer._normal.baseY, pythonCode).then(() => {
+                                writeHightPythonCode(pythonCodeX, pythonCodeY - term.buffer.active.baseY, pythonCode).then(() => {
                                     if ((lasetEditIndex + 6) > term.cols) {
-                                        setCursorPosition(0, currentCursorY - term.buffer._normal.baseY + 1);
+                                        setCursorPosition(0, currentCursorY - term.buffer.active.baseY + 1);
                                     } else {
-                                        setCursorPosition(lasetEditIndex + 6, currentCursorY - term.buffer._normal.baseY);
+                                        setCursorPosition(lasetEditIndex + 6, currentCursorY - term.buffer.active.baseY);
                                     }
                                     term.write('\x1b[?25h'); 
                                     renderingCode = false;
@@ -566,6 +570,10 @@
                         }
                         return
                     }
+                    if (needleBusy) {
+                        
+                        return;
+                    }
                     switch (e) {
                         case ESC: 
                             term.prompt()
@@ -577,20 +585,20 @@
                         case ENTER: 
                             runCommand(term, command);
                             command = '';
+                            cmdCursor = 0;
+                            break;
+                        case VK_LEFT:
+                            moveCmdCursorLeft();
+                            break;
+                        case VK_RIGHT:
+                            moveCmdCursorRight();
                             break;
                         case DEL: 
-                            
-                            if (term._core.buffer.x > 2) {
-                                term.write('\b \b');
-                                if (command.length > 0) {
-                                    command = command.substr(0, command.length - 1);
-                                }
-                            }
+                            deleteCmdChar();
                             break;
                         default: 
                             if (e >= String.fromCharCode(0x20) && e <= String.fromCharCode(0x7E) || e >= '\u00a0') {
-                                command += e;
-                                term.write(e);
+                                insertCmdText(e);
                             }
                     }
                 });
@@ -623,7 +631,256 @@
                 });
             }
 
+            
+            var blogPosts = [];
+            var lastResults = [];
+            var needleWorker = null;
+            var needleBusy = false;
+
+            var NEEDLE_TOOLS_JSON = JSON.stringify([
+                {
+                    name: 'search_posts',
+                    description: 'Search blog posts by keyword or topic',
+                    parameters: { query: { type: 'string' } }
+                },
+                {
+                    name: 'list_recent_posts',
+                    description: 'List the most recent blog posts',
+                    parameters: {}
+                },
+                {
+                    name: 'list_posts_by_tag',
+                    description: 'List blog posts that have a specific tag',
+                    parameters: { tag: { type: 'string' } }
+                }
+            ]);
+
+            
+            
+            
+            fetch('/index.json').then(r => r.json()).then(raw => {
+                const byUri = new Map();
+                for (const p of raw) {
+                    if (!byUri.has(p.uri)) byUri.set(p.uri, p);
+                }
+                blogPosts = [...byUri.values()];
+                blogPosts.sort((a, b) => (a.date < b.date ? 1 : -1));
+            }).catch(() => {});
+
+            function scorePost(p, terms) {
+                const hay = {
+                    title: (p.title || '').toLowerCase(),
+                    tags: (p.tags || []).join(' ').toLowerCase(),
+                    cats: (p.categories || []).join(' ').toLowerCase(),
+                    content: (p.content || '').toLowerCase()
+                };
+                let score = 0;
+                for (const t of terms) {
+                    if (hay.title.includes(t)) score += 10;
+                    if (hay.tags.includes(t)) score += 8;
+                    if (hay.cats.includes(t)) score += 6;
+                    if (hay.content.includes(t)) score += 2;
+                }
+                return score;
+            }
+
+            function searchPosts(query) {
+                const q = query.toLowerCase().trim();
+                if (!q) return [];
+                
+                const terms = q.split(/\s+/).filter(Boolean);
+                
+                
+                for (const m of q.matchAll(/[a-z0-9][a-z0-9._+-]*/g)) {
+                    if (!terms.includes(m[0])) terms.push(m[0]);
+                }
+                if (!terms.includes(q)) terms.push(q);
+                return blogPosts
+                    .map(p => ({ p, s: scorePost(p, terms) }))
+                    .filter(x => x.s > 0)
+                    .sort((a, b) => b.s - a.s)
+                    .slice(0, 8)
+                    .map(x => x.p);
+            }
+
+            function printPosts(list) {
+                lastResults = list;
+                if (!list.length) {
+                    term.writeln('没有匹配的文章。换个关键词试试？');
+                    return;
+                }
+                list.forEach((p, i) => {
+                    
+                    const link = `\x1b]8;;${location.origin + p.uri}\x07\x1b[1;36m${p.title}\x1b[0m\x1b]8;;\x07`;
+                    term.writeln(`  \x1b[1;33m[${i + 1}]\x1b[0m ${link}`);
+                    term.writeln(`      \x1b[2m${p.date}  ${(p.tags || []).join(', ')}\x1b[0m`);
+                });
+                term.writeln('\x1b[2m输入 open <序号> 打开对应文章\x1b[0m');
+            }
+
+            
+            function getNeedleWorker() {
+                if (!needleWorker) {
+                    needleWorker = new Worker('/lib/needle-rs/worker.js', { type: 'module' });
+                }
+                return needleWorker;
+            }
+
+            function execBlogTool(name, args, rawInput) {
+                switch (name) {
+                    case 'search_posts': {
+                        const q = args.query || '';
+                        term.writeln(`\x1b[2m$ search_posts("${q}")\x1b[0m`);
+                        let results = searchPosts(q);
+                        
+                        
+                        if (!results.length && rawInput && rawInput !== q) {
+                            term.writeln(`\x1b[2m$ search_posts("${rawInput}") (retry)\x1b[0m`);
+                            results = searchPosts(rawInput);
+                        }
+                        if (!results.length && /最近|最新|recent|latest|new/i.test(rawInput || q)) {
+                            term.writeln('\x1b[2m$ list_recent_posts() (fallback)\x1b[0m');
+                            results = blogPosts.slice(0, 8);
+                        }
+                        printPosts(results);
+                        break;
+                    }
+                    case 'list_recent_posts':
+                        term.writeln('\x1b[2m$ list_recent_posts()\x1b[0m');
+                        printPosts(blogPosts.slice(0, 8));
+                        break;
+                    case 'list_posts_by_tag':
+                        term.writeln(`\x1b[2m$ list_posts_by_tag("${args.tag || ''}")\x1b[0m`);
+                        printPosts(blogPosts.filter(p => (p.tags || []).includes(args.tag)).slice(0, 8));
+                        break;
+                    default:
+                        throw new Error('unknown tool: ' + name);
+                }
+            }
+
+            function needleRoute(input) {
+                needleBusy = true;
+                const worker = getNeedleWorker();
+                const started = performance.now();
+                
+                const frames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+                let fi = 0, firstToken = false, line = '', status = 'thinking';
+                const drawSpin = () => term.write(`\r\x1b[2K\x1b[2m${frames[fi]} ${status}\x1b[0m`);
+                drawSpin();
+                const spin = setInterval(() => {
+                    if (firstToken) return;
+                    fi = (fi + 1) % frames.length;
+                    drawSpin();
+                }, 80);
+
+                const finish = (fn) => {
+                    clearInterval(spin);
+                    term.write('\r\x1b[2K');
+                    try {
+                        fn();
+                    } finally {
+                        needleBusy = false;
+                        term.prompt();
+                    }
+                };
+
+                worker.onerror = (ev) => finish(() => {
+                    term.writeln(`\x1b[2m[needle] worker 错误（${ev.message}），按关键词搜索处理\x1b[0m`);
+                    printPosts(searchPosts(input));
+                });
+
+                worker.onmessage = (ev) => {
+                    const msg = ev.data;
+                    if (msg.type === 'progress') {
+                        status = msg.message;
+                    } else if (msg.type === 'token') {
+                        firstToken = true;
+                        line += msg.piece;
+                        const shown = line.length > 60 ? '…' + line.slice(-59) : line;
+                        term.write('\r\x1b[2K\x1b[2m' + shown + '\x1b[0m');
+                    } else if (msg.type === 'done') {
+                        finish(() => {
+                            term.writeln(`\x1b[2m[needle] ${(performance.now() - started).toFixed(0)}ms\x1b[0m`);
+                            
+                            
+                            const sanitized = msg.out.replace(/\\u[0-9a-fA-F]{0,3}(?![0-9a-fA-F])/g, '');
+                            const calls = JSON.parse(sanitized);
+                            if (!Array.isArray(calls) || !calls.length) throw new Error('empty tool call');
+                            for (const c of calls) execBlogTool(c.name, c.arguments || {}, input);
+                        });
+                    } else if (msg.type === 'error') {
+                        finish(() => {
+                            term.writeln(`\x1b[2m[needle] 解析失败（${msg.message}），按关键词搜索处理\x1b[0m`);
+                            printPosts(searchPosts(input));
+                        });
+                    }
+                };
+                worker.postMessage({ query: input, tools: NEEDLE_TOOLS_JSON });
+            }
+
             var command = '';
+            var cmdCursor = 0;
+
+            
+            function cellWidth(ch) {
+                const code = ch.codePointAt(0);
+                return (code >= 0x1100 && (
+                    code <= 0x115f || code === 0x2329 || code === 0x232a ||
+                    (code >= 0x2e80 && code <= 0xa4cf && code !== 0x303f) ||
+                    (code >= 0xac00 && code <= 0xd7a3) ||
+                    (code >= 0xf900 && code <= 0xfaff) ||
+                    (code >= 0xfe30 && code <= 0xfe4f) ||
+                    (code >= 0xff00 && code <= 0xff60) ||
+                    (code >= 0xffe0 && code <= 0xffe6) ||
+                    (code >= 0x20000 && code <= 0x3fffd))) ? 2 : 1;
+            }
+
+            function textWidth(str) {
+                let w = 0;
+                for (const c of str) w += cellWidth(c);
+                return w;
+            }
+
+            function moveCmdCursorLeft() {
+                if (cmdCursor > 0) {
+                    cmdCursor--;
+                    term.write('\x1b[' + cellWidth(command[cmdCursor]) + 'D');
+                }
+            }
+
+            function moveCmdCursorRight() {
+                if (cmdCursor < command.length) {
+                    term.write('\x1b[' + cellWidth(command[cmdCursor]) + 'C');
+                    cmdCursor++;
+                }
+            }
+
+            function insertCmdText(text) {
+                command = command.slice(0, cmdCursor) + text + command.slice(cmdCursor);
+                cmdCursor += text.length;
+                const rest = command.slice(cmdCursor);
+                if (rest.length === 0) {
+                    term.write(text);
+                } else {
+                    
+                    term.write(text + rest + '\x1b[' + textWidth(rest) + 'D');
+                }
+            }
+
+            function deleteCmdChar() {
+                if (cmdCursor <= 0) return;
+                const removed = command[cmdCursor - 1];
+                const w = cellWidth(removed);
+                command = command.slice(0, cmdCursor - 1) + command.slice(cmdCursor);
+                cmdCursor--;
+                const rest = command.slice(cmdCursor);
+                if (rest.length === 0) {
+                    term.write('\x1b[' + w + 'D' + ' '.repeat(w) + '\x1b[' + w + 'D');
+                } else {
+                    
+                    term.write('\x1b[' + w + 'D' + rest + ' ' + '\x1b[' + (textWidth(rest) + 1) + 'D');
+                }
+            }
             var commands = {
                 help: {
                     f: (args, final) => {
@@ -638,7 +895,9 @@
                             streamString += [
                                 'Welcome to console-box! Try some of the commands below.',
                                 '',
-                                ...Object.keys(commands).map(e => `  ${e.padEnd(10)} ${commands[e].description}`)
+                                ...Object.keys(commands).map(e => `  ${e.padEnd(10)} ${commands[e].description}`),
+                                '',
+                                '也可以直接输入自然语言（如「找一下 hugo 的文章」），由本地 Needle 模型解析。',
                             ].join('\n\r')
                         }
                         if (final) {
@@ -649,12 +908,33 @@
                 },
                 ls: {
                     f: (args, final) => {
-                        streamString += ['a', 'bunch', 'of', 'fake', 'files'].join('\n\r');
-                        if (final) {
-                            term.writeln(streamString);
-                        }
+                        if (!final) return;
+                        const tag = args.join(' ').trim().replaceAll('"', '');
+                        printPosts(tag
+                            ? blogPosts.filter(p => (p.tags || []).includes(tag)).slice(0, 8)
+                            : blogPosts.slice(0, 8));
                     },
-                    description: 'Prints a fake directory structure'
+                    description: 'List recent blog posts, or by tag: ls hugo'
+                },
+                search: {
+                    f: (args, final) => {
+                        if (!final) return;
+                        printPosts(searchPosts(args.join(' ').replaceAll('"', '')));
+                    },
+                    description: 'Search blog posts: search <keyword>'
+                },
+                open: {
+                    f: (args, final) => {
+                        if (!final) return;
+                        const p = lastResults[parseInt(args[0], 10) - 1];
+                        if (!p) {
+                            term.writeln('没有这个序号。先 search 或 ls 出结果。');
+                            return;
+                        }
+                        term.writeln('打开 \x1b[1;36m' + p.uri + '\x1b[0m ...');
+                        window.open(p.uri, '_blank');
+                    },
+                    description: 'Open the N-th result: open 2'
                 },
                 echo: {
                     f: (args, final) => {
@@ -674,7 +954,7 @@
                                 term.prompt(term);
                             }
                         } else if (final) {
-                            var curY = term.buffer._normal.cursorY + term.buffer._normal.baseY + 1;
+                            var curY = term.buffer.active.cursorY + term.buffer.active.baseY + 1;
                             lines = streamString.split('\n');
                             if (args.includes('--help') || args.includes('-h')) {
                                 lines.push(commands.lolcat.help);
@@ -685,7 +965,7 @@
                             }
                             var seed = Math.floor(Math.random() * 8196);
                             setTimeout(function (args) {
-                                for (let y = curY; y < term.buffer._normal.cursorY + term.buffer._normal.baseY; y++) {
+                                for (let y = curY; y < term.buffer.active.cursorY + term.buffer.active.baseY; y++) {
                                     for (let i = 0; i < term.cols; i++) {
                                         setStyle(i, y, 0x3000000 | getRainbowColor(0.3, seed + y - curY + i / 8));
                                     }
@@ -832,8 +1112,8 @@
                 cmds = text.trim().split('|')
                 if (cmds.length > 0) {
                     term.writeln('');
-                    cmdX = term.buffer._normal.cursorX;
-                    cmdY = term.buffer._normal.cursorY;
+                    cmdX = term.buffer.active.cursorX;
+                    cmdY = term.buffer.active.cursorY;
 
                     for (let i = 0; i < cmds.length; i++) {
                         let cmd = cmds[i]
@@ -845,6 +1125,12 @@
                             if (command in commands) {
                                 commands[command].f(args, cmds.length == (i + 1));
                                 continue;
+                            }
+                            if (cmds.length === 1 && !needleBusy) {
+                                
+                                
+                                needleRoute(text.trim());
+                                return;
                             }
                             term.writeln(`${command}: command not found`);
                         }
@@ -870,7 +1156,7 @@
 ' │   Github: whitefirer              Agent Orchestration · Mesh               │',
 ' │                                                                            │',
 ' │  \x1b[33;1mContact                                \x1b[34mStack\x1b[0m                              │',
-' │   whitefirer@gmail.com                   Go Python C C++ TypeScript HCL    │',
+' │   whitefirer@gmail.com                  Go Python C C++ TypeScript AI Agent│',
 ' │                                                                            │',
 ' │  \x1b[35;1mIntroduction                           \x1b[36mAnd much more...\x1b[0m                   │',
 ' │   Worked for tencent music                                                 │',
@@ -882,7 +1168,7 @@
 ].join('\n\r'));
 
                 term.writeln('Below is a simple emulated backend, try running `charain`, `matrix` or `help`.');
-                term.writeln('Now you can use the \x1b[3m\x1b[1mPython\x1b[0m directly in this console!');
+                term.writeln('Now you can use the \x1b[3m\x1b[1mPython\x1b[0m, or just type \x1b[1mnatural language\x1b[0m (e.g. 找一下 hugo 的文章) — on-device \x1b[1mNeedle AI\x1b[0m will route it locally, no API.');
                 term.writeln('');
                 term.prompt();
             }
@@ -1179,13 +1465,13 @@
 
                             if (style == 0) {
                                 if (matrixDirection == "LEFT" || matrixDirection == "RIGHT") {
-                                    setChar(tmp_y, x, [32, 0, 0], undefined, undefined);
+                                    setChar(tmp_y, x, [32 | 0x400000, 0, 0], undefined, undefined);
                                 } else if (matrixTheme != "welcome") {
-                                    setChar(x, tmp_y, [32, 0, 0], undefined, undefined);
+                                    setChar(x, tmp_y, [32 | 0x400000, 0, 0], undefined, undefined);
                                 }
                             } else {
                                 if (x < matrixCols && y < matrixRows && x >= 0 && y >= 0) {
-                                    var char = [Math.round(Math.random() * 94) + 33, styleList[dropInfo.style], 0]
+                                    var char = [(Math.round(Math.random() * 94) + 33) | 0x400000, styleList[dropInfo.style], 0]
                                     if (matrixTheme != "welcome") {
                                         if (matrixDirection == "RIGHT" || matrixDirection == "LEFT") {
                                             setChar(y, x, char, undefined, undefined);
@@ -1196,7 +1482,7 @@
                                 }
 
                                 if ((matrixDirection == "RIGHT" || matrixDirection == "LEFT") && matrixTheme == "welcome") {
-                                    setChar(tmp_y, x, [tip[ind] ? tip[ind].charCodeAt() : 32, style, 0], undefined, undefined);
+                                    setChar(tmp_y, x, [(tip[ind] ? tip[ind].charCodeAt() : 32) | 0x400000, style, 0], undefined, undefined);
                                 } else if (matrixDirection == "RIGHT" || matrixDirection == "LEFT") {
                                     setStyle(tmp_y, x, style);
                                 } else {
@@ -1274,18 +1560,18 @@
 
             function setNormalChar(col, row, value, combinedChar) {
                 if (combinedChar != undefined) {
-                    term.buffer._normal._buffer.lines._array[row]._combined[col] = combinedChar;
-                } else if (term.buffer._normal._buffer.lines._array[row]._combined[col]) {
-                    delete (term.buffer._normal._buffer.lines._array[row]._combined[col]);
+                    term._core.buffer.lines._array[row]._combined[col] = combinedChar;
+                } else if (term._core.buffer.lines._array[row]._combined[col]) {
+                    delete (term._core.buffer.lines._array[row]._combined[col]);
                 }
 
-                term.buffer._normal._buffer.lines._array[row]._data[3 * col] = value[0];
-                term.buffer._normal._buffer.lines._array[row]._data[3 * col + 1] = value[1];
-                term.buffer._normal._buffer.lines._array[row]._data[3 * col + 2] = value[2];
+                term._core.buffer.lines._array[row]._data[3 * col] = value[0];
+                term._core.buffer.lines._array[row]._data[3 * col + 1] = value[1];
+                term._core.buffer.lines._array[row]._data[3 * col + 2] = value[2];
             }
 
             function setNormalStyle(col, row, style) {
-                term.buffer._normal._buffer.lines._array[row]._data[3 * col + 1] = style;
+                term._core.buffer.lines._array[row]._data[3 * col + 1] = style;
             }
 
             function isEmptyChar(col, row) {
