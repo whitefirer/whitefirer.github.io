@@ -1,0 +1,10 @@
+# Netlify custom headers — https://docs.netlify.com/routing/headers/
+
+# On-device model weights and WASM runtimes never change in place — cache
+# them aggressively so repeat visits skip the 36MB download
+/lib/needle2/*
+  Cache-Control: public, max-age=31536000, immutable
+/lib/needle-rs/*
+  Cache-Control: public, max-age=31536000, immutable
+/lib/sem/*
+  Cache-Control: public, max-age=31536000, immutable
