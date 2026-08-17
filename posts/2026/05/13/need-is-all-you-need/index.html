@@ -291,7 +291,231 @@
 </div>
 <div class="post-series-nav">
                 <em>本文是「<a href="/series/ai-zatan/">AI 杂谈</a>」系列第 4 篇，共 7 篇。上一篇：<a href="/posts/2026/05/10/ai-trust-meaning/">AI 能做事，不能扛事</a>。下一篇：<a href="/posts/2026/05/25/cloud-native-to-ai-transformation/">从云原生转型到AI转型，什么值得借鉴？什么需要摒弃？</a>。</em>
-            </div></div><div class="post-footer" id="post-footer">
+            </div></div><script src="/lib/qrcode/qrcode.min.js"></script>
+<div id="share-card-btn" hidden>生成分享卡片</div>
+<div id="share-card-overlay" hidden>
+    <div class="share-card-dialog">
+        <img id="share-card-img" alt="分享卡片">
+        <div class="share-card-actions">
+            <a id="share-card-download" download="share-card.png">下载 PNG</a>
+            <button type="button" id="share-card-copy">复制图片</button>
+            <span class="share-card-themes">
+                <button type="button" data-theme="dark" class="active">深色</button>
+                <button type="button" data-theme="light">浅色</button>
+                <button type="button" data-theme="claude">Claude</button>
+            </span>
+            <span class="share-card-orients">
+                <button type="button" data-orient="landscape" class="active">横版</button>
+                <button type="button" data-orient="portrait">竖版</button>
+            </span>
+            <button type="button" id="share-card-close">关闭</button>
+        </div>
+    </div>
+</div>
+<style>
+#share-card-btn {
+    position: absolute; z-index: 99; padding: 4px 10px; border-radius: 4px;
+    background: #1a1b26; color: #9ece6a; border: 1px solid rgba(158,206,106,.4);
+    font-size: 12px; cursor: pointer; user-select: none;
+    font-family: "Cascadia Code", Menlo, Consolas, monospace;
+}
+#share-card-btn:hover { background: #24283b; }
+#share-card-overlay {
+    position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,.6);
+    display: flex; align-items: center; justify-content: center;
+}
+#share-card-overlay[hidden] { display: none; }
+.share-card-dialog {
+    background: #1a1b26; border: 1px solid rgba(192,202,245,.2); border-radius: 8px;
+    padding: 16px; max-width: 92vw;
+}
+.share-card-dialog img { display: block; max-width: min(560px, 88vw); max-height: 72vh; height: auto; width: auto; border-radius: 4px; }
+.share-card-actions { display: flex; gap: 14px; justify-content: center; align-items: center; margin-top: 12px; flex-wrap: wrap; }
+.share-card-actions a, .share-card-actions button {
+    background: none; border: none; padding: 0; font: inherit; font-size: 14px;
+    color: #7aa2f7; cursor: pointer; text-decoration: none;
+}
+.share-card-actions a:hover, .share-card-actions button:hover { text-decoration: underline; }
+.share-card-themes button, .share-card-orients button { color: #565f89; }
+.share-card-themes button.active, .share-card-orients button.active { color: #9ece6a; }
+.share-card-themes button + button::before, .share-card-orients button + button::before {
+    content: '/'; color: #565f89; margin-right: 14px; cursor: default;
+}
+</style>
+<script>
+(function () {
+    var content = document.getElementById('content');
+    var btn = document.getElementById('share-card-btn');
+    var overlay = document.getElementById('share-card-overlay');
+    var img = document.getElementById('share-card-img');
+    var dl = document.getElementById('share-card-download');
+    if (!content || !btn || !overlay) return;
+
+    var selectedText = '';
+    var theme = 'dark';
+    var orient = 'landscape';
+    var PALETTES = {
+        dark:   { bg: '#1a1b26', border: 'rgba(192,202,245,.25)', prompt: '#9ece6a',
+                  text: '#e5e9f5', title: '#7aa2f7', meta: '#7982a9' },
+        light:  { bg: '#ffffff', border: '#d0d7de', prompt: '#1a7f37',
+                  text: '#1f2328', title: '#0969da', meta: '#8b949e' },
+        claude: { bg: '#f0eee6', border: '#dad7ce', prompt: '#d97757',
+                  text: '#141413', title: '#c15f3c', meta: '#73726c' }
+    };
+    var GEOMS = {
+        landscape: { W: 900, pad: 64, font: 26, lineH: 42, maxLines: 14,
+                     headY: 72, textY: 170, qrSize: 96 },
+        portrait:  { W: 640, pad: 48, font: 24, lineH: 40, maxLines: 18,
+                     headY: 66, textY: 146, qrSize: 88 }
+    };
+
+    function hideBtn() { btn.hidden = true; }
+
+    document.addEventListener('selectionchange', function () {
+        var sel = window.getSelection();
+        if (!sel || sel.isCollapsed || !content.contains(sel.anchorNode)) { hideBtn(); return; }
+        var text = sel.toString().trim();
+        if (text.length < 8) { hideBtn(); return; }
+        selectedText = text;
+        var rect = sel.getRangeAt(0).getBoundingClientRect();
+        btn.style.left = (rect.left + window.scrollX) + 'px';
+        btn.style.top = (rect.bottom + window.scrollY + 6) + 'px';
+        btn.hidden = false;
+    });
+    document.addEventListener('mousedown', function (e) {
+        if (e.target !== btn) hideBtn();
+    });
+
+    
+    function wrapText(ctx, text, maxWidth, maxLines) {
+        var lines = [], line = '';
+        for (var ch of text.replace(/\s+/g, ' ')) {
+            if (ctx.measureText(line + ch).width > maxWidth && line) {
+                lines.push(line); line = ch;
+                if (lines.length === maxLines) break;
+            } else {
+                line += ch;
+            }
+        }
+        if (lines.length < maxLines && line) lines.push(line);
+        if (lines.length === maxLines && line) {
+            lines[maxLines - 1] = lines[maxLines - 1].slice(0, -1) + '…';
+        }
+        return lines;
+    }
+
+    function drawQR(ctx, data, x, y, size) {
+        if (typeof qrcode !== 'function') return;
+        var qr = qrcode(0, 'M');
+        qr.addData(data);
+        qr.make();
+        var n = qr.getModuleCount();
+        var cell = Math.floor(size / (n + 8)); 
+        if (cell < 1) cell = 1;
+        var total = cell * (n + 8);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(x, y, total, total);
+        ctx.fillStyle = '#1a1b26';
+        for (var r = 0; r < n; r++) {
+            for (var c = 0; c < n; c++) {
+                if (qr.isDark(r, c)) ctx.fillRect(x + (c + 4) * cell, y + (r + 4) * cell, cell, cell);
+            }
+        }
+    }
+
+    function renderCard(text, themeKey, orientKey) {
+        var P = PALETTES[themeKey] || PALETTES.dark;
+        var G = GEOMS[orientKey] || GEOMS.landscape;
+        var maxTextW = G.W - G.pad * 2;
+        var fontStack = '"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif';
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
+        
+        canvas.width = G.W; canvas.height = 100;
+        ctx.font = G.font + 'px ' + fontStack;
+        var lines = wrapText(ctx, text, maxTextW, G.maxLines);
+        var footY = G.textY + lines.length * G.lineH + 36;   
+        var contentH = footY + Math.max(G.qrSize, 84) + 44;
+        
+        var H = contentH, oy = 0;
+        if (orientKey === 'portrait') {
+            var minH = Math.round(G.W * 4 / 3);
+            if (contentH < minH) { H = minH; oy = Math.round((minH - contentH) / 2); }
+        }
+        canvas.width = G.W; canvas.height = H;
+        
+        ctx.fillStyle = P.bg; ctx.fillRect(0, 0, G.W, H);
+        ctx.strokeStyle = P.border; ctx.lineWidth = 2;
+        ctx.strokeRect(14, 14, G.W - 28, H - 28);
+        
+        ctx.font = 'bold 24px "Cascadia Code",Menlo,Consolas,monospace';
+        ctx.fillStyle = P.prompt;
+        ctx.fillText('❯ whitefirer.org', G.pad, oy + G.headY);
+        
+        ctx.font = G.font + 'px ' + fontStack;
+        ctx.fillStyle = P.text;
+        lines.forEach(function (line, i) { ctx.fillText(line, G.pad, oy + G.textY + i * G.lineH); });
+        
+        ctx.strokeStyle = P.border; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(G.pad, oy + footY); ctx.lineTo(G.W - G.pad, oy + footY); ctx.stroke();
+        
+        ctx.font = '20px ' + fontStack;
+        var sideMax = G.W - G.pad * 2 - G.qrSize - 56;
+        var title = '《' + document.title.replace(/ - 赛博闲谭.*$/, '') + '》';
+        while (title.length > 6 && ctx.measureText(title).width > sideMax) title = title.slice(0, -3) + '…》';
+        ctx.fillStyle = P.title;
+        ctx.fillText(title, G.pad, oy + footY + 42);
+        ctx.fillStyle = P.meta;
+        var meta = '摘自 赛博闲谭 · ' + location.host + location.pathname;
+        while (meta.length > 8 && ctx.measureText(meta).width > sideMax) meta = meta.slice(0, -2);
+        if (meta.length < ('摘自 赛博闲谭 · ' + location.host + location.pathname).length) meta += '…';
+        ctx.fillText(meta, G.pad, oy + footY + 76);
+        drawQR(ctx, location.href, G.W - G.pad - G.qrSize - 20, oy + footY + 6, G.qrSize);
+        return canvas;
+    }
+
+    function show() {
+        var canvas = renderCard(selectedText, theme, orient);
+        var url = canvas.toDataURL('image/png');
+        img.src = url;
+        dl.href = url;
+        overlay.hidden = false;
+        document.getElementById('share-card-copy').onclick = function () {
+            var copyBtn = this;
+            canvas.toBlob(async function (blob) {
+                try {
+                    await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+                    copyBtn.textContent = '已复制';
+                    setTimeout(function () { copyBtn.textContent = '复制图片'; }, 1500);
+                } catch (e) { copyBtn.textContent = '复制失败，请下载'; }
+            });
+        };
+    }
+
+    btn.addEventListener('click', function () {
+        if (!selectedText) return;
+        hideBtn();
+        show();
+    });
+    function switcher(sel, apply) {
+        overlay.querySelectorAll(sel + ' button').forEach(function (b) {
+            b.addEventListener('click', function () {
+                apply(b);
+                overlay.querySelectorAll(sel + ' button').forEach(function (x) {
+                    x.classList.toggle('active', x === b);
+                });
+                show();
+            });
+        });
+    }
+    switcher('.share-card-themes', function (b) { theme = b.dataset.theme; });
+    switcher('.share-card-orients', function (b) { orient = b.dataset.orient; });
+    document.getElementById('share-card-close').onclick = function () { overlay.hidden = true; };
+    overlay.addEventListener('click', function (e) { if (e.target === overlay) overlay.hidden = true; });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') overlay.hidden = true; });
+})();
+</script>
+<div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">

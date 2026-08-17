@@ -84,7 +84,7 @@ locale 定死 `en-US`，中文 query 则走 Chrome 的端侧 Translator API 先�
 
 ### 语义兜底：sem 命令
 
-关键词匹配天然有盲区（「降低大模型调用成本」搜不到讲 Prompt Caching 的文章），所以又加了一个 `sem` 命令：端侧跑 bge-small-zh（24MB 的量化 ONNX）算向量相似度。这里踩了个值得记的坑：**hf-mirror 没有 CORS 头**，浏览器里 fetch 模型文件直接被拦——所以模型必须自己托管，运行时镜像兜底这条路不存在。
+关键词匹配天然有盲区（「降低大模型调用成本」搜不到讲 Prompt Caching 的文章），所以又加了一个 `sem` 命令：用 transformers.js 在端侧跑 bge-small-zh（24MB 的量化 ONNX）算向量相似度。这里踩了个值得记的坑：**hf-mirror 没有 CORS 头**，浏览器里 fetch 模型文件直接被拦——所以模型必须自己托管，运行时镜像兜底这条路不存在。
 
 ![sem 语义搜索](sem-search.png "sem harness：端侧向量语义搜索，按相关度排序")
 
