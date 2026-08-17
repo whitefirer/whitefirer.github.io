@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="赛博闲谭-whitefirer"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-        <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/08/16/dsh-lan-access/" /><link rel="prev" href="https://whitefirer.org/posts/2026/08/15/dsh-plugin-browser-fs/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/08/16/dsh-lan-access/" /><link rel="prev" href="https://whitefirer.org/posts/2026/08/15/dsh-plugin-browser-fs/" /><link rel="next" href="https://whitefirer.org/posts/2026/08/18/blog-terminal-needle-edge-ai/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta property="og:title" content="把 DeepSeek Harness 开放到局域网：手机访问的几个坑与解法清单 - 赛博闲谭-whitefirer" />
 <meta property="og:description" content="把 DeepSeek Harness 用带鉴权的反向代理挂进内网后，PC 一切正常，手机却接连踩坑：先是 crypto.randomUUID is not a function 直接白屏，后是文件授权按钮失效。两坑同根——安全上下文规范把现代 Web API 分成「可 polyfill」和「权限门控」两类。本文记录排查过程、反代层注入 polyfill 的实现（含一个 Accept-Encoding 的坑）、应用层降级方案，以及一份局域网访问解法清单。" />
@@ -647,7 +647,8 @@
         </section>
     </div>
 
-    <div class="post-nav"><a href="/posts/2026/08/15/dsh-plugin-browser-fs/" class="prev" rel="prev" title="给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件</a></div>
+    <div class="post-nav"><a href="/posts/2026/08/15/dsh-plugin-browser-fs/" class="prev" rel="prev" title="给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件</a>
+            <a href="/posts/2026/08/18/blog-terminal-needle-edge-ai/" class="next" rel="next" title="不烧 API 的博客 AI：给终端装一颗 14MB 的端侧大脑">不烧 API 的博客 AI：给终端装一颗 14MB 的端侧大脑<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 
 </div>
 <div id="comments"><div id="waline" class="comment"></div><noscript>

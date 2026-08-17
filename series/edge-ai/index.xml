@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Edge-Ai - series - 赛博闲谭-whitefirer</title>
+        <link>https://whitefirer.org/series/edge-ai/</link>
+        <description>Edge-Ai - series - 赛博闲谭-whitefirer</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Tue, 18 Aug 2026 01:30:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/series/edge-ai/" rel="self" type="application/rss+xml" /><item>
+    <title>不烧 API 的博客 AI：给终端装一颗 14MB 的端侧大脑</title>
+    <link>https://whitefirer.org/posts/2026/08/18/blog-terminal-needle-edge-ai/</link>
+    <pubDate>Tue, 18 Aug 2026 01:30:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/08/18/blog-terminal-needle-edge-ai/</guid>
+    <description><![CDATA[一、动机：想要 AI，但不想烧 API 这个博客的首页有个终端，本来就是放着玩的。后来想给它加点&quot;AI 助手&quot;的味道——访客输入「找]]></description>
+</item>
+</channel>
+</rss>

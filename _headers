@@ -1,7 +1,10 @@
 # Netlify custom headers — https://docs.netlify.com/routing/headers/
 
 # On-device model weights and WASM runtimes never change in place — cache
-# them aggressively so repeat visits skip the 36MB download
+# them aggressively so repeat visits skip the 36MB download.
+#
+# 注意：immutable 意味着同 URL 更新文件对老访客不生效（最长一年）。
+# 升级这些文件时必须改名或改路径（如 needle2-v3.cact），不要原地覆盖。
 /lib/needle2/*
   Cache-Control: public, max-age=31536000, immutable
 /lib/needle-rs/*

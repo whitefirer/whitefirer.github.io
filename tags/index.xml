@@ -4,7 +4,55 @@
         <link>https://whitefirer.org/tags/</link>
         <description>Tags - 标签 - 赛博闲谭-whitefirer</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sun, 16 Aug 2026 12:47:26 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Tue, 18 Aug 2026 01:30:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/" rel="self" type="application/rss+xml" /><item>
+    <title>Ai</title>
+    <link>https://whitefirer.org/tags/ai/</link>
+    <pubDate>Tue, 18 Aug 2026 01:30:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/ai/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Edge-Ai</title>
+    <link>https://whitefirer.org/tags/edge-ai/</link>
+    <pubDate>Tue, 18 Aug 2026 01:30:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/edge-ai/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Hugo</title>
+    <link>https://whitefirer.org/tags/hugo/</link>
+    <pubDate>Tue, 18 Aug 2026 01:30:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/hugo/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Llm</title>
+    <link>https://whitefirer.org/tags/llm/</link>
+    <pubDate>Tue, 18 Aug 2026 01:30:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/llm/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Needle</title>
+    <link>https://whitefirer.org/tags/needle/</link>
+    <pubDate>Tue, 18 Aug 2026 01:30:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/needle/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Wasm</title>
+    <link>https://whitefirer.org/tags/wasm/</link>
+    <pubDate>Tue, 18 Aug 2026 01:30:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/wasm/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>Debugging</title>
     <link>https://whitefirer.org/tags/debugging/</link>
     <pubDate>Sun, 16 Aug 2026 12:47:26 &#43;0800</pubDate>
@@ -34,54 +82,6 @@
     <pubDate>Sun, 16 Aug 2026 12:47:26 &#43;0800</pubDate>
     <author>whitefirer</author>
     <guid>https://whitefirer.org/tags/reverse-proxy/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Secure-Context</title>
-    <link>https://whitefirer.org/tags/secure-context/</link>
-    <pubDate>Sun, 16 Aug 2026 12:47:26 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/secure-context/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Web</title>
-    <link>https://whitefirer.org/tags/web/</link>
-    <pubDate>Sun, 16 Aug 2026 12:47:26 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/web/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Ai</title>
-    <link>https://whitefirer.org/tags/ai/</link>
-    <pubDate>Sat, 15 Aug 2026 23:14:52 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/ai/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Deepseek</title>
-    <link>https://whitefirer.org/tags/deepseek/</link>
-    <pubDate>Sat, 15 Aug 2026 23:14:52 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/deepseek/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>File-System-Access</title>
-    <link>https://whitefirer.org/tags/file-system-access/</link>
-    <pubDate>Sat, 15 Aug 2026 23:14:52 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/file-system-access/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Harness</title>
-    <link>https://whitefirer.org/tags/harness/</link>
-    <pubDate>Sat, 15 Aug 2026 23:14:52 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/harness/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>
