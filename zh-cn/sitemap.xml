@@ -13,7 +13,6 @@
                     href="https://whitefirer.org/categories/"
                     /></url><url>
             <loc>https://whitefirer.org/tags/edge-ai/</loc><lastmod>2026-08-18T02:34:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/series/edge-ai/</loc><lastmod>2026-08-18T02:34:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/tags/hugo/</loc><lastmod>2026-08-18T02:34:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/tags/llm/</loc><lastmod>2026-08-18T02:34:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/tags/needle/</loc><lastmod>2026-08-18T02:34:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
@@ -26,7 +25,7 @@
                     hreflang="zh-cn"
                     href="https://whitefirer.org/posts/"
                     /></url><url>
-            <loc>https://whitefirer.org/series/</loc><lastmod>2026-08-18T02:34:08&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://whitefirer.org/series/</loc><lastmod>2026-08-18T02:39:14&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://whitefirer.org/en/series/"
@@ -167,6 +166,7 @@
             <loc>https://whitefirer.org/series/ai-zatan/</loc><lastmod>2026-06-02T19:29:23&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://whitefirer.org/series/deepseek-harness/</loc><lastmod>2026-08-16T04:12:24&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/tags/movie/</loc><lastmod>2022-09-16T16:26:59&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://whitefirer.org/series/edge-ai/</loc><lastmod>2026-08-18T02:39:14&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/tags/service-mesh/</loc><lastmod>2022-09-01T20:20:52&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://whitefirer.org/categories/story/</loc><lastmod>2022-08-30T16:53:40&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://whitefirer.org/tags/story/</loc><lastmod>2022-09-01T20:20:52&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
