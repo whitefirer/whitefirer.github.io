@@ -226,9 +226,9 @@
             term.open(document.querySelector('.demo .inner'));
             var isWebglEnabled = false;
             try {
-                const webgl = new window.WebglAddon();
+                const webgl = new window.WebglAddon.WebglAddon();
                 term.loadAddon(webgl);
-                var wl = new WebLinksAddon();
+                var wl = new WebLinksAddon.WebLinksAddon();
                 term.loadAddon(wl);
                 term.registerLinkProvider({provideLinks:function(n,c){
                     var l=term.buffer.active.getLine(n);
@@ -635,7 +635,11 @@
             var blogPosts = [];
             var lastResults = [];
             var needleWorker = null;
+            var needle2Worker = null;
             var needleBusy = false;
+            
+            
+            var needleEngine = 'n2';
 
             var NEEDLE_TOOLS_JSON = JSON.stringify([
                 {
@@ -652,6 +656,47 @@
                     name: 'list_posts_by_tag',
                     description: 'List blog posts that have a specific tag',
                     parameters: { tag: { type: 'string' } }
+                },
+                {
+                    name: 'describe_post',
+                    description: 'Get the summary of a specific blog post — use when the user asks what a post or article is about, or wants a brief introduction to it',
+                    parameters: { query: { type: 'string' } }
+                }
+            ]);
+
+            
+            var NEEDLE2_TOOLS_JSON = JSON.stringify([
+                {
+                    name: 'search_posts',
+                    description: 'Search blog posts by keyword or topic',
+                    parameters: {
+                        type: 'object',
+                        properties: { query: { type: 'string', description: 'search keywords' } },
+                        required: ['query']
+                    }
+                },
+                {
+                    name: 'list_recent_posts',
+                    description: 'List the most recent blog posts',
+                    parameters: { type: 'object', properties: {} }
+                },
+                {
+                    name: 'list_posts_by_tag',
+                    description: 'List blog posts that have a specific tag',
+                    parameters: {
+                        type: 'object',
+                        properties: { tag: { type: 'string', description: 'tag name' } },
+                        required: ['tag']
+                    }
+                },
+                {
+                    name: 'describe_post',
+                    description: 'Get the summary of a specific blog post — use when the user asks what a post or article is about, or wants a brief introduction to it',
+                    parameters: {
+                        type: 'object',
+                        properties: { query: { type: 'string', description: 'topic or title keywords of the post' } },
+                        required: ['query']
+                    }
                 }
             ]);
 
@@ -726,6 +771,14 @@
                 return needleWorker;
             }
 
+            
+            function getNeedle2Worker() {
+                if (!needle2Worker) {
+                    needle2Worker = new Worker('/lib/needle2/worker.js');
+                }
+                return needle2Worker;
+            }
+
             function execBlogTool(name, args, rawInput) {
                 switch (name) {
                     case 'search_posts': {
@@ -753,12 +806,82 @@
                         term.writeln(`\x1b[2m$ list_posts_by_tag("${args.tag || ''}")\x1b[0m`);
                         printPosts(blogPosts.filter(p => (p.tags || []).includes(args.tag)).slice(0, 8));
                         break;
+                    case 'describe_post': {
+                        const q = args.query || '';
+                        term.writeln(`\x1b[2m$ describe_post("${q}")\x1b[0m`);
+                        const p = searchPosts(q)[0];
+                        if (!p) {
+                            term.writeln('没找到相关文章。换个关键词试试？');
+                            break;
+                        }
+                        lastResults = [p];
+                        
+                        const link = `\x1b]8;;${location.origin + p.uri}\x07\x1b[1;36m${p.title}\x1b[0m\x1b]8;;\x07`;
+                        term.writeln(link);
+                        term.writeln(`\x1b[2m${p.date}  ${(p.tags || []).join(', ')}\x1b[0m`);
+                        
+                        term.writeln((p.content || '').trim() || '（这篇文章没有简介）');
+                        term.writeln('\x1b[2m输入 open 1 阅读全文\x1b[0m');
+                        break;
+                    }
                     default:
                         throw new Error('unknown tool: ' + name);
                 }
             }
 
+            
+            
+            
+            
+            function smallTalk(input) {
+                const t = input.trim();
+                const zh = /[\u3040-\u30ff\u3400-\u9fff\uac00-\ud7af]/.test(t);
+                const isGreeting = /^(hi|hello|hey|yo|你好|您好|嗨|哈喽|在吗|在么)[!！~。.\s]*$/i.test(t);
+                const isIdentity = /(你是谁|你是什么|介绍一下你|你能做什么|你会什么|what are you|who are you|what can you do|introduce yourself)/i.test(t);
+                if (!isGreeting && !isIdentity) return false;
+                if (isGreeting) {
+                    term.writeln(zh
+                        ? '你好！我是这个终端内置的端侧 AI，可以帮你找文章、列最新文章、介绍某篇讲了什么。有什么想找的？'
+                        : 'Hi! I\'m the on-device AI in this terminal — I can find posts, list recent ones, or tell you what a post is about. What are you looking for?');
+                } else {
+                    term.writeln(zh
+                        ? '我是这个博客终端内置的端侧 AI，基于 Cactus Compute 的 Needle 模型，完全在你的浏览器里运行，不经过任何服务器或 LLM API。'
+                        : 'I\'m the on-device AI built into this blog terminal, powered by Cactus Compute\'s Needle model — running entirely in your browser, no server or LLM API involved.');
+                    term.writeln(zh
+                        ? '我能做的：按主题找文章（找一下 hugo 的文章）、列最新文章、按 tag 筛选、简要介绍某篇文章讲了什么。输入 help 查看全部命令。'
+                        : 'What I can do: find posts by topic (find posts about hugo), list recent posts, filter by tag, and briefly introduce what a post is about. Type help for all commands.');
+                }
+                term.prompt();
+                return true;
+            }
+
+            
+            
+            
+            function tryDescribeIntent(input) {
+                const t = input.trim();
+                let kw = null, m;
+                if ((m = t.match(/^what(?:\s+is|'s|s)\s+(.+?)\s+about[?？!！.\s]*$/i))) kw = m[1];
+                else if ((m = t.match(/^tell me about\s+(.+?)[?？!！.\s]*$/i))) kw = m[1];
+                else if ((m = t.match(/^(?:介绍一下?|简介|说说)\s*[：:]?\s*(.+?)[?？!！。\s]*$/))) kw = m[1];
+                else if ((m = t.match(/^(.+?)(?:这篇?文章)?(?:讲了什么|讲什么|说了什么|是什么)[?？!！。\s]*$/))) kw = m[1];
+                if (!kw) return false;
+                
+                kw = kw.replace(/\b(the|this|that|article|post|articles|posts)\b/gi, ' ')
+                       .replace(/的?文章/g, ' ')
+                       .replace(/\s+/g, ' ').trim();
+                execBlogTool('describe_post', { query: kw || t }, t);
+                term.prompt();
+                return true;
+            }
+
             function needleRoute(input) {
+                if (smallTalk(input)) return;
+                if (tryDescribeIntent(input)) return;
+                if (needleEngine === 'n2') {
+                    needle2Route(input);
+                    return;
+                }
                 needleBusy = true;
                 const worker = getNeedleWorker();
                 const started = performance.now();
@@ -816,6 +939,108 @@
                     }
                 };
                 worker.postMessage({ query: input, tools: NEEDLE_TOOLS_JSON });
+            }
+
+            
+            
+            async function needle2Route(input) {
+                needleBusy = true;
+                
+                
+                
+                let started = performance.now();
+                
+                
+                const frames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+                let fi = 0, status = 'thinking';
+                const drawSpin = () => term.write(`\r\x1b[2K\x1b[2m${frames[fi]} ${status}\x1b[0m`);
+                drawSpin();
+                const spin = setInterval(() => {
+                    fi = (fi + 1) % frames.length;
+                    drawSpin();
+                }, 80);
+
+                const finish = (fn) => {
+                    clearInterval(spin);
+                    term.write('\r\x1b[2K');
+                    try {
+                        fn();
+                    } finally {
+                        needleBusy = false;
+                        term.prompt();
+                    }
+                };
+                const fallback = (msg) => finish(() => {
+                    term.writeln(msg);
+                    printPosts(searchPosts(input));
+                });
+
+                let query = input;
+                if (/[\u3040-\u30ff\u3400-\u9fff\uac00-\ud7af]/.test(input)) {
+                    if (!('Translator' in self)) {
+                        fallback('\x1b[2m[needle2] 仅支持英文输入（Chrome 138+ 可端侧翻译中文），已按关键词搜索；中文路由请 ai2 off 切回 Needle 1\x1b[0m');
+                        return;
+                    }
+                    try {
+                        status = 'translating (on-device)';
+                        const t0 = performance.now();
+                        const translator = await self.Translator.create({ sourceLanguage: 'zh', targetLanguage: 'en' });
+                        query = await translator.translate(input);
+                        const transMs = performance.now() - t0;
+                        status = 'thinking';
+                        
+                        if (query.trim() !== input.trim()) {
+                            term.write('\r\x1b[2K');
+                            term.writeln(`\x1b[2m[needle2] 翻译: ${input} → ${query}（${transMs.toFixed(0)}ms）\x1b[0m`);
+                            drawSpin();
+                        }
+                        started = performance.now();
+                    } catch (e) {
+                        fallback('\x1b[2m[needle2] 端侧翻译不可用（' + e.message + '），已按关键词搜索\x1b[0m');
+                        return;
+                    }
+                }
+
+                const worker = getNeedle2Worker();
+                worker.onerror = (ev) => fallback(`\x1b[2m[needle2] worker 错误（${ev.message}），按关键词搜索处理\x1b[0m`);
+                worker.onmessage = (ev) => {
+                    const msg = ev.data;
+                    if (msg.type === 'progress') {
+                        status = msg.message;
+                    } else if (msg.type === 'done') {
+                        finish(() => {
+                            term.writeln(`\x1b[2m[needle2] ${(performance.now() - started).toFixed(0)}ms\x1b[0m`);
+                            let out = null, calls = [];
+                            try {
+                                out = JSON.parse(msg.out);
+                                calls = out.function_calls || [];
+                            } catch (e) {   }
+                            if (!calls.length) {
+                                
+                                
+                                
+                                const reason = (((out && out.reasoning) || '') + '').trim();
+                                if (reason) {
+                                    term.writeln('\x1b[2m[needle2] ' + (reason.length > 200 ? reason.slice(0, 200) + '…' : reason) + '\x1b[0m');
+                                }
+                                term.writeln('没理解这个请求。换个更准确的说法试试，比如：');
+                                term.writeln('  \x1b[1mfind posts about hugo\x1b[0m · \x1b[1mshow me recent posts\x1b[0m · \x1b[1mposts tagged ai\x1b[0m');
+                                term.writeln('\x1b[2m中文提问可 ai2 off 切回 Needle 1，或用 search <关键词> 直接搜。\x1b[0m');
+                                return;
+                            }
+                            for (const c of calls) {
+                                let args = c.arguments || {};
+                                if (typeof args === 'string') {
+                                    try { args = JSON.parse(args); } catch (e) { args = {}; }
+                                }
+                                execBlogTool(c.name, args, input);
+                            }
+                        });
+                    } else if (msg.type === 'error') {
+                        fallback(`\x1b[2m[needle2] 推理失败（${msg.message}），按关键词搜索处理\x1b[0m`);
+                    }
+                };
+                worker.postMessage({ query, tools: NEEDLE2_TOOLS_JSON });
             }
 
             var command = '';
@@ -897,7 +1122,7 @@
                                 '',
                                 ...Object.keys(commands).map(e => `  ${e.padEnd(10)} ${commands[e].description}`),
                                 '',
-                                '也可以直接输入自然语言（如「找一下 hugo 的文章」），由本地 Needle 模型解析。',
+                                '也可以直接输入自然语言（如 find posts about hugo），由端侧 Needle 模型解析。',
                             ].join('\n\r')
                         }
                         if (final) {
@@ -935,6 +1160,31 @@
                         window.open(p.uri, '_blank');
                     },
                     description: 'Open the N-th result: open 2'
+                },
+                describe: {
+                    f: (args, final) => {
+                        if (!final) return;
+                        execBlogTool('describe_post', { query: args.join(' ').replaceAll('"', '') }, '');
+                    },
+                    description: 'Briefly introduce a post: describe deepseek'
+                },
+                ai2: {
+                    f: (args, final) => {
+                        if (!final) return;
+                        const a = (args[0] || '').toLowerCase();
+                        if (a === 'on') {
+                            needleEngine = 'n2';
+                            term.writeln('已切换到 \x1b[1mNeedle 2\x1b[0m（默认，英文 query 效果最好；中文会尝试端侧翻译）。ai2 off 切回。');
+                        } else if (a === 'off') {
+                            needleEngine = 'n1';
+                            term.writeln('已切回 \x1b[1mNeedle 1\x1b[0m（支持中文）。');
+                        } else {
+                            term.writeln('当前引擎: ' + (needleEngine === 'n2'
+                                ? 'Needle 2（默认）'
+                                : 'Needle 1') + '。用法: ai2 on | ai2 off');
+                        }
+                    },
+                    description: 'Switch on-device AI engine: ai2 on|off'
                 },
                 echo: {
                     f: (args, final) => {
@@ -1148,7 +1398,6 @@
                 term.writeln([
 '          Welcome! whitefirer.org — Cloud Native to AI Engineering',
 '',
-'',
 ' ┌ \x1b[1mAbout\x1b[0m ─────────────────────────────────────────────────────────────────────┐',
 ' │                                                                            │',
 ' │  \x1b[31;1mProfile                                \x1b[32mFocus\x1b[0m                              │',
@@ -1168,7 +1417,8 @@
 ].join('\n\r'));
 
                 term.writeln('Below is a simple emulated backend, try running `charain`, `matrix` or `help`.');
-                term.writeln('Now you can use the \x1b[3m\x1b[1mPython\x1b[0m, or just type \x1b[1mnatural language\x1b[0m (e.g. 找一下 hugo 的文章) — on-device \x1b[1mNeedle AI\x1b[0m will route it locally, no API.');
+                term.writeln('Now you can use the \x1b[3m\x1b[1mPython\x1b[0m, or just type \x1b[1mnatural language\x1b[0m (e.g. find posts about hugo) — on-device \x1b[1mNeedle 2 AI\x1b[0m will route it locally, no API.');
+                term.writeln('\x1b[2m中文提问会尝试端侧翻译后路由；`ai2 off` 可切换到中文友好的 Needle 1。\x1b[0m');
                 term.writeln('');
                 term.prompt();
             }

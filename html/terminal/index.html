@@ -47,9 +47,50 @@
                 name: 'list_posts_by_tag',
                 description: 'List blog posts that have a specific tag',
                 parameters: { tag: { type: 'string' } }
+            },
+            {
+                name: 'describe_post',
+                description: 'Get the summary of a specific blog post — use when the user asks what a post or article is about, or wants a brief introduction to it',
+                parameters: { query: { type: 'string' } }
             }
         ];
         const TOOLS_JSON = JSON.stringify(TOOLS);
+
+        // Needle 2 expects the OpenAI-style tool schema
+        const TOOLS2_JSON = JSON.stringify([
+            {
+                name: 'search_posts',
+                description: 'Search blog posts by keyword or topic',
+                parameters: {
+                    type: 'object',
+                    properties: { query: { type: 'string', description: 'search keywords' } },
+                    required: ['query']
+                }
+            },
+            {
+                name: 'list_recent_posts',
+                description: 'List the most recent blog posts',
+                parameters: { type: 'object', properties: {} }
+            },
+            {
+                name: 'list_posts_by_tag',
+                description: 'List blog posts that have a specific tag',
+                parameters: {
+                    type: 'object',
+                    properties: { tag: { type: 'string', description: 'tag name' } },
+                    required: ['tag']
+                }
+            },
+            {
+                name: 'describe_post',
+                description: 'Get the summary of a specific blog post — use when the user asks what a post or article is about, or wants a brief introduction to it',
+                parameters: {
+                    type: 'object',
+                    properties: { query: { type: 'string', description: 'topic or title keywords of the post' } },
+                    required: ['query']
+                }
+            }
+        ]);
 
         const term = new Terminal({
             linkHandler: {
@@ -72,6 +113,10 @@
         let history = [];
         let historyIdx = -1;
         let busy = false;
+        // 'n2' = official Needle 2 WASM (default, English only), 'n1' =
+        // needle-rs 26M (handles Chinese — toggled by `ai2 on/off`)
+        let needleEngine = 'n2';
+        let n2Worker = null;
 
         // ---------- helpers ----------
         const write = (s) => term.write(s);
@@ -196,9 +241,46 @@
                     writeln(dim(`$ list_posts_by_tag("${args.tag || ''}")`));
                     printPosts(posts.filter(p => (p.tags || []).includes(args.tag)).slice(0, 8));
                     break;
+                case 'describe_post': {
+                    const q = args.query || '';
+                    writeln(dim(`$ describe_post("${q}")`));
+                    const p = searchPosts(q)[0];
+                    if (!p) {
+                        writeln('没找到相关文章。换个关键词试试？');
+                        break;
+                    }
+                    lastResults = [p];
+                    // OSC 8 hyperlink: title itself is clickable
+                    const link = `\x1b]8;;${location.origin + p.uri}\x07${cyan(p.title)}\x1b]8;;\x07`;
+                    writeln(link);
+                    writeln(dim(p.date + '  ' + (p.tags || []).join(', ')));
+                    // index.json's content field holds the post's summary
+                    writeln((p.content || '').trim() || '（这篇文章没有简介）');
+                    writeln(dim('输入 open 1 阅读全文'));
+                    break;
+                }
                 default:
                     throw new Error('unknown tool: ' + name);
             }
+        }
+
+        // deterministic pre-route for "what is X about"-style questions —
+        // the small models' tool choice for these is unstable, so extract
+        // keywords locally and go straight to describe_post
+        function tryDescribeIntent(input) {
+            const t = input.trim();
+            let kw = null, m;
+            if ((m = t.match(/^what(?:\s+is|'s|s)\s+(.+?)\s+about[?？!！.\s]*$/i))) kw = m[1];
+            else if ((m = t.match(/^tell me about\s+(.+?)[?？!！.\s]*$/i))) kw = m[1];
+            else if ((m = t.match(/^(?:介绍一下?|简介|说说)\s*[：:]?\s*(.+?)[?？!！。\s]*$/))) kw = m[1];
+            else if ((m = t.match(/^(.+?)(?:这篇?文章)?(?:讲了什么|讲什么|说了什么|是什么)[?？!！。\s]*$/))) kw = m[1];
+            if (!kw) return false;
+            // drop filler words so the keyword search hits the title/tags
+            kw = kw.replace(/\b(the|this|that|article|post|articles|posts)\b/gi, ' ')
+                   .replace(/的?文章/g, ' ')
+                   .replace(/\s+/g, ' ').trim();
+            execTool('describe_post', { query: kw || t }, t);
+            return true;
         }
 
         // ---------- AI routing ----------
@@ -228,13 +310,139 @@
             for (const c of calls) execTool(c.name, c.arguments || {}, input);
         }
 
+        // experimental Needle 2 route: English-only model, Chinese input is
+        // translated on-device via the Chrome 138+ Translator API first
+        function ai2Route(input) {
+            return new Promise(async (resolve) => {
+                // `started` is reset after translation so the final [needle2]
+                // timing line reflects inference only — translation time is
+                // reported on the translation trace line itself
+                let started = performance.now();
+                // animated spinner on a self-overwriting line (no token stream —
+                // needle_complete returns the whole result in one shot)
+                const frames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+                let fi = 0, status = 'thinking';
+                const drawSpin = () => write(`\r\x1b[2K${dim(frames[fi] + ' ' + status)}`);
+                drawSpin();
+                const spin = setInterval(() => {
+                    fi = (fi + 1) % frames.length;
+                    drawSpin();
+                }, 80);
+
+                const finish = (fn) => {
+                    clearInterval(spin);
+                    write('\r\x1b[2K');
+                    fn();
+                    resolve();
+                };
+                const fallback = (msg) => finish(() => {
+                    writeln(msg);
+                    printPosts(searchPosts(input));
+                });
+
+                let query = input;
+                if (/[\u3040-\u30ff\u3400-\u9fff\uac00-\ud7af]/.test(input)) {
+                    if (!('Translator' in self)) {
+                        fallback(dim('[needle2] 仅支持英文输入（Chrome 138+ 可端侧翻译中文），已按关键词搜索；中文路由请 ai2 off 切回 Needle 1'));
+                        return;
+                    }
+                    try {
+                        status = 'translating (on-device)';
+                        const t0 = performance.now();
+                        const translator = await self.Translator.create({ sourceLanguage: 'zh', targetLanguage: 'en' });
+                        query = await translator.translate(input);
+                        const transMs = performance.now() - t0;
+                        status = 'thinking';
+                        // leave a visible trace of what the model actually got
+                        if (query.trim() !== input.trim()) {
+                            write('\r\x1b[2K');
+                            writeln(dim(`[needle2] 翻译: ${input} → ${query}（${transMs.toFixed(0)}ms）`));
+                            drawSpin();
+                        }
+                        started = performance.now();
+                    } catch (e) {
+                        fallback(dim(`[needle2] 端侧翻译不可用（${e.message}），已按关键词搜索`));
+                        return;
+                    }
+                }
+
+                if (!n2Worker) n2Worker = new Worker('/lib/needle2/worker.js');
+                n2Worker.onerror = (ev) => fallback(dim(`[needle2] worker 错误（${ev.message}），按关键词搜索处理`));
+                n2Worker.onmessage = (ev) => {
+                    const msg = ev.data;
+                    if (msg.type === 'progress') {
+                        status = msg.message;
+                    } else if (msg.type === 'done') {
+                        finish(() => {
+                            writeln(dim(`[needle2] ${(performance.now() - started).toFixed(0)}ms`));
+                            let out = null, calls = [];
+                            try {
+                                out = JSON.parse(msg.out);
+                                calls = out.function_calls || [];
+                            } catch (e) { /* fall through to the hint below */ }
+                            if (!calls.length) {
+                                // needle2 chose to respond instead of calling a
+                                // tool — show its reason and nudge the user to
+                                // rephrase rather than dumping keyword results
+                                const reason = (((out && out.reasoning) || '') + '').trim();
+                                if (reason) {
+                                    writeln(dim('[needle2] ' + (reason.length > 200 ? reason.slice(0, 200) + '…' : reason)));
+                                }
+                                writeln('没理解这个请求。换个更准确的说法试试，比如：');
+                                writeln('  ' + yellow('find posts about hugo') + ' · ' + yellow('show me recent posts') + ' · ' + yellow('posts tagged ai'));
+                                writeln(dim('中文提问可 ai2 off 切回 Needle 1，或用 search <关键词> 直接搜。'));
+                                return;
+                            }
+                            for (const c of calls) {
+                                let args = c.arguments || {};
+                                if (typeof args === 'string') {
+                                    try { args = JSON.parse(args); } catch (e) { args = {}; }
+                                }
+                                execTool(c.name, args, input);
+                            }
+                        });
+                    } else if (msg.type === 'error') {
+                        fallback(dim(`[needle2] 推理失败（${msg.message}），按关键词搜索处理`));
+                    }
+                };
+                n2Worker.postMessage({ query, tools: TOOLS2_JSON });
+            });
+        }
+
         // ---------- commands ----------
+        // lightweight built-in replies for greetings/identity questions —
+        // the Needle models are function-calling routers, not chat models,
+        // so handle these deterministically in the user's language.
+        // Returns true when it handled the input (the REPL re-prompts).
+        function smallTalk(input) {
+            const t = input.trim();
+            const zh = /[\u3040-\u30ff\u3400-\u9fff\uac00-\ud7af]/.test(t);
+            const isGreeting = /^(hi|hello|hey|yo|你好|您好|嗨|哈喽|在吗|在么)[!！~。.\s]*$/i.test(t);
+            const isIdentity = /(你是谁|你是什么|介绍一下你|你能做什么|你会什么|what are you|who are you|what can you do|introduce yourself)/i.test(t);
+            if (!isGreeting && !isIdentity) return false;
+            if (isGreeting) {
+                writeln(zh
+                    ? '你好！我是这个终端内置的端侧 AI，可以帮你找文章、列最新文章、介绍某篇讲了什么。有什么想找的？'
+                    : 'Hi! I\'m the on-device AI in this terminal — I can find posts, list recent ones, or tell you what a post is about. What are you looking for?');
+            } else {
+                writeln(zh
+                    ? '我是这个博客终端内置的端侧 AI，基于 Cactus Compute 的 Needle 模型，完全在你的浏览器里运行，不经过任何服务器或 LLM API。'
+                    : 'I\'m the on-device AI built into this blog terminal, powered by Cactus Compute\'s Needle model — running entirely in your browser, no server or LLM API involved.');
+                writeln(zh
+                    ? '我能做的：按主题找文章（找一下 hugo 的文章）、列最新文章、按 tag 筛选、简要介绍某篇文章讲了什么。输入 help 查看全部命令。'
+                    : 'What I can do: find posts by topic (find posts about hugo), list recent posts, filter by tag, and briefly introduce what a post is about. Type help for all commands.');
+            }
+            return true;
+        }
+
         function cmdHelp() {
             writeln('可用命令:');
             writeln('  help              显示本帮助');
             writeln('  search <关键词>   直接搜索文章');
+            writeln('  describe <关键词> 简要介绍一篇相关文章');
             writeln('  ls [tag]          列出最新文章（或指定 tag）');
             writeln('  open <序号>       打开上一次结果中的文章');
+            writeln('  ai2 on|off        切换 AI 引擎（默认 Needle 2，off 切回中文友好的 Needle 1）');
             writeln('  clear             清屏');
             writeln('  about             关于这个终端');
             writeln('');
@@ -275,11 +483,31 @@
                         : posts.slice(0, 8));
                     return;
                 case 'open': openResult(parseInt(argStr, 10)); return;
+                case 'describe': execTool('describe_post', { query: argStr }, ''); return;
+                case 'ai2': {
+                    const a = argStr.toLowerCase();
+                    if (a === 'on') {
+                        needleEngine = 'n2';
+                        writeln('已切换到 ' + yellow('Needle 2') + '（默认，英文 query 效果最好；中文会尝试端侧翻译）。ai2 off 切回。');
+                    } else if (a === 'off') {
+                        needleEngine = 'n1';
+                        writeln('已切回 ' + yellow('Needle 1') + '（支持中文）。');
+                    } else {
+                        writeln('当前引擎: ' + (needleEngine === 'n2' ? 'Needle 2（默认）' : 'Needle 1') + '。用法: ai2 on | ai2 off');
+                    }
+                    return;
+                }
             }
 
             // natural language → needle
             try {
-                await aiRoute(input);
+                if (smallTalk(input)) return;
+                if (tryDescribeIntent(input)) return;
+                if (needleEngine === 'n2') {
+                    await ai2Route(input);
+                } else {
+                    await aiRoute(input);
+                }
             } catch (err) {
                 writeln(dim(`[needle] 解析失败（${err.message}），按关键词搜索处理`));
                 printPosts(searchPosts(input));
