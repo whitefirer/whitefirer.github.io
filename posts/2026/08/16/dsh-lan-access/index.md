@@ -168,7 +168,9 @@ def check_auth(req, user, pwd):
 
 async def proxy_http(req, upstream):
     sess = req.app["sess"]
-    headers = {k: v for k, v in req.headers.items() if k.lower() not in HOP}
+    headers = {k: v for k, v in req.headers.items() if k.lower() not in HOP | {"host", "origin"}}
+    headers["Origin"] = upstream  # Host 由 aiohttp 按上游 URL 重设；Origin 重写成
+                                  # 上游源——上游 Host/Origin 栅栏只认 loopback 同源（见下文插曲）
     async with sess.request(req.method, upstream + str(req.rel_url),
                             headers=headers, data=await req.read(),
                             allow_redirects=False) as up:
@@ -265,7 +267,9 @@ curl 实测四连：无鉴权 `401`（带 `WWW-Authenticate` 触发浏览器弹�
 
 dsh 对 Host 和 Origin 各查一遍：**非 localhost/IP 字面量一律 403**——这是 DNS-rebinding 防御，防的是恶意网站把公用域名指到 `127.0.0.1` 来打你本机服务。它宁可错杀我这种「域名指内网 IP」的场景。
 
-修法在反代侧：转发时把 Host 改写成上游地址、剥掉 Origin（缺失的 Origin 反而放行——这条只挡「带错」不挡「没带」）。cenacle 的 Go 代理就是这么做的，上面 Python 版的 `skip` 清单也加了 `host`/`origin` 两个键。301 跳转腿不用处理——浏览器拿到新地址会自己重发。
+修法在反代侧：转发时把 Host 和 Origin **都重写成上游源**（如 `http://127.0.0.1:3080`）——上游看到的就是一次"本机同源"请求。301 跳转腿不用处理——浏览器拿到新地址会自己重发。
+
+> **勘误（2026-08-18）**：本文最初建议「剥掉 Origin」，依据是 dsh 核心的栅栏「缺失放行、带错必 403」。但 dshmarket 插件市场的同源守卫更严——**Origin 缺失也拒**，导致经反代操作时市场安装/更新全 403 `untrusted origin`。剥掉能过核心、过不了插件；重写成上游源则两种口径都过。cenacle 的 Go 代理（commit `85a3d09`）与上文 Python 版均已改为重写。
 
 ## 八、收尾
 

@@ -4,15 +4,23 @@
         <link>https://whitefirer.org/</link>
         <description>Welcome to the blog of whitefirer.</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Tue, 18 Aug 2026 01:30:00 &#43;0800</lastBuildDate>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Wed, 19 Aug 2026 02:30:00 &#43;0800</lastBuildDate>
             <atom:link href="https://whitefirer.org/index.xml" rel="self" type="application/rss+xml" />
         <item>
-    <title>不烧 API 的博客 AI：给终端装一颗 14MB 的端侧大脑</title>
+    <title>任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来</title>
+    <link>https://whitefirer.org/posts/2026/08/19/dsh-niulai-pet/</link>
+    <pubDate>Wed, 19 Aug 2026 02:30:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/08/19/dsh-niulai-pet/</guid>
+    <description><![CDATA[一、先上成品 agent 干完活的那一刻，屏幕角落的小牛会蹦起来，字正腔圆地喊一嗓子「妈妈」——尾音拖足，嘴型跟上，中气十足： PC 端：菜单、换皮肤、唠叨气]]></description>
+</item>
+<item>
+    <title>不烧 token 的博客 AI：给终端装一颗 14MB 的端侧大脑</title>
     <link>https://whitefirer.org/posts/2026/08/18/blog-terminal-needle-edge-ai/</link>
     <pubDate>Tue, 18 Aug 2026 01:30:00 &#43;0800</pubDate>
     <author>whitefirer</author>
     <guid>https://whitefirer.org/posts/2026/08/18/blog-terminal-needle-edge-ai/</guid>
-    <description><![CDATA[一、动机：想要 AI，但不想烧 API 这个博客的首页有个终端，本来就是放着玩的。后来想给它加点&quot;AI 助手&quot;的味道——访客输入「找]]></description>
+    <description><![CDATA[一、动机：想要 AI，但不想烧 token 这个博客的首页有个终端，本来就是放着玩的。后来想给它加点&quot;AI 助手&quot;的味道——访客输入「找]]></description>
 </item>
 <item>
     <title>把 DeepSeek Harness 开放到局域网：手机访问的几个坑与解法清单</title>
@@ -77,14 +85,6 @@
     <author>whitefirer</author>
     <guid>https://whitefirer.org/posts/2026/07/03/harness-engineering-intro/</guid>
     <description><![CDATA[提示词管一句话，上下文管一个窗口，Harness 管 Agent 的整个运行环境——怎么跑、跑错了怎么纠、怎么让同一个错误不再犯第二次。 前言 上一篇拆了 Fable 5]]></description>
-</item>
-<item>
-    <title>英伟达含量为零的开源模型，在 OpenRouter 登顶 Hermes 榜——中国编程 AI 的还手方式</title>
-    <link>https://whitefirer.org/posts/2026/07/02/longcat-china-coding-ai/</link>
-    <pubDate>Thu, 02 Jul 2026 02:13:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/posts/2026/07/02/longcat-china-coding-ai/</guid>
-    <description><![CDATA[英伟达含量为零。MIT 开源。OpenRouter 登顶 Hermes 榜。出口管制想要的不是这个——但得到的结果就是这个。 前言 6 月 30 日，美团正式发布并开源了]]></description>
 </item>
 </channel>
 </rss>

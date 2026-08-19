@@ -1,7 +1,7 @@
-# 不烧 API 的博客 AI：给终端装一颗 14MB 的端侧大脑
+# 不烧 token 的博客 AI：给终端装一颗 14MB 的端侧大脑
 
 
-## 一、动机：想要 AI，但不想烧 API
+## 一、动机：想要 AI，但不想烧 token
 
 这个博客的首页有个终端，本来就是放着玩的。后来想给它加点"AI 助手"的味道——访客输入「找一下 deepseek 的文章」，终端自己检索、列出结果、附上链接。
 
@@ -9,7 +9,7 @@
 
 最省事的接法是调云端 LLM API 做意图识别，但两个理由把我劝退了：一是每个访客每次提问都在烧我的额度，二是请求要出网，跟"纯静态博客"的气质不符。我想要的是**推理发生在访客自己的浏览器里**。
 
-找到的答案就是 [needle](https://github.com/cactus-compute/needle)。
+找到的答案就是 needle——GitHub 上的 [cactus-compute/needle](https://github.com/cactus-compute/needle)。
 
 ## 二、needle 是什么
 
@@ -21,6 +21,8 @@ needle 是 Cactus Compute 出的工具调用（tool-calling）专用小模型，
 - 自带 confidence gating：答不了的请求返回空调用，失败模式是"拒答"而不是"乱执行"。
 
 它不做闲聊、不写散文，唯一的工作就是：读你的 query，从声明的工具里挑一个，填好参数，吐回来。这恰好是"终端命令路由"需要的全部能力。
+
+![needle 终端实测](needle-running.png "needle2 实际工作画面：中文 query 先端侧翻译成英文，再路由到 search_posts")
 
 ## 三、架构：三个文件的事
 
@@ -102,5 +104,12 @@ locale 定死 `en-US`，中文 query 则走 Chrome 的端侧 Translator API 先�
 
 如果你的场景也是"固定工具集 + 自然语言入口"，needle 这条路值得一试。官方还给了 LoRA 微调流程，用自己的工具 traces 练一遍，路由还能更准——这个坑留到以后填。
 
-源码就在这个博客里（首页终端和 [/html/terminal/](/html/terminal/) 可以直接玩），欢迎围观。
+源码没单独开仓库——这套东西全是静态文件，就挂在这个博客上，直接扒就行：
+
+- **主逻辑**：[/lib/blog-ai.js](/lib/blog-ai.js)——终端 UI、tools 声明、规则补丁，全在这一个文件里（不到 30KB）；
+- **演示页**：[/html/terminal/](/html/terminal/) 是单文件页面，首页终端是它的嵌入版，查看源码即所得；
+- **数据源**：[/index.json](/index.json)——不用自己做。这是 iLoveIt 主题给搜索功能生成的全站索引（标题、标签、摘要、正文分块），Hugo 构建时自动产出，终端直接复用它做关键词匹配；
+- **模型文件**：needle2 的 `.cact` 权重和 WASM 运行时来自官方仓库 [cactus-compute/needle](https://github.com/cactus-compute/needle) 的发布，sem 的 bge-small-zh 量化 ONNX 自托管在 [/lib/sem/](/lib/sem/)（前文说过，hf-mirror 没 CORS，运行时镜像兜底这条路不存在）。
+
+欢迎围观，玩坏了概不负责。
 

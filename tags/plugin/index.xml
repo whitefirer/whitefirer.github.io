@@ -4,7 +4,15 @@
         <link>https://whitefirer.org/tags/plugin/</link>
         <description>Plugin - 标签 - 赛博闲谭-whitefirer</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sat, 15 Aug 2026 23:14:52 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/plugin/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Wed, 19 Aug 2026 02:30:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/plugin/" rel="self" type="application/rss+xml" /><item>
+    <title>任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来</title>
+    <link>https://whitefirer.org/posts/2026/08/19/dsh-niulai-pet/</link>
+    <pubDate>Wed, 19 Aug 2026 02:30:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/08/19/dsh-niulai-pet/</guid>
+    <description><![CDATA[一、先上成品 agent 干完活的那一刻，屏幕角落的小牛会蹦起来，字正腔圆地喊一嗓子「妈妈」——尾音拖足，嘴型跟上，中气十足： PC 端：菜单、换皮肤、唠叨气]]></description>
+</item>
+<item>
     <title>给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件</title>
     <link>https://whitefirer.org/posts/2026/08/15/dsh-plugin-browser-fs/</link>
     <pubDate>Sat, 15 Aug 2026 23:14:52 &#43;0800</pubDate>

@@ -29,8 +29,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/whitefirer.org\/posts\/2026\/08\/16\/dsh-lan-access\/"
-        },"genre": "posts","keywords": "tech, web, secure-context, reverse-proxy, go, deepseek-harness, debugging","wordcount":  5202 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/16\/dsh-lan-access\/","datePublished": "2026-08-16T12:47:26+08:00","dateModified": "2026-08-16T17:06:04+08:00","license": "2022©️whitefirer","publisher": {
+        },"genre": "posts","keywords": "tech, web, secure-context, reverse-proxy, go, deepseek-harness, debugging","wordcount":  5410 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/16\/dsh-lan-access\/","datePublished": "2026-08-16T12:47:26+08:00","dateModified": "2026-08-18T17:48:34+08:00","license": "2022©️whitefirer","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -136,7 +136,7 @@
                 <a href="/series/deepseek-harness/"><i class="fas fa-layer-group fa-fw" aria-hidden="true"></i>DeepSeek Harness</a>
             </div><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-16">2026-08-16</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 5202 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-16">2026-08-16</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 5410 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 11 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/08/16/dsh-lan-access.svg" alt="" aria-hidden="true" loading="eager"
      style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none"></div>
         </div><div class="details toc" id="toc-static"  data-kept="">
@@ -458,6 +458,8 @@
 </span><span class="lnt">48
 </span><span class="lnt">49
 </span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">HOP</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;connection&#34;</span><span class="p">,</span> <span class="s2">&#34;keep-alive&#34;</span><span class="p">,</span> <span class="s2">&#34;te&#34;</span><span class="p">,</span> <span class="s2">&#34;trailers&#34;</span><span class="p">,</span>
@@ -472,7 +474,9 @@
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="k">async</span> <span class="k">def</span> <span class="nf">proxy_http</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">upstream</span><span class="p">):</span>
 </span></span><span class="line"><span class="cl">    <span class="n">sess</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">app</span><span class="p">[</span><span class="s2">&#34;sess&#34;</span><span class="p">]</span>
-</span></span><span class="line"><span class="cl">    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">req</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">HOP</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">req</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">HOP</span> <span class="o">|</span> <span class="p">{</span><span class="s2">&#34;host&#34;</span><span class="p">,</span> <span class="s2">&#34;origin&#34;</span><span class="p">}}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">headers</span><span class="p">[</span><span class="s2">&#34;Origin&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="n">upstream</span>  <span class="c1"># Host 由 aiohttp 按上游 URL 重设；Origin 重写成</span>
+</span></span><span class="line"><span class="cl">                                  <span class="c1"># 上游源——上游 Host/Origin 栅栏只认 loopback 同源（见下文插曲）</span>
 </span></span><span class="line"><span class="cl">    <span class="k">async</span> <span class="k">with</span> <span class="n">sess</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">method</span><span class="p">,</span> <span class="n">upstream</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">rel_url</span><span class="p">),</span>
 </span></span><span class="line"><span class="cl">                            <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="k">await</span> <span class="n">req</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span>
 </span></span><span class="line"><span class="cl">                            <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">as</span> <span class="n">up</span><span class="p">:</span>
@@ -607,7 +611,10 @@
 </tbody>
 </table>
 <p>dsh 对 Host 和 Origin 各查一遍：<strong>非 localhost/IP 字面量一律 403</strong>——这是 DNS-rebinding 防御，防的是恶意网站把公用域名指到 <code>127.0.0.1</code> 来打你本机服务。它宁可错杀我这种「域名指内网 IP」的场景。</p>
-<p>修法在反代侧：转发时把 Host 改写成上游地址、剥掉 Origin（缺失的 Origin 反而放行——这条只挡「带错」不挡「没带」）。cenacle 的 Go 代理就是这么做的，上面 Python 版的 <code>skip</code> 清单也加了 <code>host</code>/<code>origin</code> 两个键。301 跳转腿不用处理——浏览器拿到新地址会自己重发。</p>
+<p>修法在反代侧：转发时把 Host 和 Origin <strong>都重写成上游源</strong>（如 <code>http://127.0.0.1:3080</code>）——上游看到的就是一次&quot;本机同源&quot;请求。301 跳转腿不用处理——浏览器拿到新地址会自己重发。</p>
+<blockquote>
+<p><strong>勘误（2026-08-18）</strong>：本文最初建议「剥掉 Origin」，依据是 dsh 核心的栅栏「缺失放行、带错必 403」。但 dshmarket 插件市场的同源守卫更严——<strong>Origin 缺失也拒</strong>，导致经反代操作时市场安装/更新全 403 <code>untrusted origin</code>。剥掉能过核心、过不了插件；重写成上游源则两种口径都过。cenacle 的 Go 代理（commit <code>85a3d09</code>）与上文 Python 版均已改为重写。</p>
+</blockquote>
 <h2 id="八收尾">八、收尾</h2>
 <p>这个问题的有趣之处在于：它只在「跨设备 + 明文 HTTP + 现代前端」三个条件叠加时出现，PC 开发自测完全覆盖不到。如果你也有局域网手机访问的服务，值得主动做两件事：</p>
 <ol>
@@ -616,7 +623,7 @@
 </ol>
 <p>以及，过渡方案终究是过渡方案——等官方鉴权落地，这些脚手架都可以体面退役。</p>
 <div class="post-series-nav">
-                <em>本文是「<a href="/series/deepseek-harness/">DeepSeek Harness</a>」系列第 4 篇，共 4 篇。上一篇：<a href="/posts/2026/08/15/dsh-plugin-browser-fs/">给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件</a>。</em>
+                <em>本文是「<a href="/series/deepseek-harness/">DeepSeek Harness</a>」系列第 4 篇，共 5 篇。上一篇：<a href="/posts/2026/08/15/dsh-plugin-browser-fs/">给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件</a>。下一篇：<a href="/posts/2026/08/19/dsh-niulai-pet/">任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来</a>。</em>
             </div></div><script src="/lib/qrcode/qrcode.min.js"></script>
 <div id="share-card-btn" hidden>生成分享卡片</div>
 <div id="share-card-overlay" hidden>
@@ -845,8 +852,8 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2026-08-16&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/1ee730830a1223c865414769865d9965edd884f2" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) 1ee730830a1223c865414769865d9965edd884f2: feat: lan-access 文补纯 HTTP 模式（https_proxy.py --mode http &#43; polyfill 注入），代码摘录与新脚本对齐">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>1ee7308</a></span>
+                <span>更新于 2026-08-18&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/d3cb8f6857285ccdb3752902735ba615e8aba3ba" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) d3cb8f6857285ccdb3752902735ba615e8aba3ba: docs: dsh-lan-access 勘误——Origin 应重写为上游源而非剥掉（dshmarket 守卫缺失也拒）">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>d3cb8f6</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
@@ -872,7 +879,7 @@
     </div>
 
     <div class="post-nav"><a href="/posts/2026/08/15/dsh-plugin-browser-fs/" class="prev" rel="prev" title="给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>给 DeepSeek Harness 写插件：让远程 Agent 读写你电脑上的文件</a>
-            <a href="/posts/2026/08/18/blog-terminal-needle-edge-ai/" class="next" rel="next" title="不烧 API 的博客 AI：给终端装一颗 14MB 的端侧大脑">不烧 API 的博客 AI：给终端装一颗 14MB 的端侧大脑<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+            <a href="/posts/2026/08/18/blog-terminal-needle-edge-ai/" class="next" rel="next" title="不烧 token 的博客 AI：给终端装一颗 14MB 的端侧大脑">不烧 token 的博客 AI：给终端装一颗 14MB 的端侧大脑<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 
 </div>
 <div id="comments"><div id="waline" class="comment"></div><noscript>
