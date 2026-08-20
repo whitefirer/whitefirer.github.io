@@ -149,10 +149,11 @@ for await (const entry of dir.values()) { /* ... */ }
 
 ## 六、装机与验证
 
-安装一行命令（远程装的是入库的构建产物，开箱即用；file: 是本地开发路径，改动后要重装+重启 dsh）：
+安装一行命令（npm 渠道推荐，国内网络更稳；github: 装的是入库的构建产物，开箱即用；file: 是本地开发路径，改动后要重装+重启 dsh）：
 
 ```bash
-dsh plugin --profile web add github:whitefirer/dsh-browser-fs   # 从 GitHub 安装（推荐）
+dsh plugin --profile web add dsh-browser-fs                      # 从 npm 安装（推荐）
+dsh plugin --profile web add github:whitefirer/dsh-browser-fs    # 或从 GitHub 安装
 # 本地开发/改代码时用 file: 路径重装：
 dsh plugin --profile web add file:/path/to/dsh-browser-fs
 ```

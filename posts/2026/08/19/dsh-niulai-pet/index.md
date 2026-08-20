@@ -117,7 +117,8 @@ dsh 跑任务时我经常切到别的桌面干活，完成通知这事我做过�
 一行装上：
 
 ```sh
-dsh plugin --profile web add github:whitefirer/dsh-niulai-pet
+dsh plugin --profile web add dsh-niulai-pet                     # npm（推荐，国内网络更稳）
+dsh plugin --profile web add github:whitefirer/dsh-niulai-pet   # 或从 GitHub
 ```
 
 构建产物已入库，安装零脚本；首次安装重启一次 dsh web，之后升级刷新页面即生效。奶牛/熊猫/蓝鲸三只手绘的 SVG 源文件在仓库 `tools/drawn/` 里，随便拿去用。

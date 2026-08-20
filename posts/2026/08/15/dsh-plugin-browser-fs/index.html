@@ -29,8 +29,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/whitefirer.org\/posts\/2026\/08\/15\/dsh-plugin-browser-fs\/"
-        },"genre": "posts","keywords": "tech, ai, deepseek, harness, plugin, tutorial, file-system-access","wordcount":  3969 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/15\/dsh-plugin-browser-fs\/","datePublished": "2026-08-15T23:14:52+08:00","dateModified": "2026-08-16T19:55:49+08:00","license": "2022©️whitefirer","publisher": {
+        },"genre": "posts","keywords": "tech, ai, deepseek, harness, plugin, tutorial, file-system-access","wordcount":  4002 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/15\/dsh-plugin-browser-fs\/","datePublished": "2026-08-15T23:14:52+08:00","dateModified": "2026-08-20T03:05:30+08:00","license": "2022©️whitefirer","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -136,7 +136,7 @@
                 <a href="/series/deepseek-harness/"><i class="fas fa-layer-group fa-fw" aria-hidden="true"></i>DeepSeek Harness</a>
             </div><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-15">2026-08-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3969 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-15">2026-08-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 4002 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 8 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/08/15/dsh-plugin-browser-fs.svg" alt="" aria-hidden="true" loading="eager"
      style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none"></div>
         </div><div class="details toc" id="toc-static"  data-kept="">
@@ -364,15 +364,17 @@
 <li><strong>安全上下文</strong>：<code>showDirectoryPicker</code> 只在 HTTPS 或 localhost 可用。<code>http://192.168.x.x</code> 局域网访问时这个 API 直接不存在，polyfill 都救不了（这类权限级 API 和 <code>crypto.randomUUID</code> 不同，补不出来——上一篇《手机访问局域网服务就白屏？》详细讲过这个坑）。</li>
 </ol>
 <h2 id="六装机与验证">六、装机与验证</h2>
-<p>安装一行命令（远程装的是入库的构建产物，开箱即用；file: 是本地开发路径，改动后要重装+重启 dsh）：</p>
+<p>安装一行命令（npm 渠道推荐，国内网络更稳；github: 装的是入库的构建产物，开箱即用；file: 是本地开发路径，改动后要重装+重启 dsh）：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
+</span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">dsh plugin --profile web add github:whitefirer/dsh-browser-fs   <span class="c1"># 从 GitHub 安装（推荐）</span>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">dsh plugin --profile web add dsh-browser-fs                      <span class="c1"># 从 npm 安装（推荐）</span>
+</span></span><span class="line"><span class="cl">dsh plugin --profile web add github:whitefirer/dsh-browser-fs    <span class="c1"># 或从 GitHub 安装</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># 本地开发/改代码时用 file: 路径重装：</span>
 </span></span><span class="line"><span class="cl">dsh plugin --profile web add file:/path/to/dsh-browser-fs
 </span></span></code></pre></td></tr></table>
@@ -649,8 +651,8 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2026-08-16&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/c915efb540e6291702f63bbe48ad417af4206913" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) c915efb540e6291702f63bbe48ad417af4206913: docs: 插件文资源节补收录信息（主榜 PR #773 &#43; 目录站详情页）与发布后更新说明">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>c915efb</a></span>
+                <span>更新于 2026-08-20&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/e117118557440e2cf8b4520069e2bde62e740e16" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) e117118557440e2cf8b4520069e2bde62e740e16: content: 两篇插件文安装段补 npm 渠道（推荐位，国内更稳）">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>e117118</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
