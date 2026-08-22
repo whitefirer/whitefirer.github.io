@@ -2,8 +2,8 @@
     xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     ><url>
-            <loc>https://whitefirer.org/tags/ai/</loc><lastmod>2026-08-22T23:29:34&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/categories/</loc><lastmod>2026-08-22T23:29:34&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://whitefirer.org/tags/ai/</loc><lastmod>2026-08-23T06:16:29&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/categories/</loc><lastmod>2026-08-23T06:16:29&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://whitefirer.org/en/categories/"
@@ -12,11 +12,11 @@
                     hreflang="zh-cn"
                     href="https://whitefirer.org/categories/"
                     /></url><url>
-            <loc>https://whitefirer.org/tags/deepseek/</loc><lastmod>2026-08-22T23:29:34&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/tags/harness/</loc><lastmod>2026-08-22T23:29:34&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/tags/kws/</loc><lastmod>2026-08-22T23:29:34&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/tags/plugin/</loc><lastmod>2026-08-22T23:29:34&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/posts/</loc><lastmod>2026-08-22T23:29:34&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://whitefirer.org/tags/deepseek/</loc><lastmod>2026-08-23T06:16:29&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/tags/harness/</loc><lastmod>2026-08-23T06:16:29&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/tags/kws/</loc><lastmod>2026-08-23T06:16:29&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/tags/plugin/</loc><lastmod>2026-08-23T06:16:29&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/posts/</loc><lastmod>2026-08-23T06:16:29&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://whitefirer.org/en/posts/"
@@ -25,7 +25,7 @@
                     hreflang="zh-cn"
                     href="https://whitefirer.org/posts/"
                     /></url><url>
-            <loc>https://whitefirer.org/series/</loc><lastmod>2026-08-22T23:29:34&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://whitefirer.org/series/</loc><lastmod>2026-08-23T06:16:29&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://whitefirer.org/en/series/"
@@ -34,7 +34,7 @@
                     hreflang="zh-cn"
                     href="https://whitefirer.org/series/"
                     /></url><url>
-            <loc>https://whitefirer.org/tags/</loc><lastmod>2026-08-22T23:29:34&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://whitefirer.org/tags/</loc><lastmod>2026-08-23T06:16:29&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://whitefirer.org/en/tags/"
@@ -43,11 +43,11 @@
                     hreflang="zh-cn"
                     href="https://whitefirer.org/tags/"
                     /></url><url>
-            <loc>https://whitefirer.org/tags/wasm/</loc><lastmod>2026-08-22T23:29:34&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/tags/webworker/</loc><lastmod>2026-08-22T23:29:34&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/posts/2026/08/22/dsh-niulai-pet-kws/</loc><lastmod>2026-08-22T23:29:34&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/tags/%E7%89%9B%E6%9D%A5/</loc><lastmod>2026-08-22T23:29:34&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/</loc><lastmod>2026-08-22T23:29:34&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://whitefirer.org/tags/wasm/</loc><lastmod>2026-08-23T06:16:29&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/tags/webworker/</loc><lastmod>2026-08-23T06:16:29&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/posts/2026/08/22/dsh-niulai-pet-kws/</loc><lastmod>2026-08-23T06:16:29&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/tags/%E7%89%9B%E6%9D%A5/</loc><lastmod>2026-08-23T06:16:29&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/</loc><lastmod>2026-08-23T06:16:29&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://whitefirer.org/en/"

@@ -29,8 +29,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/whitefirer.org\/posts\/2026\/08\/22\/dsh-niulai-pet-kws\/"
-        },"genre": "posts","keywords": "tech, ai, deepseek, harness, plugin, kws, wasm, webworker, 牛来","wordcount":  3048 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/22\/dsh-niulai-pet-kws\/","datePublished": "2026-08-22T04:17:00+08:00","dateModified": "2026-08-22T23:29:34+08:00","license": "2022©️whitefirer","publisher": {
+        },"genre": "posts","keywords": "tech, ai, deepseek, harness, plugin, kws, wasm, webworker, 牛来","wordcount":  3049 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/22\/dsh-niulai-pet-kws\/","datePublished": "2026-08-22T04:17:00+08:00","dateModified": "2026-08-23T06:16:29+08:00","license": "2022©️whitefirer","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -136,7 +136,7 @@
                 <a href="/series/deepseek-harness/"><i class="fas fa-layer-group fa-fw" aria-hidden="true"></i>DeepSeek Harness</a>
             </div><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-22">2026-08-22</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3048 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-22">2026-08-22</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3049 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 7 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/08/22/dsh-niulai-pet-kws.svg" alt="" aria-hidden="true" loading="eager"
      style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none"></div>
         </div><div class="details toc" id="toc-static"  data-kept="">
@@ -255,7 +255,7 @@
 <p>指令词也从 1 个扩到 4 个可配：牛来（默认）、别喊了、安静、停下，每个带音素变体。四词交叉验证（59 条 TTS 语料 + 9 条负样本）：<strong>串词为零</strong>（喊 A 词命中 B 词的次数），负样本零误报。漏检集中在陕西口音级重口音和 +20% 超速语音，试过加变体硬修，无效还涨误报风险，不堆变体，用户换个自己喊着顺的词就行。</p>
 <p>已知近音代价：「你又来」会命中牛来变体。音素变体的固有代价，记在这。</p>
 <h2 id="七真机最后一坑音量小识别不到">七、真机最后一坑：音量小识别不到</h2>
-<p>真机反馈，安静环境小声喊，识别不到。排查下来，干净语音压到 -24dB 模型不要增益也照中，问题出在别处：<strong>低电平 + 浏览器噪声抑制把弱语音当噪音吞了</strong>。</p>
+<p>实测后发现，安静环境小声喊，识别不到。排查下来，干净语音压到 -24dB 模型不要增益也照中，问题出在别处：<strong>低电平 + 浏览器噪声抑制把弱语音当噪音吞了</strong>。</p>
 <p>对策两层：<code>getUserMedia</code> 开 <code>autoGainControl</code>，从源头放大（先于噪声抑制管线）；再加一个软件增益滑杆（1.0 到 4.0 倍，tanh 软削波防爆音），正式监听热生效，测试界面和录音同一条管线。</p>
 <p>增益安全性：负样本开 4 倍零误报，正常音量开 3 倍仍命中。增益救不了频谱退化型对抗样本，那是音量无关的已知限制，不挣扎。</p>
 <h2 id="八现在的样子">八、现在的样子</h2>
@@ -500,8 +500,8 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2026-08-22&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/30722227ce0b41c026e1f1f916c80ce66dcbe2c7" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) 30722227ce0b41c026e1f1f916c80ce66dcbe2c7: content: KWS 文第八节补 B 站第二期实测视频链接">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>3072222</a></span>
+                <span>更新于 2026-08-23&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/4b83db218021e412ef1c52030b5804084df4ce2a" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) 4b83db218021e412ef1c52030b5804084df4ce2a: content: KWS 文「真机反馈」改「实测后发现」">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>4b83db2</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
