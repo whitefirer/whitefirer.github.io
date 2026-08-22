@@ -29,8 +29,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/whitefirer.org\/posts\/2026\/08\/22\/dsh-niulai-pet-kws\/"
-        },"genre": "posts","keywords": "tech, ai, deepseek, harness, plugin, kws, wasm, webworker, 牛来","wordcount":  3002 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/22\/dsh-niulai-pet-kws\/","datePublished": "2026-08-22T04:17:00+08:00","dateModified": "2026-08-22T23:18:58+08:00","license": "2022©️whitefirer","publisher": {
+        },"genre": "posts","keywords": "tech, ai, deepseek, harness, plugin, kws, wasm, webworker, 牛来","wordcount":  3005 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/22\/dsh-niulai-pet-kws\/","datePublished": "2026-08-22T04:17:00+08:00","dateModified": "2026-08-22T23:25:03+08:00","license": "2022©️whitefirer","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -136,7 +136,7 @@
                 <a href="/series/deepseek-harness/"><i class="fas fa-layer-group fa-fw" aria-hidden="true"></i>DeepSeek Harness</a>
             </div><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-22">2026-08-22</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3002 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-22">2026-08-22</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3005 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 6 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/08/22/dsh-niulai-pet-kws.svg" alt="" aria-hidden="true" loading="eager"
      style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none"></div>
         </div><div class="details toc" id="toc-static"  data-kept="">
@@ -158,7 +158,7 @@
   </ul>
 </nav></div>
             </div><div class="content" id="content"><h2 id="一需求">一、需求</h2>
-<p>牛来桌宠（dsh 的桌宠插件，它的诞生记见本系列上一篇）有个「循环喊到互动停止」模式：任务一完成，它就喊妈，一直喊，喊到你理它为止。戳一下能停，打字也能停，这次应评论区要求加了玩法：喊一声「牛来」就停。电影《牛来》里妈妈就是这么喊它的，台词闭环。</p>
+<p>牛来桌宠（dsh 的桌宠插件，它的诞生记见本系列上一篇）有个「循环喊到互动停止」模式：任务一完成，它就喊妈，一直喊，喊到你理它为止。戳一下能停，打字也能停，这次应 <a href="https://www.bilibili.com/video/BV1iN8p6AEV5" target="_blank" rel="noopener noreffer ">B 站评论区</a> 的要求加了玩法：喊一声「牛来」就停。电影《牛来》里妈妈就是这么喊它的，台词闭环。</p>
 <p>要实现这个，桌宠得有耳朵：浏览器里、本地跑、中文、只认一两个指令词、不能把它自己喊的「妈妈」当成指令。这是典型的 KWS（关键词识别）场景——Amazon 管这个叫唤醒词（wake word），就是「Hey Siri」要先过的那一环。</p>
 <p>有人问为什么不直接调云上的语音识别 API。隐私上，麦克风音频不该出浏览器；成本上，循环喊期间要一直开听，按分钟计费肉疼；延迟上，本地推理 0.9 秒音频只要 25 到 40 毫秒，云上走一圈够它喊三声妈了。整句 ASR 也不合适，模型几百 MB 起步，一个桌宠背不动。</p>
 <p>这双耳朵的四代演进，全部在一天内完成，数据都实测过。</p>
@@ -500,8 +500,8 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2026-08-22&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/35b72a0a5e1629c58a44f65e5f341af1095518a2" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) 35b72a0a5e1629c58a44f65e5f341af1095518a2: content: KWS 文定稿换封面（原皮），桌宠文补 B 站链接">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>35b72a0</a></span>
+                <span>更新于 2026-08-22&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/9b034703c294b8986f1c6e72d23c043c783d4cd4" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) 9b034703c294b8986f1c6e72d23c043c783d4cd4: content: KWS 文评论区出处点名 B 站并挂链接">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>9b03470</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
