@@ -73,11 +73,11 @@
             <loc>https://whitefirer.org/tags/file-system-access/</loc><lastmod>2026-08-20T03:05:30&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/tags/tutorial/</loc><lastmod>2026-08-20T03:05:30&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/posts/2026/08/15/dsh-plugin-browser-fs/</loc><lastmod>2026-08-20T03:05:30&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/tags/architecture/</loc><lastmod>2026-08-16T04:12:24&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/</loc><lastmod>2026-08-16T04:12:24&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/tags/event-sourcing/</loc><lastmod>2026-08-16T04:12:24&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/tags/agent/</loc><lastmod>2026-08-16T04:12:24&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/posts/2026/08/13/deepseek-harness-hands-on/</loc><lastmod>2026-08-16T04:12:24&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/tags/architecture/</loc><lastmod>2026-08-16T04:12:24&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url><url>
+            <loc>https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/</loc><lastmod>2026-08-16T04:12:24&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url><url>
+            <loc>https://whitefirer.org/tags/event-sourcing/</loc><lastmod>2026-08-16T04:12:24&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url><url>
+            <loc>https://whitefirer.org/tags/agent/</loc><lastmod>2026-08-16T04:12:24&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url><url>
+            <loc>https://whitefirer.org/posts/2026/08/13/deepseek-harness-hands-on/</loc><lastmod>2026-08-16T04:12:24&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url><url>
             <loc>https://whitefirer.org/tags/claude-code/</loc><lastmod>2026-07-23T19:35:57&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
             <loc>https://whitefirer.org/tags/harness-engineering/</loc><lastmod>2026-07-23T19:35:57&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
             <loc>https://whitefirer.org/posts/2026/07/19/harness-engineering-sandbox/</loc><lastmod>2026-07-23T19:35:57&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
@@ -170,7 +170,7 @@
             <loc>https://whitefirer.org/series/claude-code-deep-dive/</loc><lastmod>2026-06-02T19:29:23&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://whitefirer.org/series/harness-engineering/</loc><lastmod>2026-07-12T20:48:46&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://whitefirer.org/series/ai-zatan/</loc><lastmod>2026-06-02T19:29:23&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>https://whitefirer.org/series/deepseek-harness/</loc><lastmod>2026-08-16T04:12:24&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/series/deepseek-harness/</loc><lastmod>2026-08-16T04:12:24&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url><url>
             <loc>https://whitefirer.org/tags/movie/</loc><lastmod>2022-09-16T16:26:59&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://whitefirer.org/series/edge-ai/</loc><lastmod>2026-08-18T02:39:14&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/tags/service-mesh/</loc><lastmod>2022-09-01T20:20:52&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
