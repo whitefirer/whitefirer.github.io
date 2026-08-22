@@ -131,3 +131,5 @@ dsh plugin --profile web add github:whitefirer/dsh-niulai-pet   # 或从 GitHub
 
 下一步：自定义皮肤（导入自己的图和声音）、按住它说话的语音控制（识别完直接发给当前会话，STT 选型调研已经躺在仓库 `docs/roadmap.md` 里）、插件市场收录（awesome 门槛是仓库满一天 + 提交数 ≥10，CI 自动校验，PR 已在路上）。仓库在 [github.com/whitefirer/dsh-niulai-pet](https://github.com/whitefirer/dsh-niulai-pet)，素材全入库，装上即玩。
 
+想看带配音的剪辑完整版，B 站在这：[任务一完成它就蹦出来喊「妈」——我给 DeepSeek Harness 养了头牛来](https://www.bilibili.com/video/BV1iN8p6AEV5)。
+

@@ -4,38 +4,38 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <title>任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来 - 赛博闲谭-whitefirer</title><meta name="Description" content="给 dsh web 的角落养了一头《牛来》桌宠：平时呼吸眨眼打盹吐槽，agent 任务一完成就蹦出来喊「妈～～妈～～」。全程记录：6 个皮肤（含 DeepSeek 蓝虎鲸）、签名动作系统、WebAudio 合成叫声、ffmpeg 七档降噪，以及动画/素材/录屏路上踩的所有坑。">
+        <title>给 DeepSeek Harness 桌宠装耳朵：浏览器里跑中文 KWS 的全记录 - 赛博闲谭-whitefirer</title><meta name="Description" content="dsh 桌宠牛来的「循环喊到互动停止」需要一双耳朵：喊一声「牛来」它就停。记录这双耳朵的四代演进——零模型 MFCC&#43;DTW 模板匹配的判别力天花板、sherpa-onnx KWS wasm 自编译、插件 host 半开路由同源分发 17MB、INITIAL_MEMORY 从 512MB 实测定稿 32MB、Web Worker 空闲 10s terminate 真释放、四指令词交叉验证零串词零误报，以及真机「音量小识别不到」的最后一坑。">
 
 <meta name="application-name" content="赛博闲谭-whitefirer">
 <meta name="apple-mobile-web-app-title" content="赛博闲谭-whitefirer"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-        <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/08/19/dsh-niulai-pet/" /><link rel="prev" href="https://whitefirer.org/posts/2026/08/18/blog-terminal-needle-edge-ai/" /><link rel="next" href="https://whitefirer.org/posts/2026/08/22/dsh-niulai-pet-kws/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/08/22/dsh-niulai-pet-kws/" /><link rel="prev" href="https://whitefirer.org/posts/2026/08/19/dsh-niulai-pet/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta property="og:title" content="任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来 - 赛博闲谭-whitefirer" />
-<meta property="og:description" content="给 dsh web 的角落养了一头《牛来》桌宠：平时呼吸眨眼打盹吐槽，agent 任务一完成就蹦出来喊「妈～～妈～～」。全程记录：6 个皮肤（含 DeepSeek 蓝虎鲸）、签名动作系统、WebAudio 合成叫声、ffmpeg 七档降噪，以及动画/素材/录屏路上踩的所有坑。" />
-<meta property="og:image" content="https://whitefirer.org/posts/2026/08/19/dsh-niulai-pet/cover.png" />
-<meta property="og:url" content="https://whitefirer.org/posts/2026/08/19/dsh-niulai-pet/" />
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta property="og:title" content="给 DeepSeek Harness 桌宠装耳朵：浏览器里跑中文 KWS 的全记录 - 赛博闲谭-whitefirer" />
+<meta property="og:description" content="dsh 桌宠牛来的「循环喊到互动停止」需要一双耳朵：喊一声「牛来」它就停。记录这双耳朵的四代演进——零模型 MFCC&#43;DTW 模板匹配的判别力天花板、sherpa-onnx KWS wasm 自编译、插件 host 半开路由同源分发 17MB、INITIAL_MEMORY 从 512MB 实测定稿 32MB、Web Worker 空闲 10s terminate 真释放、四指令词交叉验证零串词零误报，以及真机「音量小识别不到」的最后一坑。" />
+<meta property="og:image" content="https://whitefirer.org/posts/2026/08/22/dsh-niulai-pet-kws/cover.png" />
+<meta property="og:url" content="https://whitefirer.org/posts/2026/08/22/dsh-niulai-pet-kws/" />
 <meta property="og:type" content="article" />
 <meta property="og:site_name" content="赛博闲谭-whitefirer" /><meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来 - 赛博闲谭-whitefirer" />
-<meta name="twitter:description" content="给 dsh web 的角落养了一头《牛来》桌宠：平时呼吸眨眼打盹吐槽，agent 任务一完成就蹦出来喊「妈～～妈～～」。全程记录：6 个皮肤（含 DeepSeek 蓝虎鲸）、签名动作系统、WebAudio 合成叫声、ffmpeg 七档降噪，以及动画/素材/录屏路上踩的所有坑。" />
-<meta name="twitter:image" content="https://whitefirer.org/posts/2026/08/19/dsh-niulai-pet/cover.png" /><script type="application/ld+json">
+<meta name="twitter:title" content="给 DeepSeek Harness 桌宠装耳朵：浏览器里跑中文 KWS 的全记录 - 赛博闲谭-whitefirer" />
+<meta name="twitter:description" content="dsh 桌宠牛来的「循环喊到互动停止」需要一双耳朵：喊一声「牛来」它就停。记录这双耳朵的四代演进——零模型 MFCC&#43;DTW 模板匹配的判别力天花板、sherpa-onnx KWS wasm 自编译、插件 host 半开路由同源分发 17MB、INITIAL_MEMORY 从 512MB 实测定稿 32MB、Web Worker 空闲 10s terminate 真释放、四指令词交叉验证零串词零误报，以及真机「音量小识别不到」的最后一坑。" />
+<meta name="twitter:image" content="https://whitefirer.org/posts/2026/08/22/dsh-niulai-pet-kws/cover.png" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
-        "headline": "任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来",
+        "headline": "给 DeepSeek Harness 桌宠装耳朵：浏览器里跑中文 KWS 的全记录",
         "inLanguage": "zh-CN",
         "mainEntityOfPage": {
             "@type": "WebPage",
-            "@id": "https:\/\/whitefirer.org\/posts\/2026\/08\/19\/dsh-niulai-pet\/"
-        },"genre": "posts","keywords": "tech, ai, deepseek, harness, plugin, desktop-pet, 牛来","wordcount":  3468 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/19\/dsh-niulai-pet\/","datePublished": "2026-08-19T02:30:00+08:00","dateModified": "2026-08-22T23:18:58+08:00","license": "2022©️whitefirer","publisher": {
+            "@id": "https:\/\/whitefirer.org\/posts\/2026\/08\/22\/dsh-niulai-pet-kws\/"
+        },"genre": "posts","keywords": "tech, ai, deepseek, harness, plugin, kws, wasm, webworker, 牛来","wordcount":  3002 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/22\/dsh-niulai-pet-kws\/","datePublished": "2026-08-22T04:17:00+08:00","dateModified": "2026-08-22T23:18:58+08:00","license": "2022©️whitefirer","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
                 "name": "whitefirer"
-            },"description": "给 dsh web 的角落养了一头《牛来》桌宠：平时呼吸眨眼打盹吐槽，agent 任务一完成就蹦出来喊「妈～～妈～～」。全程记录：6 个皮肤（含 DeepSeek 蓝虎鲸）、签名动作系统、WebAudio 合成叫声、ffmpeg 七档降噪，以及动画/素材/录屏路上踩的所有坑。"
+            },"description": "dsh 桌宠牛来的「循环喊到互动停止」需要一双耳朵：喊一声「牛来」它就停。记录这双耳朵的四代演进——零模型 MFCC+DTW 模板匹配的判别力天花板、sherpa-onnx KWS wasm 自编译、插件 host 半开路由同源分发 17MB、INITIAL_MEMORY 从 512MB 实测定稿 32MB、Web Worker 空闲 10s terminate 真释放、四指令词交叉验证零串词零误报，以及真机「音量小识别不到」的最后一坑。"
     }
     </script></head>
     <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
@@ -64,7 +64,7 @@
                     <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
                 </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
                     <i class="fa fa-globe" aria-hidden="true"></i>                      
-                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/2026/08/19/dsh-niulai-pet/" selected>简体中文</option></select>
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/2026/08/22/dsh-niulai-pet-kws/" selected>简体中文</option></select>
                 </a></div>
         </div>
     </div>
@@ -118,7 +118,7 @@
                 <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
             </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
                     <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
-                    <select class="language-select" onchange="location = this.value;"><option value="/posts/2026/08/19/dsh-niulai-pet/" selected>简体中文</option></select>
+                    <select class="language-select" onchange="location = this.value;"><option value="/posts/2026/08/22/dsh-niulai-pet-kws/" selected>简体中文</option></select>
                 </a></div>
     </div>
 </header><div class="search-dropdown desktop">
@@ -132,12 +132,12 @@
             <div class="toc-content" id="toc-content-auto"></div>
         </div><div id="reading-progress"></div>
     <article class="page single"><div style="display:flex;align-items:baseline;gap:0">
-        <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来</h1></div><h2 class="single-subtitle">一个纯客户端插件的诞生：抠图修蹄子、喊声基频鉴假、嘴型时间线、WAAPI 动画三连坑，外加三只手绘小动物</h2><div class="post-series">
+        <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">给 DeepSeek Harness 桌宠装耳朵：浏览器里跑中文 KWS 的全记录</h1></div><h2 class="single-subtitle">dsh 插件的四代耳朵演进：从 MFCC 模板匹配到 sherpa-onnx wasm 自编译，17MB 不走 CDN、512MB 内存砍到 32MB、Worker 空闲真释放，外加四词交叉验证零误报</h2><div class="post-series">
                 <a href="/series/deepseek-harness/"><i class="fas fa-layer-group fa-fw" aria-hidden="true"></i>DeepSeek Harness</a>
             </div><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-19">2026-08-19</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3468 字&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 7 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/08/19/dsh-niulai-pet.svg" alt="" aria-hidden="true" loading="eager"
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-22">2026-08-22</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3002 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 6 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/08/22/dsh-niulai-pet-kws.svg" alt="" aria-hidden="true" loading="eager"
      style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none"></div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
@@ -146,173 +146,132 @@
                 </div>
                 <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
-    <li><a href="#一先上成品">一、先上成品</a></li>
-    <li><a href="#二为什么不是通知是桌宠">二、为什么不是通知，是桌宠</a></li>
-    <li><a href="#三它现在长什么样">三、它现在长什么样</a></li>
-    <li><a href="#四纯客户端插件dsh-插件的第三种形态">四、纯客户端插件：dsh 插件的第三种形态</a></li>
-    <li><a href="#五制作过程每一环都在打仗">五、制作过程：每一环都在打仗</a>
-      <ul>
-        <li><a href="#形象抠图只是开始修图才是战役">形象：抠图只是开始，修图才是战役</a></li>
-        <li><a href="#喊声选段鉴假降噪">喊声：选段、鉴假、降噪</a></li>
-        <li><a href="#嘴型尾音要一直张着嘴">嘴型：尾音要一直张着嘴</a></li>
-        <li><a href="#动画单图变形--少量换帧还有三个坑">动画：单图变形 + 少量换帧，还有三个坑</a></li>
-        <li><a href="#叫声零素材方案">叫声：零素材方案</a></li>
-        <li><a href="#手绘三小只">手绘三小只</a></li>
-        <li><a href="#录视频手机录屏它不出声">录视频：手机录屏它不出声</a></li>
-      </ul>
-    </li>
-    <li><a href="#六一些小但重要的设计">六、一些小但重要的设计</a></li>
-    <li><a href="#七安装与素材">七、安装与素材</a></li>
-    <li><a href="#八收尾">八、收尾</a></li>
+    <li><a href="#一需求">一、需求</a></li>
+    <li><a href="#二v1零模型模板匹配能用但有天花板">二、v1：零模型模板匹配，能用，但有天花板</a></li>
+    <li><a href="#三v2sherpa-onnx-kwswasm-得自己编">三、v2：sherpa-onnx KWS，wasm 得自己编</a></li>
+    <li><a href="#四v3内存从-512mb-砍到-32mb">四、v3：内存，从 512MB 砍到 32MB</a></li>
+    <li><a href="#五v4web-worker-化空闲-10-秒真释放">五、v4：Web Worker 化，空闲 10 秒真释放</a></li>
+    <li><a href="#六判别力">六、判别力</a></li>
+    <li><a href="#七真机最后一坑音量小识别不到">七、真机最后一坑：音量小识别不到</a></li>
+    <li><a href="#八现在的样子">八、现在的样子</a></li>
+    <li><a href="#附已知限制清单">附：已知限制清单</a></li>
   </ul>
 </nav></div>
-            </div><div class="content" id="content"><h2 id="一先上成品">一、先上成品</h2>
-<p>agent 干完活的那一刻，屏幕角落的小牛会蹦起来，字正腔圆地喊一嗓子「妈～～妈～～」——尾音拖足，嘴型跟上，中气十足：</p>
-<p><video controls preload="metadata" src="demo-pc.mp4" style="width:100%;border-radius:8px"></video></p>
-<p>PC 端：菜单、换皮肤、唠叨气泡、连喊三声的残影。手机端一样欢实——深色那条录到了蓝鲸喷水飞圈，浅色那条录到了奶牛和熊猫开嗓，两条的结尾都是「发消息 → agent 回完 → 蹦出来喊妈」的完整闭环：</p>
-<div style="display:flex;gap:8px">
-<video controls preload="metadata" src="demo-phone-dark.mp4" style="width:50%;border-radius:8px"></video>
-<video controls preload="metadata" src="demo-phone-light.mp4" style="width:50%;border-radius:8px"></video>
-</div>
-<p><strong>不装 dsh 也能玩到它</strong>：这插件是纯客户端的，同一套代码原样跑在裸页面上就是个小游戏——戳下面的试玩窗（或<a href="/niulai-pet/" rel="">打开全屏版</a>），戳牛、跑个模拟任务，等它喊妈（公众号读者点「阅读原文」直达）：</p>
-<iframe src="/niulai-pet/" style="width:100%;height:560px;border:0;border-radius:8px;background:#0d1126"></iframe>
-<p>不认识这头牛的同学补一下背景：《牛来》是最近的一个现象级奇观——一部画风粗糙的 3D 动画片，上映前十天全国票房不到一万块，被短视频带火后一周直冲千万。全网看完都在骂，骂完接着看，号称&quot;看了后悔 86 分钟，不看后悔一辈子&quot;，<a href="https://mp.weixin.qq.com/s/_qiAyJZUjUQSUwAeSHELfQ" target="_blank" rel="noopener noreffer ">李永乐老师还专门讲过它爆火背后的禁果效应</a>。主角那头丑得很有特色的黄牛，喊&quot;妈&quot;是名场面，二创鬼畜剪辑满天飞。我把它养进了 DeepSeek Harness（dsh）的 web 界面里——就是我最近连着折腾了好几篇的那个 agent 工作台。</p>
-<h2 id="二为什么不是通知是桌宠">二、为什么不是通知，是桌宠</h2>
-<p>dsh 跑任务时我经常切到别的桌面干活，完成通知这事我做过两轮：cenacle 通知中心、飞书卡片推送。都好使，但都太……正经了。</p>
-<p>桌宠才是 AI 工作台缺的最后一块。它不提供信息，它提供<strong>情绪价值</strong>：平时在角落呼吸、眨眼、踱步、趴下打盹，偶尔冒个气泡吐槽一句「我在吃草，你在吃苦」；你跑 AI 久了它会报时「AI 已经跑了 2分13秒…」；任务完成的那一刻，它用最炸裂的方式替你庆祝。</p>
-<p>选牛来当主角不需要理由，看到这头牛的人自然会懂。</p>
-<h2 id="三它现在长什么样">三、它现在长什么样</h2>
-<p><figure><a class="lightgallery" href="/posts/2026/08/19/dsh-niulai-pet/family.png" title="六个皮肤" data-thumbnail="/posts/2026/08/19/dsh-niulai-pet/family.png" data-sub-html="<h2>全家福：牛来、牛来原皮、小黄、奶牛、熊猫、蓝鲸</h2><p>六个皮肤</p>">
-        <img
-            class="lazyload"
-            src="/svg/loading.min.svg"
-            data-src="/posts/2026/08/19/dsh-niulai-pet/family.png"
-            data-srcset="/posts/2026/08/19/dsh-niulai-pet/family.png, /posts/2026/08/19/dsh-niulai-pet/family.png 1.5x, /posts/2026/08/19/dsh-niulai-pet/family.png 2x"
-            data-sizes="auto"
-            alt="/posts/2026/08/19/dsh-niulai-pet/family.png" width="1470" height="304" />
-    </a><figcaption class="image-caption">全家福：牛来、牛来原皮、小黄、奶牛、熊猫、蓝鲸</figcaption>
-    </figure></p>
-<ul>
-<li><strong>五个皮肤</strong>：牛来、小黄（幼年版，无角更黄亮）、奶牛、熊猫、蓝鲸——后三只没有现成素材，是我用 SVG 一只一只手绘的，蓝鲸特意调了 DeepSeek 蓝、加了虎鲸的白眼斑。（成文后又添了第六个「牛来原皮」：拿豆包生成的三视图抠的。牛来小时候没角——这是设定，不是抠图事故。）</li>
-<li><strong>签名动作</strong>：牛来连跳、小黄和熊猫翻滚、奶牛摇摆、蓝鲸弧线跃出水面（到弧顶还会喷水）。动作可以绑到事件上，也能设成随机。</li>
-<li><strong>叫声</strong>：牛来和小黄用原声（精修降噪过），奶牛/熊猫/蓝鲸的叫声是 WebAudio 现场合成的——哞、吱、鲸鸣，零素材零依赖。</li>
-<li><strong>唠叨气泡</strong>：AI 在跑就报耗时，闲下来就随机吐槽，嫌烦可以在菜单里关掉。</li>
-<li><strong>右键菜单</strong>：声音/完成时喊/气泡唠叨三个开关、连喊几声、动作绑定、换皮肤，还有个「关于」页，里面写着我的一句心里话：「我尽力了，只能做成这样了😂」。</li>
-</ul>
-<h2 id="四纯客户端插件dsh-插件的第三种形态">四、纯客户端插件：dsh 插件的第三种形态</h2>
-<p>技术选型上一句话就够：这个插件<strong>只有客户端</strong>（<code>dsh.client</code>），没有任何 host 侧代码。</p>
-<p>放到系列前两篇的坐标系里看，dsh 插件的三种形态就算凑齐了：</p>
-<table>
-<thead>
-<tr>
-<th>插件</th>
-<th>形态</th>
-<th>干什么</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>dsh-browser-fs</td>
-<td>双面（host + client）</td>
-<td>注册模型工具，读写浏览器端文件</td>
-</tr>
-<tr>
-<td>dsh-cenacle-bridge</td>
-<td>纯 bundle（host）</td>
-<td>让既有开发系统与 dsh 桥接协作</td>
-</tr>
-<tr>
-<td>dsh-niulai-pet</td>
-<td>纯 client</td>
-<td>界面层行为，订阅只读服务</td>
-</tr>
-</tbody>
-</table>
-<p>桌宠唯一需要的外部信号是&quot;哪个会话在跑/跑完了&quot;，dsh client runtime 本来就向插件发布 <code>sessions.list</code> 快照——订阅它即可，一行 host 代码都不用写。纯客户端的好处极其实在：<strong>改完代码 <code>npm run build</code> 完刷新页面就生效，永远不用重启宿主</strong>。</p>
-<p>另一个红利开头已经看到了：把 sessions 订阅换成一个模拟任务驱动，<code>pet.ts</code> 一行没改就跑在裸页面上——本文的在线试玩页就是这么来的，不是什么另写的复刻版。</p>
-<p>任务完成的判定就两条：<code>running</code> 从 true 翻成 false（当前会话跑完），或 <code>completed</code> 新置位（后台会话完成，即侧边栏绿点的同一信号）。宿主太旧没有 sessions 服务时降级成纯手动戳。</p>
-<h2 id="五制作过程每一环都在打仗">五、制作过程：每一环都在打仗</h2>
-<h3 id="形象抠图只是开始修图才是战役">形象：抠图只是开始，修图才是战役</h3>
-<p>别问我为什么还有这步骤，问就是全自动的。</p>
-<ul>
-<li><strong>犄角没了</strong>：牛角是深炭色，颜色阈值抠图直接把它当背景丢了——一只全没，一只只剩半截。放宽暗色区间重抠才找回来。</li>
-<li><strong>蹄子被草吃了</strong>：原帧里牛蹄埋在草里，抠出来就是两条断腿。抠图解决不了，只能造：按腿的宽度重建小腿、补上深色蹄冠。第一版是两块矩形，丑得像贴的砖；返工版改成了微梯形 + 正中分趾缝（偶蹄目的灵魂）+ 纵向渐变 + 微外八站姿。</li>
-</ul>
-<p><figure><a class="lightgallery" href="/posts/2026/08/19/dsh-niulai-pet/feet_zoom.png" title="蹄子特写" data-thumbnail="/posts/2026/08/19/dsh-niulai-pet/feet_zoom.png" data-sub-html="<h2>修好的蹄子：分趾缝是牛蹄的身份证</h2><p>蹄子特写</p>">
-        <img
-            class="lazyload"
-            src="/svg/loading.min.svg"
-            data-src="/posts/2026/08/19/dsh-niulai-pet/feet_zoom.png"
-            data-srcset="/posts/2026/08/19/dsh-niulai-pet/feet_zoom.png, /posts/2026/08/19/dsh-niulai-pet/feet_zoom.png 1.5x, /posts/2026/08/19/dsh-niulai-pet/feet_zoom.png 2x"
-            data-sizes="auto"
-            alt="/posts/2026/08/19/dsh-niulai-pet/feet_zoom.png" width="732" height="252" />
-    </a><figcaption class="image-caption">修好的蹄子：分趾缝是牛蹄的身份证</figcaption>
-    </figure></p>
-<h3 id="喊声选段鉴假降噪">喊声：选段、鉴假、降噪</h3>
-<p>喊声备了四段候选，其中两段怎么听都不像牛来的声音——不是耳朵好，是我跑了自相关基频分析：正常奶声基频 800-889Hz，那两段只有 516-552Hz。<strong>它们是被加速过的变调段，音调跟着速度一起飞了</strong>，低近一半的基频就是铁证。</p>
-<p>留下来的两段背景音又大（BGM 焊死在音轨里），上 ffmpeg 降噪：<code>highpass</code> 专治轰隆隆的低频（人声基频 800Hz，高通切到 280Hz 都伤不到它）、<code>afftdn</code> FFT 降噪压 BGM。我做了七档对比反复听，选定中强档——再狠人声就出&quot;水下音&quot;了。</p>
-<h3 id="嘴型尾音要一直张着嘴">嘴型：尾音要一直张着嘴</h3>
-<p>第一版的嘴是在喊声全程不停开闭的，看着像打机关枪。不对——「妈-妈～～」是两个音节，<strong>尾音是开口音</strong>：正确的时间线是张嘴 240ms → 闭 120ms（两个音节的分合）→ 重新张开，<strong>一直保持到尾音结束</strong>才闭上。</p>
-<p>时长也不能写死：插件在挂载时预读 mp3 的 metadata 拿真实时长，嘴型、气泡都跟着音频长度走，连喊几声时是串行接龙，每声之间自然闭一下。</p>
-<h3 id="动画单图变形--少量换帧还有三个坑">动画：单图变形 + 少量换帧，还有三个坑</h3>
-<p>桌宠没有序列帧素材，90% 的动作是单张 PNG 的 WAAPI 变换：呼吸是 scaleY 正弦，蹦跳带 squash&amp;stretch，飞行是根元素走抛物线 + 机身沿切线俯仰。只有嘴型、眨眼、飞行姿态、鲸鱼喷水这几处用双帧切换。</p>
-<p>踩了三个值得写下来的坑：</p>
-<ol>
-<li><strong>pause 的动画不是透明的</strong>。呼吸动画 pause 后仍压在 <code>img</code> 的 transform 上（WAAPI 在级联里压内联样式），飞行时机身旋转死活不生效——改 <code>cancel()</code> 才行。</li>
-<li><strong>镜像父级里的 rotate 不能乘方向</strong>。朝向翻转用根节点 <code>scaleX(-1)</code>，镜像会把精灵图和旋转一起翻，两个方向自洽；我多乘了一个方向系数，牛直接底朝天飞。</li>
-<li><strong>协程收尾别抢状态</strong>。踱步协程结束时无条件 <code>mood = 'idle'</code>，把刚起飞的飞行状态绞杀在半空——所有收尾都加了身份检查。</li>
-</ol>
-<h3 id="叫声零素材方案">叫声：零素材方案</h3>
-<p>三只手绘动物没有真声可截，干脆全部 WebAudio 合成：哞 = 锯齿波下滑 + 低频震颤 + 低通；鲸鸣 = 正弦长音先扬后抑 + 慢颤音；吱声 = 两声三角波短促上挑。总共不到 60 行代码，一个音频文件都不用下载。</p>
-<h3 id="手绘三小只">手绘三小只</h3>
-<p><figure><a class="lightgallery" href="/posts/2026/08/19/dsh-niulai-pet/whale-compare.png" title="鲸鱼新旧对比" data-thumbnail="/posts/2026/08/19/dsh-niulai-pet/whale-compare.png" data-sub-html="<h2>鲸鱼返工：从修长到胖圆 &#43; 虎鲸眼斑</h2><p>鲸鱼新旧对比</p>">
-        <img
-            class="lazyload"
-            src="/svg/loading.min.svg"
-            data-src="/posts/2026/08/19/dsh-niulai-pet/whale-compare.png"
-            data-srcset="/posts/2026/08/19/dsh-niulai-pet/whale-compare.png, /posts/2026/08/19/dsh-niulai-pet/whale-compare.png 1.5x, /posts/2026/08/19/dsh-niulai-pet/whale-compare.png 2x"
-            data-sizes="auto"
-            alt="/posts/2026/08/19/dsh-niulai-pet/whale-compare.png" width="568" height="530" />
-    </a><figcaption class="image-caption">鲸鱼返工：从修长到胖圆 + 虎鲸眼斑</figcaption>
-    </figure></p>
-<p>奶牛、熊猫、鲸鱼都是手写 SVG 渲染成 PNG，迭代了好几轮：鲸鱼的尾鳍一度像兔子耳朵，熊猫的竹子一度像拿着话筒。家族一致性靠三件套：同款描边色、大眼双高光、粉腮红。</p>
-<h3 id="录视频手机录屏它不出声">录视频：手机录屏它不出声</h3>
-<p>开头三条视频的录制本身也是一场仗。PC 版一次成型（宿主机录屏能带上系统声音），但两条手机版遇到了新问题：<strong>手机录屏录不到系统内放</strong>——屏幕录像走的是麦克风，桌宠喊得再字正腔圆，录出来也只剩 -46dB 的环境底噪。</p>
-<p>解法是时间戳配音法的升级版：先按 0.25 秒一帧抽接触表，把每个气泡（「妈～～妈～～」「哞——！」「嗯嗯！」「噗——！」）出现的精确时刻抠出来；声源不走录音——「妈～～妈～～」直接用仓库里的无损 mp3，奶牛/熊猫/蓝鲸的叫声则把插件里的 WebAudio 合成代码原样搬进 OfflineAudioContext 离线渲染成 WAV（和运行时发出的声音逐字节一致、零底噪）；最后按时间戳 <code>adelay</code> 混回去，顺手把 HEVC 转成全浏览器通吃的 h264。音画对齐误差百毫秒级，音质比现场采的干净一个数量级。</p>
-<h2 id="六一些小但重要的设计">六、一些小但重要的设计</h2>
-<ul>
-<li>「喊一声」只喊不跳，「戳一下」又喊又跳——一个是嘴上功夫，一个是全身反应。</li>
-<li>静音是真静音：没有声音也没有「妈～～妈～～」气泡，庆祝退化成纯动作。</li>
-<li>完成时喊妈可以关，连喊几声可以设（1-3 声），动作可以绑成固定或随机。</li>
-<li>位置、皮肤、所有开关都记忆在 localStorage。</li>
-</ul>
-<h2 id="七安装与素材">七、安装与素材</h2>
-<p>一行装上：</p>
+            </div><div class="content" id="content"><h2 id="一需求">一、需求</h2>
+<p>牛来桌宠（dsh 的桌宠插件，它的诞生记见本系列上一篇）有个「循环喊到互动停止」模式：任务一完成，它就喊妈，一直喊，喊到你理它为止。戳一下能停，打字也能停，这次应评论区要求加了玩法：喊一声「牛来」就停。电影《牛来》里妈妈就是这么喊它的，台词闭环。</p>
+<p>要实现这个，桌宠得有耳朵：浏览器里、本地跑、中文、只认一两个指令词、不能把它自己喊的「妈妈」当成指令。这是典型的 KWS（关键词识别）场景——Amazon 管这个叫唤醒词（wake word），就是「Hey Siri」要先过的那一环。</p>
+<p>有人问为什么不直接调云上的语音识别 API。隐私上，麦克风音频不该出浏览器；成本上，循环喊期间要一直开听，按分钟计费肉疼；延迟上，本地推理 0.9 秒音频只要 25 到 40 毫秒，云上走一圈够它喊三声妈了。整句 ASR 也不合适，模型几百 MB 起步，一个桌宠背不动。</p>
+<p>这双耳朵的四代演进，全部在一天内完成，数据都实测过。</p>
+<h2 id="二v1零模型模板匹配能用但有天花板">二、v1：零模型模板匹配，能用，但有天花板</h2>
+<p>第一版不依赖任何模型：MFCC 39 维特征 + 子序列 DTW 匹配。思路是把电影里妈妈喊「牛来」的原声当模板，麦克风输入实时算特征，滑窗对齐，距离小于阈值就命中。</p>
+<p>为了让它在真实麦克风环境能用，还加了两样：谱减降噪（逐 mel bin 跟踪底噪 EMA）、双端 CMN（倒谱均值归一）。判定做了防抖，连续 3 帧过阈才算命中，阈值可在设置里调。</p>
+<p>判别力：正样本最高 0.43，负样本最低 0.66，阈值 0.54 夹在中间，正负样本完全分开。自己喊「牛来」很灵。</p>
+<p>天花板也明显：<strong>模板是电影配音演员的嗓音，你的嗓音对不上就是对不上</strong>。这个缺陷没有工程解，只能靠自录模板兜底（设置里可以录 1.9 秒你自己的「牛来」，本人嗓音几乎必中）。另外零模型方案分不清近音词，「你又来」和「牛来」在它眼里差不多。</p>
+<p>它现在还在代码里，当轻量路径和降级方案：KWS 装载失败就自动回落到它。</p>
+<h2 id="三v2sherpa-onnx-kwswasm-得自己编">三、v2：sherpa-onnx KWS，wasm 得自己编</h2>
+<p>这次用上了语音识别模型。选型 sherpa-onnx 的 KWS 流式识别，模型是 zipformer wenetspeech 3.3M 参数的 int8 版，中文，专为关键词场景训练，社区验证充分。</p>
+<p>官方没有发布开箱即用的 KWS wasm 产物，得自己编。源码走 codeload tarball（本机 git clone GitHub 间歇被重置，tarball 直连稳定），emsdk 4.0.23 装上，模型三件套（encoder/decoder/joiner int8 + tokens.txt）塞进 assets，再做三处源码小改，emscripten &ndash;preload-file 一把出。产物四个文件：12MB wasm 运行时（gzip 后 3.4MB）、4.8MB 模型数据、loader 和 JS glue。构建纪要留在仓库文档里，可复现。</p>
+<p>另一个麻烦是这 17MB 从哪加载。走 CDN 最省事，但插件给别人用，哪天 CDN 挂了或者用户内网隔离，耳朵就聋了。dsh 插件架构里，客户端半（浏览器里那个 bundle）没有静态资源路径，所以让插件的 host 半（跑在 dsh 服务端那部分）开了一条 <code>/niulai-kws</code> 路由，把四个文件<strong>同源分发</strong>出去。同源还顺手解决了 wasm 编译缓存和 HTTP 缓存。</p>
+<p>关键词配置也直接内联进字符串，不依赖额外文件：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">dsh plugin --profile web add dsh-niulai-pet                     <span class="c1"># npm（推荐，国内网络更稳）</span>
-</span></span><span class="line"><span class="cl">dsh plugin --profile web add github:whitefirer/dsh-niulai-pet   <span class="c1"># 或从 GitHub</span>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">n iú l ái @牛来
+</span></span><span class="line"><span class="cl">n ǐ y òu l ái @牛来A
+</span></span><span class="line"><span class="cl">n ǐ y ǒu l ái @牛来B
+</span></span><span class="line"><span class="cl">n iú y òu l ái @牛来C
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>构建产物已入库，安装零脚本；首次安装重启一次 dsh web，之后升级刷新页面即生效。奶牛/熊猫/蓝鲸三只手绘的 SVG 源文件在仓库 <code>tools/drawn/</code> 里，随便拿去用。</p>
-<h2 id="八收尾">八、收尾</h2>
+</div><p>主词一行，实际发音变体三行（真的会有人喊成「你又来」「你过来」）。threshold 0.1、score 1.5，node 侧语料标定出来的。</p>
+<h2 id="四v3内存从-512mb-砍到-32mb">四、v3：内存，从 512MB 砍到 32MB</h2>
+<p>官方 demo 的 emscripten 默认 <code>INITIAL_MEMORY=512MB</code>。一个桌宠，平时在角落呼吸打盹，一开听就先圈 512MB 线性内存，说不过去。</p>
+<p>wasm 线性内存有个特性：<strong>只涨不缩</strong>。<code>kws.free()</code> 只是把 C++ 对象还给 wasm 堆，物理内存不会还给浏览器。所以 512MB 一旦圈了就是永远。</p>
+<p>定稿方法很直接：把 <code>INITIAL_MEMORY</code> 压小，开 <code>ALLOW_MEMORY_GROWTH</code>，让真实需求自己涨出来，逐阶段读堆大小：</p>
+<table>
+<thead>
+<tr>
+<th>初始内存</th>
+<th>运行时初始化</th>
+<th>createKws（4 词 10 变体）</th>
+<th>连续推理</th>
+<th>结论</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>512MB（官方默认）</td>
+<td>512</td>
+<td>512</td>
+<td>512</td>
+<td>圈地闲置约 16 倍</td>
+</tr>
+<tr>
+<td>16MB</td>
+<td>16.0</td>
+<td>涨到 33.3</td>
+<td>33.3</td>
+<td>不够</td>
+</tr>
+<tr>
+<td><strong>32MB（定稿）</strong></td>
+<td>32.0</td>
+<td>32.0（不涨）</td>
+<td>32.0（不涨）</td>
+<td>真实工作集 &lt;32MB</td>
+</tr>
+</tbody>
+</table>
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="/posts/2026/08/19/dsh-niulai-pet/pet_demo.gif"
-        data-srcset="/posts/2026/08/19/dsh-niulai-pet/pet_demo.gif, /posts/2026/08/19/dsh-niulai-pet/pet_demo.gif 1.5x, /posts/2026/08/19/dsh-niulai-pet/pet_demo.gif 2x"
+        data-src="/posts/2026/08/22/dsh-niulai-pet-kws/kws-memory.png"
+        data-srcset="/posts/2026/08/22/dsh-niulai-pet-kws/kws-memory.png, /posts/2026/08/22/dsh-niulai-pet-kws/kws-memory.png 1.5x, /posts/2026/08/22/dsh-niulai-pet-kws/kws-memory.png 2x"
         data-sizes="auto"
-        alt="/posts/2026/08/19/dsh-niulai-pet/pet_demo.gif"
-        title="演示动图" width="640" height="457" /></p>
-<p>至此我的 dsh 插件小系列凑齐了三种定位：通用能力、开发能力、娱乐休闲。说实话，最后一个是我打开 dsh 时嘴角上扬幅度最大的一个。</p>
-<p>下一步：自定义皮肤（导入自己的图和声音）、按住它说话的语音控制（识别完直接发给当前会话，STT 选型调研已经躺在仓库 <code>docs/roadmap.md</code> 里）、插件市场收录（awesome 门槛是仓库满一天 + 提交数 ≥10，CI 自动校验，PR 已在路上）。仓库在 <a href="https://github.com/whitefirer/dsh-niulai-pet" target="_blank" rel="noopener noreffer ">github.com/whitefirer/dsh-niulai-pet</a>，素材全入库，装上即玩。</p>
-<p>想看带配音的剪辑完整版，B 站在这：<a href="https://www.bilibili.com/video/BV1iN8p6AEV5" target="_blank" rel="noopener noreffer ">任务一完成它就蹦出来喊「妈」——我给 DeepSeek Harness 养了头牛来</a>。</p>
+        alt="/posts/2026/08/22/dsh-niulai-pet-kws/kws-memory.png"
+        title="内存实测" width="1280" height="720" /></p>
+<p>真实工作集在 16 到 32MB 之间，32MB 全程零增长（16MB 档那个 33.3 是增长步进的超调，不是真实需求超了 32MB）。初始即高水位最稳，增长有拷贝停顿，<code>ALLOW_MEMORY_GROWTH</code> 留作安全网。内存参数只影响装不装得下，不影响模型数学，27 条语料在 512MB 版和 32MB 版上逐样本结果一致。</p>
+<h2 id="五v4web-worker-化空闲-10-秒真释放">五、v4：Web Worker 化，空闲 10 秒真释放</h2>
+<p>内存压到 32MB 还是常驻。桌宠 99% 的时间不需要耳朵，只在「循环喊」布防期间才听。</p>
+<p>解法是把 KWS 整个塞进 Web Worker：模型驻留在 worker 堆里，主线程 postMessage 喂音频流（buffer transfer 零拷贝），命中回调。引用计数归零后再空闲 10 秒，直接 <code>worker.terminate()</code>。</p>
+<p>为什么要 terminate 这么粗暴：上一节说了，wasm 内存只涨不缩，<code>free()</code> 不还真，<strong>terminate 是唯一可证明的释放路径</strong>，整个 wasm 实例被 GC，内存真归还。</p>
+<p>重建成本实测 1.4 到 1.9 秒（wasm 编译缓存 + HTTP 缓存命中，含 4.8MB 模型装载和建实例），下次开听无感。加载时机也卡死了：插件运行不加载、开开关不加载，真正开听才加载。不听的时候，零 wasm 开销。</p>
+<p>stream id 多路复用，设置卡片里的「测一测」和正式监听可以共存于同一个 worker。</p>
+<h2 id="六判别力">六、判别力</h2>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/2026/08/22/dsh-niulai-pet-kws/kws-accuracy.png"
+        data-srcset="/posts/2026/08/22/dsh-niulai-pet-kws/kws-accuracy.png, /posts/2026/08/22/dsh-niulai-pet-kws/kws-accuracy.png 1.5x, /posts/2026/08/22/dsh-niulai-pet-kws/kws-accuracy.png 2x"
+        data-sizes="auto"
+        alt="/posts/2026/08/22/dsh-niulai-pet-kws/kws-accuracy.png"
+        title="判别力实测" width="1280" height="720" /></p>
+<p>全量 27 条 16kHz 语料：20 通过，失败的 7 条全部是极端对抗样本（升调、加速加噪、-25dB 白噪、远场录音），失败集和 node 原生 int8 完全一致，也就是说 wasm 版和原生版数学上没差别，该认错的都是模型固有边界。</p>
+<p>负样本这一行：<strong>妈妈喊声×4、静音、白噪、他人语音×2、歌声，9 条，零误报</strong>。宠物自己正在那喊「妈～～妈～～」，绝不能喊着自己把自己停了，这是功能杀手，过了这条线别的都好说。</p>
+<p>指令词也从 1 个扩到 4 个可配：牛来（默认）、别喊了、安静、停下，每个带音素变体。四词交叉验证（59 条 TTS 语料 + 9 条负样本）：<strong>串词为零</strong>（喊 A 词命中 B 词的次数），负样本零误报。漏检集中在陕西口音级重口音和 +20% 超速语音，试过加变体硬修，无效还涨误报风险，不堆变体，用户换个自己喊着顺的词就行。</p>
+<p>已知近音代价：「你又来」会命中牛来变体。音素变体的固有代价，记在这。</p>
+<h2 id="七真机最后一坑音量小识别不到">七、真机最后一坑：音量小识别不到</h2>
+<p>真机反馈，安静环境小声喊，识别不到。排查下来，干净语音压到 -24dB 模型不要增益也照中，问题出在别处：<strong>低电平 + 浏览器噪声抑制把弱语音当噪音吞了</strong>。</p>
+<p>对策两层：<code>getUserMedia</code> 开 <code>autoGainControl</code>，从源头放大（先于噪声抑制管线）；再加一个软件增益滑杆（1.0 到 4.0 倍，tanh 软削波防爆音），正式监听热生效，测试界面和录音同一条管线。</p>
+<p>增益安全性：负样本开 4 倍零误报，正常音量开 3 倍仍命中。增益救不了频谱退化型对抗样本，那是音量无关的已知限制，不挣扎。</p>
+<h2 id="八现在的样子">八、现在的样子</h2>
+<p>设置卡片里可以选引擎（模板/KWS）、勾指令词（四词多选）、调增益、开「测一测」界面实时看命中。循环喊布防时麦克风自动开听，喊一声「牛来」，它闭嘴，妈妈录音回一句「牛来！」收尾，台词闭环达成。</p>
+<p>整个链路零云端：模型本地跑，音频不出浏览器。</p>
+<p>项目开源，已被 awesome-dsh-plugin 收录，插件市场搜 dsh-niulai-pet 就能装。wasm 构建纪要、内存实测脚本、27 条语料复跑清单都在仓库文档里。</p>
+<h2 id="附已知限制清单">附：已知限制清单</h2>
+<ol>
+<li>重口音（陕西话级）和 +20% 超速语音会漏检，四词同患。</li>
+<li>「你又来」近音会触发牛来，变体代价。</li>
+<li>极端对抗扰动（升调/加速加噪/白噪糊脸）漏检，与 node 一致，模型固有。</li>
+<li>真机麦克风召回受设备和距离影响，模板引擎另有自录模板兜底。</li>
+<li>老 dsh 无 webServer、worker 被拦等场景，自动回落模板引擎。</li>
+</ol>
 <div class="post-series-nav">
-                <em>本文是「<a href="/series/deepseek-harness/">DeepSeek Harness</a>」系列第 5 篇，共 6 篇。上一篇：<a href="/posts/2026/08/16/dsh-lan-access/">把 DeepSeek Harness 开放到局域网：手机访问的几个坑与解法清单</a>。下一篇：<a href="/posts/2026/08/22/dsh-niulai-pet-kws/">给 DeepSeek Harness 桌宠装耳朵：浏览器里跑中文 KWS 的全记录</a>。</em>
+                <em>本文是「<a href="/series/deepseek-harness/">DeepSeek Harness</a>」系列第 6 篇，共 6 篇。上一篇：<a href="/posts/2026/08/19/dsh-niulai-pet/">任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来</a>。</em>
             </div></div><script src="/lib/qrcode/qrcode.min.js"></script>
 <div id="share-card-btn" hidden>生成分享卡片</div>
 <div id="share-card-overlay" hidden>
@@ -546,13 +505,13 @@
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
-                            <a class="link-to-markdown" href="/posts/2026/08/19/dsh-niulai-pet/index.md" target="_blank">阅读原始文档</a>
+                            <a class="link-to-markdown" href="/posts/2026/08/22/dsh-niulai-pet-kws/index.md" target="_blank">阅读原始文档</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/08/19/dsh-niulai-pet/" data-title="任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来" data-hashtags="tech,ai,deepseek,harness,plugin,desktop-pet,牛来"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/08/19/dsh-niulai-pet/" data-hashtag="tech"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/08/19/dsh-niulai-pet/" data-title="任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/08/19/dsh-niulai-pet/" data-title="任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/08/19/dsh-niulai-pet/" data-title="任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微信" onclick="var d=document.getElementById('wechat-qr-5626e57e23b47f790db412572ee8bc3b');d.style.display=d.style.display==='none'?'block':'none';return false"><i class="fab fa-weixin fa-fw" aria-hidden="true"></i></a>
-        <div id="wechat-qr-5626e57e23b47f790db412572ee8bc3b" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:9999" onclick="this.style.display='none'">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/08/22/dsh-niulai-pet-kws/" data-title="给 DeepSeek Harness 桌宠装耳朵：浏览器里跑中文 KWS 的全记录" data-hashtags="tech,ai,deepseek,harness,plugin,kws,wasm,webworker,牛来"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/08/22/dsh-niulai-pet-kws/" data-hashtag="tech"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/08/22/dsh-niulai-pet-kws/" data-title="给 DeepSeek Harness 桌宠装耳朵：浏览器里跑中文 KWS 的全记录"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/08/22/dsh-niulai-pet-kws/" data-title="给 DeepSeek Harness 桌宠装耳朵：浏览器里跑中文 KWS 的全记录"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/08/22/dsh-niulai-pet-kws/" data-title="给 DeepSeek Harness 桌宠装耳朵：浏览器里跑中文 KWS 的全记录"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微信" onclick="var d=document.getElementById('wechat-qr-e789cd9edb7eaecf0f131da1cdf23f37');d.style.display=d.style.display==='none'?'block':'none';return false"><i class="fab fa-weixin fa-fw" aria-hidden="true"></i></a>
+        <div id="wechat-qr-e789cd9edb7eaecf0f131da1cdf23f37" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:9999" onclick="this.style.display='none'">
             <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;padding:20px;border-radius:8px;text-align:center">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https%3a%2f%2fwhitefirer.org%2fposts%2f2026%2f08%2f19%2fdsh-niulai-pet%2f" alt="微信扫一扫" style="display:block">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https%3a%2f%2fwhitefirer.org%2fposts%2f2026%2f08%2f22%2fdsh-niulai-pet-kws%2f" alt="微信扫一扫" style="display:block">
                 <p style="margin:10px 0 0;font-size:14px;color:#333">微信扫一扫 · 分享文章</p>
             </div>
         </div></span>
@@ -561,14 +520,13 @@
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/tech/">技术</a>,&nbsp;<a href="/tags/ai/">Ai</a>,&nbsp;<a href="/tags/deepseek/">Deepseek</a>,&nbsp;<a href="/tags/harness/">Harness</a>,&nbsp;<a href="/tags/plugin/">Plugin</a>,&nbsp;<a href="/tags/desktop-pet/">Desktop-Pet</a>,&nbsp;<a href="/tags/%E7%89%9B%E6%9D%A5/">牛来</a></section>
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/tech/">技术</a>,&nbsp;<a href="/tags/ai/">Ai</a>,&nbsp;<a href="/tags/deepseek/">Deepseek</a>,&nbsp;<a href="/tags/harness/">Harness</a>,&nbsp;<a href="/tags/plugin/">Plugin</a>,&nbsp;<a href="/tags/kws/">Kws</a>,&nbsp;<a href="/tags/wasm/">Wasm</a>,&nbsp;<a href="/tags/webworker/">Webworker</a>,&nbsp;<a href="/tags/%E7%89%9B%E6%9D%A5/">牛来</a></section>
         <section>
             <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
         </section>
     </div>
 
-    <div class="post-nav"><a href="/posts/2026/08/18/blog-terminal-needle-edge-ai/" class="prev" rel="prev" title="不烧 token 的博客 AI：给终端装一颗 14MB 的端侧大脑"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>不烧 token 的博客 AI：给终端装一颗 14MB 的端侧大脑</a>
-            <a href="/posts/2026/08/22/dsh-niulai-pet-kws/" class="next" rel="next" title="给 DeepSeek Harness 桌宠装耳朵：浏览器里跑中文 KWS 的全记录">给 DeepSeek Harness 桌宠装耳朵：浏览器里跑中文 KWS 的全记录<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+    <div class="post-nav"><a href="/posts/2026/08/19/dsh-niulai-pet/" class="prev" rel="prev" title="任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来</a></div>
 
 </div>
 <div id="comments"><div id="waline" class="comment"></div><noscript>

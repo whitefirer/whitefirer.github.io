@@ -4,7 +4,15 @@
         <link>https://whitefirer.org/tags/harness/</link>
         <description>Harness - 标签 - 赛博闲谭-whitefirer</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Wed, 19 Aug 2026 02:30:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/harness/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sat, 22 Aug 2026 04:17:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/harness/" rel="self" type="application/rss+xml" /><item>
+    <title>给 DeepSeek Harness 桌宠装耳朵：浏览器里跑中文 KWS 的全记录</title>
+    <link>https://whitefirer.org/posts/2026/08/22/dsh-niulai-pet-kws/</link>
+    <pubDate>Sat, 22 Aug 2026 04:17:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/08/22/dsh-niulai-pet-kws/</guid>
+    <description><![CDATA[一、需求 牛来桌宠（dsh 的桌宠插件，它的诞生记见本系列上一篇）有个「循环喊到互动停止」模式：任务一完成，它就喊妈，一直喊，喊到你理它为止。戳]]></description>
+</item>
+<item>
     <title>任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来</title>
     <link>https://whitefirer.org/posts/2026/08/19/dsh-niulai-pet/</link>
     <pubDate>Wed, 19 Aug 2026 02:30:00 &#43;0800</pubDate>
