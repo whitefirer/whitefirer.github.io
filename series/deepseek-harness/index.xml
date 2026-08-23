@@ -5,6 +5,14 @@
         <description>DeepSeek Harness - series - 赛博闲谭-whitefirer</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
             <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><atom:link href="https://whitefirer.org/series/deepseek-harness/" rel="self" type="application/rss+xml" /><item>
+    <title>史诗级更新：自定义角色和桌宠乐园——DeepSeek Harness 桌宠插件 v0.4 全记录</title>
+    <link>https://whitefirer.org/posts/2026/08/23/dsh-niulai-pet-v04/</link>
+    <pubDate>Sun, 23 Aug 2026 12:05:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/08/23/dsh-niulai-pet-v04/</guid>
+    <description><![CDATA[一、这期有点多，先报个幕 上一期给桌宠装了耳朵（喊一声「牛来」它就停，浏览器里跑中文 KWS 的全记录）。这期本来只想把预告过的自定义皮肤做掉，结果收]]></description>
+</item>
+<item>
     <title>给 DeepSeek Harness 桌宠装耳朵：浏览器里跑中文 KWS 的全记录</title>
     <link>https://whitefirer.org/posts/2026/08/22/dsh-niulai-pet-kws/</link>
     <pubDate>Sat, 22 Aug 2026 04:17:00 &#43;0800</pubDate>

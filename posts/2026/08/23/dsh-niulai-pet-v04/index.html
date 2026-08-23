@@ -4,38 +4,38 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <title>任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来 - 赛博闲谭-whitefirer</title><meta name="Description" content="给 dsh web 的角落养了一头《牛来》桌宠：平时呼吸眨眼打盹吐槽，agent 任务一完成就蹦出来喊「妈～～妈～～」。全程记录：6 个皮肤（含 DeepSeek 蓝虎鲸）、签名动作系统、WebAudio 合成叫声、ffmpeg 七档降噪，以及动画/素材/录屏路上踩的所有坑。">
+        <title>史诗级更新：自定义角色和桌宠乐园——DeepSeek Harness 桌宠插件 v0.4 全记录 - 赛博闲谭-whitefirer</title><meta name="Description" content="dsh 桌宠插件 v0.4 全记录：B 站评论区点名的奶龙捧腹大笑（15.7 秒音画对齐、157 帧 webp）和大狗叫都来了，外加赛博猫真猫叫、小奶龙内置、奶牛退役；自定义角色包一个 zip 就是一个角色，试玩页拖入即玩；多只同屏按只配置、设置卡片大改（配置对象选择器&#43;预览图点哪只哪只发光）；一维物理碰撞加高度门槛，拎过头顶不推人、砸头按落差反弹；一起飞彩带式随机航道、全家福均匀/层次双档排布。">
 
 <meta name="application-name" content="赛博闲谭-whitefirer">
 <meta name="apple-mobile-web-app-title" content="赛博闲谭-whitefirer"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-        <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/08/19/dsh-niulai-pet/" /><link rel="prev" href="https://whitefirer.org/posts/2026/08/18/blog-terminal-needle-edge-ai/" /><link rel="next" href="https://whitefirer.org/posts/2026/08/22/dsh-niulai-pet-kws/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/08/23/dsh-niulai-pet-v04/" /><link rel="prev" href="https://whitefirer.org/posts/2026/08/22/dsh-niulai-pet-kws/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta property="og:title" content="任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来 - 赛博闲谭-whitefirer" />
-<meta property="og:description" content="给 dsh web 的角落养了一头《牛来》桌宠：平时呼吸眨眼打盹吐槽，agent 任务一完成就蹦出来喊「妈～～妈～～」。全程记录：6 个皮肤（含 DeepSeek 蓝虎鲸）、签名动作系统、WebAudio 合成叫声、ffmpeg 七档降噪，以及动画/素材/录屏路上踩的所有坑。" />
-<meta property="og:image" content="https://whitefirer.org/posts/2026/08/19/dsh-niulai-pet/cover.png" />
-<meta property="og:url" content="https://whitefirer.org/posts/2026/08/19/dsh-niulai-pet/" />
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta property="og:title" content="史诗级更新：自定义角色和桌宠乐园——DeepSeek Harness 桌宠插件 v0.4 全记录 - 赛博闲谭-whitefirer" />
+<meta property="og:description" content="dsh 桌宠插件 v0.4 全记录：B 站评论区点名的奶龙捧腹大笑（15.7 秒音画对齐、157 帧 webp）和大狗叫都来了，外加赛博猫真猫叫、小奶龙内置、奶牛退役；自定义角色包一个 zip 就是一个角色，试玩页拖入即玩；多只同屏按只配置、设置卡片大改（配置对象选择器&#43;预览图点哪只哪只发光）；一维物理碰撞加高度门槛，拎过头顶不推人、砸头按落差反弹；一起飞彩带式随机航道、全家福均匀/层次双档排布。" />
+<meta property="og:image" content="https://whitefirer.org/posts/2026/08/23/dsh-niulai-pet-v04/cover.png" />
+<meta property="og:url" content="https://whitefirer.org/posts/2026/08/23/dsh-niulai-pet-v04/" />
 <meta property="og:type" content="article" />
 <meta property="og:site_name" content="赛博闲谭-whitefirer" /><meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来 - 赛博闲谭-whitefirer" />
-<meta name="twitter:description" content="给 dsh web 的角落养了一头《牛来》桌宠：平时呼吸眨眼打盹吐槽，agent 任务一完成就蹦出来喊「妈～～妈～～」。全程记录：6 个皮肤（含 DeepSeek 蓝虎鲸）、签名动作系统、WebAudio 合成叫声、ffmpeg 七档降噪，以及动画/素材/录屏路上踩的所有坑。" />
-<meta name="twitter:image" content="https://whitefirer.org/posts/2026/08/19/dsh-niulai-pet/cover.png" /><script type="application/ld+json">
+<meta name="twitter:title" content="史诗级更新：自定义角色和桌宠乐园——DeepSeek Harness 桌宠插件 v0.4 全记录 - 赛博闲谭-whitefirer" />
+<meta name="twitter:description" content="dsh 桌宠插件 v0.4 全记录：B 站评论区点名的奶龙捧腹大笑（15.7 秒音画对齐、157 帧 webp）和大狗叫都来了，外加赛博猫真猫叫、小奶龙内置、奶牛退役；自定义角色包一个 zip 就是一个角色，试玩页拖入即玩；多只同屏按只配置、设置卡片大改（配置对象选择器&#43;预览图点哪只哪只发光）；一维物理碰撞加高度门槛，拎过头顶不推人、砸头按落差反弹；一起飞彩带式随机航道、全家福均匀/层次双档排布。" />
+<meta name="twitter:image" content="https://whitefirer.org/posts/2026/08/23/dsh-niulai-pet-v04/cover.png" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
-        "headline": "任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来",
+        "headline": "史诗级更新：自定义角色和桌宠乐园——DeepSeek Harness 桌宠插件 v0.4 全记录",
         "inLanguage": "zh-CN",
         "mainEntityOfPage": {
             "@type": "WebPage",
-            "@id": "https:\/\/whitefirer.org\/posts\/2026\/08\/19\/dsh-niulai-pet\/"
-        },"genre": "posts","keywords": "tech, ai, deepseek, harness, plugin, desktop-pet, 牛来","wordcount":  3468 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/19\/dsh-niulai-pet\/","datePublished": "2026-08-19T02:30:00+08:00","dateModified": "2026-08-22T23:18:58+08:00","license": "2022©️whitefirer","publisher": {
+            "@id": "https:\/\/whitefirer.org\/posts\/2026\/08\/23\/dsh-niulai-pet-v04\/"
+        },"genre": "posts","keywords": "tech, ai, deepseek, harness, plugin, desktop-pet, 牛来","wordcount":  2409 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/23\/dsh-niulai-pet-v04\/","datePublished": "2026-08-23T12:05:00+08:00","dateModified": "2026-08-23T18:55:56+08:00","license": "2022©️whitefirer","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
                 "name": "whitefirer"
-            },"description": "给 dsh web 的角落养了一头《牛来》桌宠：平时呼吸眨眼打盹吐槽，agent 任务一完成就蹦出来喊「妈～～妈～～」。全程记录：6 个皮肤（含 DeepSeek 蓝虎鲸）、签名动作系统、WebAudio 合成叫声、ffmpeg 七档降噪，以及动画/素材/录屏路上踩的所有坑。"
+            },"description": "dsh 桌宠插件 v0.4 全记录：B 站评论区点名的奶龙捧腹大笑（15.7 秒音画对齐、157 帧 webp）和大狗叫都来了，外加赛博猫真猫叫、小奶龙内置、奶牛退役；自定义角色包一个 zip 就是一个角色，试玩页拖入即玩；多只同屏按只配置、设置卡片大改（配置对象选择器+预览图点哪只哪只发光）；一维物理碰撞加高度门槛，拎过头顶不推人、砸头按落差反弹；一起飞彩带式随机航道、全家福均匀/层次双档排布。"
     }
     </script></head>
     <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
@@ -64,7 +64,7 @@
                     <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
                 </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
                     <i class="fa fa-globe" aria-hidden="true"></i>                      
-                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/2026/08/19/dsh-niulai-pet/" selected>简体中文</option></select>
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/2026/08/23/dsh-niulai-pet-v04/" selected>简体中文</option></select>
                 </a></div>
         </div>
     </div>
@@ -118,7 +118,7 @@
                 <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
             </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
                     <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
-                    <select class="language-select" onchange="location = this.value;"><option value="/posts/2026/08/19/dsh-niulai-pet/" selected>简体中文</option></select>
+                    <select class="language-select" onchange="location = this.value;"><option value="/posts/2026/08/23/dsh-niulai-pet-v04/" selected>简体中文</option></select>
                 </a></div>
     </div>
 </header><div class="search-dropdown desktop">
@@ -132,12 +132,12 @@
             <div class="toc-content" id="toc-content-auto"></div>
         </div><div id="reading-progress"></div>
     <article class="page single"><div style="display:flex;align-items:baseline;gap:0">
-        <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来</h1></div><h2 class="single-subtitle">一个纯客户端插件的诞生：抠图修蹄子、喊声基频鉴假、嘴型时间线、WAAPI 动画三连坑，外加三只手绘小动物</h2><div class="post-series">
+        <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">史诗级更新：自定义角色和桌宠乐园——DeepSeek Harness 桌宠插件 v0.4 全记录</h1></div><h2 class="single-subtitle">多只同屏、物理碰撞、自定义角色包，外加四位新成员——dsh 桌宠从一只变成一园</h2><div class="post-series">
                 <a href="/series/deepseek-harness/"><i class="fas fa-layer-group fa-fw" aria-hidden="true"></i>DeepSeek Harness</a>
             </div><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-19">2026-08-19</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3468 字&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 7 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/08/19/dsh-niulai-pet.svg" alt="" aria-hidden="true" loading="eager"
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-23">2026-08-23</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 2409 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 5 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/08/23/dsh-niulai-pet-v04.svg" alt="" aria-hidden="true" loading="eager"
      style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none"></div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
@@ -146,173 +146,122 @@
                 </div>
                 <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
-    <li><a href="#一先上成品">一、先上成品</a></li>
-    <li><a href="#二为什么不是通知是桌宠">二、为什么不是通知，是桌宠</a></li>
-    <li><a href="#三它现在长什么样">三、它现在长什么样</a></li>
-    <li><a href="#四纯客户端插件dsh-插件的第三种形态">四、纯客户端插件：dsh 插件的第三种形态</a></li>
-    <li><a href="#五制作过程每一环都在打仗">五、制作过程：每一环都在打仗</a>
-      <ul>
-        <li><a href="#形象抠图只是开始修图才是战役">形象：抠图只是开始，修图才是战役</a></li>
-        <li><a href="#喊声选段鉴假降噪">喊声：选段、鉴假、降噪</a></li>
-        <li><a href="#嘴型尾音要一直张着嘴">嘴型：尾音要一直张着嘴</a></li>
-        <li><a href="#动画单图变形--少量换帧还有三个坑">动画：单图变形 + 少量换帧，还有三个坑</a></li>
-        <li><a href="#叫声零素材方案">叫声：零素材方案</a></li>
-        <li><a href="#手绘三小只">手绘三小只</a></li>
-        <li><a href="#录视频手机录屏它不出声">录视频：手机录屏它不出声</a></li>
-      </ul>
-    </li>
-    <li><a href="#六一些小但重要的设计">六、一些小但重要的设计</a></li>
-    <li><a href="#七安装与素材">七、安装与素材</a></li>
-    <li><a href="#八收尾">八、收尾</a></li>
+    <li><a href="#一这期有点多先报个幕">一、这期有点多，先报个幕</a></li>
+    <li><a href="#二新成员评论区点名的都到了">二、新成员：评论区点名的都到了</a></li>
+    <li><a href="#三自定义角色包上期挖的坑填了">三、自定义角色包：上期挖的坑填了</a></li>
+    <li><a href="#四一只到多只按只配置是正经需求">四、一只到多只：按只配置是正经需求</a></li>
+    <li><a href="#五物理碰撞一维世界加一道高度门槛">五、物理碰撞：一维世界加一道高度门槛</a></li>
+    <li><a href="#六乐园玩法一起飞和全家福">六、乐园玩法：一起飞和全家福</a></li>
+    <li><a href="#七顺手改掉的细节">七、顺手改掉的细节</a></li>
+    <li><a href="#八现在的样子">八、现在的样子</a></li>
+    <li><a href="#附已知限制清单">附：已知限制清单</a></li>
   </ul>
 </nav></div>
-            </div><div class="content" id="content"><h2 id="一先上成品">一、先上成品</h2>
-<p>agent 干完活的那一刻，屏幕角落的小牛会蹦起来，字正腔圆地喊一嗓子「妈～～妈～～」——尾音拖足，嘴型跟上，中气十足：</p>
-<p><video controls preload="metadata" src="demo-pc.mp4" style="width:100%;border-radius:8px"></video></p>
-<p>PC 端：菜单、换皮肤、唠叨气泡、连喊三声的残影。手机端一样欢实——深色那条录到了蓝鲸喷水飞圈，浅色那条录到了奶牛和熊猫开嗓，两条的结尾都是「发消息 → agent 回完 → 蹦出来喊妈」的完整闭环：</p>
-<div style="display:flex;gap:8px">
-<video controls preload="metadata" src="demo-phone-dark.mp4" style="width:50%;border-radius:8px"></video>
-<video controls preload="metadata" src="demo-phone-light.mp4" style="width:50%;border-radius:8px"></video>
-</div>
-<p><strong>不装 dsh 也能玩到它</strong>：这插件是纯客户端的，同一套代码原样跑在裸页面上就是个小游戏——戳下面的试玩窗（或<a href="/niulai-pet/" rel="">打开全屏版</a>），戳牛、跑个模拟任务，等它喊妈（公众号读者点「阅读原文」直达）：</p>
-<iframe src="/niulai-pet/" style="width:100%;height:560px;border:0;border-radius:8px;background:#0d1126"></iframe>
-<p>不认识这头牛的同学补一下背景：《牛来》是最近的一个现象级奇观——一部画风粗糙的 3D 动画片，上映前十天全国票房不到一万块，被短视频带火后一周直冲千万。全网看完都在骂，骂完接着看，号称&quot;看了后悔 86 分钟，不看后悔一辈子&quot;，<a href="https://mp.weixin.qq.com/s/_qiAyJZUjUQSUwAeSHELfQ" target="_blank" rel="noopener noreffer ">李永乐老师还专门讲过它爆火背后的禁果效应</a>。主角那头丑得很有特色的黄牛，喊&quot;妈&quot;是名场面，二创鬼畜剪辑满天飞。我把它养进了 DeepSeek Harness（dsh）的 web 界面里——就是我最近连着折腾了好几篇的那个 agent 工作台。</p>
-<h2 id="二为什么不是通知是桌宠">二、为什么不是通知，是桌宠</h2>
-<p>dsh 跑任务时我经常切到别的桌面干活，完成通知这事我做过两轮：cenacle 通知中心、飞书卡片推送。都好使，但都太……正经了。</p>
-<p>桌宠才是 AI 工作台缺的最后一块。它不提供信息，它提供<strong>情绪价值</strong>：平时在角落呼吸、眨眼、踱步、趴下打盹，偶尔冒个气泡吐槽一句「我在吃草，你在吃苦」；你跑 AI 久了它会报时「AI 已经跑了 2分13秒…」；任务完成的那一刻，它用最炸裂的方式替你庆祝。</p>
-<p>选牛来当主角不需要理由，看到这头牛的人自然会懂。</p>
-<h2 id="三它现在长什么样">三、它现在长什么样</h2>
-<p><figure><a class="lightgallery" href="/posts/2026/08/19/dsh-niulai-pet/family.png" title="六个皮肤" data-thumbnail="/posts/2026/08/19/dsh-niulai-pet/family.png" data-sub-html="<h2>全家福：牛来、牛来原皮、小黄、奶牛、熊猫、蓝鲸</h2><p>六个皮肤</p>">
-        <img
-            class="lazyload"
-            src="/svg/loading.min.svg"
-            data-src="/posts/2026/08/19/dsh-niulai-pet/family.png"
-            data-srcset="/posts/2026/08/19/dsh-niulai-pet/family.png, /posts/2026/08/19/dsh-niulai-pet/family.png 1.5x, /posts/2026/08/19/dsh-niulai-pet/family.png 2x"
-            data-sizes="auto"
-            alt="/posts/2026/08/19/dsh-niulai-pet/family.png" width="1470" height="304" />
-    </a><figcaption class="image-caption">全家福：牛来、牛来原皮、小黄、奶牛、熊猫、蓝鲸</figcaption>
-    </figure></p>
-<ul>
-<li><strong>五个皮肤</strong>：牛来、小黄（幼年版，无角更黄亮）、奶牛、熊猫、蓝鲸——后三只没有现成素材，是我用 SVG 一只一只手绘的，蓝鲸特意调了 DeepSeek 蓝、加了虎鲸的白眼斑。（成文后又添了第六个「牛来原皮」：拿豆包生成的三视图抠的。牛来小时候没角——这是设定，不是抠图事故。）</li>
-<li><strong>签名动作</strong>：牛来连跳、小黄和熊猫翻滚、奶牛摇摆、蓝鲸弧线跃出水面（到弧顶还会喷水）。动作可以绑到事件上，也能设成随机。</li>
-<li><strong>叫声</strong>：牛来和小黄用原声（精修降噪过），奶牛/熊猫/蓝鲸的叫声是 WebAudio 现场合成的——哞、吱、鲸鸣，零素材零依赖。</li>
-<li><strong>唠叨气泡</strong>：AI 在跑就报耗时，闲下来就随机吐槽，嫌烦可以在菜单里关掉。</li>
-<li><strong>右键菜单</strong>：声音/完成时喊/气泡唠叨三个开关、连喊几声、动作绑定、换皮肤，还有个「关于」页，里面写着我的一句心里话：「我尽力了，只能做成这样了😂」。</li>
-</ul>
-<h2 id="四纯客户端插件dsh-插件的第三种形态">四、纯客户端插件：dsh 插件的第三种形态</h2>
-<p>技术选型上一句话就够：这个插件<strong>只有客户端</strong>（<code>dsh.client</code>），没有任何 host 侧代码。</p>
-<p>放到系列前两篇的坐标系里看，dsh 插件的三种形态就算凑齐了：</p>
-<table>
-<thead>
-<tr>
-<th>插件</th>
-<th>形态</th>
-<th>干什么</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>dsh-browser-fs</td>
-<td>双面（host + client）</td>
-<td>注册模型工具，读写浏览器端文件</td>
-</tr>
-<tr>
-<td>dsh-cenacle-bridge</td>
-<td>纯 bundle（host）</td>
-<td>让既有开发系统与 dsh 桥接协作</td>
-</tr>
-<tr>
-<td>dsh-niulai-pet</td>
-<td>纯 client</td>
-<td>界面层行为，订阅只读服务</td>
-</tr>
-</tbody>
-</table>
-<p>桌宠唯一需要的外部信号是&quot;哪个会话在跑/跑完了&quot;，dsh client runtime 本来就向插件发布 <code>sessions.list</code> 快照——订阅它即可，一行 host 代码都不用写。纯客户端的好处极其实在：<strong>改完代码 <code>npm run build</code> 完刷新页面就生效，永远不用重启宿主</strong>。</p>
-<p>另一个红利开头已经看到了：把 sessions 订阅换成一个模拟任务驱动，<code>pet.ts</code> 一行没改就跑在裸页面上——本文的在线试玩页就是这么来的，不是什么另写的复刻版。</p>
-<p>任务完成的判定就两条：<code>running</code> 从 true 翻成 false（当前会话跑完），或 <code>completed</code> 新置位（后台会话完成，即侧边栏绿点的同一信号）。宿主太旧没有 sessions 服务时降级成纯手动戳。</p>
-<h2 id="五制作过程每一环都在打仗">五、制作过程：每一环都在打仗</h2>
-<h3 id="形象抠图只是开始修图才是战役">形象：抠图只是开始，修图才是战役</h3>
-<p>别问我为什么还有这步骤，问就是全自动的。</p>
-<ul>
-<li><strong>犄角没了</strong>：牛角是深炭色，颜色阈值抠图直接把它当背景丢了——一只全没，一只只剩半截。放宽暗色区间重抠才找回来。</li>
-<li><strong>蹄子被草吃了</strong>：原帧里牛蹄埋在草里，抠出来就是两条断腿。抠图解决不了，只能造：按腿的宽度重建小腿、补上深色蹄冠。第一版是两块矩形，丑得像贴的砖；返工版改成了微梯形 + 正中分趾缝（偶蹄目的灵魂）+ 纵向渐变 + 微外八站姿。</li>
-</ul>
-<p><figure><a class="lightgallery" href="/posts/2026/08/19/dsh-niulai-pet/feet_zoom.png" title="蹄子特写" data-thumbnail="/posts/2026/08/19/dsh-niulai-pet/feet_zoom.png" data-sub-html="<h2>修好的蹄子：分趾缝是牛蹄的身份证</h2><p>蹄子特写</p>">
-        <img
-            class="lazyload"
-            src="/svg/loading.min.svg"
-            data-src="/posts/2026/08/19/dsh-niulai-pet/feet_zoom.png"
-            data-srcset="/posts/2026/08/19/dsh-niulai-pet/feet_zoom.png, /posts/2026/08/19/dsh-niulai-pet/feet_zoom.png 1.5x, /posts/2026/08/19/dsh-niulai-pet/feet_zoom.png 2x"
-            data-sizes="auto"
-            alt="/posts/2026/08/19/dsh-niulai-pet/feet_zoom.png" width="732" height="252" />
-    </a><figcaption class="image-caption">修好的蹄子：分趾缝是牛蹄的身份证</figcaption>
-    </figure></p>
-<h3 id="喊声选段鉴假降噪">喊声：选段、鉴假、降噪</h3>
-<p>喊声备了四段候选，其中两段怎么听都不像牛来的声音——不是耳朵好，是我跑了自相关基频分析：正常奶声基频 800-889Hz，那两段只有 516-552Hz。<strong>它们是被加速过的变调段，音调跟着速度一起飞了</strong>，低近一半的基频就是铁证。</p>
-<p>留下来的两段背景音又大（BGM 焊死在音轨里），上 ffmpeg 降噪：<code>highpass</code> 专治轰隆隆的低频（人声基频 800Hz，高通切到 280Hz 都伤不到它）、<code>afftdn</code> FFT 降噪压 BGM。我做了七档对比反复听，选定中强档——再狠人声就出&quot;水下音&quot;了。</p>
-<h3 id="嘴型尾音要一直张着嘴">嘴型：尾音要一直张着嘴</h3>
-<p>第一版的嘴是在喊声全程不停开闭的，看着像打机关枪。不对——「妈-妈～～」是两个音节，<strong>尾音是开口音</strong>：正确的时间线是张嘴 240ms → 闭 120ms（两个音节的分合）→ 重新张开，<strong>一直保持到尾音结束</strong>才闭上。</p>
-<p>时长也不能写死：插件在挂载时预读 mp3 的 metadata 拿真实时长，嘴型、气泡都跟着音频长度走，连喊几声时是串行接龙，每声之间自然闭一下。</p>
-<h3 id="动画单图变形--少量换帧还有三个坑">动画：单图变形 + 少量换帧，还有三个坑</h3>
-<p>桌宠没有序列帧素材，90% 的动作是单张 PNG 的 WAAPI 变换：呼吸是 scaleY 正弦，蹦跳带 squash&amp;stretch，飞行是根元素走抛物线 + 机身沿切线俯仰。只有嘴型、眨眼、飞行姿态、鲸鱼喷水这几处用双帧切换。</p>
-<p>踩了三个值得写下来的坑：</p>
-<ol>
-<li><strong>pause 的动画不是透明的</strong>。呼吸动画 pause 后仍压在 <code>img</code> 的 transform 上（WAAPI 在级联里压内联样式），飞行时机身旋转死活不生效——改 <code>cancel()</code> 才行。</li>
-<li><strong>镜像父级里的 rotate 不能乘方向</strong>。朝向翻转用根节点 <code>scaleX(-1)</code>，镜像会把精灵图和旋转一起翻，两个方向自洽；我多乘了一个方向系数，牛直接底朝天飞。</li>
-<li><strong>协程收尾别抢状态</strong>。踱步协程结束时无条件 <code>mood = 'idle'</code>，把刚起飞的飞行状态绞杀在半空——所有收尾都加了身份检查。</li>
-</ol>
-<h3 id="叫声零素材方案">叫声：零素材方案</h3>
-<p>三只手绘动物没有真声可截，干脆全部 WebAudio 合成：哞 = 锯齿波下滑 + 低频震颤 + 低通；鲸鸣 = 正弦长音先扬后抑 + 慢颤音；吱声 = 两声三角波短促上挑。总共不到 60 行代码，一个音频文件都不用下载。</p>
-<h3 id="手绘三小只">手绘三小只</h3>
-<p><figure><a class="lightgallery" href="/posts/2026/08/19/dsh-niulai-pet/whale-compare.png" title="鲸鱼新旧对比" data-thumbnail="/posts/2026/08/19/dsh-niulai-pet/whale-compare.png" data-sub-html="<h2>鲸鱼返工：从修长到胖圆 &#43; 虎鲸眼斑</h2><p>鲸鱼新旧对比</p>">
-        <img
-            class="lazyload"
-            src="/svg/loading.min.svg"
-            data-src="/posts/2026/08/19/dsh-niulai-pet/whale-compare.png"
-            data-srcset="/posts/2026/08/19/dsh-niulai-pet/whale-compare.png, /posts/2026/08/19/dsh-niulai-pet/whale-compare.png 1.5x, /posts/2026/08/19/dsh-niulai-pet/whale-compare.png 2x"
-            data-sizes="auto"
-            alt="/posts/2026/08/19/dsh-niulai-pet/whale-compare.png" width="568" height="530" />
-    </a><figcaption class="image-caption">鲸鱼返工：从修长到胖圆 + 虎鲸眼斑</figcaption>
-    </figure></p>
-<p>奶牛、熊猫、鲸鱼都是手写 SVG 渲染成 PNG，迭代了好几轮：鲸鱼的尾鳍一度像兔子耳朵，熊猫的竹子一度像拿着话筒。家族一致性靠三件套：同款描边色、大眼双高光、粉腮红。</p>
-<h3 id="录视频手机录屏它不出声">录视频：手机录屏它不出声</h3>
-<p>开头三条视频的录制本身也是一场仗。PC 版一次成型（宿主机录屏能带上系统声音），但两条手机版遇到了新问题：<strong>手机录屏录不到系统内放</strong>——屏幕录像走的是麦克风，桌宠喊得再字正腔圆，录出来也只剩 -46dB 的环境底噪。</p>
-<p>解法是时间戳配音法的升级版：先按 0.25 秒一帧抽接触表，把每个气泡（「妈～～妈～～」「哞——！」「嗯嗯！」「噗——！」）出现的精确时刻抠出来；声源不走录音——「妈～～妈～～」直接用仓库里的无损 mp3，奶牛/熊猫/蓝鲸的叫声则把插件里的 WebAudio 合成代码原样搬进 OfflineAudioContext 离线渲染成 WAV（和运行时发出的声音逐字节一致、零底噪）；最后按时间戳 <code>adelay</code> 混回去，顺手把 HEVC 转成全浏览器通吃的 h264。音画对齐误差百毫秒级，音质比现场采的干净一个数量级。</p>
-<h2 id="六一些小但重要的设计">六、一些小但重要的设计</h2>
-<ul>
-<li>「喊一声」只喊不跳，「戳一下」又喊又跳——一个是嘴上功夫，一个是全身反应。</li>
-<li>静音是真静音：没有声音也没有「妈～～妈～～」气泡，庆祝退化成纯动作。</li>
-<li>完成时喊妈可以关，连喊几声可以设（1-3 声），动作可以绑成固定或随机。</li>
-<li>位置、皮肤、所有开关都记忆在 localStorage。</li>
-</ul>
-<h2 id="七安装与素材">七、安装与素材</h2>
-<p>一行装上：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">dsh plugin --profile web add dsh-niulai-pet                     <span class="c1"># npm（推荐，国内网络更稳）</span>
-</span></span><span class="line"><span class="cl">dsh plugin --profile web add github:whitefirer/dsh-niulai-pet   <span class="c1"># 或从 GitHub</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>构建产物已入库，安装零脚本；首次安装重启一次 dsh web，之后升级刷新页面即生效。奶牛/熊猫/蓝鲸三只手绘的 SVG 源文件在仓库 <code>tools/drawn/</code> 里，随便拿去用。</p>
-<h2 id="八收尾">八、收尾</h2>
+            </div><div class="content" id="content"><h2 id="一这期有点多先报个幕">一、这期有点多，先报个幕</h2>
+<p>上一期给桌宠装了耳朵（喊一声「牛来」它就停，<a href="/posts/2026/08/22/dsh-niulai-pet-kws/" rel="">浏览器里跑中文 KWS 的全记录</a>）。这期本来只想把预告过的自定义皮肤做掉，结果收不住：<a href="https://www.bilibili.com/video/BV1iN8p6AEV5" target="_blank" rel="noopener noreffer ">B 站评论区</a>点名的奶龙大笑和大狗叫得安排；角色一多，一只变多只；多只就会互相穿模，于是有了物理碰撞；都能站一排了，干脆再来张全家福。</p>
+<p>从 v0.3.0 到 v0.4.7，二十六个 commit，桌宠从一只变成一园。一个个说。</p>
+<h2 id="二新成员评论区点名的都到了">二、新成员：评论区点名的都到了</h2>
+<p><strong>奶龙（捧腹大笑）</strong>。第一期视频评论区点名要奶龙。叫声是原片大笑段完整降噪，15.7 秒；画面从视频切片抠帧，157 帧 webp 按 10fps 原生播放，和音轨同一条时间线——任务一完成，它从站姿弯腰捧腹，笑到抱头倒地打滚，结尾不吞。这条素材踩了两个坑值得记：一是帧清洗曾把胸前白斑当水印抹掉（后改中位数底图差分，再把内部小洞做原色回填，胸斑眼白全恢复）；二是大笑帧的头顶曾被裁切框切掉一截，裁切对齐按全序列最高帧重做，只裁该裁的 7px。另外倒地帧同机位物理缩放，不然倒地打滚会比站着大一圈。</p>
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="/posts/2026/08/19/dsh-niulai-pet/pet_demo.gif"
-        data-srcset="/posts/2026/08/19/dsh-niulai-pet/pet_demo.gif, /posts/2026/08/19/dsh-niulai-pet/pet_demo.gif 1.5x, /posts/2026/08/19/dsh-niulai-pet/pet_demo.gif 2x"
+        data-src="/posts/2026/08/23/dsh-niulai-pet-v04/nailong-laugh.png"
+        data-srcset="/posts/2026/08/23/dsh-niulai-pet-v04/nailong-laugh.png, /posts/2026/08/23/dsh-niulai-pet-v04/nailong-laugh.png 1.5x, /posts/2026/08/23/dsh-niulai-pet-v04/nailong-laugh.png 2x"
         data-sizes="auto"
-        alt="/posts/2026/08/19/dsh-niulai-pet/pet_demo.gif"
-        title="演示动图" width="640" height="457" /></p>
-<p>至此我的 dsh 插件小系列凑齐了三种定位：通用能力、开发能力、娱乐休闲。说实话，最后一个是我打开 dsh 时嘴角上扬幅度最大的一个。</p>
-<p>下一步：自定义皮肤（导入自己的图和声音）、按住它说话的语音控制（识别完直接发给当前会话，STT 选型调研已经躺在仓库 <code>docs/roadmap.md</code> 里）、插件市场收录（awesome 门槛是仓库满一天 + 提交数 ≥10，CI 自动校验，PR 已在路上）。仓库在 <a href="https://github.com/whitefirer/dsh-niulai-pet" target="_blank" rel="noopener noreffer ">github.com/whitefirer/dsh-niulai-pet</a>，素材全入库，装上即玩。</p>
-<p>想看带配音的剪辑完整版，B 站在这：<a href="https://www.bilibili.com/video/BV1iN8p6AEV5" target="_blank" rel="noopener noreffer ">任务一完成它就蹦出来喊「妈」——我给 DeepSeek Harness 养了头牛来</a>。</p>
+        alt="/posts/2026/08/23/dsh-niulai-pet-v04/nailong-laugh.png"
+        title="奶龙大笑演出" width="1400" height="800" /></p>
+<p><strong>大狗</strong>。第二期视频评论区要的「大狗叫」。立绘来自开源项目 <a href="https://github.com/MarkCup-Official/Dagou-Tap-New" target="_blank" rel="noopener noreffer ">Dagou-Tap-New</a>（自带 alpha，不用抠图），叫声是「大狗大狗叫叫叫」链式合成，签名动作连跳。</p>
+<p><strong>赛博猫</strong>。两张猫图（一站一趴）抠出来上岗，配的是真猫叫。平时趴着睡，喊叫才站起来，声止再站两秒半才趴回去。趴睡图顺带开了一个新通道 <code>images.sleep</code>，还为趴睡类皮肤修了嘴型「合嘴」相位闪回睡图的问题。</p>
+<p><strong>小奶龙（奶龙宝宝）</strong>。和奶龙不撞脸，AI 生图动作条切帧 +「我才是奶龙」原声切片，喊叫带逐帧演出。默认个子 100px，奶龙 155px，爷俩站一起不用调。</p>
+<p><strong>奶牛退役</strong>。初代手绘奶牛实现简单、质量差点意思，这期退役给新成员腾位置，SVG 存档留在仓库 <code>tools/drawn/</code>。</p>
+<h2 id="三自定义角色包上期挖的坑填了">三、自定义角色包：上期挖的坑填了</h2>
+<p>上期预告过的自定义皮肤，落地成了「角色包」：一个 <code>.nlpack.zip</code>（<code>pack.json</code> + 透明底图 + mp3 叫声）就是一个完整角色。两级模型（角色/皮肤），导入带 zip 校验，IndexedDB 持久化，删除自动回落内置皮。</p>
+<p>三条使用路径：设置卡片「自定义角色」区导入；试玩页把 <code>.nlpack.zip</code> 直接拖进页面即时预览（不落库，刷新即还原）；不会做包的，卡片上有个「让 dsh 帮我做」按钮——让 agent 自己给你搓一个。仓库里放了个最小<a href="https://github.com/whitefirer/dsh-niulai-pet/raw/master/docs/assets/robot.nlpack.zip" target="_blank" rel="noopener noreffer ">示例包</a>（一个无名机器人）专门用来试导入流程，从零做包看 <a href="https://github.com/whitefirer/dsh-niulai-pet/blob/master/SKIN_AUTHORING.md" target="_blank" rel="noopener noreffer ">SKIN_AUTHORING.md</a>，AI 生图提示词、逐帧动作条切分、派生覆盖包玩法都在里面。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/2026/08/23/dsh-niulai-pet-v04/robot-import.png"
+        data-srcset="/posts/2026/08/23/dsh-niulai-pet-v04/robot-import.png, /posts/2026/08/23/dsh-niulai-pet-v04/robot-import.png 1.5x, /posts/2026/08/23/dsh-niulai-pet-v04/robot-import.png 2x"
+        data-sizes="auto"
+        alt="/posts/2026/08/23/dsh-niulai-pet-v04/robot-import.png"
+        title="试玩页拖入 robot 示例包" width="900" height="600" /></p>
+<p>这区还修了个值得写的 bug：删除或导入角色包后，所有桌宠有几率变成同一只，整体刷新才恢复。根因是订阅皮肤列表的回调里误用了全局 <code>skin</code> 而不是各只自己的 <code>mySkinId</code>——列表一变，全员跟着换脸。已修。</p>
+<h2 id="四一只到多只按只配置是正经需求">四、一只到多只：按只配置是正经需求</h2>
+<p>主宠右键「再添一只」，上限默认连主 10 只，设置里最高能调到 15。皮肤、大小、唠叨语录全部按只存。</p>
+<p>设置卡片为此大改：多只时顶部出现「配置对象」选择器，带皮肤预览图，<strong>点预览图，对应那只桌宠会发光加小跳回应</strong>——一屏十几只的时候，不用猜自己在配哪只。大小从数字输入改成滑杆（72-200px，按皮肤带默认值），偏离默认时出现「重置」按钮。语录一行一条，按只编辑。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/2026/08/23/dsh-niulai-pet-v04/card.png"
+        data-srcset="/posts/2026/08/23/dsh-niulai-pet-v04/card.png, /posts/2026/08/23/dsh-niulai-pet-v04/card.png 1.5x, /posts/2026/08/23/dsh-niulai-pet-v04/card.png 2x"
+        data-sizes="auto"
+        alt="/posts/2026/08/23/dsh-niulai-pet-v04/card.png"
+        title="设置卡片：配置对象选择器与按只滑杆" width="1400" height="1000" /></p>
+<h2 id="五物理碰撞一维世界加一道高度门槛">五、物理碰撞：一维世界加一道高度门槛</h2>
+<p>多只同屏第一天就发现问题：桌宠互相穿模，挤在一起不分彼此。于是做了一套简化物理：x 轴一维世界，走近互挤，撞狠了弹飞，落地和重撞有闷响。开关制，右键菜单「物理碰撞」开。</p>
+<p>有意思的是两个边角：</p>
+<ul>
+<li><strong>拎起来越过头顶，不该推人</strong>。纯 x 轴判断时，你拎着一只从另一只头顶上过去，底下那位照样被推开——它在「被拎着」这个状态下跟对方根本不在一个平面。挤压判定加了高度门槛：被拎者的脚底高过对方头顶，就不触发挤压。</li>
+<li><strong>砸到头上，按落差定反弹强度</strong>。拎到半空松手砸中，和齐头高蹭到，不是一个量级，反弹速度随落差走。</li>
+<li>坠落过程身体是倾斜的，只有落地后才恢复直立。</li>
+</ul>
+<p>试过做真堆叠（站上别只头顶），效果怪，砍了，这个限制记在最后。</p>
+<h2 id="六乐园玩法一起飞和全家福">六、乐园玩法：一起飞和全家福</h2>
+<p>试玩页右上角两个整活按钮，插件侧在主宠菜单里：</p>
+<p><strong>一起飞</strong>：彩带式持续起飞。一只接一只从随机一侧飞出，航道、时长、间隔全部带随机；只显示飞行中的桌宠，站立的先藏起来；同时在飞的有并发上限（阵容的一半），多了排队，不会糊成一团。落地藏宠和 flight 收尾在同一个同步段完成（<code>onFlightEnd</code> 回调），零闪烁。飞行期间不触发任务庆祝——不然庆祝会把飞着的拽回地面。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/2026/08/23/dsh-niulai-pet-v04/allfly.png"
+        data-srcset="/posts/2026/08/23/dsh-niulai-pet-v04/allfly.png, /posts/2026/08/23/dsh-niulai-pet-v04/allfly.png 1.5x, /posts/2026/08/23/dsh-niulai-pet-v04/allfly.png 2x"
+        data-sizes="auto"
+        alt="/posts/2026/08/23/dsh-niulai-pet-v04/allfly.png"
+        title="一起飞" width="1600" height="810" /></p>
+<p><strong>全家福</strong>：两档排布循环切换。均匀列队——牛来 C 位，奶龙、小奶龙一边一个对称站；层次合影——高个靠后、矮个往前，相邻叠压约四分之一身位，叠出前后纵深。合影期间主宠钉住置顶不被挡，收起后各回各位。排布逻辑抽成了共享模块（<code>src/client/family.ts</code>），试玩页和插件两侧跑同一套代码。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/2026/08/23/dsh-niulai-pet-v04/family-uniform.png"
+        data-srcset="/posts/2026/08/23/dsh-niulai-pet-v04/family-uniform.png, /posts/2026/08/23/dsh-niulai-pet-v04/family-uniform.png 1.5x, /posts/2026/08/23/dsh-niulai-pet-v04/family-uniform.png 2x"
+        data-sizes="auto"
+        alt="/posts/2026/08/23/dsh-niulai-pet-v04/family-uniform.png"
+        title="全家福·均匀列队" width="1920" height="1080" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/2026/08/23/dsh-niulai-pet-v04/family-layered.png"
+        data-srcset="/posts/2026/08/23/dsh-niulai-pet-v04/family-layered.png, /posts/2026/08/23/dsh-niulai-pet-v04/family-layered.png 1.5x, /posts/2026/08/23/dsh-niulai-pet-v04/family-layered.png 2x"
+        data-sizes="auto"
+        alt="/posts/2026/08/23/dsh-niulai-pet-v04/family-layered.png"
+        title="全家福·层次合影" width="1920" height="1080" /></p>
+<h2 id="七顺手改掉的细节">七、顺手改掉的细节</h2>
+<ul>
+<li><strong>默认不打盹了</strong>。闲置打盹改开关制、默认关——太多人不知道它会趴下，以为它死了。</li>
+<li><strong>气泡开关语义修正</strong>。之前关了气泡，连任务完成的通知气泡也没了。现在装饰性唠叨全收进开关，反馈性气泡（任务完成、操作提示）保留。</li>
+<li><strong>隐藏全部开关</strong>。一键全收，菜单和设置卡片都有；试玩页右上角有 👁 能把它们喊回来。</li>
+<li><strong>「喊一声」改名「表演一下」</strong>。语音停喊上线后，菜单里两个「喊」歧义了。</li>
+<li>试玩页埋了个 hits.sh 隐身统计，看看有多少人真来玩。</li>
+</ul>
+<h2 id="八现在的样子">八、现在的样子</h2>
+<p><a href="https://whitefirer.org/niulai-pet/" target="_blank" rel="noopener noreffer ">在线试玩</a>同一套代码，免安装：点「跑一个任务」听它喊妈，右上角一起飞、全家福列队、拖入角色包都能玩。装到 dsh 里：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">dsh plugin --profile web add dsh-niulai-pet
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>项目开源，插件市场搜 <code>dsh-niulai-pet</code> 即是。B 站有这个系列的<a href="https://space.bilibili.com/10317688/lists" target="_blank" rel="noopener noreffer ">视频合集</a>。</p>
+<h2 id="附已知限制清单">附：已知限制清单</h2>
+<ol>
+<li>物理是一维的：没有真堆叠，站不上别只头顶（做过，效果怪，砍了）。</li>
+<li>奶龙大笑 15.7 秒是原片大笑段的完整长度，再长只能循环帧，不续。</li>
+<li>自定义包可选通道缺了有回落，但有代价：没有 <code>images.shout</code> 的角色，喊叫时只有物理变形没有嘴型（导入时会有提示）。</li>
+<li>位置记忆按设备存 localStorage，不进设置中心——换浏览器，崽们要重新归位。</li>
+</ol>
 <div class="post-series-nav">
-                <em>本文是「<a href="/series/deepseek-harness/">DeepSeek Harness</a>」系列第 5 篇，共 7 篇。上一篇：<a href="/posts/2026/08/16/dsh-lan-access/">把 DeepSeek Harness 开放到局域网：手机访问的几个坑与解法清单</a>。下一篇：<a href="/posts/2026/08/22/dsh-niulai-pet-kws/">给 DeepSeek Harness 桌宠装耳朵：浏览器里跑中文 KWS 的全记录</a>。</em>
+                <em>本文是「<a href="/series/deepseek-harness/">DeepSeek Harness</a>」系列第 7 篇，共 7 篇。上一篇：<a href="/posts/2026/08/22/dsh-niulai-pet-kws/">给 DeepSeek Harness 桌宠装耳朵：浏览器里跑中文 KWS 的全记录</a>。</em>
             </div></div><script src="/lib/qrcode/qrcode.min.js"></script>
 <div id="share-card-btn" hidden>生成分享卡片</div>
 <div id="share-card-overlay" hidden>
@@ -541,18 +490,18 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2026-08-22&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/35b72a0a5e1629c58a44f65e5f341af1095518a2" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) 35b72a0a5e1629c58a44f65e5f341af1095518a2: content: KWS 文定稿换封面（原皮），桌宠文补 B 站链接">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>35b72a0</a></span>
+                <span>更新于 2026-08-23&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/860d89fb46861efa7ce3858f2434a46afab20f2d" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) 860d89fb46861efa7ce3858f2434a46afab20f2d: feat: 牛来桌宠第三期（v0.4 全记录）&#43; 试玩页同步 0.4.8">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>860d89f</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
-                            <a class="link-to-markdown" href="/posts/2026/08/19/dsh-niulai-pet/index.md" target="_blank">阅读原始文档</a>
+                            <a class="link-to-markdown" href="/posts/2026/08/23/dsh-niulai-pet-v04/index.md" target="_blank">阅读原始文档</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/08/19/dsh-niulai-pet/" data-title="任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来" data-hashtags="tech,ai,deepseek,harness,plugin,desktop-pet,牛来"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/08/19/dsh-niulai-pet/" data-hashtag="tech"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/08/19/dsh-niulai-pet/" data-title="任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/08/19/dsh-niulai-pet/" data-title="任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/08/19/dsh-niulai-pet/" data-title="任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微信" onclick="var d=document.getElementById('wechat-qr-5626e57e23b47f790db412572ee8bc3b');d.style.display=d.style.display==='none'?'block':'none';return false"><i class="fab fa-weixin fa-fw" aria-hidden="true"></i></a>
-        <div id="wechat-qr-5626e57e23b47f790db412572ee8bc3b" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:9999" onclick="this.style.display='none'">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/08/23/dsh-niulai-pet-v04/" data-title="史诗级更新：自定义角色和桌宠乐园——DeepSeek Harness 桌宠插件 v0.4 全记录" data-hashtags="tech,ai,deepseek,harness,plugin,desktop-pet,牛来"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/08/23/dsh-niulai-pet-v04/" data-hashtag="tech"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/08/23/dsh-niulai-pet-v04/" data-title="史诗级更新：自定义角色和桌宠乐园——DeepSeek Harness 桌宠插件 v0.4 全记录"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/08/23/dsh-niulai-pet-v04/" data-title="史诗级更新：自定义角色和桌宠乐园——DeepSeek Harness 桌宠插件 v0.4 全记录"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/08/23/dsh-niulai-pet-v04/" data-title="史诗级更新：自定义角色和桌宠乐园——DeepSeek Harness 桌宠插件 v0.4 全记录"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微信" onclick="var d=document.getElementById('wechat-qr-1c89c3b69b223f01cf352af63ae7405f');d.style.display=d.style.display==='none'?'block':'none';return false"><i class="fab fa-weixin fa-fw" aria-hidden="true"></i></a>
+        <div id="wechat-qr-1c89c3b69b223f01cf352af63ae7405f" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:9999" onclick="this.style.display='none'">
             <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;padding:20px;border-radius:8px;text-align:center">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https%3a%2f%2fwhitefirer.org%2fposts%2f2026%2f08%2f19%2fdsh-niulai-pet%2f" alt="微信扫一扫" style="display:block">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https%3a%2f%2fwhitefirer.org%2fposts%2f2026%2f08%2f23%2fdsh-niulai-pet-v04%2f" alt="微信扫一扫" style="display:block">
                 <p style="margin:10px 0 0;font-size:14px;color:#333">微信扫一扫 · 分享文章</p>
             </div>
         </div></span>
@@ -567,8 +516,7 @@
         </section>
     </div>
 
-    <div class="post-nav"><a href="/posts/2026/08/18/blog-terminal-needle-edge-ai/" class="prev" rel="prev" title="不烧 token 的博客 AI：给终端装一颗 14MB 的端侧大脑"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>不烧 token 的博客 AI：给终端装一颗 14MB 的端侧大脑</a>
-            <a href="/posts/2026/08/22/dsh-niulai-pet-kws/" class="next" rel="next" title="给 DeepSeek Harness 桌宠装耳朵：浏览器里跑中文 KWS 的全记录">给 DeepSeek Harness 桌宠装耳朵：浏览器里跑中文 KWS 的全记录<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+    <div class="post-nav"><a href="/posts/2026/08/22/dsh-niulai-pet-kws/" class="prev" rel="prev" title="给 DeepSeek Harness 桌宠装耳朵：浏览器里跑中文 KWS 的全记录"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>给 DeepSeek Harness 桌宠装耳朵：浏览器里跑中文 KWS 的全记录</a></div>
 
 </div>
 <div id="comments"><div id="waline" class="comment"></div><noscript>

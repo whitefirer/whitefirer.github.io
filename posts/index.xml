@@ -4,7 +4,15 @@
         <link>https://whitefirer.org/posts/</link>
         <description>所有文章 | 赛博闲谭-whitefirer</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sat, 22 Aug 2026 04:17:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/posts/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sun, 23 Aug 2026 12:05:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>史诗级更新：自定义角色和桌宠乐园——DeepSeek Harness 桌宠插件 v0.4 全记录</title>
+    <link>https://whitefirer.org/posts/2026/08/23/dsh-niulai-pet-v04/</link>
+    <pubDate>Sun, 23 Aug 2026 12:05:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/08/23/dsh-niulai-pet-v04/</guid>
+    <description><![CDATA[一、这期有点多，先报个幕 上一期给桌宠装了耳朵（喊一声「牛来」它就停，浏览器里跑中文 KWS 的全记录）。这期本来只想把预告过的自定义皮肤做掉，结果收]]></description>
+</item>
+<item>
     <title>给 DeepSeek Harness 桌宠装耳朵：浏览器里跑中文 KWS 的全记录</title>
     <link>https://whitefirer.org/posts/2026/08/22/dsh-niulai-pet-kws/</link>
     <pubDate>Sat, 22 Aug 2026 04:17:00 &#43;0800</pubDate>
@@ -75,14 +83,6 @@
     <author>whitefirer</author>
     <guid>https://whitefirer.org/posts/2026/07/19/dutch-pasture-ai-era/</guid>
     <description><![CDATA[王小波在《荷兰牧场与父老乡亲》里写过一段经历。他在山东插队时，天不亮就得推独轮车往山上送粪——美其名曰粪，其实是刚垫进猪圈的土，猪还没来得及]]></description>
-</item>
-<item>
-    <title>AI 的天轴时刻——我们都把电动机装在了旧皮带上</title>
-    <link>https://whitefirer.org/posts/2026/07/15/ai-line-shaft-moment/</link>
-    <pubDate>Wed, 15 Jul 2026 03:00:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/posts/2026/07/15/ai-line-shaft-moment/</guid>
-    <description><![CDATA[19 世纪末的工厂把蒸汽机换成电动机，天轴和皮带原封不动。等了 40 年，人们终于拆掉天轴、改成单机驱动，流水线才诞生。AI 今天一模一样。 2018 年，律所，]]></description>
 </item>
 </channel>
 </rss>

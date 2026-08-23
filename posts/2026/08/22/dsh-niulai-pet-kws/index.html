@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="赛博闲谭-whitefirer"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-        <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/08/22/dsh-niulai-pet-kws/" /><link rel="prev" href="https://whitefirer.org/posts/2026/08/19/dsh-niulai-pet/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/08/22/dsh-niulai-pet-kws/" /><link rel="prev" href="https://whitefirer.org/posts/2026/08/19/dsh-niulai-pet/" /><link rel="next" href="https://whitefirer.org/posts/2026/08/23/dsh-niulai-pet-v04/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta property="og:title" content="给 DeepSeek Harness 桌宠装耳朵：浏览器里跑中文 KWS 的全记录 - 赛博闲谭-whitefirer" />
 <meta property="og:description" content="dsh 桌宠牛来的「循环喊到互动停止」需要一双耳朵：喊一声「牛来」它就停。记录这双耳朵的四代演进——零模型 MFCC&#43;DTW 模板匹配的判别力天花板、sherpa-onnx KWS wasm 自编译、插件 host 半开路由同源分发 17MB、INITIAL_MEMORY 从 512MB 实测定稿 32MB、Web Worker 空闲 10s terminate 真释放、四指令词交叉验证零串词零误报，以及真机「音量小识别不到」的最后一坑。" />
@@ -271,7 +271,7 @@
 <li>老 dsh 无 webServer、worker 被拦等场景，自动回落模板引擎。</li>
 </ol>
 <div class="post-series-nav">
-                <em>本文是「<a href="/series/deepseek-harness/">DeepSeek Harness</a>」系列第 6 篇，共 6 篇。上一篇：<a href="/posts/2026/08/19/dsh-niulai-pet/">任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来</a>。</em>
+                <em>本文是「<a href="/series/deepseek-harness/">DeepSeek Harness</a>」系列第 6 篇，共 7 篇。上一篇：<a href="/posts/2026/08/19/dsh-niulai-pet/">任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来</a>。下一篇：<a href="/posts/2026/08/23/dsh-niulai-pet-v04/">史诗级更新：自定义角色和桌宠乐园——DeepSeek Harness 桌宠插件 v0.4 全记录</a>。</em>
             </div></div><script src="/lib/qrcode/qrcode.min.js"></script>
 <div id="share-card-btn" hidden>生成分享卡片</div>
 <div id="share-card-overlay" hidden>
@@ -526,7 +526,8 @@
         </section>
     </div>
 
-    <div class="post-nav"><a href="/posts/2026/08/19/dsh-niulai-pet/" class="prev" rel="prev" title="任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来</a></div>
+    <div class="post-nav"><a href="/posts/2026/08/19/dsh-niulai-pet/" class="prev" rel="prev" title="任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>任务一完成，它就蹦出来喊「妈」——给 DeepSeek Harness 养一头牛来</a>
+            <a href="/posts/2026/08/23/dsh-niulai-pet-v04/" class="next" rel="next" title="史诗级更新：自定义角色和桌宠乐园——DeepSeek Harness 桌宠插件 v0.4 全记录">史诗级更新：自定义角色和桌宠乐园——DeepSeek Harness 桌宠插件 v0.4 全记录<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 
 </div>
 <div id="comments"><div id="waline" class="comment"></div><noscript>
