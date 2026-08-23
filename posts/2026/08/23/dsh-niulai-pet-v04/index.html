@@ -29,8 +29,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/whitefirer.org\/posts\/2026\/08\/23\/dsh-niulai-pet-v04\/"
-        },"genre": "posts","keywords": "tech, ai, deepseek, harness, plugin, desktop-pet, 牛来","wordcount":  2454 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/23\/dsh-niulai-pet-v04\/","datePublished": "2026-08-23T12:05:00+08:00","dateModified": "2026-08-23T21:29:56+08:00","license": "2022©️whitefirer","publisher": {
+        },"genre": "posts","keywords": "tech, ai, deepseek, harness, plugin, desktop-pet, 牛来","wordcount":  2424 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/08\/23\/dsh-niulai-pet-v04\/","datePublished": "2026-08-23T12:05:00+08:00","dateModified": "2026-08-24T05:49:53+08:00","license": "2022©️whitefirer","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -132,11 +132,11 @@
             <div class="toc-content" id="toc-content-auto"></div>
         </div><div id="reading-progress"></div>
     <article class="page single"><div style="display:flex;align-items:baseline;gap:0">
-        <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">史诗级更新：自定义角色和桌宠乐园——DeepSeek Harness 桌宠插件 v0.4 全记录</h1></div><h2 class="single-subtitle">多只同屏、物理碰撞、自定义角色包，外加四位新成员——dsh 桌宠从一只变成一园</h2><div class="post-series">
+        <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">史诗级更新：自定义角色和桌宠乐园——DeepSeek Harness 桌宠插件 v0.4 全记录</h1></div><h2 class="single-subtitle">多只同屏、物理碰撞、自定义角色包，外加四位新成员——dsh 桌宠从一只变成一群</h2><div class="post-series">
                 <a href="/series/deepseek-harness/"><i class="fas fa-layer-group fa-fw" aria-hidden="true"></i>DeepSeek Harness</a>
             </div><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-23">2026-08-23</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 2454 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-08-23">2026-08-23</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 2424 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 5 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/08/23/dsh-niulai-pet-v04.svg" alt="" aria-hidden="true" loading="eager"
      style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none"></div>
         </div><div class="details toc" id="toc-static"  data-kept="">
@@ -147,21 +147,21 @@
                 <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
     <li><a href="#一这期有点多先报个幕">一、这期有点多，先报个幕</a></li>
-    <li><a href="#二新成员评论区点名的都到了">二、新成员：评论区点名的都到了</a></li>
+    <li><a href="#二新成员评论区点名的都加了">二、新成员：评论区点名的都加了</a></li>
     <li><a href="#三自定义角色包上期挖的坑填了">三、自定义角色包：上期挖的坑填了</a></li>
-    <li><a href="#四一只到多只按只配置是正经需求">四、一只到多只：按只配置是正经需求</a></li>
+    <li><a href="#四从一只到多只按只配置是正常需求">四、从一只到多只：按只配置是正常需求</a></li>
     <li><a href="#五物理碰撞一维世界加一道高度门槛">五、物理碰撞：一维世界加一道高度门槛</a></li>
     <li><a href="#六乐园玩法一起飞和全家福">六、乐园玩法：一起飞和全家福</a></li>
-    <li><a href="#七顺手改掉的细节">七、顺手改掉的细节</a></li>
+    <li><a href="#七其它功能细节">七、其它功能细节</a></li>
     <li><a href="#八现在的样子">八、现在的样子</a></li>
     <li><a href="#附已知限制清单">附：已知限制清单</a></li>
   </ul>
 </nav></div>
             </div><div class="content" id="content"><h2 id="一这期有点多先报个幕">一、这期有点多，先报个幕</h2>
 <p>上一期给桌宠装了耳朵（喊一声「牛来」它就停，<a href="/posts/2026/08/22/dsh-niulai-pet-kws/" rel="">浏览器里跑中文 KWS 的全记录</a>）。这期本来只想把预告过的自定义皮肤做掉，结果收不住：<a href="https://www.bilibili.com/video/BV1iN8p6AEV5" target="_blank" rel="noopener noreffer ">B 站评论区</a>点名的奶龙大笑和大狗叫得安排；角色一多，一只变多只；多只就会互相穿模，于是有了物理碰撞；都能站一排了，干脆再来张全家福。</p>
-<p>从 v0.3.0 到 v0.4.7，二十六个 commit，桌宠从一只变成一园。一个个说。</p>
-<h2 id="二新成员评论区点名的都到了">二、新成员：评论区点名的都到了</h2>
-<p><strong>奶龙（捧腹大笑）</strong>。第一期视频评论区点名要奶龙。叫声是原片大笑段完整降噪，15.7 秒；画面从视频切片抠帧，157 帧 webp 按 10fps 原生播放，和音轨同一条时间线——任务一完成，它从站姿弯腰捧腹，笑到抱头倒地打滚，结尾不吞。这条素材踩了两个坑值得记：一是帧清洗曾把胸前白斑当水印抹掉（后改中位数底图差分，再把内部小洞做原色回填，胸斑眼白全恢复）；二是大笑帧的头顶曾被裁切框切掉一截，裁切对齐按全序列最高帧重做，只裁该裁的 7px。另外倒地帧同机位物理缩放，不然倒地打滚会比站着大一圈。</p>
+<p>从 v0.3.0 到 v0.4.7，二十六个 commit，桌宠从一只变成一群。一个个说。</p>
+<h2 id="二新成员评论区点名的都加了">二、新成员：评论区点名的都加了</h2>
+<p><strong>奶龙（捧腹大笑）</strong>。第一期视频评论区点名要奶龙。叫声是原片大笑段完整降噪，15.7 秒；画面从视频切片抠帧，157 帧 webp 按 10fps 原生播放，和音轨同一条时间线——任务一完成，它从站姿弯腰捧腹，笑到抱头倒地打滚，结尾不吞。这条素材踩了两个坑：帧清洗曾把胸前白斑当水印抹掉（后改中位数底图差分，再把内部小洞做原色回填，胸斑眼白全恢复）；大笑帧的头顶曾被裁切框切掉一截，裁切对齐按全序列最高帧重做，只裁该裁的 7px。另外倒地帧同机位物理缩放，不然倒地打滚会比站着大一圈。</p>
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
@@ -176,7 +176,7 @@
 <p><strong>奶牛退役</strong>。初代手绘奶牛实现简单、质量差点意思，这期退役给新成员腾位置，SVG 存档留在仓库 <code>tools/drawn/</code>。</p>
 <h2 id="三自定义角色包上期挖的坑填了">三、自定义角色包：上期挖的坑填了</h2>
 <p>上期预告过的自定义皮肤，落地成了「角色包」：一个 <code>.nlpack.zip</code>（<code>pack.json</code> + 透明底图 + mp3 叫声）就是一个完整角色。两级模型（角色/皮肤），导入带 zip 校验，IndexedDB 持久化，删除自动回落内置皮。</p>
-<p>三条使用路径：设置卡片「自定义角色」区导入；试玩页把 <code>.nlpack.zip</code> 直接拖进页面即时预览（不落库，刷新即还原）；不会做包的，卡片上有个「让 dsh 帮我做」按钮——让 agent 自己给你搓一个。仓库里放了个最小<a href="https://github.com/whitefirer/dsh-niulai-pet/raw/master/docs/assets/robot.nlpack.zip" target="_blank" rel="noopener noreffer ">示例包</a>（一个无名机器人）专门用来试导入流程，从零做包看 <a href="https://github.com/whitefirer/dsh-niulai-pet/blob/master/SKIN_AUTHORING.md" target="_blank" rel="noopener noreffer ">SKIN_AUTHORING.md</a>，AI 生图提示词、逐帧动作条切分、派生覆盖包玩法都在里面。</p>
+<p>使用路径：设置卡片「自定义角色」区导入；试玩页把 <code>.nlpack.zip</code> 直接拖进页面即时预览（不落库，刷新即还原）；不会做包的，卡片上有个「让 dsh 帮我做」按钮——让 agent 自己给你搓一个。仓库里放了个最小<a href="https://github.com/whitefirer/dsh-niulai-pet/raw/master/docs/assets/robot.nlpack.zip" target="_blank" rel="noopener noreffer ">示例包</a>（一个无名机器人）专门用来试导入流程，从零做包看 <a href="https://github.com/whitefirer/dsh-niulai-pet/blob/master/SKIN_AUTHORING.md" target="_blank" rel="noopener noreffer ">SKIN_AUTHORING.md</a>，AI 生图提示词、逐帧动作条切分、派生覆盖包玩法都在里面。</p>
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
@@ -185,8 +185,8 @@
         data-sizes="auto"
         alt="/posts/2026/08/23/dsh-niulai-pet-v04/robot-import.png"
         title="试玩页拖入 robot 示例包" width="900" height="600" /></p>
-<p>这区还修了个值得写的 bug：删除或导入角色包后，所有桌宠有几率变成同一只，整体刷新才恢复。根因是订阅皮肤列表的回调里误用了全局 <code>skin</code> 而不是各只自己的 <code>mySkinId</code>——列表一变，全员跟着换脸。已修。</p>
-<h2 id="四一只到多只按只配置是正经需求">四、一只到多只：按只配置是正经需求</h2>
+<p>这区还修了个 bug：删除或导入角色包后，所有桌宠有几率变成同一只，整体刷新才恢复。根因是订阅皮肤列表的回调里误用了全局 <code>skin</code> 而不是各只自己的 <code>mySkinId</code>——列表一变，全员跟着换脸。已修。</p>
+<h2 id="四从一只到多只按只配置是正常需求">四、从一只到多只：按只配置是正常需求</h2>
 <p>主宠右键「再添一只」，上限默认连主 10 只，设置里最高能调到 15。皮肤、大小、唠叨语录全部按只存。</p>
 <p>设置卡片为此大改：多只时顶部出现「配置对象」选择器，带皮肤预览图，<strong>点预览图，对应那只桌宠会发光加小跳回应</strong>——一屏十几只的时候，不用猜自己在配哪只。大小从数字输入改成滑杆（72-200px，按皮肤带默认值），偏离默认时出现「重置」按钮。语录一行一条，按只编辑。</p>
 <p><img
@@ -199,9 +199,9 @@
         title="设置卡片：配置对象选择器与按只滑杆" width="1400" height="1000" /></p>
 <h2 id="五物理碰撞一维世界加一道高度门槛">五、物理碰撞：一维世界加一道高度门槛</h2>
 <p>多只同屏第一天就发现问题：桌宠互相穿模，挤在一起不分彼此。于是做了一套简化物理：x 轴一维世界，走近互挤，撞狠了弹飞，落地和重撞有闷响。开关制，右键菜单「物理碰撞」开。</p>
-<p>有意思的是两个边角：</p>
+<p>还补了两处：</p>
 <ul>
-<li><strong>拎起来越过头顶，不该推人</strong>。纯 x 轴判断时，你拎着一只从另一只头顶上过去，底下那位照样被推开——它在「被拎着」这个状态下跟对方根本不在一个平面。挤压判定加了高度门槛：被拎者的脚底高过对方头顶，就不触发挤压。</li>
+<li><strong>误推的坑</strong>：初版只按 x 轴判断，没管被拎状态——你拎着一只越过另一只头顶，底下那只照样被推开，因为被拎着时和对方不在一个平面。挤压判定加了高度门槛：被拎者脚底高过对方头顶就不触发。</li>
 <li><strong>砸到头上，按落差定反弹强度</strong>。拎到半空松手砸中，和齐头高蹭到，不是一个量级，反弹速度随落差走。</li>
 <li>坠落过程身体是倾斜的，只有落地后才恢复直立。</li>
 </ul>
@@ -217,7 +217,7 @@
         data-sizes="auto"
         alt="/posts/2026/08/23/dsh-niulai-pet-v04/allfly.png"
         title="一起飞" width="1600" height="810" /></p>
-<p><strong>全家福</strong>：两档排布循环切换。均匀列队——牛来 C 位，奶龙、小奶龙一边一个对称站；层次合影——高个靠后、矮个往前，相邻叠压约四分之一身位，叠出前后纵深。合影期间主宠钉住置顶不被挡，收起后各回各位。排布逻辑抽成了共享模块（<code>src/client/family.ts</code>），试玩页和插件两侧跑同一套代码。</p>
+<p><strong>全家福</strong>：两档排布循环切换。均匀列队——牛来 C 位，奶龙、小奶龙一边一个对称站；层次合影（桌宠总动员）——高个靠后、矮个往前，相邻叠压约四分之一身位，叠出前后纵深。合影期间主宠钉住置顶不被挡，收起后各回各位。排布逻辑抽成了共享模块（<code>src/client/family.ts</code>），试玩页和插件两侧跑同一套代码。</p>
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
@@ -234,7 +234,7 @@
         data-sizes="auto"
         alt="/posts/2026/08/23/dsh-niulai-pet-v04/family-layered.png"
         title="全家福·层次合影" width="1920" height="1080" /></p>
-<h2 id="七顺手改掉的细节">七、顺手改掉的细节</h2>
+<h2 id="七其它功能细节">七、其它功能细节</h2>
 <ul>
 <li><strong>默认不打盹了</strong>。闲置打盹改开关制、默认关——太多人不知道它会趴下，以为它死了。</li>
 <li><strong>气泡开关语义修正</strong>。之前关了气泡，连任务完成的通知气泡也没了。现在装饰性唠叨全收进开关，反馈性气泡（任务完成、操作提示）保留。</li>
@@ -252,13 +252,13 @@
 <pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">dsh plugin --profile web add dsh-niulai-pet
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>项目开源，插件市场搜 <code>dsh-niulai-pet</code> 即是。想看实际效果的，B 站有这期的视频：<a href="https://www.bilibili.com/video/BV1pC8b6hEhQ" target="_blank" rel="noopener noreffer ">史诗级更新：自定义角色和桌宠乐园——牛来桌宠 v0.4</a>，整个系列的<a href="https://space.bilibili.com/10317688/lists" target="_blank" rel="noopener noreffer ">视频合集</a>也在连载。</p>
+</div><p>项目开源，插件市场搜 <code>dsh-niulai-pet</code> 即是。想看实际效果的，B 站有这期的视频：<a href="https://www.bilibili.com/video/BV1pC8b6hEhQ" target="_blank" rel="noopener noreffer ">史诗级更新：自定义角色和桌宠乐园——牛来桌宠 v0.4</a>，整个系列的<a href="https://space.bilibili.com/10317688/lists" target="_blank" rel="noopener noreffer ">视频合集</a>也在连载，播放量和转发量尚可。</p>
 <h2 id="附已知限制清单">附：已知限制清单</h2>
 <ol>
-<li>物理是一维的：没有真堆叠，站不上别只头顶（做过，效果怪，砍了）。</li>
-<li>奶龙大笑 15.7 秒是原片大笑段的完整长度，再长只能循环帧，不续。</li>
-<li>自定义包可选通道缺了有回落，但有代价：没有 <code>images.shout</code> 的角色，喊叫时只有物理变形没有嘴型（导入时会有提示）。</li>
-<li>位置记忆按设备存 localStorage，不进设置中心——换浏览器，崽们要重新归位。</li>
+<li>只做了地面排挤，没有做 y 轴堆叠效果。</li>
+<li>奶龙大笑 15.7 秒是原片大笑段的完整长度，再长只能循环帧，暂时不续。</li>
+<li>自定义包可选通道缺了可兜底，但有代价：没有 <code>images.shout</code> 的角色，喊叫时只会有物理变形没有嘴型（导入时会有提示）。</li>
+<li>位置记忆按设备存 localStorage，如果换浏览器，桌宠会重置归位。</li>
 </ol>
 <div class="post-series-nav">
                 <em>本文是「<a href="/series/deepseek-harness/">DeepSeek Harness</a>」系列第 7 篇，共 7 篇。上一篇：<a href="/posts/2026/08/22/dsh-niulai-pet-kws/">给 DeepSeek Harness 桌宠装耳朵：浏览器里跑中文 KWS 的全记录</a>。</em>
@@ -490,8 +490,8 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2026-08-23&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/ee55a03753023f3fca160154794f7e5649f72b97" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) ee55a03753023f3fca160154794f7e5649f72b97: docs: 牛来桌宠第三期文补充 B 站视频链接">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>ee55a03</a></span>
+                <span>更新于 2026-08-24&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/2357bb1b4c6ae25ba59014cfdee57c92ac834867" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) 2357bb1b4c6ae25ba59014cfdee57c92ac834867: content: 牛来 v0.4 文本文案微调">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>2357bb1</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
