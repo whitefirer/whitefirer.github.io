@@ -81,7 +81,7 @@
 dsh plugin --profile web add dsh-niulai-pet
 ```
 
-项目开源，插件市场搜 `dsh-niulai-pet` 即是。B 站有这个系列的[视频合集](https://space.bilibili.com/10317688/lists)。
+项目开源，插件市场搜 `dsh-niulai-pet` 即是。想看实际效果的，B 站有这期的视频：[史诗级更新：自定义角色和桌宠乐园——牛来桌宠 v0.4](https://www.bilibili.com/video/BV1pC8b6hEhQ)，整个系列的[视频合集](https://space.bilibili.com/10317688/lists)也在连载。
 
 ## 附：已知限制清单
 
