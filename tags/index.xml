@@ -4,10 +4,10 @@
         <link>https://whitefirer.org/tags/</link>
         <description>Tags - 标签 - 赛博闲谭-whitefirer</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sun, 23 Aug 2026 12:05:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Wed, 26 Aug 2026 23:20:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/" rel="self" type="application/rss+xml" /><item>
     <title>Ai</title>
     <link>https://whitefirer.org/tags/ai/</link>
-    <pubDate>Sun, 23 Aug 2026 12:05:00 &#43;0800</pubDate>
+    <pubDate>Wed, 26 Aug 2026 23:20:00 &#43;0800</pubDate>
     <author>whitefirer</author>
     <guid>https://whitefirer.org/tags/ai/</guid>
     <description><![CDATA[]]></description>
@@ -15,9 +15,57 @@
 <item>
     <title>Deepseek</title>
     <link>https://whitefirer.org/tags/deepseek/</link>
-    <pubDate>Sun, 23 Aug 2026 12:05:00 &#43;0800</pubDate>
+    <pubDate>Wed, 26 Aug 2026 23:20:00 &#43;0800</pubDate>
     <author>whitefirer</author>
     <guid>https://whitefirer.org/tags/deepseek/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Glm</title>
+    <link>https://whitefirer.org/tags/glm/</link>
+    <pubDate>Wed, 26 Aug 2026 23:20:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/glm/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Opensource</title>
+    <link>https://whitefirer.org/tags/opensource/</link>
+    <pubDate>Wed, 26 Aug 2026 23:20:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/opensource/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Pricing</title>
+    <link>https://whitefirer.org/tags/pricing/</link>
+    <pubDate>Wed, 26 Aug 2026 23:20:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/pricing/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Qwen</title>
+    <link>https://whitefirer.org/tags/qwen/</link>
+    <pubDate>Wed, 26 Aug 2026 23:20:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/qwen/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>大模型</title>
+    <link>https://whitefirer.org/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/</link>
+    <pubDate>Wed, 26 Aug 2026 23:20:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>牛来</title>
+    <link>https://whitefirer.org/tags/%E7%89%9B%E6%9D%A5/</link>
+    <pubDate>Wed, 26 Aug 2026 23:20:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/%E7%89%9B%E6%9D%A5/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
@@ -34,54 +82,6 @@
     <pubDate>Sun, 23 Aug 2026 12:05:00 &#43;0800</pubDate>
     <author>whitefirer</author>
     <guid>https://whitefirer.org/tags/harness/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Plugin</title>
-    <link>https://whitefirer.org/tags/plugin/</link>
-    <pubDate>Sun, 23 Aug 2026 12:05:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/plugin/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>牛来</title>
-    <link>https://whitefirer.org/tags/%E7%89%9B%E6%9D%A5/</link>
-    <pubDate>Sun, 23 Aug 2026 12:05:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/%E7%89%9B%E6%9D%A5/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Kws</title>
-    <link>https://whitefirer.org/tags/kws/</link>
-    <pubDate>Sat, 22 Aug 2026 04:17:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/kws/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Wasm</title>
-    <link>https://whitefirer.org/tags/wasm/</link>
-    <pubDate>Sat, 22 Aug 2026 04:17:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/wasm/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Webworker</title>
-    <link>https://whitefirer.org/tags/webworker/</link>
-    <pubDate>Sat, 22 Aug 2026 04:17:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/webworker/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Edge-Ai</title>
-    <link>https://whitefirer.org/tags/edge-ai/</link>
-    <pubDate>Tue, 18 Aug 2026 01:30:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/edge-ai/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>

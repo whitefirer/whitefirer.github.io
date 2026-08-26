@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>大模型 - 标签 - 赛博闲谭-whitefirer</title>
+        <link>https://whitefirer.org/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/</link>
+        <description>大模型 - 标签 - 赛博闲谭-whitefirer</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Wed, 26 Aug 2026 23:20:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/" rel="self" type="application/rss+xml" /><item>
+    <title>AI界的「牛来」了，AGI时刻之前，注意力是如何转移的？</title>
+    <link>https://whitefirer.org/posts/2026/08/26/qwen-glm-flash-price-war/</link>
+    <pubDate>Wed, 26 Aug 2026 23:20:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/08/26/qwen-glm-flash-price-war/</guid>
+    <description><![CDATA[8 月 26 日这晚间，「牛来」了，当然这次是 AI 圈的牛来了。 阿里千问、智谱在 24 小时内先后亮剑：Qwen3.8-Flash 和 GLM-5.3-Flash]]></description>
+</item>
+</channel>
+</rss>
