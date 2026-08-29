@@ -4,7 +4,15 @@
         <link>https://whitefirer.org/tags/ai/</link>
         <description>Ai - 标签 - 赛博闲谭-whitefirer</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Wed, 26 Aug 2026 23:20:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/ai/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sat, 29 Aug 2026 07:24:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/ai/" rel="self" type="application/rss+xml" /><item>
+    <title>从板书到PPT，再到 AI 定制开发：“大定制时代”来了</title>
+    <link>https://whitefirer.org/posts/2026/08/29/big-customization-era/</link>
+    <pubDate>Sat, 29 Aug 2026 07:24:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/08/29/big-customization-era/</guid>
+    <description><![CDATA[01 从板书到PPT，再到 AI 定制开发 最近一直在思考一些东西。 比方说现在 AI 生成PPT快得很，输入主题，几秒钟大纲出来，再点一下，内容排版配色全给你]]></description>
+</item>
+<item>
     <title>AI界的「牛来」了，AGI时刻之前，注意力是如何转移的？</title>
     <link>https://whitefirer.org/posts/2026/08/26/qwen-glm-flash-price-war/</link>
     <pubDate>Wed, 26 Aug 2026 23:20:00 &#43;0800</pubDate>
@@ -75,14 +83,6 @@
     <author>whitefirer</author>
     <guid>https://whitefirer.org/posts/2026/07/19/harness-engineering-sandbox/</guid>
     <description><![CDATA[Prompt 是劝，沙箱是墙。劝一个 Agent 别干坏事是没用的——它分不清哪些是数据、哪些是指令。你能做的只有一件事：把它关进一个干不了坏事的屋子里。 0. 一个凌晨]]></description>
-</item>
-<item>
-    <title>荷兰牧场与 AI 时代：别让旧思维束缚了想象力</title>
-    <link>https://whitefirer.org/posts/2026/07/19/dutch-pasture-ai-era/</link>
-    <pubDate>Sun, 19 Jul 2026 01:50:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/posts/2026/07/19/dutch-pasture-ai-era/</guid>
-    <description><![CDATA[王小波在《荷兰牧场与父老乡亲》里写过一段经历。他在山东插队时，天不亮就得推独轮车往山上送粪——美其名曰粪，其实是刚垫进猪圈的土，猪还没来得及]]></description>
 </item>
 </channel>
 </rss>
