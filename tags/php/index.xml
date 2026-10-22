@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Php - 标签 - 赛博闲谭-whitefirer</title>
+        <link>https://whitefirer.org/tags/php/</link>
+        <description>Php - 标签 - 赛博闲谭-whitefirer</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Thu, 22 Oct 2026 20:30:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/php/" rel="self" type="application/rss+xml" /><item>
+    <title>补丁之外：AI 时代怎么守？我亲历的四次安全事件早就给出了答案</title>
+    <link>https://whitefirer.org/posts/2026/10/22/beyond-patches/</link>
+    <pubDate>Thu, 22 Oct 2026 20:30:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/10/22/beyond-patches/</guid>
+    <description><![CDATA[2018 年的一个晚上，一名实习生把一台 Redis 暴露在了公网，攻击者提权后开始挖矿。我接手处理后，第一反应是清理进程、换机器——但真正让我不安的不是这台机]]></description>
+</item>
+</channel>
+</rss>

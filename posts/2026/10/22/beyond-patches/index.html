@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>补丁之外：AI 时代怎么守？我亲历的四次安全事件早就给出了答案 - 赛博闲谭-whitefirer</title><meta name="Description" content="2026 年 10 月的这个星期三，PHP 爆出 9.2 分 RCE，日本首相呼吁全民下线网站；ARTEX 冠军工具被武器化击穿韩国金融系统，TiDB 因凭据泄露面临 10TB 数据勒索。面对「披露即被利用」的漏洞新常态，本文结合我亲历的四个「没有 CVE」的一线安全事件，探讨为什么真正决定生存的，不再是修复速度，而是暴露面本身是否还存在。">
+
+<meta name="application-name" content="赛博闲谭-whitefirer">
+<meta name="apple-mobile-web-app-title" content="赛博闲谭-whitefirer"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://whitefirer.org/posts/2026/10/22/beyond-patches/" /><link rel="prev" href="https://whitefirer.org/posts/2026/08/29/big-customization-era/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta property="og:title" content="补丁之外：AI 时代怎么守？我亲历的四次安全事件早就给出了答案 - 赛博闲谭-whitefirer" />
+<meta property="og:description" content="2026 年 10 月的这个星期三，PHP 爆出 9.2 分 RCE，日本首相呼吁全民下线网站；ARTEX 冠军工具被武器化击穿韩国金融系统，TiDB 因凭据泄露面临 10TB 数据勒索。面对「披露即被利用」的漏洞新常态，本文结合我亲历的四个「没有 CVE」的一线安全事件，探讨为什么真正决定生存的，不再是修复速度，而是暴露面本身是否还存在。" />
+<meta property="og:image" content="https://whitefirer.org/og-default.png" />
+<meta property="og:url" content="https://whitefirer.org/posts/2026/10/22/beyond-patches/" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="赛博闲谭-whitefirer" /><meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="补丁之外：AI 时代怎么守？我亲历的四次安全事件早就给出了答案 - 赛博闲谭-whitefirer" />
+<meta name="twitter:description" content="2026 年 10 月的这个星期三，PHP 爆出 9.2 分 RCE，日本首相呼吁全民下线网站；ARTEX 冠军工具被武器化击穿韩国金融系统，TiDB 因凭据泄露面临 10TB 数据勒索。面对「披露即被利用」的漏洞新常态，本文结合我亲历的四个「没有 CVE」的一线安全事件，探讨为什么真正决定生存的，不再是修复速度，而是暴露面本身是否还存在。" />
+<meta name="twitter:image" content="https://whitefirer.org/og-default.png" /><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "补丁之外：AI 时代怎么守？我亲历的四次安全事件早就给出了答案",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/whitefirer.org\/posts\/2026\/10\/22\/beyond-patches\/"
+        },"genre": "posts","keywords": "security, tech, cve, php, vulnerability, ai, supply-chain, cloud","wordcount":  8884 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/10\/22\/beyond-patches\/","datePublished": "2026-10-22T20:30:00+08:00","dateModified": "2026-10-22T23:56:13+08:00","license": "2022©️whitefirer","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "whitefirer"
+            },"description": "2026 年 10 月的这个星期三，PHP 爆出 9.2 分 RCE，日本首相呼吁全民下线网站；ARTEX 冠军工具被武器化击穿韩国金融系统，TiDB 因凭据泄露面临 10TB 数据勒索。面对「披露即被利用」的漏洞新常态，本文结合我亲历的四个「没有 CVE」的一线安全事件，探讨为什么真正决定生存的，不再是修复速度，而是暴露面本身是否还存在。"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="赛博闲谭-whitefirer">赛博闲谭-whitefirer</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/series/ai-zatan/"> AI 杂谈 </a><div class="menu-item has-dropdown">
+                            <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                            <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a><a class="dropdown-item" href="/series/harness-engineering/"> Harness Engineering </a><a class="dropdown-item" href="/series/deepseek-harness/"> DeepSeek Harness </a></div>
+                        </div><a class="menu-item" href="/series/%e5%9f%ba%e7%a1%80%e6%9e%b6%e6%9e%84/"> 基础架构 </a><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/2026/10/22/beyond-patches/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header>
+<script>
+(function() {
+    document.querySelectorAll('.has-dropdown .dropdown-toggle').forEach(function(toggle) {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var parent = this.closest('.has-dropdown');
+            parent.classList.toggle('open');
+        });
+    });
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.has-dropdown.open').forEach(function(d) {
+            d.classList.remove('open');
+        });
+    });
+})();
+</script><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="赛博闲谭-whitefirer">赛博闲谭-whitefirer</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/series/ai-zatan/" title="">AI 杂谈</a><div class="menu-item has-dropdown">
+                        <span class="dropdown-toggle">AI 编程 <i class="fas fa-chevron-down fa-fw"></i></span>
+                        <div class="dropdown-menu"><a class="dropdown-item" href="/series/claude-code-deep-dive/"> Claude Code </a><a class="dropdown-item" href="/series/harness-engineering/"> Harness Engineering </a><a class="dropdown-item" href="/series/deepseek-harness/"> DeepSeek Harness </a></div>
+                    </div><a class="menu-item" href="/series/%e5%9f%ba%e7%a1%80%e6%9e%b6%e6%9e%84/" title="">基础架构</a><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="https://github.com/whitefirer" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="/index.xml" title="Rss"><i class='fa fa-rss fa-fw' aria-hidden='true'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/posts/2026/10/22/beyond-patches/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><div id="reading-progress"></div>
+    <article class="page single"><div style="display:flex;align-items:baseline;gap:0">
+        <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">补丁之外：AI 时代怎么守？我亲历的四次安全事件早就给出了答案</h1></div><h2 class="single-subtitle">从 VPC 隔离到 AI 重构，当「打补丁」不再是唯一解，一线防守逻辑该如何重构？</h2><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-10-22">2026-10-22</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 8884 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 18 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/10/22/beyond-patches.svg" alt="" aria-hidden="true" loading="eager"
+     style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none"></div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#疯狂星期三完整时间线2026-10-20-至-10-22">「疯狂星期三」完整时间线（2026-10-20 至 10-22）</a></li>
+    <li><a href="#一一线经验四个没有-cve-的安全事件">一、一线经验：四个没有 CVE 的安全事件</a></li>
+    <li><a href="#二总量曲线从平缓到垂直">二、总量曲线：从平缓到垂直</a></li>
+    <li><a href="#三真正陡峭的曲线从披露到利用被压成了负数">三、真正陡峭的曲线：从披露到利用，被压成了负数</a></li>
+    <li><a href="#四ai-的双重角色发现引擎与攻击加速器">四、AI 的双重角色：发现引擎与攻击加速器</a></li>
+    <li><a href="#五ai-生成代码与供应链攻击面在系统性扩大">五、AI 生成代码与供应链：攻击面在系统性扩大</a></li>
+    <li><a href="#六两个非-cve-事件artex-与-tidb-暴露的架构风险">六、两个非 CVE 事件：ARTEX 与 TiDB 暴露的架构风险</a></li>
+    <li><a href="#七先打补丁本次更新的-cve-清单与修复动作">七、先打补丁：本次更新的 CVE 清单与修复动作</a></li>
+    <li><a href="#八但只打补丁不够从修复驱动转向机会驱动">八、但只打补丁不够：从「修复驱动」转向「机会驱动」</a></li>
+    <li><a href="#九结论补丁要打但节奏要变">九、结论：补丁要打，但节奏要变</a></li>
+    <li><a href="#附主要数据来源">附：主要数据来源</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>2018 年的一个晚上，一名实习生把一台 Redis 暴露在了公网，攻击者提权后开始挖矿。我接手处理后，第一反应是清理进程、换机器——但真正让我不安的不是这台机器，而是开发环境的资产和生产环境共享了可路由的网络空间。今天是一个 Redis，明天可能是任何一个「临时开一下」的服务。全面重新部署只是止血；后来容器化集群时，我用不同的 VPC 把开发、测试、生产彻底隔开，让「环境之间默认不可达」成为架构约束，而不是靠人记得改配置。</p>
+<p>这件事之后我越来越不想反复处理同一类问题。当错误总能绕过人的纪律时，解法不在响应端，而应该在约束端。</p>
+<p>从 2017 到 2020，我处理了四次这样的事。它们没有一次源于某个 CVE，却分别对应内容滥用、配置暴露、资源盗用和凭据泄露——恰好是「补丁管不到」的区域。而 2026 年 10 月的这一天，当 PHP、Node.js、Go 的补丁扎堆发布，加上 GitLab 爆出 10.0 分漏洞、多个基础设施停摆时，我意识到：漏洞总量在陡增，利用窗口被压成负数，而防守方真正能依靠的，往往不是打补丁的速度，而是暴露面本身是否还存在。毕竟，正如一位网友在总结这疯狂一天时所说：「总之，今天是星期三。」</p>
+<h2 id="疯狂星期三完整时间线2026-10-20-至-10-22">「疯狂星期三」完整时间线（2026-10-20 至 10-22）</h2>
+<p>在展开之前，先把 2026 年 10 月那次「疯狂星期三」的账本放上来。从 10 月 20 日到 22 日凌晨，两天内爆出的不止 PHP——按首次通告时间排列：</p>
+<table>
+<thead>
+<tr>
+<th>日期</th>
+<th>项目</th>
+<th>事件</th>
+<th>严重性</th>
+<th>首次通告（北京时间）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10/20</td>
+<td>eMudhra</td>
+<td>8 张中间证书的私钥可被恢复，可伪造任意网站证书</td>
+<td>严重，无 CVE</td>
+<td>10/20</td>
+</tr>
+<tr>
+<td>10/20</td>
+<td>Plex</td>
+<td>Plex2Shell，四个 CVE 串成未认证 RCE</td>
+<td>单 CVE 4.3–7.2，整链 9.8（研究者自评）</td>
+<td>10/20；KEV 同日收录</td>
+</tr>
+<tr>
+<td>10/20</td>
+<td>Chrome</td>
+<td>Chrome 156，353 个安全修复，6 个严重</td>
+<td>最高严重</td>
+<td>10/20</td>
+</tr>
+<tr>
+<td>10/21</td>
+<td>PHP</td>
+<td>PHP2Shell，两个引擎级漏洞</td>
+<td>9.2</td>
+<td>10/21；22:00 发布</td>
+</tr>
+<tr>
+<td>10/21</td>
+<td>Java</td>
+<td>Oracle 10 月 CPU，Java SE 55 个修复</td>
+<td>最高 7.5</td>
+<td>10/21</td>
+</tr>
+<tr>
+<td>10/21</td>
+<td>GitLab</td>
+<td>CVE-2026-110264 等 12 个问题，未认证 RCE</td>
+<td>10.0</td>
+<td>10/21</td>
+</tr>
+<tr>
+<td>10/21</td>
+<td>Go</td>
+<td>CVE-2026-111943，crypto/x509 拉黑不可信中间证书</td>
+<td>未评分</td>
+<td>10/19 修复；10/21 08:52 公开 CVE</td>
+</tr>
+<tr>
+<td>10/21</td>
+<td>Node.js</td>
+<td>三个分支的安全版本，10 个 CVE</td>
+<td>严重，无 CVE</td>
+<td>10/21 18:38</td>
+</tr>
+<tr>
+<td>10/21</td>
+<td>LiteLLM</td>
+<td>1.107.0 在 PyPI 与 Docker Hub 投毒</td>
+<td>严重，无 CVE</td>
+<td>10/21</td>
+</tr>
+<tr>
+<td>10/21</td>
+<td>Python</td>
+<td>3.15.1/3.14.9/3.13.17，eMudhra</td>
+<td>未评级</td>
+<td>10/21</td>
+</tr>
+<tr>
+<td>10/22 凌晨</td>
+<td>Cisco</td>
+<td>14 份公告，34 个 CVE</td>
+<td>最高 9.8</td>
+<td>10/22</td>
+</tr>
+<tr>
+<td>10/22 凌晨</td>
+<td>Railway</td>
+<td>环境变量泄露，部分明文被读取</td>
+<td>严重，无 CVE</td>
+<td>10/22 04:44（官方博客）</td>
+</tr>
+</tbody>
+</table>
+<p>（说明：CVSS 10.0 与 9.2 为官方公告给出的分数；Cisco 整批最高 9.8；LiteLLM 与 Railway 没有 CVE，也没有评分。）</p>
+<h2 id="一一线经验四个没有-cve-的安全事件">一、一线经验：四个没有 CVE 的安全事件</h2>
+<p>这张表上没有的，才是我真正想讲的。下面四件事发生在 2017 到 2020 年间，没有一件出现在任何 CVE 通报里，却一步步改变了我对「安全」的理解——从响应事件，转向消灭事件类别。</p>
+<p><strong>2017 年：直播间被发送不良信息 → 内容风控系统</strong></p>
+<p>有人在讲课直播间发送不良信息。攻击者没有利用任何代码缺陷，只是把公开交互功能当成了广播渠道。停业整顿是止血。风控不能是附属品，必须独立于业务逻辑存在。于是我们自研了内容风控系统，从「事后发现」转向「实时拦截」。这是我第一次意识到，任何允许用户输入并公开传播的功能，都需要一个独立的滥用检测层作为准入条件。</p>
+<p><strong>2018 年：实习生暴露 Redis 公网被提权挖矿 → 全面重新部署 + 开发/生产 VPC 彻底隔离</strong></p>
+<p>一名实习生把一台 Redis 暴露到了公网。但我清楚他不过是触发者——Redis 默认无认证，暴露公网等于把管理权限直接交给扫描器，换任何一个新人，同样的错误只是早晚问题。攻击者提权挖矿说明入侵已触及主机层——被提权的主机不能信任，清理恶意进程不等于清除后门，全面重新部署更换机器是唯一能保证干净的选择。</p>
+<p>我当时的判断是：这表面是一次配置失误，根子是网络边界的结构性缺失——只换机器救不了下一台。但更深一层的问题是：开发环境的 Redis 和生产环境的网络边界没有彻底分开。某个环境里一个未改的默认配置，就足以成为生产级暴露面。后续容器化集群时，我用不同的 VPC 把开发、测试、生产彻底分隔，让「环境之间默认不可达」成为架构约束；Redis 也从此不再由人手动开——申请后自动在集群上拉起，访问必须走 VPN。错误仍然可能发生，但隔离让错误的爆炸半径被架构限制住。这也成了我后来转向云原生架构规范化的直接动因之一。</p>
+<p><strong>2019 年：视频存储被盗链薅羊毛 → 异常流量监测 + 防盗链</strong></p>
+<p>视频存储被别人利用上传，并用于他们的网站播放，消耗我们的带宽和容量。内容不违规、播放发生在站外，审核无法定性。我当时的判断是：这不是内容问题，是资源滥用问题，必须用独立于内容审核的技术手段来解决。于是我做了异常流量监测、容量监测和防盗链处理。资源类风险需要有自己的基线、告警和自动阻断阈值，防盗链是访问控制，异常监测是检测，两者配合才能既止损又不误伤正常用户。</p>
+<p><strong>2020 年：实习生上传生产 Key 到 GitHub → 换 Key + 细粒度权限 + 配置中心 + 云原生</strong></p>
+<p>实习生把云服务生产 Key 上传到了 GitHub。换 Key 是止血，但我清楚实习生只是触发者，根因是凭据没有独立于代码的存在方式。于是我们切分了更细粒度的权限，缩小单点泄露的爆炸半径；我开发了配置中心，清理了代码里硬编码或配置文件进仓库的情况；并全面迁移完成了容器化云原生。凭据泄露的解法不是「教人不要上传」，而是让凭据根本不在代码里。</p>
+<p><strong>四次之后</strong></p>
+<p>从 2017 到 2020 年，处理方式有一条清晰的下沉路径：业务层风控 → 基础设施层暴露面 → 资源层监测 → 工程流程层凭据管理。从「响应事件」逐步转向「消灭事件类别」。</p>
+<table>
+<thead>
+<tr>
+<th>时间</th>
+<th>事件</th>
+<th>类别</th>
+<th>止血</th>
+<th>治本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2017</td>
+<td>直播间被发送不良信息</td>
+<td>内容滥用</td>
+<td>停业整顿</td>
+<td>自研内容风控，实时拦截</td>
+</tr>
+<tr>
+<td>2018</td>
+<td>Redis 暴露公网被提权挖矿</td>
+<td>配置暴露</td>
+<td>全面重新部署</td>
+<td>VPC 彻底隔离 + 申请自动拉起 + VPN 访问</td>
+</tr>
+<tr>
+<td>2019</td>
+<td>视频存储被盗链薅羊毛</td>
+<td>资源盗用</td>
+<td>异常监测 + 防盗链</td>
+<td>独立基线、告警、自动阻断</td>
+</tr>
+<tr>
+<td>2020</td>
+<td>生产 Key 被上传到 GitHub</td>
+<td>凭据泄露</td>
+<td>换 Key</td>
+<td>配置中心 + 细粒度权限 + 云原生</td>
+</tr>
+</tbody>
+</table>
+<p>这四次之后我不再相信「让人小心一点」能解决问题。能约束住错误的，是架构。</p>
+<h2 id="二总量曲线从平缓到垂直">二、总量曲线：从平缓到垂直</h2>
+<p>这四件事都在补丁之外——没有 CVE，也就没有补丁可打。但近年的数据说明，连「补丁之内」的领域也在失守。先看总量：</p>
+<p>2018 到 2021 年，全球 CVE 年发布量基本在 1.8 万到 2.1 万之间波动。真正的转折发生在 2021 年之后：</p>
+<p><figure><a class="lightgallery" href="/posts/2026/10/22/beyond-patches/cve-growth.png" title="全球 CVE 年发布量：2020–2025 实测与 2026 预测区间" data-thumbnail="/posts/2026/10/22/beyond-patches/cve-growth.png" data-sub-html="<h2>从 2020 年的 18,363 到 2025 年的 48,163，六年 4.3 倍；2026 年前 7 个月已超 45,000，全年预测 66,000–78,000</h2><p>全球 CVE 年发布量：2020–2025 实测与 2026 预测区间</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/posts/2026/10/22/beyond-patches/cve-growth.png"
+            data-srcset="/posts/2026/10/22/beyond-patches/cve-growth.png, /posts/2026/10/22/beyond-patches/cve-growth.png 1.5x, /posts/2026/10/22/beyond-patches/cve-growth.png 2x"
+            data-sizes="auto"
+            alt="/posts/2026/10/22/beyond-patches/cve-growth.png" width="1720" height="840" />
+    </a><figcaption class="image-caption">从 2020 年的 18,363 到 2025 年的 48,163，六年 4.3 倍；2026 年前 7 个月已超 45,000，全年预测 66,000–78,000</figcaption>
+    </figure></p>
+<p>从 2020 到 2025 年，总量增长了 163%，六年约 4.3 倍。2026 年的月度数据更能说明陡度：1 月披露 5,045 个，7 月翻倍到 10,477 个，8 月进一步升至 10,740 个。FIRST 年初预测全年约 66,000 个，但前 7 个月就已超过 45,000，实际节奏超过了预测。</p>
+<p>不过，总量曲线会误导人。新增的绝大部分并不是紧急漏洞。Red Hat 2025 年评估了 5,478 个 CVE，其中 Critical 只有 3 个，且是连续第二年下降；被确认在野利用的仅 9 个，占 0.16%。前一年增加的 1,206 个 CVE 中，84% 是 Moderate/Low 级别。Linux 内核 CNA 的大规模签发等机制性因素，也在人为推高基数。</p>
+<p>真正值得关注的是高严重性漏洞：2020 年约 7,148 个，2025 年升至约 15,888 个，翻了一倍以上。总量有水分，这条「可被实际利用」的供给曲线没有。</p>
+<p>这条曲线的形状，还对应着三个时间点。2023 年起的抬头，与 ChatGPT 的出现重合；2024 年的 +38.4%，与智能体编码的大规模落地重合；2026 年的再加速，则对应智能体工具能力的进一步成熟——从「人拿着 AI 写代码」，走向「AI 自主跑流水线」。这不是说 AI 造成了漏洞增加——更像体检：以前很少有人去医院做检查，现在检查普及了，癌症检出率自然上升。AI 把一直存在的「已知的未知」翻了出来：漏洞被发现的速度，第一次超过了人类消化它们的速度。这一点在第四节还会展开。</p>
+<h2 id="三真正陡峭的曲线从披露到利用被压成了负数">三、真正陡峭的曲线：从披露到利用，被压成了负数</h2>
+<p>如果只看数量，会错过近三年最根本的变化。</p>
+<p>2020 年，CVE 披露到首次利用的中位时间约为 30 天；到 2025 年，这个窗口已压缩到 5 天以内，28% 的漏洞在披露当天或补丁发布之前就已被利用——对于这部分漏洞，利用时间是负一天，因为修复根本还不存在。2026 年的数据进一步显示，利用时间已缩短至 24 小时，而 2025 年这个数字还是 72 小时。Mandiant M-Trends 2026 报告甚至给出了更极端的结论：平均利用时间已经变成负七天。这次 PHP 的两个 9.2 分漏洞就是活例：AWS 蜜罐记录到攻击者 10 月 17 日就开始尝试利用，比公开披露早了 4 天；10 月 21 日 22:00（北京时间）补丁发布，watchTowr 在 19 分钟后就观测到了在野利用。</p>
+<p>防守方的修复节奏几乎没有同步变化。组织平均需要 88 天才能修复一个已有关键补丁的 Critical 漏洞，50% 的 CISA KEV 条目在补丁发布 55 天后仍未修补。攻击者在小时级行动，防守方在月级响应。这条「时间差曲线」，才是近年漏洞态势最陡峭的部分。</p>
+<h2 id="四ai-的双重角色发现引擎与攻击加速器">四、AI 的双重角色：发现引擎与攻击加速器</h2>
+<p>AI 在这条曲线上扮演的角色，不是「制造了所有漏洞」，而是把发现速度推到了人类流程无法消化的水平。</p>
+<p>Mozilla 借助 Anthropic 的专用智能体，在一个季度内将 Firefox 的漏洞披露量推高了 164%，单次发布修复了 271 个历史遗留 bug。AI 在做的是把「已知的未知」变成「已知的已知」。AI 辅助发现的漏洞中，50% 通向 RCE，而传统方式发现的漏洞中这一比例是 26%；AI 发现的漏洞里 Low Risk 占比更低，Medium 和 High 占比更高。</p>
+<p>更近的例子就是这次 PHP 的两个 9.2 分漏洞本身：Calif 的研究员 Ryan A 用 GPT-5.6 Sol 找到了利用路径，又用 OpenAI 一款尚未发布的模型做出了完整利用，OpenAI 官方确认了这件事。两个多月后，这条路径变成了全球范围内的 PHP2Shell。</p>
+<p>同样发生在发布流程里的，还有 PostgreSQL 19 的推迟。原定 10 月底发布的 PG19，被推到 11 月 19 日，还临时加了一个 RC2。原因有两层：Beta 阶段约 8–10 个重要特性被撤回（正常周期通常只撤 1 个），部分是架构级缺陷；更直接的是，迅速成熟的大模型代码审查和模糊测试，把过去可能五年才能逐渐浮现的边缘缺陷，在几天里集中扫了出来——开发者突然面对约 40 份缺陷报告，而处理每一份（复现、判定、修复、测试）都有固定开销，人类时间很快耗尽。核心提交者 Peter Eisentraut 称之为「有效质量门槛被抬高」：代码写就时还没有这么强的审查工具，到发布时，新工具已经能发现过去发现不了的问题。</p>
+<p>不过要补一个注脚：committer Tomas Vondra 逐一核对邮件线程后指出，12 个被撤特性里只有 4 个是 AI 辅助审查发现的，另外 8 个出自资深人类审查者；AI 对延期的主要影响，是 2026 年 PostgreSQL 的 CVE 通报从往年约 5 个飙到 44 个，安全雪崩消耗了审查者的时间。「AI 发现的 bug 多到修不完」只说对了一半：12 个撤回里，AI 只找到 4 个。AI 真正的影响是警报雪崩——体检仪器不制造癌症，但它能把门诊挤爆。</p>
+<p>与此同时，AI 本身正在成为一个高严重性的新漏洞来源。2026 年 Q2，AI 与 LLM 服务的记录漏洞数量较 2025 年底增长了 10 倍，达到 935 个，其中严重漏洞 119 个。更关键的是漏洞的位置：智能体编排中间件占了 AI 相关漏洞的 50%，2026 年披露量增长了 347%。风险重心不在模型本身，而在连接模型与真实系统的「胶水层」——认证、权限、工具调用接口。</p>
+<h2 id="五ai-生成代码与供应链攻击面在系统性扩大">五、AI 生成代码与供应链：攻击面在系统性扩大</h2>
+<p>当 AI 开始写代码，引入依赖的「胃口」远超人类。Black Duck 2026 年的审计显示，平均每个代码库的漏洞数量跳增了 107%，开源组件数量增长 30%。约 20% 的 AI 生成代码样本会引用根本不存在的包名，这直接催生了「slopsquatting」攻击——攻击者抢注这些幻觉包名来投毒。</p>
+<p>供应链攻击也随之升级。今年第二次被劫持的 LiteLLM，在每一个 wheel 包和 Docker 镜像（包括 latest）中都塞进了凭证窃取器和远程访问木马——你甚至不需要在代码里导入它，只要单纯执行安装就足以中招。更危险的信号是，攻击者利用的是合法的 CI/CD 发布流程本身——部分恶意包甚至带有合规的 SLSA Build Level 3 验证。供应链的「信任机制」没有失灵，而是被合法流程「利用」了。</p>
+<h2 id="六两个非-cve-事件artex-与-tidb-暴露的架构风险">六、两个非 CVE 事件：ARTEX 与 TiDB 暴露的架构风险</h2>
+<p>补丁可以修代码，但修不了攻击者的速度和云架构的假设。</p>
+<p>ARTEX 是一个 AI 驱动的渗透测试代理。CrowdStrike 确认，攻击者利用它在 9 月底至 10 月初入侵了韩国多家金融机构。更具讽刺意味的是，ARTEX 并非黑产工具，而是 2026 年 8 月百度「agent+」攻防挑战赛的冠军作品。从夺冠到被用于击穿韩国银行，只隔了大约一个月。它被武器化的方式不是代码被改写，而是使用场景被切换：同一套架构，换目标、关掉授权校验，就从安全测试工具变成了入侵流水线。而且攻击者利用的往往不是核心系统，而是面向外部贷款招募人员的辅助查询功能这类「看起来不重要」的暴露面。</p>
+<p>另一件事是 PingCAP（TiDB 背后的公司）内部系统被入侵。黑客组织声称窃取了约 10.6TB 数据，涉及 18 万条租户记录、超过 11 万个 API Key。PingCAP 确认攻击者利用被盗的服务账号凭据访问了部分内部系统。真正值得警惕的架构信号是：云服务商可能在双方都不完全知情的情况下存储了客户的敏感数据。攻击路径指向代码仓库中的 GCP 服务账号密钥和 Azure 凭据，据称每六小时导出一次，累计 88 次未被检测。云控制平面的凭据一旦落入攻击者之手，持续的数据外泄可以在较长时间内不被发现。</p>
+<h2 id="七先打补丁本次更新的-cve-清单与修复动作">七、先打补丁：本次更新的 CVE 清单与修复动作</h2>
+<p>回到可执行层面。ARTEX 与 TiDB 说明攻击者不缺速度和路径，但「代码缺陷」这一半，补丁仍然管得住。全貌在前面那张时间线表里，这里把三个运行时拆开讲。</p>
+<p><strong>PHP（PHP2Shell）：两个 9.2 分 RCE，补丁窗口最窄</strong></p>
+<p>影响范围极广，从 PHP 5 起的几乎所有版本都可能受影响。Apache mod_php 风险最高，攻击可在任何应用代码执行前触发，无需认证。</p>
+<table>
+<thead>
+<tr>
+<th>CVE 编号</th>
+<th>漏洞类型</th>
+<th>CVSS v4.0</th>
+<th>核心成因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CVE-2026-109618</td>
+<td>远程代码执行 (RCE)</td>
+<td>9.2</td>
+<td>内存耗尽时请求内存未完整初始化</td>
+</tr>
+<tr>
+<td>CVE-2026-109619</td>
+<td>远程代码执行 (RCE)</td>
+<td>9.2</td>
+<td>请求结束后全局状态指向已释放内存</td>
+</tr>
+</tbody>
+</table>
+<p>修复版本：8.5.12、8.4.27、8.3.36、8.2.35。</p>
+<p><strong>现实参照：全球规模的「下线潮」。</strong> 这次漏洞的紧迫性有一个史无前例的公开注脚。FBI、CISA、英国及 CERT-EU 等机构均公开建议「把系统下线」。日本首相高市早苗在早上 5:55 通过 X 呼吁 4880 万国民尽快修复，并明确将「暂时关闭网站」列为有效手段；当晚，其个人官网即被主动下线，次日修复后才恢复。</p>
+<p><figure><a class="lightgallery" href="/posts/2026/10/22/beyond-patches/takaichi-tweet.jpg" title="高市早苗早上 5:55 的推文" data-thumbnail="/posts/2026/10/22/beyond-patches/takaichi-tweet.jpg" data-sub-html="<h2>首相亲自下场：早上 5:55 在 X 上劝告国民尽快修复，必要时先关闭网站</h2><p>高市早苗早上 5:55 的推文</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/posts/2026/10/22/beyond-patches/takaichi-tweet.jpg"
+            data-srcset="/posts/2026/10/22/beyond-patches/takaichi-tweet.jpg, /posts/2026/10/22/beyond-patches/takaichi-tweet.jpg 1.5x, /posts/2026/10/22/beyond-patches/takaichi-tweet.jpg 2x"
+            data-sizes="auto"
+            alt="/posts/2026/10/22/beyond-patches/takaichi-tweet.jpg" width="1080" height="869" />
+    </a><figcaption class="image-caption">首相亲自下场：早上 5:55 在 X 上劝告国民尽快修复，必要时先关闭网站</figcaption>
+    </figure></p>
+<p>随后，荷兰议会、鹿特丹港、维基百科、Archive.org 等纷纷采取了断网措施。当一个 9.2 分的 RCE 已有公开 PoC 流传时，「先切断可达性、再修复」不再是极端选项，而是暴露面管理的标准动作。</p>
+<p><strong>Node.js：Brotli RCE 是核心，但利用有前提条件</strong></p>
+<p>本次共修复 10 个漏洞。CVE-2026-111497 的 RCE 需要应用实际调用 Brotli 解压，并非默认触发。此外还修复了 TLS 证书主机名校验绕过等 3 个高危漏洞。</p>
+<p>修复版本：22.23.4（LTS）、24.22.1（LTS）、26.12.1（Current）。升级后需重启 Node.js 进程，容器需更新镜像。</p>
+<p><strong>Go：没有传统 CVE，但「不重新编译等于没修」</strong></p>
+<p>Go 本次修复的是 CVE-2026-111943，涉及 8 个私钥已泄露的中间 CA 证书（匹配到了 eMudhra 旗下的机构）。核心操作点：拒绝列表硬编码在工具链中，升级工具链后，必须对所有 Go 应用重新编译并重新部署，拦截机制才会生效。</p>
+<p>这里有一个让人啼笑皆非的细节：作为签发超 6000 万证书的机构，eMudhra 本该使用超过一百位长度的随机数作为私钥，但安全人员发现，其中一个私钥竟然只是数字「4」，其他的则是「66」和「237」之类的极短数字。当底层信任链脆弱到这种地步时，Go 团队直接在编译器级别硬编码封杀，是唯一理性的选择。</p>
+<table>
+<thead>
+<tr>
+<th>优先级</th>
+<th>对象</th>
+<th>核心动作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P0（立即）</td>
+<td>PHP</td>
+<td>升级补丁；无法升级的，按临时措施收敛，或临时下线</td>
+</tr>
+<tr>
+<td>P0（立即）</td>
+<td>TiDB Cloud 凭据</td>
+<td>审计、轮换、收敛服务账号与 API Key 权限</td>
+</tr>
+<tr>
+<td>P1（紧随）</td>
+<td>Node.js</td>
+<td>升级并重启进程/镜像</td>
+</tr>
+<tr>
+<td>P1（紧随）</td>
+<td>Go</td>
+<td>升级工具链，必须重新编译并部署所有 Go 二进制</td>
+</tr>
+<tr>
+<td>P2（排期）</td>
+<td>ARTEX 类暴露面</td>
+<td>收敛互联网可见的辅助系统；建立资产清单与枚举告警</td>
+</tr>
+</tbody>
+</table>
+<h2 id="八但只打补丁不够从修复驱动转向机会驱动">八、但只打补丁不够：从「修复驱动」转向「机会驱动」</h2>
+<p>上面的清单解决的是「已知的代码缺陷」，前面四个一线案例解决的是「补丁覆盖不到的风险类别」。但 Mandiant M-Trends 2026 报告显示，平均利用时间已经变成负七天。在这个前提下，补丁只是整套动作中的一环，防守逻辑需要分三层升级。</p>
+<p><strong>第一层：漏洞管理从「修复驱动」转向「机会驱动」</strong></p>
+<p>用风险四要素替代 CVSS 排优先级：CISA 废弃了按 CVSS 分数一刀切的策略，改用四变量风险模型（公网暴露、KEV 目录、可自动化利用、技术影响）。命中全部条件的漏洞，修复窗口是 3 天。</p>
+<p>把检测能力前置到「补丁可用之前」：当利用时间倒挂时，等待补丁发布再行动，等于把防守窗口拱手让出。解法是把检测和响应能力对准「漏洞被利用之后攻击者会做什么」：凭据滥用、异常进程链、横向移动。</p>
+<p>当修复成本高于重构成本时，直接淘汰旧组件：在这次 PHP 漏洞爆发当天，我的一位朋友醒来看到新闻，没有去找补丁，而是直接用 AI 工具把他的 WordPress 博客重构到了别的技术栈。公开博客一旦被 RCE 利用，攻击者根本不需要提权，只需植入一段 JS，就能让访客浏览器变成挖矿肉鸡。过去重写成本太高，只能硬着头皮打补丁；现在 AI 把代码重构的门槛降到了小时级。当修补老旧技术栈的成本超过了用 AI 重构的成本时，「直接淘汰它」就是最彻底的暴露面收敛。</p>
+<p>除了淘汰，还有另一条路：软件停更了，但有人接手把补丁续上，或者干脆用更安全的语言重写。MinIO 在 2025 年 10 月停止常规社区版后，有人接过来做了 Silo 维护分支，半年修了 20 多个安全漏洞；也有人用 Rust 从零重写了 RustFS，2026 年 9 月 GA，S3 兼容、支持原地替换二进制。反过来，那些停更、还连在公网上的老服务，才是这场危机里最危险的一批：RCE 爆出来没有补丁可打，只能排队等死。不要把「现有二进制不会自己坏」当作安全——软件不死，只是没人修了。</p>
+<p><strong>第二层：供应链和 AI 生成代码，把门禁做在构建环节</strong></p>
+<p>把 SBOM + SLSA L2+ + Sigstore 签名作为最低门槛：构建溯源达到 SLSA Level 2 以上，容器镜像用 Sigstore 无密钥签名并验证。</p>
+<p>对 AI 推荐的依赖强制走「注册表核验 + 锁文件固定」：禁止 AI 代理在无人审查或无允许列表的情况下自主安装包。对 HIGH 及以上级别的依赖漏洞，CI 应直接阻断合并。</p>
+<p>分支保护规则对 AI 生成的 PR 不能放松：审查重点从「代码是否可读」转向「是否引入了新依赖、是否触碰敏感数据路径」。</p>
+<p><strong>第三层：云凭据和暴露面，消除「匿名通行证」</strong></p>
+<p>静态密钥就不应该存在。工作负载用实例角色，CI/CD 走 OIDC 联邦拿短期凭据。</p>
+<p>对存量静态凭据做「先禁用、再替换」的收敛：先禁用观察报错，然后发放独立凭据，收窄权限到最小。</p>
+<p>当系统无法修复时，网络隔离是最后的底线：防守手段存在一个「降级阶梯」。正常情况下，我们打补丁；如果来不及打，用 AI 工具把老旧系统重构；但我还见过一种更极端的系统：没有源码，没有文档，只有一个编译好的二进制执行文件。当底层爆出 RCE 时，你无法重新编译，无法分析调用链。对这类「黑盒系统」，唯一能做的，就是用 VPC、零信任网关把它彻底「包裹」起来，切断所有不必要的入站流量。既然内部的错误无法立刻消除，那就用外部的网络边界，把错误的爆炸半径压到零。</p>
+<h2 id="九结论补丁要打但节奏要变">九、结论：补丁要打，但节奏要变</h2>
+<p>回到那个补丁扎堆的星期三。我朋友一早用 AI 重写博客的操作，比任何复杂的应急预案都更能说明问题。面对两个 9.2 分的 RCE，连日本首相官网都选择了主动下线，一个普通开发者用 AI 重构了系统，而那些只剩下二进制文件的黑盒服务，则只能被硬生生锁进 VPC 的最深处。</p>
+<p>我亲历的四个事件已经说明，内容风控、暴露面收敛、资源监测、凭据管理这四类控制，分别对应业务滥用、配置错误、资源滥用和凭据泄露——没有一个能靠单纯打补丁解决。而近年的漏洞增长曲线，实质是三条线的剪刀差：总量曲线在 AI 推动下变陡，发现—利用时间曲线被压成负数，而防守端的修复曲线几乎是一条水平线。</p>
+<p>说到底，四次事件给的是同一条经验：真正划算的安全投入，是把错误的发生条件从架构上删掉，而不是把响应练得更快。内容风控、VPC 隔离、基线告警、凭据出代码，做的都是同一件事——把一类事件从「以后还会发生」变成「根本不会发生」。响应能力决定下限，架构约束决定上限：修复速度追不上攻击速度的时候，唯一能赢的方式，是不给攻击留入口。</p>
+<p>对 AI 的态度，值得单独说一句。它不是漏洞暴涨的元凶，也不是天然的安全救兵——它是杠杆，同时放大发现和修复两端：攻击者用它把扫描和武器化提速，防守方用它把审查和重构提速。PG 19 的例子说明，AI 审查会在发布前把质量门槛抬高；ARTEX 的例子说明，同一个智能体换个目标就是入侵流水线。所以结论不是「拥抱」或「警惕」二选一：用 AI 的前提是把门禁做进流程——依赖要核验、产物要签名、改动要审查。杠杆两端都变长的时候，胜负取决于谁动作更快。</p>
+<p>如果只能做三件事：</p>
+<ol>
+<li>对公网暴露、KEV、可自动化利用的高危漏洞，压到 3 天闭环；来不及打补丁的，用 AI 重构淘汰老旧组件，连源码都没有的，用零信任和 VPC 彻底隔离。</li>
+<li>让静态云凭据从代码和配置中消失，换成短期身份。</li>
+<li>把供应链与 AI 生成代码的门禁前移到构建环节——锁文件核验、签名验证、依赖漏洞阻断合并（详见第八节第二层）。</li>
+</ol>
+<p>补丁仍然要打，但补丁的定位从「唯一的修复手段」降为「整套暴露面收敛动作中的一环」——因为当利用可以发生在补丁之前时，真正决定生存的已经不是修复速度，而是在攻击者利用之前，暴露面本身是否还存在。毕竟，正如那个总结这疯狂一天的推文所说：「总之，今天是星期三。」而下个星期三，你永远不知道会爆出什么新漏洞——到那时候，决定你活下来的，不是响应有多快，而是<strong>有没有好的架构和规范，未雨绸缪、防范于未然。响应能力决定下限，架构约束决定上限。</strong></p>
+<h2 id="附主要数据来源">附：主要数据来源</h2>
+<ul>
+<li>Red Hat：《2025 Product Security Risk Report》</li>
+<li>Mandiant：M-Trends 2026</li>
+<li>CISA：KEV（Known Exploited Vulnerabilities）目录</li>
+<li>FIRST：2026 年漏洞预测</li>
+<li>Black Duck：2026 年开源安全与风险分析</li>
+<li>Mozilla：Anthropic 智能体协助漏洞披露的官方说明</li>
+<li>CrowdStrike：韩国金融机构入侵事件通报</li>
+<li>PingCAP：安全事件官方声明</li>
+<li>The Register：Postgres 19 delayed after AI reviewers find more bugs than humans can fix</li>
+<li>InfoQ 中文站：AI 审查员把 PostgreSQL 19 拖延期了？committer 拆完 12 个撤回</li>
+<li>PHP Foundation：Today&rsquo;s PHP Security Release（2026-10-21）</li>
+<li>共同社：高市早苗因 PHP 漏洞一度关闭自身官网</li>
+</ul>
+</div><script src="/lib/qrcode/qrcode.min.js"></script>
+<div id="share-card-btn" hidden>生成分享卡片</div>
+<div id="share-card-overlay" hidden>
+    <div class="share-card-dialog">
+        <img id="share-card-img" alt="分享卡片">
+        <div class="share-card-actions">
+            <a id="share-card-download" download="share-card.png">下载 PNG</a>
+            <button type="button" id="share-card-copy">复制图片</button>
+            <span class="share-card-themes">
+                <button type="button" data-theme="dark" class="active">深色</button>
+                <button type="button" data-theme="light">浅色</button>
+                <button type="button" data-theme="claude">Claude</button>
+            </span>
+            <span class="share-card-orients">
+                <button type="button" data-orient="landscape" class="active">横版</button>
+                <button type="button" data-orient="portrait">竖版</button>
+            </span>
+            <button type="button" id="share-card-close">关闭</button>
+        </div>
+    </div>
+</div>
+<style>
+#share-card-btn {
+    position: absolute; z-index: 99; padding: 4px 10px; border-radius: 4px;
+    background: #1a1b26; color: #9ece6a; border: 1px solid rgba(158,206,106,.4);
+    font-size: 12px; cursor: pointer; user-select: none;
+    font-family: "Cascadia Code", Menlo, Consolas, monospace;
+}
+#share-card-btn:hover { background: #24283b; }
+#share-card-overlay {
+    position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,.6);
+    display: flex; align-items: center; justify-content: center;
+}
+#share-card-overlay[hidden] { display: none; }
+.share-card-dialog {
+    background: #1a1b26; border: 1px solid rgba(192,202,245,.2); border-radius: 8px;
+    padding: 16px; max-width: 92vw;
+}
+.share-card-dialog img { display: block; max-width: min(560px, 88vw); max-height: 72vh; height: auto; width: auto; border-radius: 4px; }
+.share-card-actions { display: flex; gap: 14px; justify-content: center; align-items: center; margin-top: 12px; flex-wrap: wrap; }
+.share-card-actions a, .share-card-actions button {
+    background: none; border: none; padding: 0; font: inherit; font-size: 14px;
+    color: #7aa2f7; cursor: pointer; text-decoration: none;
+}
+.share-card-actions a:hover, .share-card-actions button:hover { text-decoration: underline; }
+.share-card-themes button, .share-card-orients button { color: #565f89; }
+.share-card-themes button.active, .share-card-orients button.active { color: #9ece6a; }
+.share-card-themes button + button::before, .share-card-orients button + button::before {
+    content: '/'; color: #565f89; margin-right: 14px; cursor: default;
+}
+</style>
+<script>
+(function () {
+    var content = document.getElementById('content');
+    var btn = document.getElementById('share-card-btn');
+    var overlay = document.getElementById('share-card-overlay');
+    var img = document.getElementById('share-card-img');
+    var dl = document.getElementById('share-card-download');
+    if (!content || !btn || !overlay) return;
+
+    var selectedText = '';
+    var theme = 'dark';
+    var orient = 'landscape';
+    var PALETTES = {
+        dark:   { bg: '#1a1b26', border: 'rgba(192,202,245,.25)', prompt: '#9ece6a',
+                  text: '#e5e9f5', title: '#7aa2f7', meta: '#7982a9' },
+        light:  { bg: '#ffffff', border: '#d0d7de', prompt: '#1a7f37',
+                  text: '#1f2328', title: '#0969da', meta: '#8b949e' },
+        claude: { bg: '#f0eee6', border: '#dad7ce', prompt: '#d97757',
+                  text: '#141413', title: '#c15f3c', meta: '#73726c' }
+    };
+    var GEOMS = {
+        landscape: { W: 900, pad: 64, font: 26, lineH: 42, maxLines: 14,
+                     headY: 72, textY: 170, qrSize: 96 },
+        portrait:  { W: 640, pad: 48, font: 24, lineH: 40, maxLines: 18,
+                     headY: 66, textY: 146, qrSize: 88 }
+    };
+
+    function hideBtn() { btn.hidden = true; }
+
+    document.addEventListener('selectionchange', function () {
+        var sel = window.getSelection();
+        if (!sel || sel.isCollapsed || !content.contains(sel.anchorNode)) { hideBtn(); return; }
+        var text = sel.toString().trim();
+        if (text.length < 8) { hideBtn(); return; }
+        selectedText = text;
+        var rect = sel.getRangeAt(0).getBoundingClientRect();
+        btn.style.left = (rect.left + window.scrollX) + 'px';
+        btn.style.top = (rect.bottom + window.scrollY + 6) + 'px';
+        btn.hidden = false;
+    });
+    document.addEventListener('mousedown', function (e) {
+        if (e.target !== btn) hideBtn();
+    });
+
+    
+    function wrapText(ctx, text, maxWidth, maxLines) {
+        var lines = [], line = '';
+        for (var ch of text.replace(/\s+/g, ' ')) {
+            if (ctx.measureText(line + ch).width > maxWidth && line) {
+                lines.push(line); line = ch;
+                if (lines.length === maxLines) break;
+            } else {
+                line += ch;
+            }
+        }
+        if (lines.length < maxLines && line) lines.push(line);
+        if (lines.length === maxLines && line) {
+            lines[maxLines - 1] = lines[maxLines - 1].slice(0, -1) + '…';
+        }
+        return lines;
+    }
+
+    function drawQR(ctx, data, x, y, size) {
+        if (typeof qrcode !== 'function') return;
+        var qr = qrcode(0, 'M');
+        qr.addData(data);
+        qr.make();
+        var n = qr.getModuleCount();
+        var cell = Math.floor(size / (n + 8)); 
+        if (cell < 1) cell = 1;
+        var total = cell * (n + 8);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(x, y, total, total);
+        ctx.fillStyle = '#1a1b26';
+        for (var r = 0; r < n; r++) {
+            for (var c = 0; c < n; c++) {
+                if (qr.isDark(r, c)) ctx.fillRect(x + (c + 4) * cell, y + (r + 4) * cell, cell, cell);
+            }
+        }
+    }
+
+    function renderCard(text, themeKey, orientKey) {
+        var P = PALETTES[themeKey] || PALETTES.dark;
+        var G = GEOMS[orientKey] || GEOMS.landscape;
+        var maxTextW = G.W - G.pad * 2;
+        var fontStack = '"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif';
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
+        
+        canvas.width = G.W; canvas.height = 100;
+        ctx.font = G.font + 'px ' + fontStack;
+        var lines = wrapText(ctx, text, maxTextW, G.maxLines);
+        var footY = G.textY + lines.length * G.lineH + 36;   
+        var contentH = footY + Math.max(G.qrSize, 84) + 44;
+        
+        var H = contentH, oy = 0;
+        if (orientKey === 'portrait') {
+            var minH = Math.round(G.W * 4 / 3);
+            if (contentH < minH) { H = minH; oy = Math.round((minH - contentH) / 2); }
+        }
+        canvas.width = G.W; canvas.height = H;
+        
+        ctx.fillStyle = P.bg; ctx.fillRect(0, 0, G.W, H);
+        ctx.strokeStyle = P.border; ctx.lineWidth = 2;
+        ctx.strokeRect(14, 14, G.W - 28, H - 28);
+        
+        ctx.font = 'bold 24px "Cascadia Code",Menlo,Consolas,monospace';
+        ctx.fillStyle = P.prompt;
+        ctx.fillText('❯ whitefirer.org', G.pad, oy + G.headY);
+        
+        ctx.font = G.font + 'px ' + fontStack;
+        ctx.fillStyle = P.text;
+        lines.forEach(function (line, i) { ctx.fillText(line, G.pad, oy + G.textY + i * G.lineH); });
+        
+        ctx.strokeStyle = P.border; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(G.pad, oy + footY); ctx.lineTo(G.W - G.pad, oy + footY); ctx.stroke();
+        
+        ctx.font = '20px ' + fontStack;
+        var sideMax = G.W - G.pad * 2 - G.qrSize - 56;
+        var title = '《' + document.title.replace(/ - 赛博闲谭.*$/, '') + '》';
+        while (title.length > 6 && ctx.measureText(title).width > sideMax) title = title.slice(0, -3) + '…》';
+        ctx.fillStyle = P.title;
+        ctx.fillText(title, G.pad, oy + footY + 42);
+        ctx.fillStyle = P.meta;
+        var meta = '摘自 赛博闲谭 · ' + location.host + location.pathname;
+        while (meta.length > 8 && ctx.measureText(meta).width > sideMax) meta = meta.slice(0, -2);
+        if (meta.length < ('摘自 赛博闲谭 · ' + location.host + location.pathname).length) meta += '…';
+        ctx.fillText(meta, G.pad, oy + footY + 76);
+        drawQR(ctx, location.href, G.W - G.pad - G.qrSize - 20, oy + footY + 6, G.qrSize);
+        return canvas;
+    }
+
+    function show() {
+        var canvas = renderCard(selectedText, theme, orient);
+        var url = canvas.toDataURL('image/png');
+        img.src = url;
+        dl.href = url;
+        overlay.hidden = false;
+        document.getElementById('share-card-copy').onclick = function () {
+            var copyBtn = this;
+            canvas.toBlob(async function (blob) {
+                try {
+                    await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+                    copyBtn.textContent = '已复制';
+                    setTimeout(function () { copyBtn.textContent = '复制图片'; }, 1500);
+                } catch (e) { copyBtn.textContent = '复制失败，请下载'; }
+            });
+        };
+    }
+
+    btn.addEventListener('click', function () {
+        if (!selectedText) return;
+        hideBtn();
+        show();
+    });
+    function switcher(sel, apply) {
+        overlay.querySelectorAll(sel + ' button').forEach(function (b) {
+            b.addEventListener('click', function () {
+                apply(b);
+                overlay.querySelectorAll(sel + ' button').forEach(function (x) {
+                    x.classList.toggle('active', x === b);
+                });
+                show();
+            });
+        });
+    }
+    switcher('.share-card-themes', function (b) { theme = b.dataset.theme; });
+    switcher('.share-card-orients', function (b) { orient = b.dataset.orient; });
+    document.getElementById('share-card-close').onclick = function () { overlay.hidden = true; };
+    overlay.addEventListener('click', function (e) { if (e.target === overlay) overlay.hidden = true; });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') overlay.hidden = true; });
+})();
+</script>
+<div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2026-10-22&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/2bbb4e50755f3c80c3c9ecb6302f2738a6a2a138" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) 2bbb4e50755f3c80c3c9ecb6302f2738a6a2a138: feat: 新文《补丁之外：AI 时代怎么守？我亲历的四次安全事件早就给出了答案》——置顶发布">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>2bbb4e5</a></span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/2026/10/22/beyond-patches/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://whitefirer.org/posts/2026/10/22/beyond-patches/" data-title="补丁之外：AI 时代怎么守？我亲历的四次安全事件早就给出了答案" data-hashtags="security,tech,cve,php,vulnerability,ai,supply-chain,cloud"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://whitefirer.org/posts/2026/10/22/beyond-patches/" data-hashtag="security"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://whitefirer.org/posts/2026/10/22/beyond-patches/" data-title="补丁之外：AI 时代怎么守？我亲历的四次安全事件早就给出了答案"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://whitefirer.org/posts/2026/10/22/beyond-patches/" data-title="补丁之外：AI 时代怎么守？我亲历的四次安全事件早就给出了答案"><i data-svg-src="https://fastly.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://whitefirer.org/posts/2026/10/22/beyond-patches/" data-title="补丁之外：AI 时代怎么守？我亲历的四次安全事件早就给出了答案"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微信" onclick="var d=document.getElementById('wechat-qr-c7322fd247026c97e35c904019aa6589');d.style.display=d.style.display==='none'?'block':'none';return false"><i class="fab fa-weixin fa-fw" aria-hidden="true"></i></a>
+        <div id="wechat-qr-c7322fd247026c97e35c904019aa6589" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:9999" onclick="this.style.display='none'">
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;padding:20px;border-radius:8px;text-align:center">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https%3a%2f%2fwhitefirer.org%2fposts%2f2026%2f10%2f22%2fbeyond-patches%2f" alt="微信扫一扫" style="display:block">
+                <p style="margin:10px 0 0;font-size:14px;color:#333">微信扫一扫 · 分享文章</p>
+            </div>
+        </div></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/security/">Security</a>,&nbsp;<a href="/tags/tech/">技术</a>,&nbsp;<a href="/tags/cve/">Cve</a>,&nbsp;<a href="/tags/php/">Php</a>,&nbsp;<a href="/tags/vulnerability/">Vulnerability</a>,&nbsp;<a href="/tags/ai/">Ai</a>,&nbsp;<a href="/tags/supply-chain/">Supply-Chain</a>,&nbsp;<a href="/tags/cloud/">Cloud</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2026/08/29/big-customization-era/" class="prev" rel="prev" title="从板书到PPT，再到 AI 定制开发：“大定制时代”来了"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>从板书到PPT，再到 AI 定制开发：“大定制时代”来了</a></div>
+
+</div>
+<div id="comments"><div id="waline" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://waline.js.org/">Waline</a>.
+            </noscript><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article>
+<script>(function(){var b=document.getElementById('reading-progress');if(!b)return;function u(){var h=document.documentElement,s=h.scrollHeight-h.clientHeight,w=s>0?Math.min((h.scrollTop||document.body.scrollTop)/s*100,100):0;b.style.width=w+'%'}window.addEventListener('scroll',u,{passive:true});u()})();</script></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.131.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/whitefirer/iLoveIt" target="_blank" rel="noopener noreffer" title="iLoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> iLoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://whitefirer.org" target="_blank">whitefirer</a></span><img src="https://hits.sh/whitefirer.org.svg" alt="" aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;clip:rect(0 0 0 0);pointer-events:none"></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/waline/waline.min.css"><script type="text/javascript" src="/lib/waline/waline.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config=Object.assign(window.config||{},{"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Comments","categoryId":"DIC_kwDOH2gmzc4CQ_fM","darkTheme":"dark","emitMetadata":"0","inputPosition":"bottom","lang":"zh-CN","lazyLoading":true,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"whitefirer/whitefirer.github.io","repoId":"R_kgDOH2gmzQ"},"waline":{"dark":"auto","el":"#waline","lang":"zh-CN","pageSize":10,"requiredMeta":["nick","mail"],"serverURL":"https://comment.whitefirer.org"}},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}});</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">!function(){function svgToPng(svg,cb){var c=svg.cloneNode(!0),d=new XMLSerializer().serializeToString(c),img=new Image(),cv=document.createElement('canvas'),w=c.viewBox.animVal.width||c.getBoundingClientRect().width||400,h=c.viewBox.animVal.height||c.getBoundingClientRect().height||300,s=2;cv.width=w*s,cv.height=h*s;var ctx=cv.getContext('2d'),b=new Blob([d],{type:'image/svg+xml;charset=utf-8'}),u=URL.createObjectURL(b);img.onload=function(){ctx.fillStyle='#fff',ctx.fillRect(0,0,cv.width,cv.height),ctx.drawImage(img,0,0,cv.width,cv.height),URL.revokeObjectURL(u),cv.toBlob(function(blob){var a=document.createElement('a');a.href=URL.createObjectURL(blob);var id=svg.id||'diagram';a.download=id+'.png',a.click(),URL.revokeObjectURL(a.href),cb&&cb()})},img.src=u}function addSaveBtn(svg){if(svg.closest('.mermaid-stage,.mermaid-fs-overlay,.mermaid-wrapper,.mermaid-toolbar,.svg-diagram-wrap'))return;var wrap=document.createElement('div');wrap.className='svg-diagram-wrap';var d=svg.style.display||'block',w=svg.style.width||svg.getAttribute('width')||'100%',mw=svg.style.maxWidth||'',m=svg.style.margin||'';wrap.style.cssText='position:relative;display:'+d+';width:'+w+';'+(mw?'max-width:'+mw+';':'')+(m?'margin:'+m+';':'')+'line-height:0';svg.style.display='block';svg.style.width='100%';svg.style.maxWidth='';svg.style.margin='0';svg.parentNode.insertBefore(wrap,svg);wrap.appendChild(svg);var bar=document.createElement('div');bar.style.cssText='text-align:right;padding-top:6px';var btn=document.createElement('button');btn.className='svg-save-btn',btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span style="vertical-align:middle;font-size:12px">保存图片</span>',btn.style.cssText='background:none;border:1px solid transparent;border-radius:4px;padding:2px 6px;cursor:pointer;color:#b0b7c3;font-family:system-ui,sans-serif;line-height:1';bar.appendChild(btn);wrap.appendChild(bar);btn.onmouseenter=function(){btn.style.color='#6366f1';btn.style.borderColor='#e5e7eb'};btn.onmouseleave=function(){btn.style.color='#b0b7c3';btn.style.borderColor='transparent'};btn.onclick=function(e){e.stopPropagation();var orig=btn.innerHTML;btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span style="vertical-align:middle;font-size:12px">导出中...</span>';btn.disabled=!0;svgToPng(svg,function(){btn.innerHTML=orig;btn.disabled=!1})}}function initSvgButtons(){document.querySelectorAll('.content svg').forEach(function(svg){addSaveBtn(svg)})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initSvgButtons);else initSvgButtons()}()</script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-70Q8REKE17', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-70Q8REKE17" async></script></body>
+</html>

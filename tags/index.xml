@@ -4,12 +4,60 @@
         <link>https://whitefirer.org/tags/</link>
         <description>Tags - 标签 - 赛博闲谭-whitefirer</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
-            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Sat, 29 Aug 2026 07:24:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Thu, 22 Oct 2026 20:30:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/" rel="self" type="application/rss+xml" /><item>
     <title>Ai</title>
     <link>https://whitefirer.org/tags/ai/</link>
-    <pubDate>Sat, 29 Aug 2026 07:24:00 &#43;0800</pubDate>
+    <pubDate>Thu, 22 Oct 2026 20:30:00 &#43;0800</pubDate>
     <author>whitefirer</author>
     <guid>https://whitefirer.org/tags/ai/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Cloud</title>
+    <link>https://whitefirer.org/tags/cloud/</link>
+    <pubDate>Thu, 22 Oct 2026 20:30:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/cloud/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Cve</title>
+    <link>https://whitefirer.org/tags/cve/</link>
+    <pubDate>Thu, 22 Oct 2026 20:30:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/cve/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Php</title>
+    <link>https://whitefirer.org/tags/php/</link>
+    <pubDate>Thu, 22 Oct 2026 20:30:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/php/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Security</title>
+    <link>https://whitefirer.org/tags/security/</link>
+    <pubDate>Thu, 22 Oct 2026 20:30:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/security/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Supply-Chain</title>
+    <link>https://whitefirer.org/tags/supply-chain/</link>
+    <pubDate>Thu, 22 Oct 2026 20:30:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/supply-chain/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Vulnerability</title>
+    <link>https://whitefirer.org/tags/vulnerability/</link>
+    <pubDate>Thu, 22 Oct 2026 20:30:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/tags/vulnerability/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
@@ -34,54 +82,6 @@
     <pubDate>Sat, 29 Aug 2026 07:24:00 &#43;0800</pubDate>
     <author>whitefirer</author>
     <guid>https://whitefirer.org/tags/low-code/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Thoughts</title>
-    <link>https://whitefirer.org/tags/thoughts/</link>
-    <pubDate>Sat, 29 Aug 2026 07:24:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/thoughts/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Deepseek</title>
-    <link>https://whitefirer.org/tags/deepseek/</link>
-    <pubDate>Wed, 26 Aug 2026 23:20:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/deepseek/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Glm</title>
-    <link>https://whitefirer.org/tags/glm/</link>
-    <pubDate>Wed, 26 Aug 2026 23:20:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/glm/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Opensource</title>
-    <link>https://whitefirer.org/tags/opensource/</link>
-    <pubDate>Wed, 26 Aug 2026 23:20:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/opensource/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Pricing</title>
-    <link>https://whitefirer.org/tags/pricing/</link>
-    <pubDate>Wed, 26 Aug 2026 23:20:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/pricing/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Qwen</title>
-    <link>https://whitefirer.org/tags/qwen/</link>
-    <pubDate>Wed, 26 Aug 2026 23:20:00 &#43;0800</pubDate>
-    <author>whitefirer</author>
-    <guid>https://whitefirer.org/tags/qwen/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>
