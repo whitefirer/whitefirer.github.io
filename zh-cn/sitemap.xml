@@ -2,8 +2,8 @@
     xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     ><url>
-            <loc>https://whitefirer.org/tags/ai/</loc><lastmod>2026-10-22T23:56:13&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/categories/</loc><lastmod>2026-10-22T23:56:13&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://whitefirer.org/tags/ai/</loc><lastmod>2026-10-22T23:58:50&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/categories/</loc><lastmod>2026-10-22T23:58:50&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://whitefirer.org/en/categories/"
@@ -15,7 +15,7 @@
             <loc>https://whitefirer.org/tags/cloud/</loc><lastmod>2026-10-22T23:56:13&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/tags/cve/</loc><lastmod>2026-10-22T23:56:13&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/tags/php/</loc><lastmod>2026-10-22T23:56:13&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/posts/</loc><lastmod>2026-10-22T23:56:13&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://whitefirer.org/posts/</loc><lastmod>2026-10-22T23:58:50&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://whitefirer.org/en/posts/"
@@ -26,7 +26,7 @@
                     /></url><url>
             <loc>https://whitefirer.org/tags/security/</loc><lastmod>2026-10-22T23:56:13&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/tags/supply-chain/</loc><lastmod>2026-10-22T23:56:13&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/tags/</loc><lastmod>2026-10-22T23:56:13&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://whitefirer.org/tags/</loc><lastmod>2026-10-22T23:58:50&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://whitefirer.org/en/tags/"
@@ -37,7 +37,7 @@
                     /></url><url>
             <loc>https://whitefirer.org/tags/vulnerability/</loc><lastmod>2026-10-22T23:56:13&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/posts/2026/10/22/beyond-patches/</loc><lastmod>2026-10-22T23:56:13&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://whitefirer.org/</loc><lastmod>2026-10-22T23:56:13&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://whitefirer.org/</loc><lastmod>2026-10-22T23:58:50&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://whitefirer.org/en/"
@@ -49,7 +49,7 @@
             <loc>https://whitefirer.org/tags/customization/</loc><lastmod>2026-08-29T10:10:13&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://whitefirer.org/tags/education/</loc><lastmod>2026-08-29T10:10:13&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://whitefirer.org/tags/low-code/</loc><lastmod>2026-08-29T10:10:13&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>https://whitefirer.org/series/</loc><lastmod>2026-08-29T10:10:13&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority><xhtml:link
+            <loc>https://whitefirer.org/series/</loc><lastmod>2026-10-22T23:58:50&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://whitefirer.org/en/series/"
@@ -61,7 +61,7 @@
             <loc>https://whitefirer.org/tags/thoughts/</loc><lastmod>2026-08-29T10:10:13&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://whitefirer.org/posts/2026/08/29/big-customization-era/</loc><lastmod>2026-08-29T10:10:13&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://whitefirer.org/posts/2026/08/26/qwen-glm-flash-price-war/</loc><lastmod>2026-08-27T01:44:40&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>https://whitefirer.org/tags/deepseek/</loc><lastmod>2026-08-27T01:44:40&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://whitefirer.org/tags/deepseek/</loc><lastmod>2026-10-22T23:58:50&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/tags/glm/</loc><lastmod>2026-08-27T01:44:40&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://whitefirer.org/tags/opensource/</loc><lastmod>2026-08-27T01:44:40&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://whitefirer.org/tags/pricing/</loc><lastmod>2026-08-27T01:44:40&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
@@ -69,8 +69,8 @@
             <loc>https://whitefirer.org/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/</loc><lastmod>2026-08-27T01:44:40&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://whitefirer.org/tags/%E7%89%9B%E6%9D%A5/</loc><lastmod>2026-08-27T01:44:40&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://whitefirer.org/tags/desktop-pet/</loc><lastmod>2026-08-24T05:49:53&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>https://whitefirer.org/tags/harness/</loc><lastmod>2026-08-24T05:49:53&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>https://whitefirer.org/tags/plugin/</loc><lastmod>2026-08-24T05:49:53&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://whitefirer.org/tags/harness/</loc><lastmod>2026-10-22T23:58:50&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/tags/plugin/</loc><lastmod>2026-10-22T23:58:50&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/posts/2026/08/23/dsh-niulai-pet-v04/</loc><lastmod>2026-08-24T05:49:53&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://whitefirer.org/tags/kws/</loc><lastmod>2026-08-23T06:16:29&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://whitefirer.org/tags/wasm/</loc><lastmod>2026-08-23T06:16:29&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
@@ -94,9 +94,9 @@
             <loc>https://whitefirer.org/posts/2026/08/15/dsh-plugin-browser-fs/</loc><lastmod>2026-08-20T03:05:30&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://whitefirer.org/tags/architecture/</loc><lastmod>2026-08-16T04:12:24&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://whitefirer.org/posts/2026/08/14/deepseek-harness-deep-dive/</loc><lastmod>2026-08-16T04:12:24&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>https://whitefirer.org/tags/event-sourcing/</loc><lastmod>2026-08-16T04:12:24&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>https://whitefirer.org/tags/agent/</loc><lastmod>2026-08-16T04:12:24&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>https://whitefirer.org/posts/2026/08/13/deepseek-harness-hands-on/</loc><lastmod>2026-08-16T04:12:24&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://whitefirer.org/tags/event-sourcing/</loc><lastmod>2026-10-22T23:58:50&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/tags/agent/</loc><lastmod>2026-10-22T23:58:50&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://whitefirer.org/posts/2026/08/13/deepseek-harness-hands-on/</loc><lastmod>2026-10-22T23:58:50&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://whitefirer.org/tags/claude-code/</loc><lastmod>2026-07-23T19:35:57&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://whitefirer.org/tags/harness-engineering/</loc><lastmod>2026-07-23T19:35:57&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://whitefirer.org/posts/2026/07/19/harness-engineering-sandbox/</loc><lastmod>2026-07-23T19:35:57&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
