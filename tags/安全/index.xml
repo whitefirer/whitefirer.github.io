@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>安全 - 标签 - 赛博闲谭-whitefirer</title>
+        <link>https://whitefirer.org/tags/%E5%AE%89%E5%85%A8/</link>
+        <description>安全 - 标签 - 赛博闲谭-whitefirer</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>whitefirer@gmail.com (whitefirer)</managingEditor>
+            <webMaster>whitefirer@gmail.com (whitefirer)</webMaster><copyright>2022©️whitefirer</copyright><lastBuildDate>Fri, 30 Oct 2026 09:00:00 &#43;0800</lastBuildDate><atom:link href="https://whitefirer.org/tags/%E5%AE%89%E5%85%A8/" rel="self" type="application/rss+xml" /><item>
+    <title>DeepSeek：Cyber 版在即，国产模型网络安全能力集体收口</title>
+    <link>https://whitefirer.org/posts/2026/10/30/deepseek-cyber-crackdown/</link>
+    <pubDate>Fri, 30 Oct 2026 09:00:00 &#43;0800</pubDate>
+    <author>whitefirer</author>
+    <guid>https://whitefirer.org/posts/2026/10/30/deepseek-cyber-crackdown/</guid>
+    <description><![CDATA[上周写完《补丁之外》，讲漏洞和利用窗口，落脚点是「响应能力决定下限，架构约束决定上限」。写完没几天，连着看到三条消息：DeepSeek Cyber 版申]]></description>
+</item>
+</channel>
+</rss>
