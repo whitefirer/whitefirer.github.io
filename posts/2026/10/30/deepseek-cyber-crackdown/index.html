@@ -29,8 +29,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/whitefirer.org\/posts\/2026\/10\/30\/deepseek-cyber-crackdown\/"
-        },"genre": "posts","keywords": "AI, LLM, 安全, DeepSeek, Kimi, GLM","wordcount":  3150 ,
-        "url": "https:\/\/whitefirer.org\/posts\/2026\/10\/30\/deepseek-cyber-crackdown\/","datePublished": "2026-10-30T09:00:00+08:00","dateModified": "2026-10-30T21:08:33+08:00","license": "2022©️whitefirer","publisher": {
+        },"genre": "posts","keywords": "AI, LLM, 安全, DeepSeek, Kimi, GLM","wordcount":  3153 ,
+        "url": "https:\/\/whitefirer.org\/posts\/2026\/10\/30\/deepseek-cyber-crackdown\/","datePublished": "2026-10-30T09:00:00+08:00","dateModified": "2026-10-30T21:42:44+08:00","license": "2022©️whitefirer","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -132,9 +132,11 @@
             <div class="toc-content" id="toc-content-auto"></div>
         </div><div id="reading-progress"></div>
     <article class="page single"><div style="display:flex;align-items:baseline;gap:0">
-        <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">DeepSeek：Cyber 版在即，国产模型网络安全能力集体收口</h1></div><div class="post-meta">
+        <h1 class="single-title animate__animated animate__flipInX" style="margin-bottom:0">DeepSeek：Cyber 版在即，国产模型网络安全能力集体收口</h1></div><div class="post-series">
+                <a href="/series/ai-zatan/"><i class="fas fa-layer-group fa-fw" aria-hidden="true"></i>AI 杂谈</a>
+            </div><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://whitefirer.org" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>whitefirer</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tech/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-10-30">2026-10-30</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3150 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-10-30">2026-10-30</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3153 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 7 分钟&nbsp;<img src="https://hits.sh/whitefirer.org/posts/2026/10/30/deepseek-cyber-crackdown.svg" alt="" aria-hidden="true" loading="eager"
      style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none"></div>
         </div><div class="details toc" id="toc-static"  data-kept="">
@@ -149,7 +151,7 @@
     <li><a href="#glm--深信服收回来的能力去哪">GLM + 深信服：收回来的能力去哪</a></li>
     <li><a href="#三家公司同一个方向">三家公司，同一个方向</a></li>
     <li><a href="#为什么是现在">为什么是现在</a></li>
-    <li><a href="#这活我熟">这活我熟</a></li>
+    <li><a href="#似曾相识">似曾相识</a></li>
     <li><a href="#赛博朋克提前到货">赛博朋克提前到货</a></li>
     <li><a href="#对用模型的人是好事还是坏事">对用模型的人是好事还是坏事</a></li>
     <li><a href="#收走的到底是什么">收走的到底是什么</a></li>
@@ -230,9 +232,9 @@
 <p>收口迟一步的代价，这两天刚演过一遍。10 月 29 日，币安热钱包被攻破，初步估计损失 63 亿美元，约 30 亿被平台和各方联手冻结，剩下的 30 多亿至今没着落——加密史上最大的一单。攻击路径更值得看：智能合约没有漏洞，突破口是一名 DevOps 工程师的笔记本，被拿下后再从服务容器里提交未经授权的提现。代码没问题，人的入口却没守住。币安暂停提现，拿 SAFU 基金兜底，说 48 小时内恢复——全球最大的交易所，一夜之间被一台笔记本打停。</p>
 <p>这种案子每出一次，「能力无门槛、入口无分层」的空间就被压缩一分。监管和厂商，看的是同一组数字。</p>
 <p>还有一层，安全行业的生意也在变。当 AI 把漏洞发现本身大幅提速（上一篇的 CVE 总量和 19 分钟利用窗口已经摆过），「会找漏洞」就从卖点变成了敏感资产，跟漏洞情报一样要分级管控。模型厂商不是不想给，是不敢再无门槛地给。</p>
-<h2 id="这活我熟">这活我熟</h2>
+<h2 id="似曾相识">似曾相识</h2>
 <p>2018 年那件事（《补丁之外》里写过），一名实习生把一台 Redis 暴露到了公网，攻击者提权后开始挖矿。我接手后没有止于清理这台机器，而是把起实例的权力从人手里收回来：Redis 不再手动开，申请后自动在集群上拉起，访问必须走 VPN。2020 年那次更彻底，散落在各处的密钥收进凭据配置中心，代码里从此不见明文。</p>
-<p>当年做这些的时候，我没觉得有多大深意。出了事，把口子扎紧，运维的本能而已。现在回头看，模型厂商这一轮跟我当年是同一个配方：<strong>能力本身没错，错的是无门槛</strong>。问题从来不是「这东西危险不危险」，而是「谁、在什么约束下、拿它干什么」。</p>
+<p>当年做这些的时候，我没觉得有多大深意。出了事，把口子扎紧，开发和运维的本能而已。现在回头看，模型厂商这一轮跟我当年是同一个配方：<strong>能力本身没错，错的是无门槛</strong>。问题从来不是「这东西危险不危险」，而是「谁、在什么约束下、拿它干什么」。</p>
 <p>区别只是，我收的是公司内部几台服务器的权限，他们收的是所有人的模型。</p>
 <h2 id="赛博朋克提前到货">赛博朋克提前到货</h2>
 <p>玩过《赛博朋克 2077》的人对这个结构不会陌生。旧网（Old Net）崩溃之后，失控 AI 被封在 Blackwall 外，人类退守墙内一小块日常网络。NetWatch 守在墙口，谁要穿越黑墙调用外面失控的智能，得过它的授权。墙内是安全区，墙外是武器级的智能，中间隔着一道要身份的闸。</p>
@@ -264,7 +266,9 @@
 <p>《补丁之外》里我说过，AI 时代的安全主动权在「防患于未然」的架构约束上，不在补丁响应上。这一轮模型厂商的动作，是同一个逻辑的换位：这回轮到模型自己被提前分层。</p>
 <p>补丁追不上利用，响应追不上攻击——那就把能被武器化的能力，在出厂前就锁进要验身份的房间里。道理是一个道理，只是被约束的从系统架构，换成了模型自己。</p>
 <p>十年后回头看，2026 年可能是比任何一次模型发布都重要的一年。比起能力又强了多少，更重要的是「能力该给谁」第一次成了行业级的问题。</p>
-</div><script src="/lib/qrcode/qrcode.min.js"></script>
+<div class="post-series-nav">
+                <em>本文是「<a href="/series/ai-zatan/">AI 杂谈</a>」系列第 11 篇，共 11 篇。上一篇：<a href="/posts/2026/10/22/beyond-patches/">补丁之外：AI 时代怎么守？我亲历的四次安全事件早就给出了答案</a>。</em>
+            </div></div><script src="/lib/qrcode/qrcode.min.js"></script>
 <div id="share-card-btn" hidden>生成分享卡片</div>
 <div id="share-card-overlay" hidden>
     <div class="share-card-dialog">
@@ -492,8 +496,8 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2026-10-30&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/621ba2643d4125eaabbd3bb79112bb58c740a3ad" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) 621ba2643d4125eaabbd3bb79112bb58c740a3ad: feat: 新文《DeepSeek：Cyber 版在即，国产模型网络安全能力集体收口》">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>621ba26</a></span>
+                <span>更新于 2026-10-30&nbsp;<a class="git-hash" href="https://github.com/whitefirer/mysite/commit/9c0d5de706900a842eaf59e63c71366c47970d69" target="_blank" title="commit by whitefirer(whitefirer@gmail.com) 9c0d5de706900a842eaf59e63c71366c47970d69: chore: 《补丁之外》《DeepSeek Cyber 版》归入 AI 杂谈系列；章节改名「似曾相识」">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>9c0d5de</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
